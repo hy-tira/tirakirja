@@ -1,36 +1,81 @@
 \chapter{Hajautustaulu}
 
-\section{Hajautuksen teoriaa}
+Tämän luvun tavoitteemme on luoda tietorakenne,
+jonka avulla voimme pitää yllä tehokkaasti alkioiden joukkoa,
+jossa on seuraavat operaatiot:
 
-\emph{Hajautustaulu} on tietorakenne, jonka avulla voi
-pitää yllä tehokkaasti joukkoa alkioista.
-Hajautustaulu toteutetaan taulukkona, jonka jokaisessa
-kohdassa on lista alkioista.
-Lisäksi tarvitsemme \emph{hajautusfunktion},
+\begin{itemize}
+\item lisää alkio $x$ joukkoon
+\item tarkista, onko alkio $x$ joukossa
+\item poista alkio $x$ joukosta
+\end{itemize}
+
+Jos alkiot olisivat aina kokonaislukuja
+välillä $0,1,\ldots,n-1$, voisimme ratkaista tehtävän
+helposti luomalla $n$-kokoisen taulukon, jonka
+jokaisessa kohdassa $x$ on luku 0 ($x$ ei ole taulukossa)
+tai luku 1 ($x$ on taulukossa).
+Tällaisen taulukon avulla voisimme toteuttaa
+helposti kaikki yllä olevat operaatiot $O(1)$-ajassa
+päivittämällä tai tutkimalla yhtä kohtaa taulukosta.
+
+Tässä luvussa keskitymme kuitenkin yleisempään tilanteeseen,
+jossa alkiot eivät ole välttämättä sopivan pieniä kokonaislukuja
+vaan ne voivat olla minkä tahansa tyyppisiä, esimerkiksi merkkijonoja.
+Osoittautuu, että voimme yleistää yllä olevan idean toteuttamalla
+hajautustaulun, jossa jokaisen alkion sijainnin määrää sen hajautusarvo,
+ja pystymme edelleen toteuttamaan kaikki operaatiot
+tehokkaasti keskimäärin $O(1)$-aikaisesti.
+
+\section{Hajautustaulun toteutus}
+
+\emph{Hajautustaulu} on $n$-kokoinen taulukko,
+joka pitää yllä alkioiden joukkoa.
+Jokaisessa hajautustaulun kohdassa on lista,
+jossa on jokin määrä alkioita.
+Jotta voimme käyttää hajautustaulua,
+meillä täytyy olla myös \emph{hajautusfunktio},
 jonka avulla voimme laskea mille tahansa alkiolle
-\emph{hajautusarvon} eli mihin kohtaan hajautustaulua
-alkio tallennetaan.
+\emph{hajautusarvon} eli kohdan, johon alkio
+tallennetaan hajautustaulussa.
 
-Kuvassa X on esimerkkinä hajautustaulu, jossa on
+\begin{figure}
+\begin{tikzpicture}[scale=0.5]
+\draw (0,0) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\draw[->,thick] (2.5,0) -- (2.5,-1);
+\draw[->,thick] (7.5,0) -- (7.5,-1);
+\draw[->,thick] (2.5,-2) -- (2.5,-3);
+\node at (2.5,-1.5) {\texttt{apina}};
+\node at (7.5,-1.5) {\texttt{banaani}};
+\node at (2.5,-3.5) {\texttt{cembalo}};
+\end{tikzpicture}
+\caption{Hajautustaulu, joka vastaa joukkoa $\{\texttt{apina},\texttt{banaani},\texttt{cembalo}\}$.
+Merkkijonojen \texttt{apina} ja \texttt{cembalo} hajautusarvo on 2, ja merkkijonon
+\texttt{banaani} hajautusarvo on 7.}
+\label{fig:hajtau}
+\end{figure}
+
+Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu, jossa on
 merkkijonot \texttt{apina}, \texttt{banaani} ja \texttt{cembalo}.
 Tässä hajautustaulussa on kymmenen mahdollista kohtaa
-($0,1,\ldots,9$), joihin voi tallentaa alkioita.
+($0,1,\ldots,9$), joihin voi tallentaa alkioita listaan.
 Merkkijonojen \texttt{apina} ja \texttt{cembalo}
 hajautusarvo on 2, joten ne ovat samassa listassa kohdassa 2.
-Merkkijonon \texttt{banaani} hajautusarvo on 7,
+Merkkijonon \texttt{banaani} hajautusarvo taas on 7,
 joten se on yksin omassa listassaan.
 Kaikki muut hajautustaulun listat ovat tällä hetkellä tyhjiä.
 
 Kun olemme luoneet hajautustaulun, voimme tarkistaa,
-onko tietty alkio taulussa, laskemalla sen hajautusarvon
+onko tietty alkio joukossa, laskemalla sen hajautusarvon
 ja käymällä läpi vastaavan listan.
-Vastaavasti voimme lisätä alkion hajautustauluun
+Vastaavasti voimme lisätä alkion joukkoon
 lisäämällä sen vastaavan listan loppuun ja poistaa
-alkion hajautustaulusta poistamalla sen listasta.
+alkion joukosta poistamalla sen listasta.
 Näiden operaatioiden aikavaativuus on $O(k)$,
-missä $k$ on yksittäisen listan pituus,
-koska meidän täytyy käydä läpi hajautusarvoa vastaava lista.
-Hajautustaulun tehokkuus riippuu siis siitä,
+missä $k$ on alkion hajautusarvoa vastaavan listan pituus,
+koska meidän täytyy käydä läpi listalla olevat alkiot.
+Hajautustaulun tehokkuus riippuukin siitä,
 kuinka pitkiä listat ovat.
 
 \subsection{Hajautusarvon laskeminen}
@@ -53,6 +98,14 @@ Syynä tähän on, että hajautustaulun tehokkuus riippuu siitä,
 miten tasaisesti alkiot ovat jakautuneet.
 Jos alkiot ovat jakautuneet tasaisesti ja listat ovat lyhyitä,
 voimme etsiä alkioita ja päivittää hajautustaulua tehokkaasti.
+
+Käytännössä meidän riittää muodostaa hajautusfunktio,
+joka muuttaa alkion epänegatiiviseksi kokonaisluvuksi,
+koska tämän jälkeen saamme helposti kokonaisluvun
+väliltä $0,1,\ldots,n-1$ laskemalla jakojäännöksen $n$:llä,
+missä $n$ on hajautustaulun koko.
+Tarkastelemme seuraavaksi esimerkkinä merkkijonon
+hajautusarvon laskemista.
 
 Merkkijonojen tapauksessa yksi mahdollinen hajautusfunktio
 palauttaa merkkijonon pituuden.
