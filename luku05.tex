@@ -27,7 +27,7 @@ hajautustaulun, jossa jokaisen alkion sijainnin määrää sen hajautusarvo,
 ja pystymme edelleen toteuttamaan kaikki operaatiot
 tehokkaasti keskimäärin $O(1)$-aikaisesti.
 
-\section{Hajautustaulun toteuttaminen}
+\section{Hajautustaulun toteutus}
 
 \emph{Hajautustaulu} on $n$-kokoinen taulukko,
 joka pitää yllä alkioiden joukkoa.
@@ -183,14 +183,14 @@ asettamalla summaan painoja, jotka riippuvat merkkien kohdista.
 Tämä on käytännössä hyvä tapa määritellä hajautusfunktio,
 jota käytetään esimerkiksi Javan standardikirjastossa.
 
-\subsection{Hajautustaulun tehokkuus}
+\subsection{Hajautuksen tehokkuus}
 
-Hajautustaulun tehokkuus riippuu siitä, montako kohtaa
-hajautustaulussa on (hajautustaulun koko $n$)
+Hajautustaulun tehokkuus riippuu kahdesta asiasta:
+kuinka suuri hajautustaulu on (parametri $n$)
 sekä miten tasaisesti hajautusfunktio jakaa alkiota
 eri puolelle hajautustaulua.
 Jos oletamme, että alkiot jakautuvat tasaisesti
-ja hajautustaulussa on yhteensä $m$ alkiota,
+ja joukossa on yhteensä $m$ alkiota,
 jokaiseen listaan osuu noin $m/n$ alkiota
 eli hajautustaulun operaatiot toimivat $O(m/n)$-ajassa.
 Jos edelleen $n$ on valittu niin suureksi,
@@ -200,20 +200,27 @@ että hajautustaulun operaatiot toimivat $O(1)$-ajassa.
 Tämän analyysin heikkoutena on, että \emph{oletamme}
 hajautusfunktion toimivan hyvin ja jakavan alkioita
 tasaisesti hajautustauluun. Entä jos näin ei olekaan?
+Jos käytämme polynomista hajautusta, miten vakio $A$
+pitäisi valita, jotta hajautus onnistuisi hyvin?
 
-Hajautustaulun tehokkuus riippuu aina myös siitä,
+Kaikeksi onneksi hajautus toimii yleensä aina käytännössä hyvin.
+Riski siitä, että jokainen tai edes suuri osa alkioista
+menisi samaan listaan, on niin pieni,
+että siitä ei tarvitse murehtia.
+Jotkut suosittelevat valitsemaan $A$:n alkuluvuksi,
+joka ei ole lähellä 2:n potensseja,
+mutta käytännössä muutkaan $A$:n arvot tuskin
+tuottavat ongelmia.
+
+Hajautustaulun tehokkuus riippuu kuitenkin aina myös siitä,
 mitä alkioita sinne laitetaan.
 Vaikka olisimme valinneet hajautustaulun koon ja
 hajautusfunktion miten huolellisesti tahansa,
-ilkeä vastustaja voi kuitenkin valita alkiot
-niin, että jokaisen alkion hajautusarvo on sama ja
-kaikki menevät samaan listaan hajautustaulussa.
+ilkeä vastustaja voi kuitenkin antaa meillä alkioita,
+joilla kaikilla on sama hajautusarvo ja jotka
+menevät samaan listaan hajautustaulussa.
 Tällöin hajautustaulun operaatiot vievät aikaa $O(m)$.
-Tämä riski on aina olemassa, kun käytämme hajautustaulua.
-
-Onneksi hajautustaulu toimii käytännössä hyvin ja 
-uhka siitä, että jokainen tai edes suuri osa alkioista
-menisi samaan listaan, on hyvin pieni.
+Luvussa 5.2.4 näemme tästä konkreettisen esimerkin.
 
 \section{Hajautus Javassa}
 
@@ -271,7 +278,7 @@ Tämä ei olisi mahdollista \texttt{ArrayList}-rakenteessa,
 jossa operaatiot \texttt{contains} ja \texttt{remove}
 vievät aikaa $O(n)$.
 
-\subsection{\texttt{HashMap}}
+\subsection{\texttt{HashMap}-rakenne}
 
 \texttt{HashMap}-rakenne pitää yllä joukkoa avain-arvo-pareja.
 Rakennetta voi ajatella taulukon yleistyksenä:
@@ -280,6 +287,8 @@ $0,1,\ldots,n-1$, mutta \texttt{HashMap} sallii
 avaimina minkä tahansa tyyppisiä alkioita eikä niiden
 tarvitse olla peräkkäisiä kokonaislukuja.
 
+\texttt{HashMap}-rakenteen määrittelyssä annetaan
+kaksi tyyppiä: avaimen ja arvon tyyppi.
 Esimerkiksi seuraava koodi luo sanakirjan, jossa sekä
 avaimet että arvot ovat merkkijonoja.
 Sanakirjaan voi syöttää merkkijonopareja, jotka kertovat
@@ -317,15 +326,19 @@ sen operaatiot toimivat tehokkaasti keskimäärin $O(1)$-ajassa.
 Javan hajautustaulut perustuvat siihen, että olioissa
 on metodi \texttt{hashCode}, jonka avulla olio kertoo
 pyydettäessä hajautusarvonsa.
-Voimme esimerkiksi selvittää merkkijonon \texttt{ABC}
+Voimme esimerkiksi selvittää merkkijonon \texttt{apina}
 hajautusarvon näin:
 
 \begin{code}
-System.out.println("ABC".hashCode());
+System.out.println("apina".hashCode());
 \end{code}
 
-Tämä koodi tulostaa luvun 64578,
-joka on siis merkkijonon \texttt{ABC} hajautusarvo Javassa.
+Tämä koodi tulostaa luvun 93022541,
+joka on siis merkkijonon \texttt{apina} hajautusarvo Javassa.
+On tunnettua, että Java käyttää merkkijonon hajautusarvon laskemiseen
+polynomista hajautusta vakiolla $A=31$,
+joten voimme laskea Javan hajautusarvon myös itse kaavalla
+\[31^4 \cdot 97+31^3 \cdot 112+31^2 \cdot 105+31^1 \cdot 110+31^0 \cdot 97=93022541.\]
 
 Metodi \texttt{hashCode} on toteutettu valmiiksi Javan
 sisäisiin tyyppeihin, kuten \texttt{Integer} ja \texttt{String},
@@ -334,20 +347,28 @@ Kuitenkin jos meillä on itse tehty luokka, jonka olioita
 haluamme käyttää hajautustauluissa, meidän on toteutettava
 itse metodi \texttt{hashCode}.
 
-Esimerkiksi jos meillä on luokka \texttt{Asiakas},
-jossa on kenttinä merkkijonot
-\texttt{etunimi} ja \texttt{sukunimi},
+Esimerkiksi jos meillä on luokka \texttt{Piste},
+jossa on kenttinä kokonaisluvut \texttt{x} ja \texttt{y},
 voisimme toteuttaa metodin \texttt{hashCode} seuraavasti:
 
 \begin{code}
-public class Asiakas {
-    private String etunimi;
-    private String sukunimi;
+public class Piste {
+    public int x, y;
 
     int hashCode() {
-        return etunimi.hashCode()+sukunimi.hashCode();
+        return 97*x+y;
     }
-
-    // ...
 }
 \end{code}
+
+Tässä toteutuksessa siis pisteen $(x,y)$ hajautusarvo lasketaan
+kaavalla $97x+y$, missä 97 on valitsemamme vakio, jolla ei ole
+syvällistä merkitystä.
+Nyt kun hajautusfunktio on kunnossa,
+voimme luoda vaikkapa \texttt{HashSet}-rakenteen, jossa on pisteitä:
+
+\begin{code}
+HashSet<Piste> joukko = new HashSet<Piste>();
+\end{code}
+
+\subsection{xxx}
