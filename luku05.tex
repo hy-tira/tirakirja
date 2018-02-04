@@ -4,6 +4,137 @@
 
 \section{Hajautus Javassa}
 
+Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
+\texttt{HashSet} ylläpitää tehokkaasti joukkoa alkioista
+ja \texttt{HashMap} on yleistetty taulukko,
+jossa voi olla avaimina minkä tahansa tyyppisiä alkioita.
+Seuraavaksi tutustumme tarkemmin näihin rakenteisiin.
+
 \subsection{\texttt{HashSet}}
 
+Javan \texttt{HashSet}-rakenne pitää yllä joukkoa alkioista
+hajautustaulun avulla.
+Rakenteen tärkeimmät operaatiot ovat seuraavat:
+
+\begin{itemize}
+\item $\texttt{add}(x)$: lisää alkio $x$ joukkoon
+\item $\texttt{contains}(x)$: tarkasta, onko alkio $x$ joukossa
+\item $\texttt{remove}(x)$: poista alkio $x$ joukosta
+\item $\texttt{size}()$: laske, montako alkiota on joukossa
+\end{itemize}
+
+Esimerkiksi seuraava koodi luo joukon, jossa voi olla
+kokonaislukuja, ja lisää luvut 3, 5 ja 8 joukkoon.
+Tämän jälkeen koodi tulostaa joukon sisällön.
+
+\begin{code}
+HashSet<Integer> joukko = new HashSet<Integer>();
+joukko.add(3);
+joukko.add(5);
+joukko.add(8);
+System.out.println(joukko); // [3, 5, 8]
+\end{code}
+
+Huomaa, että jokainen alkio voi esiintyä vain kerran joukossa.
+Esimerkiksi vaikka seuraava koodi lisää luvun 5 kolmesti
+joukkoon, se menee sinne vain ensimmäisellä kerralla ja
+muut lisäykset jätetään huomiotta.
+
+\begin{code}
+HashSet<Integer> joukko = new HashSet<Integer>();
+joukko.add(5);
+joukko.add(5);
+joukko.add(5);
+System.out.println(joukko); // [5]
+\end{code}
+
+Olennainen seikka \texttt{HashSet}-rakenteessa on,
+että operaatiot \texttt{add}, \texttt{contains} ja \texttt{remove}
+toimivat kaikki keskimäärin tehokkaasti ajassa $O(1)$
+hajautustaulun ansiosta.
+Niinpä voimme tehdä mitä tahansa muutoksia ja hakuja
+rakenteeseen ja koodi toimii nopeasti.
+Tämä ei olisi mahdollista \texttt{ArrayList}-rakenteessa,
+jossa operaatiot \texttt{contains} ja \texttt{remove}
+vievät aikaa $O(n)$.
+
 \subsection{\texttt{HashMap}}
+
+\texttt{HashMap}-rakenne pitää yllä joukkoa avain-arvo-pareja.
+Rakennetta voi ajatella taulukon yleistyksenä:
+$n$ alkion taulukossa avaimet ovat aina kokonaisluvut
+$0,1,\ldots,n-1$, mutta \texttt{HashMap} sallii
+avaimina minkä tahansa tyyppisiä alkioita eikä niiden
+tarvitse olla peräkkäisiä kokonaislukuja.
+
+Esimerkiksi seuraava koodi luo sanakirjan, jossa sekä
+avaimet että arvot ovat merkkijonoja.
+Sanakirjaan voi syöttää merkkijonopareja, jotka kertovat
+sanan käännöksen suomesta englanniksi.
+Metodi \texttt{put} lisää uuden avain-arvo-parin,
+ja metodi \texttt{get} hakee arvon avaimen perusteella.
+
+\begin{code}
+HashMap<String,String> sanakirja = new HashMap<String,String>();
+
+sanakirja.put("apina","monkey");
+sanakirja.put("banaani","banana");
+sanakirja.put("cembalo","harpsichord");
+
+System.out.println(sanakirja.get("banaani")); // banana
+\end{code}
+
+Hyödyllinen on myös metodi \texttt{containsKey},
+jonka avulla voi tarkastaa, onko tietylle avaimelle
+tallennettu arvoa:
+
+\begin{code}
+if (sanakirja.containsKey(sana)) {
+    System.out.println("Käännös: " + sanakirja.get(sana));
+} else {
+    System.out.println("Sana puuttuu sanakirjasta!");
+}
+\end{code}
+
+Koska \texttt{HashMap} on toteutettu hajautustaulun avulla,
+sen operaatiot toimivat tehokkaasti keskimäärin $O(1)$-ajassa.
+
+\subsection{Hajautusarvot}
+
+Javan hajautustaulut perustuvat siihen, että olioissa
+on metodi \texttt{hashCode}, jonka avulla olio kertoo
+pyydettäessä hajautusarvonsa.
+Voimme esimerkiksi selvittää merkkijonon \texttt{"ABC"}
+hajautusarvon näin:
+
+\begin{code}
+System.out.println("ABC".hashCode());
+\end{code}
+
+Tämä koodi tulostaa luvun 64578,
+joka on siis merkkijonon \texttt{"ABC"} hajautusarvo Javassa.
+
+Metodi \texttt{hashCode} on toteutettu valmiiksi Javan
+sisäisiin tyyppeihin, kuten \texttt{Integer} ja \texttt{String},
+joten voimme käyttää niitä suoraan hajautustauluissa.
+Kuitenkin jos meillä on itse tehty luokka, jonka olioita
+haluamme käyttää hajautustauluissa, meidän on toteutettava
+itse metodi \texttt{hashCode}.
+
+Esimerkiksi jos meillä on luokka \texttt{Asiakas},
+jossa on kenttinä merkkijonot
+\texttt{etunimi} ja \texttt{sukunimi},
+voisimme toteuttaa metodin \texttt{hashCode} seuraavasti:
+
+\begin{code}
+public class Asiakas {
+    private String etunimi;
+    private String sukunimi;
+
+    int hashCode() {
+        return etunimi.hashCode()+sukunimi.hashCode();
+    }
+
+    // ...
+}
+\end{code}
