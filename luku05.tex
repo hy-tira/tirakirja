@@ -225,27 +225,17 @@ Luvussa 5.2.4 näemme tästä konkreettisen esimerkin.
 \section{Hajautus Javassa}
 
 Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
-\texttt{HashSet} pitää yllä joukkoa alkioista
-ja \texttt{HashMap} on yleistetty taulukko,
-jossa on joukko avain-arvo-pareja.
+\texttt{HashSet} ja \texttt{HashMap}.
 Seuraavaksi tutustumme tarkemmin näihin rakenteisiin.
 
-\subsection{\texttt{HashSet}}
+\subsection{\texttt{HashSet}-rakenne}
 
-Javan \texttt{HashSet}-rakenne pitää yllä joukkoa alkioista
-hajautustaulun avulla.
-Rakenteen tärkeimmät operaatiot ovat seuraavat:
-
-\begin{itemize}
-\item $\texttt{add}(x)$: lisää alkio $x$ joukkoon
-\item $\texttt{contains}(x)$: tarkasta, onko alkio $x$ joukossa
-\item $\texttt{remove}(x)$: poista alkio $x$ joukosta
-\item $\texttt{size}()$: laske, montako alkiota on joukossa
-\end{itemize}
-
+Javan \texttt{HashSet}-rakenne pitää yllä joukkoa alkioista.
+Joukkoon voi lisätä alkion metodilla \texttt{add},
+ja siitä voi poistaa alkion metodilla \texttt{remove}.
 Esimerkiksi seuraava koodi luo joukon, jossa voi olla
 kokonaislukuja, ja lisää luvut 3, 5 ja 8 joukkoon.
-Tämän jälkeen koodi tulostaa joukon sisällön.
+Tämän jälkeen koodi poistaa luvun 5 joukosta.
 
 \begin{code}
 HashSet<Integer> joukko = new HashSet<Integer>();
@@ -253,6 +243,17 @@ joukko.add(3);
 joukko.add(5);
 joukko.add(8);
 System.out.println(joukko); // [3, 5, 8]
+joukko.remove(5);
+System.out.println(joukko); // [3, 8]
+\end{code}
+
+Metodin \texttt{contains} avulla voimme selvittää,
+esiintyykö tietty alkio joukossa.
+
+\begin{code}
+if (joukko.contains(5)) {
+    System.out.println("Luku 5 on joukossa");
+}
 \end{code}
 
 Huomaa, että jokainen alkio voi esiintyä vain kerran joukossa.
@@ -268,15 +269,23 @@ joukko.add(5);
 System.out.println(joukko); // [5]
 \end{code}
 
-Olennainen seikka \texttt{HashSet}-rakenteessa on,
-että operaatiot \texttt{add}, \texttt{contains} ja \texttt{remove}
-toimivat kaikki keskimäärin tehokkaasti ajassa $O(1)$
+\subsubsection{Mitä hyötyä \texttt{HashSet}-rakenteesta on?}
+
+\texttt{HashSet} tarjoaa metodit \texttt{add},
+\texttt{contains} ja \texttt{remove},
+mutta tuttu \texttt{ArrayList}
+tarjoaa myös samat metodit eikä siinä ole edes rajoitusta,
+että sama alkio ei voisi esiintyä monta kertaa.
+Miten \texttt{HashSet} hyödyttää siis meitä?
+
+Olennainen etu \texttt{HashSet}-rakenteessa on,
+että metodit \texttt{add}, \texttt{contains} ja \texttt{remove}
+toimivat \emph{kaikki} keskimäärin tehokkaasti ajassa $O(1)$
 hajautustaulun ansiosta.
-Niinpä voimme tehdä mitä tahansa muutoksia ja hakuja
-rakenteeseen ja koodi toimii nopeasti.
-Tämä ei olisi mahdollista \texttt{ArrayList}-rakenteessa,
-jossa operaatiot \texttt{contains} ja \texttt{remove}
-vievät aikaa $O(n)$.
+\texttt{ArrayList}-rakenteessa vain \texttt{add}
+toimii $O(1)$-ajassa ja \texttt{contains} ja \texttt{remove}
+ovat hitaita, koska ne vievät aikaa $O(n)$.
+
 
 \subsection{\texttt{HashMap}-rakenne}
 
