@@ -1,0 +1,79 @@
+\documentclass[twoside,12pt,a4paper,finnish]{book}
+
+%\includeonly{luku01}
+
+\usepackage[finnish,english]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{multicol}
+
+\usepackage{listings}
+
+\usepackage{tikz}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{skak}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\makeindex
+
+\lstset{language=C++,frame=single,basicstyle=\ttfamily \small,showstringspaces=false,columns=flexible}
+\lstset{xleftmargin=20pt,xrightmargin=5pt}
+\lstset{aboveskip=12pt,belowskip=8pt,float}
+
+\lstnewenvironment{code}[1][]%
+{
+   \noindent
+   \minipage{\linewidth} 
+   \vspace{0.5\baselineskip}
+   \lstset{#1}}
+{\endminipage}
+
+\begin{document}
+
+\selectlanguage{finnish}
+
+\author{Antti Laaksonen}
+\title{Tietorakenteet ja algoritmit}
+\maketitle
+
+\frontmatter
+
+\include{luku00}
+
+\tableofcontents
+
+\mainmatter
+
+\include{luku01}
+\include{luku02}
+\include{luku03}
+\include{luku04}
+\include{luku05}
+\include{luku06}
+\include{luku07}
+\include{luku08}
+\include{luku09}
+\include{luku10}
+
+\backmatter
+\printindex
+
+\end{document}
+
+
+
+
+
+
