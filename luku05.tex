@@ -2,6 +2,99 @@
 
 \section{Hajautuksen teoriaa}
 
+\emph{Hajautustaulu} on tietorakenne, jonka avulla voi
+pitää yllä tehokkaasti joukkoa alkioista.
+Hajautustaulu toteutetaan taulukkona, jonka jokaisessa
+kohdassa on lista alkioista.
+Lisäksi tarvitsemme \emph{hajautusfunktion},
+jonka avulla voimme laskea mille tahansa alkiolle
+\emph{hajautusarvon} eli mihin kohtaan hajautustaulua
+alkio tallennetaan.
+
+Kuvassa X on esimerkkinä hajautustaulu, jossa on
+merkkijonot \texttt{apina}, \texttt{banaani} ja \texttt{cembalo}.
+Tässä hajautustaulussa on kymmenen mahdollista kohtaa
+($0,1,\ldots,9$), joihin voi tallentaa alkioita.
+Merkkijonojen \texttt{apina} ja \texttt{cembalo}
+hajautusarvo on 2, joten ne ovat samassa listassa kohdassa 2.
+Merkkijonon \texttt{banaani} hajautusarvo on 7,
+joten se on yksin omassa listassaan.
+Kaikki muut hajautustaulun listat ovat tällä hetkellä tyhjiä.
+
+Kun olemme luoneet hajautustaulun, voimme tarkistaa,
+onko tietty alkio taulussa, laskemalla sen hajautusarvon
+ja käymällä läpi vastaavan listan.
+Vastaavasti voimme lisätä alkion hajautustauluun
+lisäämällä sen vastaavan listan loppuun ja poistaa
+alkion hajautustaulusta poistamalla sen listasta.
+Näiden operaatioiden aikavaativuus on $O(k)$,
+missä $k$ on yksittäisen listan pituus,
+koska meidän täytyy käydä läpi hajautusarvoa vastaava lista.
+Hajautustaulun tehokkuus riippuu siis siitä,
+kuinka pitkiä listat ovat.
+
+\subsection{Hajautusarvon laskeminen}
+
+Hajautusfunktio määrittää, mihin kohtaan hajautustaulua
+alkio sijoitetaan.
+Sen täytyy antaa jokaiselle mahdolliselle alkiolle
+hajautusarvo eli kokonaisluvu väliltä $0,1,\ldots,n-1$,
+missä $n$ on hajautustaulun koko,
+mutta meillä on muuten vapaat kädet hajautusfunktion suunnitteluun.
+Ainoa välttämätön vaatimus on, että tietty alkio saa aina
+saman hajautusarvon, jotta voimme löytää sen uudelleen
+hajautustaulusta.
+
+Jotta hajautustaulu olisi käyttökelpoinen, hajautusfunktioon
+liittyy kuitenkin toinenkin vaatimus:
+sen tulisi jakaa alkiot mahdollisimman \emph{tasaisesti}
+eri puolille hajautustaulua.
+Syynä tähän on, että hajautustaulun tehokkuus riippuu siitä,
+miten tasaisesti alkiot ovat jakautuneet.
+Jos alkiot ovat jakautuneet tasaisesti ja listat ovat lyhyitä,
+voimme etsiä alkioita ja päivittää hajautustaulua tehokkaasti.
+
+Merkkijonojen tapauksessa yksi mahdollinen hajautusfunktio
+palauttaa merkkijonon pituuden.
+Tällöin esimerkiksi merkkijono \texttt{apina} saa
+hajautusarvon 5 ja merkkijono \texttt{banaani} saa
+hajautusarvon 7.
+Tällainen hajautusfunktio on sinänsä toimiva,
+mutta sen huonona puolena on, että se antaa monelle
+merkkijonolle saman hajautusarvon.
+Esimerkiksi suomen kielessä on suuri määrä 5-kirjaimisia
+sanoja ja ne kaikki saavat saman hajautusarvon tätä
+hajautusfunktiota käyttämällä.
+
+Kehittyneempi hajautusfunktio merkkijonoja varten
+ottaa huomioon myös merkkijonon sisällön.
+Esimerkiksi voimme sopia, että merkki \texttt{a} vastaa
+lukua 1, merkki \texttt{b} vastaa lukua 2, jne.
+Tämän jälkeen voimme käyttää hajautusarvona merkkijonon
+merkkien koodien summaa.
+Nyt esimerkiksi merkkijonon \texttt{apina} hajautusarvo
+on $1+16+9+14+1=41$.
+Tämä on selvästi parempi hajautusfunktio,
+mutta ongelmana on vielä se, että jos kahdessa
+merkkijonossa on samat merkit eri järjestyksessä,
+ne saavat saman hajautusarvon.
+
+Voimme parantaa hajautusfunktiota asettamalla eri
+kohdissa oleville merkeille eri kertoimet.
+Yleinen tapa on \emph{polynominen hajautus},
+jossa kertoimet valitaan niin, että ne ovat muotoa
+$A^k$, missä $A$ on vakio ja $k$ on merkin paikka
+merkkijonossa lopusta lukien.
+Esimerkiksi jos $A=3$, merkkijonon \texttt{apina}
+hajautusarvoksi tulee
+\[ 1\cdot3^4+16\cdot3^3+9\cdot3^2+14\cdot3^1+1\cdot3^0 = 637.\]
+
+Polynominen hajautus on käytännössä hyvin toimiva tapa
+määrittää hajautusarvo, ja se on käytössä esimerkiksi
+Javan standardikirjastossa.
+
+\subsection{Hajautustaulun tehokkuus}
+
 \section{Hajautus Javassa}
 
 Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
@@ -99,7 +192,7 @@ if (sanakirja.containsKey(sana)) {
 Koska \texttt{HashMap} on toteutettu hajautustaulun avulla,
 sen operaatiot toimivat tehokkaasti keskimäärin $O(1)$-ajassa.
 
-\subsection{Hajautusarvot}
+\subsection{Metodi \texttt{hashCode}}
 
 Javan hajautustaulut perustuvat siihen, että olioissa
 on metodi \texttt{hashCode}, jonka avulla olio kertoo
