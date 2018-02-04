@@ -27,7 +27,7 @@ hajautustaulun, jossa jokaisen alkion sijainnin määrää sen hajautusarvo,
 ja pystymme edelleen toteuttamaan kaikki operaatiot
 tehokkaasti keskimäärin $O(1)$-aikaisesti.
 
-\section{Hajautustaulun toteutus}
+\section{Hajautustaulun toteuttaminen}
 
 \emph{Hajautustaulu} on $n$-kokoinen taulukko,
 joka pitää yllä alkioiden joukkoa.
@@ -99,6 +99,44 @@ miten tasaisesti alkiot ovat jakautuneet.
 Jos alkiot ovat jakautuneet tasaisesti ja listat ovat lyhyitä,
 voimme etsiä alkioita ja päivittää hajautustaulua tehokkaasti.
 
+\begin{figure}
+\begin{tikzpicture}[scale=0.5]
+\begin{scope}
+\draw (0,0) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\draw[->,thick] (1.5,0) -- (1.5,-1);
+\draw[->,thick] (4.5,0) -- (4.5,-1);
+\draw[->,thick] (8.5,0) -- (8.5,-1);
+\node at (1.5,-1.5) {\texttt{apina}};
+\node at (8.5,-1.5) {\texttt{banaani}};
+\node at (4.5,-1.5) {\texttt{cembalo}};
+\end{scope}
+\begin{scope}[xshift=15cm]
+\draw (0,0) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\draw[->,thick] (3.5,0) -- (3.5,-1);
+\draw[->,thick] (3.5,-4) -- (3.5,-5);
+\draw[->,thick] (3.5,-2) -- (3.5,-3);
+\node at (3.5,-1.5) {\texttt{apina}};
+\node at (3.5,-5.5) {\texttt{banaani}};
+\node at (3.5,-3.5) {\texttt{cembalo}};
+\end{scope}
+\end{tikzpicture}
+\caption{Kaksi hajautustaulua joukolle $\{\texttt{apina},\texttt{banaani},\texttt{cembalo}\}$.
+Vasemmassa taulussa hajautus on onnistunut täydellisesti,
+oikeassa taulussa kaikki alkiot ovat samassa listassa.}
+\label{fig:hajjak}
+\end{figure}
+
+Kuva \ref{fig:hajjak} näyttää kaksi hajautustaulua, jotka vastaavat
+samaa joukkoa eri hajautusfunktiolla.
+Vasemmassa taulussa hajautus on onnistunut täydellisesti
+ja jokainen alkio on omassa listassaan.
+Oikeassa taulussa taas kaikki alkiot ovat joutuneet samaan
+listaan eikä hajautustaulusta ole mitään hyötyä.
+Tavoitteemme on, että saisimme aikaan hajautusfunktion,
+jonka toiminta on lähempänä vasenta taulua.
+
 Käytännössä meidän riittää muodostaa hajautusfunktio,
 joka muuttaa alkion epänegatiiviseksi kokonaisluvuksi,
 koska tämän jälkeen saamme helposti kokonaisluvun
@@ -107,33 +145,40 @@ missä $n$ on hajautustaulun koko.
 Tarkastelemme seuraavaksi esimerkkinä merkkijonon
 hajautusarvon laskemista.
 
-Merkkijonojen tapauksessa yksi mahdollinen hajautusfunktio
-palauttaa merkkijonon pituuden.
+\subsubsection{Hajautusfunktio 1}
+
+Helppo tapa laskea merkkijonolle hajautusarvo on
+käyttää hajautusarvona merkkijonon pituutta.
 Tällöin esimerkiksi merkkijono \texttt{apina} saa
 hajautusarvon 5 ja merkkijono \texttt{banaani} saa
 hajautusarvon 7.
+
 Tällainen hajautusfunktio on sinänsä toimiva,
 mutta sen huonona puolena on, että se antaa monelle
 merkkijonolle saman hajautusarvon.
-Esimerkiksi suomen kielessä on suuri määrä 5-kirjaimisia
+Esimerkiksi suomen kielessä on suuri määrä viisikirjaimisia
 sanoja ja ne kaikki saavat saman hajautusarvon tätä
 hajautusfunktiota käyttämällä.
 
-Kehittyneempi hajautusfunktio merkkijonoja varten
-ottaa huomioon myös merkkijonon sisällön.
-Esimerkiksi voimme sopia, että merkki \texttt{a} vastaa
-lukua 1, merkki \texttt{b} vastaa lukua 2, jne.
-Tämän jälkeen voimme käyttää hajautusarvona merkkijonon
-merkkien koodien summaa.
+\subsubsection{Hajautusfunktio 2}
+
+Seuraava idea on antaa jokaiselle merkille koodi
+ja käyttää hajautusarvona merkkien koodien summaa.
+Esimerkiksi voimme sopia, että merkin \texttt{a}
+koodi on 1, merkin \texttt{b} koodi on 2, jne.
 Nyt esimerkiksi merkkijonon \texttt{apina} hajautusarvo
 on $1+16+9+14+1=41$.
+
 Tämä on selvästi parempi hajautusfunktio,
 mutta ongelmana on vielä se, että jos kahdessa
-merkkijonossa on samat merkit eri järjestyksessä,
+merkkijonossa on samat merkit eri järjestyksessä
+(esimerkiksi \texttt{iines} ja \texttt{sieni}),
 ne saavat saman hajautusarvon.
 
-Voimme parantaa hajautusfunktiota asettamalla eri
-kohdissa oleville merkeille eri kertoimet.
+\subsubsection{Hajautusfunktio 3}
+
+Voimme parantaa summan laskevaa hajautusfunktiota
+asettamalla eri kohdissa oleville merkeille eri kertoimet.
 Yleinen tapa on \emph{polynominen hajautus},
 jossa kertoimet valitaan niin, että ne ovat muotoa
 $A^k$, missä $A$ on vakio ja $k$ on merkin paikka
@@ -148,12 +193,42 @@ Javan standardikirjastossa.
 
 \subsection{Hajautustaulun tehokkuus}
 
+Hajautustaulun tehokkuus riippuu siitä, montako kohtaa
+hajautustaulussa on (hajautustaulun koko $n$)
+sekä miten tasaisesti hajautusfunktio jakaa alkiota
+eri puolelle hajautustaulua.
+Jos oletamme, että alkiot jakautuvat tasaisesti
+ja hajautustaulussa on yhteensä $m$ alkiota,
+jokaiseen listaan osuu noin $m/n$ alkiota
+eli hajautustaulun operaatiot toimivat $O(m/n)$-ajassa.
+Jos edelleen $n$ on valittu niin suureksi,
+että $m/n$ on pieni vakio, voimme ajatella,
+että hajautustaulun operaatiot toimivat $O(1)$-ajassa.
+
+Tämän analyysin heikkoutena on, että \emph{oletamme}
+hajautusfunktion toimivan hyvin ja jakavan alkioita
+tasaisesti hajautustauluun. Entä jos näin ei olekaan?
+
+Hajautustaulun tehokkuus riippuu aina myös siitä,
+mitä alkioita sinne laitetaan.
+Vaikka olisimme valinneet hajautustaulun koon ja
+hajautusfunktion miten huolellisesti tahansa,
+ilkeä vastustaja voi kuitenkin valita alkiot
+niin, että jokaisen alkion hajautusarvo on sama ja
+kaikki menevät samaan listaan hajautustaulussa.
+Tällöin hajautustaulun operaatiot vievät aikaa $O(m)$.
+Tämä riski on aina olemassa, kun käytämme hajautustaulua.
+
+Onneksi hajautustaulu toimii käytännössä hyvin ja 
+uhka siitä, että jokainen tai edes suuri osa alkioista
+menisi samaan listaan, on hyvin pieni.
+
 \section{Hajautus Javassa}
 
 Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
-\texttt{HashSet} ylläpitää tehokkaasti joukkoa alkioista
+\texttt{HashSet} pitää yllä joukkoa alkioista
 ja \texttt{HashMap} on yleistetty taulukko,
-jossa voi olla avaimina minkä tahansa tyyppisiä alkioita.
+jossa on joukko avain-arvo-pareja.
 Seuraavaksi tutustumme tarkemmin näihin rakenteisiin.
 
 \subsection{\texttt{HashSet}}
@@ -250,7 +325,7 @@ sen operaatiot toimivat tehokkaasti keskimäärin $O(1)$-ajassa.
 Javan hajautustaulut perustuvat siihen, että olioissa
 on metodi \texttt{hashCode}, jonka avulla olio kertoo
 pyydettäessä hajautusarvonsa.
-Voimme esimerkiksi selvittää merkkijonon \texttt{"ABC"}
+Voimme esimerkiksi selvittää merkkijonon \texttt{ABC}
 hajautusarvon näin:
 
 \begin{code}
@@ -258,7 +333,7 @@ System.out.println("ABC".hashCode());
 \end{code}
 
 Tämä koodi tulostaa luvun 64578,
-joka on siis merkkijonon \texttt{"ABC"} hajautusarvo Javassa.
+joka on siis merkkijonon \texttt{ABC} hajautusarvo Javassa.
 
 Metodi \texttt{hashCode} on toteutettu valmiiksi Javan
 sisäisiin tyyppeihin, kuten \texttt{Integer} ja \texttt{String},
