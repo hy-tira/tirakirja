@@ -78,15 +78,15 @@ koska meidän täytyy käydä läpi listalla olevat alkiot.
 Hajautustaulun tehokkuus riippuukin siitä,
 kuinka pitkiä listat ovat.
 
-\subsection{Hajautusarvon laskeminen}
+\subsection{Hajautusfunktio}
 
 Hajautusfunktio määrittää, mihin kohtaan hajautustaulua
 alkio sijoitetaan.
 Sen täytyy antaa jokaiselle mahdolliselle alkiolle
-hajautusarvo eli kokonaisluvu väliltä $0,1,\ldots,n-1$,
-missä $n$ on hajautustaulun koko,
-mutta meillä on muuten vapaat kädet hajautusfunktion suunnitteluun.
-Ainoa välttämätön vaatimus on, että tietty alkio saa aina
+hajautusarvo eli kokonaisluku väliltä $0 \dots n-1$,
+missä $n$ on hajautustaulun koko.
+Muuten meillä on vapaat kädet hajautusfunktion suunnitteluun:
+ainoa välttämätön vaatimus on, että tietty alkio saa aina
 saman hajautusarvon, jotta voimme löytää sen uudelleen
 hajautustaulusta.
 
@@ -97,7 +97,7 @@ eri puolille hajautustaulua.
 Syynä tähän on, että hajautustaulun tehokkuus riippuu siitä,
 miten tasaisesti alkiot ovat jakautuneet.
 Jos alkiot ovat jakautuneet tasaisesti ja listat ovat lyhyitä,
-voimme etsiä alkioita ja päivittää hajautustaulua tehokkaasti.
+voimme lisätä, etsiä ja poistaa alkioita tehokkaasti.
 
 \begin{figure}
 \begin{tikzpicture}[scale=0.5]
@@ -129,7 +129,7 @@ oikeassa taulussa kaikki alkiot ovat samassa listassa.}
 \end{figure}
 
 Kuva \ref{fig:hajjak} näyttää kaksi hajautustaulua, jotka vastaavat
-samaa joukkoa eri hajautusfunktiolla.
+samaa joukkoa eri hajautusfunktioilla.
 Vasemmassa taulussa hajautus on onnistunut täydellisesti
 ja jokainen alkio on omassa listassaan.
 Oikeassa taulussa taas kaikki alkiot ovat joutuneet samaan
@@ -137,59 +137,51 @@ listaan eikä hajautustaulusta ole mitään hyötyä.
 Tavoitteemme on, että saisimme aikaan hajautusfunktion,
 jonka toiminta on lähempänä vasenta taulua.
 
-Käytännössä meidän riittää muodostaa hajautusfunktio,
-joka muuttaa alkion epänegatiiviseksi kokonaisluvuksi,
+Tarkastelemme seuraavaksi esimerkkinä hajautusfunktioita,
+joilla voi laskea hajautusarvoja merkkijonoille.
+Käytännössä meidän riittää määritellä hajautusfunktio,
+joka muuttaa merkkijonon epänegatiiviseksi kokonaisluvuksi,
 koska tämän jälkeen saamme helposti kokonaisluvun
-väliltä $0,1,\ldots,n-1$ laskemalla jakojäännöksen $n$:llä,
-missä $n$ on hajautustaulun koko.
-Tarkastelemme seuraavaksi esimerkkinä merkkijonon
-hajautusarvon laskemista.
+väliltä $0 \dots n-1$ ottamalla alkuperäisestä luvusta jakojäännöksen $n$:llä.
 
-\subsubsection{Hajautusfunktio 1}
+Oletamme, että merkkijonossa on $k$ merkkiä,
+joiden merkkikoodit\footnote{Käytämme tässä merkkien ASCII-koodeja.
+Esimerkiksi Javassa char-merkin \texttt{c} koodin saa
+selville kirjoittamalla \texttt{(int)c}, eli esimerkiksi
+\texttt{(int)'a'} on 97.} ovat $c_0,c_1,\dots,c_{k-1}$.
+Esimerkiksi jos merkkijono on \texttt{apina},
+$k=5$ ja koodit ovat $c_0=97$, $c_1=112$, $c_2=105$,
+$c_3=110$ ja $c_4=97$.
+Seuraavassa on kolme mahdollista tapaa määritellä hajautusfunktio:
 
-Helppo tapa laskea merkkijonolle hajautusarvo on
-käyttää hajautusarvona merkkijonon pituutta.
-Tällöin esimerkiksi merkkijono \texttt{apina} saa
-hajautusarvon 5 ja merkkijono \texttt{banaani} saa
-hajautusarvon 7.
+\begin{enumerate}
+\item Hajautusarvo on merkkijonon pituus $k$.
+Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on 5.
+\item Hajautusarvo on merkkikoodien summa
+\[ c_0 + c_1 + \dots + c_{k-1}.\]
+Merkkijonon \texttt{apina} hajautusarvo on
+\[97+112+105+110+97=521.\]
+\item Hajautusarvo on painotettu merkkikoodien summa
+\[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
+missä $A$ on sopiva vakio.
+Esimerkiksi jos $A=7$, merkkijonon \texttt{apina} hajautusarvo on
+\[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=61235.\]
+\end{enumerate}
 
-Tällainen hajautusfunktio on sinänsä toimiva,
-mutta sen huonona puolena on, että se antaa monelle
-merkkijonolle saman hajautusarvon.
+Kaikki yllä olevat hajautusfunktiot ovat toimivia,
+mutta ne eivät ole yhtä hyviä.
+Funktio 1 ei ole kovin hyvä, koska se antaa monelle
+usein esiintyvälle merkkijonolle saman hajautusarvon.
 Esimerkiksi suomen kielessä on suuri määrä viisikirjaimisia
 sanoja ja ne kaikki saavat saman hajautusarvon tätä
 hajautusfunktiota käyttämällä.
-
-\subsubsection{Hajautusfunktio 2}
-
-Seuraava idea on antaa jokaiselle merkille koodi
-ja käyttää hajautusarvona merkkien koodien summaa.
-Esimerkiksi voimme sopia, että merkin \texttt{a}
-koodi on 1, merkin \texttt{b} koodi on 2, jne.
-Nyt esimerkiksi merkkijonon \texttt{apina} hajautusarvo
-on $1+16+9+14+1=41$.
-
-Tämä on selvästi parempi hajautusfunktio,
-mutta ongelmana on vielä se, että jos kahdessa
-merkkijonossa on samat merkit eri järjestyksessä
-(esimerkiksi \texttt{iines} ja \texttt{sieni}),
-ne saavat saman hajautusarvon.
-
-\subsubsection{Hajautusfunktio 3}
-
-Voimme parantaa summan laskevaa hajautusfunktiota
-asettamalla eri kohdissa oleville merkeille eri kertoimet.
-Yleinen tapa on \emph{polynominen hajautus},
-jossa kertoimet valitaan niin, että ne ovat muotoa
-$A^k$, missä $A$ on vakio ja $k$ on merkin paikka
-merkkijonossa lopusta lukien.
-Esimerkiksi jos $A=3$, merkkijonon \texttt{apina}
-hajautusarvoksi tulee
-\[ 1\cdot3^4+16\cdot3^3+9\cdot3^2+14\cdot3^1+1\cdot3^0 = 637.\]
-
-Polynominen hajautus on käytännössä hyvin toimiva tapa
-määrittää hajautusarvo, ja se on käytössä esimerkiksi
-Javan standardikirjastossa.
+Funktio 2 on jo parempi, mutta siinä on heikkoutena,
+että jos kahdessa merkkijonossa on samat merkit eri
+järjestyksessä, ne saavat aina saman hajautusarvon.
+Funktio 3 eli \emph{polynominen hajautus} korjaa tämän puutteen
+asettamalla summaan painoja, jotka riippuvat merkkien kohdista.
+Tämä on käytännössä hyvä tapa määritellä hajautusfunktio,
+jota käytetään esimerkiksi Javan standardikirjastossa.
 
 \subsection{Hajautustaulun tehokkuus}
 
