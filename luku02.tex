@@ -137,4 +137,112 @@ for (int i = 0; i < n; i++) {
 
 \subsection{Yleisiä aikavaativuuksia}
 
+Tietyt aikavaativuudet esiintyvät usein algoritmien analyysissa.
+Seuraavaksi käymme läpi joukon tällaisia aikavaativuuksia.
+
+\subsubsection{$O(1)$ (vakioaikainen)}
+
+Vakioaikainen algoritmi suorittaa vain kiinteän määrän komentoja.
+Tyypillinen vakioaikainen algoritmi on kaava, joka laskee
+suoraan vastauksen. Esimerkiksi seuraava algoritmi laskee
+summan $1+2+\dots+n$ vakioajassa:
+
+\begin{code}
+summa = n*(n+1)/2;
+\end{code}
+
+\subsubsection{$O(\log n)$ (logaritminen)}
+
+Logaritminen algoritmi puolittaa usein syötteen koon
+joka askeleella. Tyypillinen esimerkki logaritmisesta algoritmista
+on binäärihaku, joka etsii alkiota järjestetystä taulukosta.
+
+\begin{code}
+int a = 0;
+int b = n-1;
+while (a <= b) {
+    int c = (a+b)/2;
+    if (taulu[c] == x) break;
+    if (taulu[c] < x) a = c+1;
+    else b = c-1;
+}
+\end{code}
+
+\subsubsection{$O(n)$ (lineaarinen)}
+
+Lineaarinen algoritmi voi käydä läpi syötteen kiinteän määrän kertoja.
+Esimerkiksi seuraava algoritmi laskee taulukon lukujen summan $O(n)$-ajassa.
+
+\begin{code}
+int summa = 0;
+for (int i = 0; i < n; i++) {
+    summa += taulu[i];
+}
+\end{code}
+
+\subsubsection{$O(n \log n)$ (järjestäminen)}
+
+Aikavaativuus $O(n \log n)$ viittaa usein siihen,
+että algoritmi järjestää taulukon,
+koska tehokkaat algoritmit taulukon järjestämiseen
+vievät aikaa $O(n \log n)$.
+Esimerkiksi seuraava algoritmi laskee ajassa
+$O(n \log n)$, montako eri alkiota taulukko sisältää.
+
+\begin{code}
+Arrays.sort(taulu);
+int maara = 1;
+for (int i = 1; i < n; i++) {
+    if (taulu[i] != taulu[i-1]) maara++;
+}
+\end{code}
+
+\subsubsection{$O(n^2)$ (neliöllinen)}
+
+Neliöllinen algoritmi voi käydä läpi kaikki tavat valita
+kaksi alkiota taulukosta.
+Esimerkiksi seuraava $O(n^2)$-algoritmi tutkii, onko taulukossa
+kahta lukua, joiden summa on $x$.
+
+\begin{code}
+boolean ok = false;
+for (int i = 0; i < n; i++) {
+    for (int j = i+1; j < n; j++) {
+        if (taulu[i]+taulu[j] == x) ok = true;
+    }
+}
+\end{code}
+
+\subsubsection{$O(n^3)$ (kuutiollinen)}
+
+Kuutiollinen algoritmi voi käydä läpi kaikki tavat valita
+kolme alkiota taulukosta.
+Esimerkiksi seuraava $O(n^3)$-algoritmi tutkii, onko taulukossa
+kolmea lukua, joiden summa on $x$.
+
+\begin{code}
+boolean ok = false;
+for (int i = 0; i < n; i++) {
+    for (int j = i+1; j < n; j++) {
+        for (int k = j+1; k < n; k++) {
+            if (taulu[i]+taulu[j]+taulu[k] == x) ok = true;
+        }
+    }
+}
+\end{code}
+
+\subsubsection{$O(2^n)$ (osajoukot)}
+
+Aikavaativuus $O(2^n)$ viittaa usein siihen,
+että algoritmi käy läpi syötteen alkioiden osajoukot.
+Esimerkiksi alkioiden $\{1,2,3\}$ osajoukot ovat
+$\emptyset$, $\{1\}$, $\{2\}$, $\{3\}$, $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$
+
+\subsubsection{$O(n!)$ (permutaatiot)}
+
+Aikavaativuus $O(n!)$ viittaa usein siihen,
+että algoritmi käy läpi syötteen alkioiden permutaatiot.
+Esimerkiksi alkioiden $\{1,2,3\}$ permutaatiot ovat
+$(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
+
 \section{Esimerkkejä}
