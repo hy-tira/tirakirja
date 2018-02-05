@@ -238,7 +238,7 @@ kokonaislukuja, ja lisää luvut 3, 5 ja 8 joukkoon.
 Tämän jälkeen koodi poistaa luvun 5 joukosta.
 
 \begin{code}
-HashSet<Integer> joukko = new HashSet<Integer>();
+HashSet<Integer> joukko = new HashSet<>();
 joukko.add(3);
 joukko.add(5);
 joukko.add(8);
@@ -262,7 +262,7 @@ joukkoon, se menee sinne vain ensimmäisellä kerralla ja
 muut lisäykset jätetään huomiotta.
 
 \begin{code}
-HashSet<Integer> joukko = new HashSet<Integer>();
+HashSet<Integer> joukko = new HashSet<>();
 joukko.add(5);
 joukko.add(5);
 joukko.add(5);
@@ -306,7 +306,7 @@ Metodi \texttt{put} lisää uuden avain-arvo-parin,
 ja metodi \texttt{get} hakee arvon avaimen perusteella.
 
 \begin{code}
-HashMap<String,String> sanakirja = new HashMap<String,String>();
+HashMap<String,String> sanakirja = new HashMap<>();
 
 sanakirja.put("apina","monkey");
 sanakirja.put("banaani","banana");
