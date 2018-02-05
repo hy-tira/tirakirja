@@ -50,7 +50,7 @@ määrittää aikavaativuuden hyvin helposti algoritmin
 rakenteesta. Tutustumme seuraavaksi laskusääntöihin,
 joiden avulla tämä on mahdollista.
 
-\subsection{Aikavaativuuden laskusäännöt}
+\subsection{Laskusääntöjä}
 
 Jos algoritmissa ei ole silmukoita vaan vain
 yksittäisiä komentoja, sen aikavaativuus on $O(1)$.
@@ -245,7 +245,7 @@ että algoritmi käy läpi syötteen alkioiden permutaatiot.
 Esimerkiksi alkioiden $\{1,2,3\}$ permutaatiot ovat
 $(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
 
-\subsection{Aikavaativuuksien käyttö}
+\subsection{Tehokkuuden arviointi}
 
 Mitä hyötyä on määrittää algoritmin aikavaativuus?
 Hyötynä on, että se kertoo meille pika-arvion siitä,
@@ -298,4 +298,84 @@ vaikka aikavaativuudet olisivat samat.
 Tässä kirjassa analysoimme algoritmeja sekä aikavaativuuksien
 avulla että mittaamalla todellisia suoritusaikoja.
 
-\section{Esimerkkejä}
+\section{Esimerkki}
+
+Seuraavaksi käymme läpi esimerkin, jossa vertailemme kahta
+erilaista algoritmia samaan tehtävään.
+Ensimmäinen algoritmi on suoraviivainen raa'an voiman
+algoritmi, joka toimii ajassa $O(n^2)$.
+Toinen algoritmi taas on tehokas algoritmi,
+joka toimii ajassa $O(n)$.
+
+Tehtävämme on seuraava: Annettuna on bittijono, jossa on $n$ bittiä.
+Tehtävämme on laskea, monellako tavalla voimme valita kaksi kohtaa
+niin, että vasen bitti on 0 ja oikea bitti on 1.
+Esimerkiksi bittijonossa 01001 tapoja on neljä:
+\underline{01}001, \underline{0}100\underline{1},
+01\underline{0}0\underline{1} ja 010\underline{01}.
+
+\subsubsection{$O(n^2)$-ratkaisu}
+
+Suoraviivainen tapa ratkaista tehtävä on käydä läpi kaikki
+mahdolliset tavat valita vasen ja oikea kohta ja laskea,
+monessako tavassa vasen bitti on 0 ja oikea bitti on 1.
+Seuraava metodi \texttt{laskeParit} toteuttaa tällaisen algoritmin.
+Sille annetaan parametrina taulukko \texttt{bitit},
+joka sisältää $n$ bittiä, ja metodi palauttaa vastauksena
+tapojen määrän.
+
+\begin{code}
+public long laskeParit(int[] bitit) {
+    int n = bitit.length;
+    long tulos = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+            if (bitit[i] == 0 && bitit[j] == 1) tulos++;
+        }
+    }
+    return tulos;
+}
+\end{code}
+
+Algoritmin aikavaativuus on $O(n^2)$, koska siinä on kaksi
+sisäkkäistä silmukkaa, jotka käyvät läpi syötteen.
+
+\subsubsection{$O(n)$-ratkaisu}
+
+Kuinka voisimme ratkaista tehtävän tehokkaammin?
+Meidän tulisi käytän\-nössä keksiä tapa, jolla saisimme
+pois toisen silmukan koodista.
+
+Tässä auttaa lähestyä ongelmaa hieman toisesta
+näkökulmasta: kun olemme tietyssä kohdassa bittijonoa,
+monellako tavalla voimme muodostaa parin,
+jonka oikea bitti on nykyisessä kohdassamme?
+Jos olemme bitin 0 kohdalla, pareja ei ole yhtään,
+mutta jos bittinä on 1, voimme valita minkä tahansa
+vasemmalla puolella olevan bitin 0 pariin.
+
+Tämän havainnon ansiosta meidän riittää käydä läpi
+bittijono kerran vasemmalta oikealle ja pitää kirjaa,
+montako nollabittiä olemme nähneet.
+Sitten jokaisen ykkösbitin kohdalla kasvatamme
+vastausta tällä nollabittien määrällä.
+Seuraava koodi toteuttaa algoritmin:
+
+\begin{code}
+public long laskeParit(int[] bitit) {
+    int n = bitit.length;
+    long tulos = 0;
+    int nollat = 0;
+    for (int i = 0; i < n; i++) {
+        if (bitit[i] == 0) nollat++;
+        if (bitit[i] == 1) tulos++;
+    }
+    return tulos;
+}
+\end{code}
+
+Algoritmissa on vain yksi silmukka, joka käy syötteen läpi,
+joten sen aikavaativuus on $O(n)$.
+
+\subsubsection{Algoritmien vertailua}
+
