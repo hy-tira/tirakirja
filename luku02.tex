@@ -2,4 +2,139 @@
 
 \section{Aikavaativuus}
 
+Voimme arvioida algoritmin tehokkuutta laskemalla,
+montako kertaa siinä olevia komentoja suoritetaan.
+Tavoitteena on arvioida tehokkuutta suhteessa
+syötteen kokoon $n$.
+Esimerkiksi jos syötteenä on taulukko,
+$n$ on taulukon koko,
+ja jos syötteenä on merkkijono,
+$n$ on merkkijonon pituus.
+
+Tarkastellaan esimerkkinä seuraavaa algoritmia,
+joka laskee, montako kertaa luku $x$ esiintyy
+$n$-kokoisessa taulukossa.
+
+\begin{code}[numbers=left]
+int maara = 0;
+for (int i = 0; i < n; i++) {
+    if (luvut[i] == x) {
+        maara++;
+    }
+}
+\end{code}
+
+Tässä algoritmissa oleelliset komennot ovat riveillä
+1, 3 ja 4.
+Rivin 1 komento suoritetaan vain kerran algoritmin alussa.
+Rivin 3 komento suoritetaan $n$ kertaa jokaisella silmukan
+kierroksella.
+Rivin 4 komento taas suoritetaan $0 \dots n$
+kertaa riippuen siitä, kuinka usein
+luku $x$ esiintyy taulukossa.
+Algoritmissa suoritetaan siis vähintään $n+1$ ja enintään $2n+1$
+komentoa.
+
+Näin tarkka analyysi ei ole kuitenkaan yleensä tarpeen,
+vaan meille riittää usein määrittää karkea ajankäytön yläraja.
+Sanomme, että algoritmi toimii ajassa $O(f(n))$ eli sen
+\emph{aikavaativuus} on $O(f(n))$, jos se suorittaa
+enintään $c f(n)$ komentoa aina silloin kun $n \ge n_0$,
+missä $c$ ja $n_0$ ovat vakioita.
+Esimerkiksi yllä oleva algoritmi toimii ajassa $O(n)$,
+koska se suorittaa selkeästi enintään $3n$ komentoa
+kaikilla $n$:n arvoilla.
+
+Aikavaativuden mukavana puolena on, että yleensä voimme
+määrittää aikavaativuuden hyvin helposti algoritmin
+rakenteesta. Tutustumme seuraavaksi laskusääntöihin,
+joiden avulla tämä on mahdollista.
+
+\subsection{Aikavaativuuden laskusäännöt}
+
+Jos algoritmissa ei ole silmukoita vaan vain
+yksittäisiä komentoja, sen aikavaativuus on $O(1)$.
+Näin on esimerkiksi seuraavassa algoritmissa.
+
+\begin{code}
+c = a+b;
+b = a;
+if (a > b) a++;
+\end{code}
+
+Merkitsemme \texttt{...} koodia,
+jonka aikavaativuus on $O(1)$.
+Jos algoritmissa on yksi silmukka,
+joka suorittaa $n$ askelta,
+sen aikavaativuus on $O(n)$:
+
+\begin{code}
+for (int i = 0; i < n; i++) {
+    ...
+}
+\end{code}
+
+Jos tällaisia silmukoita on kaksi sisäkkäin,
+aikavaativuus on $O(n^2)$:
+
+\begin{code}
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        ...
+    }
+}
+\end{code}
+
+Yleisemmin jos algoritmissa on vastaavalla tavalla
+$k$ sisäkkäistä silmukkaa,
+sen aikavaativuus on $O(n^k)$.
+
+Huomaa, että vakiokertoimet ja matalammat termit eivät vaikuta aikavaativuuteen.
+Esimerkiksi seuraavia koodeja suoritetaan $2n$ ja $n-1$ kertaa,
+mutta kummankin koodin aikavaativuus on $O(n)$.
+
+\begin{code}
+for (int i = 0; i < 2*n; i++) {
+    ...
+}
+\end{code}
+
+\begin{code}
+for (int i = 0; i < n-1; i++) {
+    ...
+}
+\end{code}
+
+Jos algoritmissa on peräkkäisiä osuuksia, kokonaisaikavaativuus on suurin
+yksittäinen aikavaativuus. Esimerkiksi seuraavan algoritmin aikavaativuus on $O(n^2)$,
+koska sen osuudet ovat $O(n)$, $O(n^2)$ ja $O(n)$.
+
+\begin{code}
+for (int i = 0; i < n; i++) {
+    ...
+}
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        ...
+    }
+}
+for (int i = 0; i < n; i++) {
+    ...
+}
+\end{code}
+
+Joskus aikavaativuus riippuu useammasta tekijästä,
+jolloin kaavassa on monta muuttujaa.
+Esimerkiksi seuraavan koodin aikavaativuus on $O(nm)$:
+
+\begin{code}
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+        ...
+    }
+}
+\end{code}
+
+\subsection{Yleisiä aikavaativuuksia}
+
 \section{Esimerkkejä}
