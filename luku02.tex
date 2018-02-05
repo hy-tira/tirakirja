@@ -245,4 +245,57 @@ että algoritmi käy läpi syötteen alkioiden permutaatiot.
 Esimerkiksi alkioiden $\{1,2,3\}$ permutaatiot ovat
 $(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
 
+\subsection{Aikavaativuuksien käyttö}
+
+Mitä hyötyä on määrittää algoritmin aikavaativuus?
+Hyötynä on, että se kertoo meille pika-arvion siitä,
+kuinka \emph{hyvä} algoritmi on eli miten suuria syötteitä
+sillä voi käsitellä tehokkaasti.
+Kun meille kertyy kokemusta algoritmien suunnittelusta,
+meille alkaa muodostua selkeä kuva,
+mitä eri aikavaativuudet tarkoittavat käytännössä.
+
+Aikavaativuutta voi ajatella samalla tavalla kuin vaikkapa
+hotellin tähti\-luokitusta: se kertoo tiiviissä tilassa,
+minkä tasoisesta algoritmista on kyse,
+eikä meidän tarvitse perehtyä tarkemmin
+algoritmin toimintaan.
+Esimerkiksi jos kuulemme, että jonkin algoritmin aikavaativuus on $O(n \log n)$,
+tiedämme heti, että kyseessä on mainio tehokas algoritmi,
+jota voi käyttää myös suurten syötteiden käsittelyyn.
+
+\begin{table}
+\center
+\begin{tabular}{rrr}
+aikavaativuus & syötteen koko \\
+\hline
+$O(n)$ & $10^6$ & \\
+$O(n \log n)$ & $10^5$ & \\
+$O(n^2)$ & 2500 & \\
+$O(n^3)$ & 250 & \\
+$O(2^n)$ & 20 & \\
+$O(n!)$ & 10 & \\
+\end{tabular}
+\caption{Kuinka suuren syötteen algoritmi voi käsitellä sekunnissa?}
+\label{tab:algteh}
+\end{table}
+
+Yksi kiinnostava näkökulma algoritmin tehokkuuteen on,
+miten suuren syötteen algoritmi voi käsitellä sekunnissa.
+Taulukossa \ref{tab:algteh} on joitakin hyödyl\-lisiä arvioita
+olettaen, että algoritmi suoritetaan tavallisella modernilla tietokoneella.
+Esimerkiksi jos meillä on $O(n^2)$-algoritmi, voimme käsitellä sillä
+tehokkaasti taulukon, jossa on muutamia tuhansia alkioita.
+Jos tavoitteemme on käsitellä tehokkaasti suuria syötteitä,
+meidän tulisi pyrkiä löytämään $O(n)$- tai $O(n \log n)$-aikainen
+algoritmi.
+
+Huomaa kuitenkin, että nämä luvut ovat vain arvioita ja algoritmin
+todelliseen ajankäyttöön vaikuttavat monet asiat.
+Saman algoritmin hyvä toteutus saattaa olla
+kymmenen kertaa nopeampi kuin huono toteutus,
+vaikka aikavaativuudet olisivat samat.
+Tässä kirjassa analysoimme algoritmeja sekä aikavaativuuksien
+avulla että mittaamalla todellisia suoritusaikoja.
+
 \section{Esimerkkejä}
