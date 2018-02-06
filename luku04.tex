@@ -216,8 +216,7 @@ aikaa $O(1)$, kun kaksinkertaistamme taulukon koon listan täyttyessä.
 \label{fig:lismol}
 \end{figure}
 
-
-\subsection{Javan rakenteet}
+\subsection{\texttt{ArrayList} ja \texttt{ArrayDeque}}
 
 Javassa \texttt{ArrayList}-rakenne toteuttaa taulukkolistan,
 jossa on nopeaa lisätä alkio loppuun sekä poistaa alkio lopusta.
@@ -275,7 +274,7 @@ edelliseen solmuun listassa.
 Tämän ansiosta voimme esimerkiksi käydä listan läpi ensimmäisestä
 solmusta alkaen.
 
-Kuvassa X on esimerkkinä linkitetty lista,
+TODO Kuvassa X on esimerkkinä linkitetty lista,
 joka vastaa listaa $[3,7,2,5]$.
 
 Taulukkolistaan verrattuna linkitetyn listan etuna on,
@@ -330,13 +329,14 @@ while (s != null) {
 }
 \end{code}
 
-\subsection{\texttt{LinkedList}-rakenne}
+\subsection{\texttt{LinkedList}}
 
 Käytännössä meidän ei kuitenkaan tarvitse toteuttaa
 linkitettyä listaa itse Javalla,
 koska voimme käyttää valmista \texttt{LinkedList}-rakennetta.
-Voimme lisätä ja poistaa alkioita $O(1)$-ajassa
-sekä listan alussa että lopussa.
+Seuraava koodi esittelee rakenteen käyttämistä.
+Voimme helposti lisätä ja poistaa alkioita listan alussa
+ja lopussa $O(1)$-aikaisesti.
 
 \begin{code}
 LinkedList<Integer> lista = new LinkedList<>();
@@ -348,13 +348,28 @@ lista.removeFirst();
 System.out.println(lista); // [1,3]
 \end{code}
 
-TODO listan muuttaminen
+Jos haluamme tehdä $O(1)$-aikaisia lisäyksiä ja poistoja muualla
+kuin listan alussa tai lopussa, meidän täytyy käyttää iteraattoria.
+Seuraava koodi luo iteraattorin, joka osoittaa ensin listan alkuun.
+Sitten se siirtää iteraattoria kaksi askelta eteenpäin ja
+lisää alkion 5 iteraattorin kohdalle eli listan
+toisen ja kolmannen alkion väliin.
 
-\texttt{LinkedList} tarjoaa myös metodit \texttt{get} ja \texttt{set},
-joiden avulla voi käsitellä tietyssä kohdassa listaa olevaa alkiota.
+\begin{code}
+ListIterator<Integer> x = lista.listIterator(0);
+x.next();
+x.next();
+x.add(5);
+\end{code}
+
+\texttt{LinkedList} tarjoaa myös metodeita,
+joiden avulla voi käsitellä tietyssä kohdassa listaa olevaa alkiota
+(esimerkiksi metodit \texttt{get} ja \texttt{set}).
 Näiden metodien aikavaativuus on kuitenkin $O(n)$,
-eli \texttt{LinkedList} ei ole hyvä valinta,
-jos meidän täytyy käsitellä alkioita kohdan perusteella.
+koska joudumme kulkemaan ensin oikeaan kohtaan listan
+alusta tai lopusta.
+Tämän vuoksi \texttt{LinkedList} ei ole hyvä valinta,
+jos haluamme käsitellä alkioita kohdan perusteella.
 
 \subsection{Tehokkuusvertailu}
 
