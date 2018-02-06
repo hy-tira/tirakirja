@@ -63,7 +63,7 @@ etsimällä niille sopiva rekursiivinen esitys.
 
 \subsection{Optimiratkaisun etsiminen}
 
-Ensimmäinen tehtävämme on selvittää, mikä on pienin määrä
+Haluamme selvittää ensin, mikä on pienin määrä
 kolikoita, joilla voimme muodostaa annetun rahamäärän.
 Tätä varten määrittelemme funktion $\texttt{pienin}(x)$,
 joka antaa pienimmän määrän kolikoita, joilla voimme
@@ -113,9 +113,146 @@ Nyt voimme jälleen muodostaa rekursiivisen kaavan samalla idealla:
     \min(\texttt{pienin}(x-c_0),\texttt{pienin}(x-c_1),\dots,\texttt{pienin}(x-c_{k-1}))
 \]
 
+Nyt meillä on koossa kaikki ainekset tehtävän ratkaisemiseen,
+ja voimme käyttää tehtävän rekursiivista muotoilua ohjelmoinnissa
+seuraavasti:
 
+\begin{code}
+int pienin(int x) {
+    if (x == 0) return 0;
+    if (x < 0) return INF;
+    int p = INF;
+    for (int i = 0; i < k; i++) {
+        p = min(p,pienin(x-c[i])+1);
+    }
+    return p;
+}
+\end{code}
+
+Tässä toteutuksessa \texttt{INF} on suuri luku, joka kuvastaa ääretöntä.
+Käytän\-nössä luku voisi olla esimerkiksi $10^9$,
+joka on varmasti kelvollinen yläraja kolikoiden määrälle.
+
+Ainoa ongelma yllä olevassa ratkaisussa on,
+että se ei ole vielä tehokas.
+Syynä tähän on, että suuren arvon $x$ käsittelyssä
+funktiota \texttt{pienin} kutsutaan lukuisia kertoja
+pienempien osatehtävien ratkomisessa.
+Nyt kuvaan astuukin dynaamisen ohjelmoinnin keskeinen idea:
+tallennamme funktion arvoja muistiin niin, että meidän
+tarvitsee laskea jokainen arvo vain kerran.
+Tätä varten tarvitsemme seuraavat taulukot:
+
+\begin{code}
+boolean laskettu[];
+int muisti[];
+\end{code}
+
+Taulukko \texttt{laskettu} kertoo meille, onko funktion arvo
+tietyllä parametrilla laskettu jo muistiin.
+Jos on, taulukko \texttt{muisti} kertoo, mikä arvo on.
+Nyt voimme muuttaa funktion toteutusta seuraavasti:
+
+\begin{code}
+int pienin(int x) {
+    if (x == 0) return 0;
+    if (x < 0) return INF;
+    if (laskettu[x]) return muisti[x];
+    int p = INF;
+    for (int i = 0; i < k; i++) {
+        p = min(p,pienin(x-c[i])+1);
+    }
+    laskettu[x] = true;
+    muisti[x] = p;
+    return p;
+}
+\end{code}
+
+Funktio toimii kuten ennenkin, mutta ennen rekursiivisia kutsuja
+funktio tarkastaa, onko sen arvo parametrilla $x$ jo laskettu.
+Jos on, funktio palauttaa tämän arvon suoraan.
+Muussa tapauksessa funktio laskee arvon rekursiivisesti
+ja merkitsee sitten taulukoihin, että arvo on laskettu.
+
+Tämän muutoksen ansiosta funktio toimii tehokkaasti,
+koska jokainen funktion arvo täytyy laskea rekursiivisesti vain kerran
+ja myöhemmillä kerroilla arvon saa suoraan taulukosta.
+Saamme laskettua vastauksen rahamäärälle $n$ ajassa $O(nk)$,
+koska jokaisessa osatehtävässä
+$x=1,2,\ldots,n$ meidän täytyy käydä kerran rekursiivisesti läpi
+kaikki $k$ kolikkoa.
 
 \subsection{Ratkaisumäärän laskeminen}
+
+Seuraavaksi haluamme laskea, montako erilaista ratkaisua
+tehtävään on olemassa.
+Tätä varten määrittelemme uuden funktion $\texttt{maara}(x)$,
+joka kertoo, monellako tavalla voimme muodostaa rahamäärän $x$.
+Esimerkiksi kun kolikot ovat $\{1,3,4\}$, niin $\texttt{maara}(5)=6$.
+
+Tässä tapauksessa ensinnäkin $\texttt{maara}(0)=1$, koska on yksi tapa
+muodostaa rahamäärä $0$: emme ota mukaan mitään kolikoita.
+Sitten $\texttt{maara}(x)=0$, jos $x<0$,
+koska ei ole mitään tapaa muodostaa negatiivista rahamäärää.
+Rekursiivisessa tapauksessa $x>0$ laskemme yhteen kaikki
+tavat, miten voimme poistaa viimeisen kolikon:
+\[
+\texttt{maara}(x) =
+    \texttt{maara}(x-c_0)+\texttt{maara}(x-c_1)+\dots+\texttt{maara}(x-c_{k-1})
+\]
+Esimerkiksi kolikoiden $\{1,3,4\}$ tapauksessa saamme laskettua
+arvon $\texttt{maara}(5)$ kaavalla
+\[
+\texttt{maara}(5) =
+    \texttt{maara}(4)+\texttt{maara}(2)+\texttt{maara}(1).
+\]
+
+Seuraava metodi toteuttaa laskennan rahamäärälle $n$
+tehokkaasti dynaamisella ohjelmoinnilla ajassa $O(nk)$:
+
+\begin{code}
+int maara(int x) {
+    if (x == 0) return 1;
+    if (x < 0) return 0;
+    if (laskettu[x]) return muisti[x];
+    int m = 0;
+    for (int i = 0; i < k; i++) {
+        m += maara(x-c[i]);
+    }
+    laskettu[x] = true;
+    muisti[x] = m;
+    return m;
+}
+\end{code}
+
+\subsection{Iteratiivinen toteutus}
+
+Dynaamisen ohjelmoinnin laskennan voi toteuttaa myös iteratiivisesti
+ilman rekursiota.
+Tällaisessa toteutuksessa laskemme funktion arvot taulukkoon
+pienimmästä arvosta suurimpaan.
+Esimerkiksi voimme laskea seuraavasti, monellako tavalla
+voimme muodostaa rahamäärän $n$:
+
+\begin{code}
+int maara(int n) {
+    muisti[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        muisti[i] = 0;
+        for (int j = 0; j < k; j++) {
+            if (i-c[j] >= 0) {
+                muisti[i] += muisti[i-c[j]];
+            }
+        }
+    }
+    return muisti[n];
+}
+\end{code}
+
+Tämä ratkaisu vie aikaa $O(nk)$, eli se on yhtä nopea kuin
+rekursiivinen versio.
+Ratkaisun etuna on, että se on hieman lyhyempi kirjoittaa
+kuin rekursiivinen ratkaisu.
 
 \section{Esimerkkejä}
 
