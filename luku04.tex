@@ -1,15 +1,94 @@
 \chapter{Listarakenteet}
 
-\section{Taulukkototeutus}
+Lista on tietorakenne, joka sisältää joukon alkioita tietyssä järjestyksessä.
+Esimerkiksi $[3,7,2,5]$ on lista, jossa on neljä alkiota.
+Tavoitteemme on, että voimme tehokkaasti lisätä ja poistaa listan alkioita.
+
+Tämä luku käsittelee kaksi tapaa listan toteuttamiseen:
+
+\begin{itemize}
+\item \textbf{Taulukkolista}: Lista on toteutettu taulukkona,
+jonka kokoa muutetaan tarvittaessa.
+\item \textbf{Linkitetty lista}: Lista on toteutettu erillisinä solmuina,
+jotka on linkitetty toisiinsa.
+\end{itemize}
+
+Molemmissa toteutuksissa on omat hyvät ja huonot puolensa,
+joihin kiinnitämme huomiota luvun aikana.
+
+\section{Taulukkolista}
+
+Taulukko on tehokas perustietorakenne, joka soveltuu hyvin listan alustaksi.
+Ainoa ongelma on, että taulukon koko on kiinteä: meidän täytyy valita
+alussa taulukon koko, emmekä voi muuttaa sitä myöhemmin.
+Esimerkiksi seuraava koodi luo taulukon, jossa on 10 alkiota:
+
+\begin{code}
+int[] taulu = new int[10];
+\end{code}
+
+Kuinka voisimme luoda muuttuvan kokoisen listan taulukon avulla?
+Ratkaisuna on, että varaamme taulukkoon \emph{ylimääräistä}
+tilaa tuleville listan alkioille.
+Tälla tavalla voimme luoda listan, joka pystyy laajentumaan.
+Seuraavaksi käymme läpi kaksi toteutusta,
+joista ensimmäisessä listan loppuun voi lisätä alkioita
+ja toisessa sekä alkuun että loppuun voi lisätä alkioita.
+
+\subsection{Lisääminen loppuun}
+
+Ideana on säilyttää listaa taulukossa niin,
+että tietty määrä taulukon ensimmäisiä alkioita on listan käytössä
+ja loput alkiot on varattu tuleville listan alkioille.
+Kuva X näyttää esimerkin listan $[3,7,2,5]$ esittämisestä taulukkona.
+Taulukossa on tilaa kymmenelle alkiolle, ja niistä neljä on tällä hetkellä listan käytössä.
+Kun listaan lisätään uusi alkio 6, se mahtuu taulukkoon.
+Tällä tavalla uuden alkion lisääminen listaan vie vain $O(1)$ aikaa.
+
+Tässä on kuitenkin edelleen yksi ongelma: jossain vaiheessa koko taulukko
+täyttyy eikä uusi listalle tuleva alkio mahdu enää taulukkoon.
+Tällöin meidän täytyy luoda uusi suurempi taulukko ja
+kopioida kaikki vanhan listan alkiot siihen.
+Tämä on hidas operaatio, johon kuluu aikaa $O(n)$,
+kun listalla on $n$ alkiota.
+Olemme saaneet siis aikaan listan, johon on \emph{yleensä} nopeaa lisätä
+alkioita, mutta välillä lisääminen viekin aikaa $O(n)$.
+
+Jotta rakenne olisi käyttökelpoinen, meidän täytyy varmistaa,
+että hidas $O(n)$-operaatio ei esiinny liian usein.
+Tämä on mahdollista, kun varaamme reilusti suuremman uuden taulukon
+aina silloin, kun vanha taulukko käy liian pieneksi.
+Esimerkiksi voimme varata uuden taulukon niin,
+että sen koko on kaksinkertainen vanhaan taulukkoon nähden.
+Kun toimimme näin, jokaisen alkion lisääminen listalle vie
+\emph{keskimäärin} vain $O(1)$ aikaa.
+
+Voimme ajatella asian näin: jokainen listalle lisättävä alkio
+maksaa pääsy\-maksuna kolme euroa.
+Tästä yksi euro menee listalle liittymiseen ja kaksi euroa jäävät säästöön.
+Sitten kun aikanaan listalle täytyy varata suurempi taulukko,
+jokainen viime erässä lisätty alkio maksaa yhden euron omasta siirrostaan
+ja yhden euron aiemmin lisätyn alkion siirrosta.
+Koska taulukon koko kaksinkertaistuu joka vaiheessa,
+kolmen euron kiinteä pääsymaksu riittää siihen, että kaikki tulevat
+siirrot saadaan kustannettua.
+
+Javan \texttt{ArrayList}-rakenne toteuttaa tällaisen taulukkoon
+perustuvan listan.
+Siihen on tehokasta lisätä uusia alkioita metodilla \texttt{add}.
+Esimerkiksi seuraava koodi luo listan ja lisää siihen alkiot
+1, 2 ja 3. Tämän jälkeen koodi tulostaa listan sisällön.
+
+\begin{code}
+ArrayList<Integer> lista = new ArrayList<>();
+lista.add(1);
+lista.add(2);
+lista.add(3);
+System.out.println(lista); // [1, 2, 3]
+\end{code}
+
+\subsection{\texttt{ArrayDeque}-rakenne}
 
 \section{Linkitetty toteutus}
 
-\section{Listat Javassa}
-
-\subsection{\texttt{ArrayList}}
-
-\subsection{\texttt{LinkedList}}
-
-\subsection{Muut rakenteet}
-
-
+\subsection{\texttt{LinkedList}-rakenne}
