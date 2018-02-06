@@ -256,7 +256,100 @@ kuin rekursiivinen ratkaisu.
 
 \section{Esimerkkejä}
 
+Nyt olemme käyneet läpi dynaamisen ohjelmoinnin perustekniikat
+ja on aika ottaa käsittelyyn lisää tehtäviä,
+jotka opettavat meille lisää dynaamisesta ohjelmoinnista.
+
+Dynaamista ohjelmointia voi käyttää aina silloin,
+kun voimme esittää tilanteen rekursiivisena funktiona,
+jonka eri parametrien määrä on niin pieni, että voimme
+tallentaa muistiin funktion arvot kaikilla parametreilla.
+Vaikeutena on usein keksiä, mikä on hyvä rekursiivinen
+muotoilu tehtävälle.
+
 \subsection{Pisin nouseva alijono}
+
+Ensimmäinen tehtävämme on laskea, kuinka pitkä on
+$n$ lukua sisältävän taulukon \emph{pisin nouseva alijono}.
+Tämä tarkoittaa, että meidän tulee valita taulukosta
+mahdollisimman pitkä jono alkioita niin,
+että seuraava alkio on aina edellistä suurempi.
+Kuvassa \ref{fig:pisnou} on esimerkki taulukosta,
+jonka pisin nouseva alijono on pituudeltaan 4.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\fill[color=lightgray] (1,0) rectangle (2,1);
+\fill[color=lightgray] (2,0) rectangle (3,1);
+\fill[color=lightgray] (4,0) rectangle (5,1);
+\fill[color=lightgray] (6,0) rectangle (7,1);
+\draw (0,0) grid (8,1);
+\node at (0.5,0.5) {$6$};
+\node at (1.5,0.5) {$2$};
+\node at (2.5,0.5) {$5$};
+\node at (3.5,0.5) {$1$};
+\node at (4.5,0.5) {$7$};
+\node at (5.5,0.5) {$4$};
+\node at (6.5,0.5) {$8$};
+\node at (7.5,0.5) {$3$};
+\draw[thick,->] (1.5,-0.25) .. controls (1.75,-1.00) and (2.25,-1.00) .. (2.4,-0.25);
+\draw[thick,->] (2.6,-0.25) .. controls (3.0,-1.00) and (4.0,-1.00) .. (4.4,-0.25);
+\draw[thick,->] (4.6,-0.25) .. controls (5.0,-1.00) and (6.0,-1.00) .. (6.5,-0.25);
+\footnotesize
+\node at (0.5,1.4) {$0$};
+\node at (1.5,1.4) {$1$};
+\node at (2.5,1.4) {$2$};
+\node at (3.5,1.4) {$3$};
+\node at (4.5,1.4) {$4$};
+\node at (5.5,1.4) {$5$};
+\node at (6.5,1.4) {$6$};
+\node at (7.5,1.4) {$7$};
+\end{tikzpicture}
+\caption{Taulukon pisin nouseva alijono on $[2,5,7,8]$.}
+\label{fig:pisnou}
+\end{figure}
+
+Voimme lähestyä tehtävää laskemalla jokaiselle taulukon
+kohdalle $x=0,1,\dots,n-1$ arvon $\texttt{pisin}(x)$:
+kuinka pitkä on pisin nouseva alijono, joka päättyy tähän kohtaan.
+Kun olemme laskeneet kaikki nämä arvot, suurin arvoista kertoo,
+kuinka pitkä on pisin nouseva alijono koko taulukossa.
+Esimerkiksi kuvan \ref{fig:pisnou} taulukossa $\texttt{pisin}(6)=4$,
+koska kohdassa $6$ pisin nouseva alijono on pituudeltaan $4$.
+
+Millainen on sitten pisin kohtaan $x$ päättyvä alijono?
+Yksi mahdollisuus on, että alijonossa on vain yksi alkio,
+jolloin $\texttt{pisin}(x)=1$.
+Jos kuitenkin alijonossa on useampia alkioita,
+voimme käydä läpi vaihtoehdot, missä kohdassa on alijonon
+toiseksi viimeinen alkio.
+Meidän täytyy siis tarkastella kohtia $k$, joille pätee $k<x$
+ja joiden alkiot ovat pienempiä kuin kohdan $x$ alkio.
+Jokaisessa tällaisessa tapauksessa voimme muodostaa alijonon,
+jossa on ensin pisin kohtaan $k$ päättyvä alijono ja
+sitten vielä kohdan $x$ alkio.
+Tuloksena olevan alijonon pituus on $\texttt{pituus}(k)+1$.
+Jokin tällainen alijono on varmasti pisin kohtaan $x$ päättyvä alijono.
+
+Seuraava koodi laskee jokaiseen kohtaan $x=0,1,\dots,n-1$
+pisimmän kohtaan päättyvän alijonon pituuden yllä kuvattua
+ideaa käyttäen.
+Koodi olettaa, että taulukon sisältö on taulukossa \texttt{taulu},
+ja se muodostaa taulukon \texttt{pisin}, jossa on pisimpien
+alijonojen pituudet.
+Koodin suoritus vie aikaa $O(n^2)$, koska siinä on kaksi sisäkkäistä silmukkaa.
+
+\begin{code}
+for (int i = 0; i < n; i++) {
+    pisin[i] = 1;
+    for (int j = 0; j < i; j++) {
+        if (taulu[j] < taulu[i]) {
+            pisin[i] = max(pisin[i],pisin[j]+1);
+        }
+    }
+}
+\end{code}
 
 \subsection{Repunpakkaus}
 
