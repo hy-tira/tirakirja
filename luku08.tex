@@ -1,10 +1,121 @@
 \chapter{Dynaaminen ohjelmointi}
 
-\section{Perusasiat}
+Dynaaminen ohjelmointi on algoritmisuunnittelun tekniikka,
+jota voi käyttää kahdenlaisissa tilanteissa:
+
+\begin{itemize}
+\item \textbf{Optimiratkaisun etsiminen}: Haluamme etsiä ratkaisun,
+joka on jollain tavalla suurin tai pienin.
+\item \textbf{Ratkaisumäärän laskeminen}: Haluamme laskea,
+montako erilaista ratkaisua on olemassa.
+\end{itemize}
+
+Ideana on muotoilla laskentatehtävä
+rekursiivisesti niin, että voimme ratkaista tehtävän
+ratkaisemalla ensin osatehtävinä saman tehtävän pienempiä tapauksia.
+Aina kun olemme ratkaisseet tietyn osatehtävän,
+kirjaamme sen ratkaisun muistiin, minkä ansiosta
+pystymme hakemaan ratkaisun tehokkaasti uudelleen,
+jos tarvitsemme sitä myöhemmin.
+
+Tässä luvussa tutustumme ensin dynaamisen ohjelmoinnin perusteisiin
+käyttäen esimerkkinä tehtävää, jossa haluamme jakaa annetun
+rahamäärän kolikoiksi.
+Tämän jälkeen käymme läpi joukon muita tehtäviä, jotka esittelevät
+dynaamisen ohjelmoinnin mahdollisuuksia.
+
+\section{Perustekniikat}
+
+Ensimmäinen esimerkkitehtävämme on seuraava:
+Meillä on joukko kolikoita sekä rahamäärä,
+jonka haluamme jakaa kolikoiksi.
+Voimme käyttää jokaista kolikkoa miten tahansa
+monta kertaa ratkaisussa.
+Esimerkiksi jos kolikot ovat $\{1,3,4\}$
+ja rahamäärä on $5$, yksi mahdollinen
+jakotapa on $1+1+3=5$.
+Haluamme selvittää vastauksen kahteen kysymykseen:
+
+\begin{itemize}
+\item \textbf{Optimiratkaisun etsiminen}:
+Mikä on pienin määrä kolikoita, joilla voimme muodostaa rahamäärän?
+\item \textbf{Ratkaisumäärän laskeminen}:
+Monellako eri tavalla voimme muodostaa rahamäärän kolikoista?
+\end{itemize}
+
+Yllä olevassa esimerkissä pienin määrä kolikoita on 2,
+koska voimme tehdä jaon $1+4=5$. Erilaisia ratkaisuja taas on 6:
+
+\begin{multicols}{2}
+\begin{itemize}
+\item $1+1+1+1+1=5$
+\item $1+1+3=5$
+\item $1+3+1=5$
+\item $3+1+1=5$
+\item $1+4=5$
+\item $4+1=5$
+\end{itemize}
+\end{multicols}
+
+Osoittautuu, että molemmat kysymykset ratkeavat tehokkaasti
+dynaamisella ohjelmoinnilla
+etsimällä niille sopiva rekursiivinen esitys.
 
 \subsection{Optimiratkaisun etsiminen}
 
-\subsection{Ratkaisujen laskeminen}
+Ensimmäinen tehtävämme on selvittää, mikä on pienin määrä
+kolikoita, joilla voimme muodostaa annetun rahamäärän.
+Tätä varten määrittelemme funktion $\texttt{pienin}(x)$,
+joka antaa pienimmän määrän kolikoita, joilla voimme
+muodostaa rahamäärän $x$.
+Esimerkiksi kun kolikot ovat $\{1,3,4\}$,
+niin $\texttt{pienin}(5)=2$, mikä vastaa ratkaisua $1+4=5$.
+
+Jotta voimme käyttää dynaamista ohjelmointia,
+meidän täytyy pystyä laskemaan funktion \texttt{pienin}
+arvo rekursiivisesti kutsumalla sitä itseään.
+Pohjatapauksena on $\texttt{pienin}(0)=0$, koska voimme
+muodostaa rahamäärän 0 käyttämättä yhtään kolikkoa.
+Lisäksi on hyödyllistä määritellä $\texttt{pienin}(x)=\infty$,
+kun $x<0$. Tämä tarkoittaa, että ei ole sallittua muodostaa
+ratkaisua, jossa rahamäärä olisi ääretön.
+
+Kuinka voimme sitten laskea arvon $\texttt{pienin}(x)$,
+missä $x>0$? Nyt on kätevää tarkastella \emph{viimeistä}
+kolikkoa, joka kuuluu ratkaisuun.
+Esimerkiksi jos kolikot ovat $\{1,3,4\}$, viimeinen kolikko
+on joko 1, 3 tai 4.
+Jos viimeinen kolikko on 1, meidän tulee muodostaa vielä
+rahamäärä $x-1$, mihin kuluu $\texttt{pienin}(x-1)$ kolikkoa.
+Vastaavasti jos viimeinen kolikko on 3 tai 4,
+meidän tulee muodostaa rahamäärä $x-3$ tai $x-4$.
+Niinpä saamme seuraavan rekursiivisen kaavan tapaukseen $x>0$:
+\[
+\texttt{pienin}(x) =
+    \min(\texttt{pienin}(x-1),\texttt{pienin}(x-3),\texttt{pienin}(x-4))
+\]
+Tässä tapauksessa funktion \texttt{pienin} ensimmäiset arvot ovat:
+
+\begin{center}
+\begin{tabular}{rrrrrrrrrrrr}
+$x$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\hline
+$\texttt{pienin}(x)$ & 0 & 1 & 2 & 1 & 1 & 2 & 2 & 2 & 2 & 3 & 3 \\
+\end{tabular}
+\end{center}
+
+
+Tarkastellaan sitten yleistä tilannetta, jossa meillä on $k$ kolikkoa,
+joiden arvot ovat $\{c_0,c_1,\ldots,c_{k-1}\}$.
+Nyt voimme jälleen muodostaa rekursiivisen kaavan samalla idealla:
+\[
+\texttt{pienin}(x) =
+    \min(\texttt{pienin}(x-c_0),\texttt{pienin}(x-c_1),\dots,\texttt{pienin}(x-c_{k-1}))
+\]
+
+
+
+\subsection{Ratkaisumäärän laskeminen}
 
 \section{Esimerkkejä}
 
