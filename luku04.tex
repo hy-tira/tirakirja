@@ -265,7 +265,155 @@ ensimmäisen ja viimeisen alkion.
 Kuitenkaan rakenteessa ei ole yleistä metodia \texttt{get},
 joten emme pysty hakemaan muita listalla olevia alkioita.
 
-
 \section{Linkitetty lista}
 
+Linkitetty lista muodostuu solmuista, joista jokainen sisältää
+yhden listan luvun.
+Solmut on yhdistetty toisiinsa yleensä niin,
+että jokaisessa solmussa on viittaus seuraavaan ja
+edelliseen solmuun listassa.
+Tämän ansiosta voimme esimerkiksi käydä listan läpi ensimmäisestä
+solmusta alkaen.
+
+Kuvassa X on esimerkkinä linkitetty lista,
+joka vastaa listaa $[3,7,2,5]$.
+
+Taulukkolistaan verrattuna linkitetyn listan etuna on,
+että voimme lisätä alkion mihin tahansa kohtaan listaa
+$O(1)$-ajassa: riittää luoda yksi solmu ja muuttaa paria
+viittausta.
+Samoin voimme poistaa minkä tahansa solmun $O(1)$-ajassa.
+Huonona puolena on kuitenkin, että tietyssä kohdassa listaa
+olevan alkion käsittely vie aikaa $O(n)$: meidän täytyy
+kulkea alkioon askel kerrallaan listan alusta tai lopusta.
+
+\subsection{Linkitetyt rakenteet}
+
+Jokaisessa ohjelmointikielessä on omat keinonsa
+linkitetyn rakenteen toteuttamiseen.
+Javassa voimme toteuttaa linkitetyn rakenteen niin,
+että jokainen solmu on oma olionsa.
+Esimerkiksi voimme toteuttaa seuraavan luokan \texttt{Node},
+jonka oliot toimivat linkitetyn listan solmuina:
+
+\begin{code}
+public class Node {
+    public int value;
+    public Node next;
+    public Node prev;
+}
+\end{code}
+
+Ideana on, että kenttä \texttt{value} kertoo solmun arvon,
+kenttä \texttt{next} osoittaa seuraavaan solmuun
+ja kenttä \texttt{prev} osoittaa edelliseen solmuun.
+Jos seuraavaa tai edellistä solmua ei ole,
+viittauksen tilalla on arvo \texttt{null}.
+Tämän luokan avulla voisimme luoda linkitetyn listan $[3,7,2,5]$
+seuraavasti:
+
+\begin{code}
+Node s1, s2, s3, s4;
+s1.value = 3; s1.prev = null; s1.next = s2;
+s2.value = 7; s2.prev = s1; s2.next = s3;
+s3.value = 2; s3.prev = s2; s3.next = s4;
+s4.value = 5; s4.prev = s3; s4.next = null;
+\end{code}
+
+Tämän jälkeen voisimme käydä listan läpi näin:
+
+\begin{code}
+Node s = s1;
+while (s != null) {
+    System.out.println(s.value);
+    s = s.next;
+}
+\end{code}
+
 \subsection{\texttt{LinkedList}-rakenne}
+
+Käytännössä meidän ei kuitenkaan tarvitse toteuttaa
+linkitettyä listaa itse Javalla,
+koska voimme käyttää valmista \texttt{LinkedList}-rakennetta.
+Voimme lisätä ja poistaa alkioita $O(1)$-ajassa
+sekä listan alussa että lopussa.
+
+\begin{code}
+LinkedList<Integer> lista = new LinkedList<>();
+lista.addLast(1);
+lista.addFirst(2);
+lista.addLast(3);
+System.out.println(lista); // [2,1,3]
+lista.removeFirst();
+System.out.println(lista); // [1,3]
+\end{code}
+
+TODO listan muuttaminen
+
+\texttt{LinkedList} tarjoaa myös metodit \texttt{get} ja \texttt{set},
+joiden avulla voi käsitellä tietyssä kohdassa listaa olevaa alkiota.
+Näiden metodien aikavaativuus on kuitenkin $O(n)$,
+eli \texttt{LinkedList} ei ole hyvä valinta,
+jos meidän täytyy käsitellä alkioita kohdan perusteella.
+
+\subsection{Tehokkuusvertailu}
+
+Jokaisessa tietorakenteessa on omat hyvät ja huonot puolensa,
+ja kaikille on tietyt käyttötarkoituksensa.
+Linkitetty lista muodostaa kuitenkin poikkeuksen tähän sääntöön:
+on äärimmäisen harvoja tilanteita, jolloin sitä kannattaisi
+käyttää taulukkolistan sijasta.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\begin{scope}
+\draw (0,0) grid (8,4);
+\node at (1.5,2.5) {3};
+\node at (2.5,2.5) {7};
+\node at (3.5,2.5) {2};
+\node at (4.5,2.5) {5};
+\end{scope}
+\begin{scope}[xshift=10cm]
+\draw (0,0) grid (8,4);
+\node at (1.5,2.5) {3};
+\node at (4.5,1.5) {7};
+\node at (6.5,2.5) {2};
+\node at (2.5,0.5) {5};
+\end{scope}
+\end{tikzpicture}
+\caption{Taulukkolista ja linkitetty lista tietokoneen muistissa.}
+\label{fig:taulin}
+\end{figure}
+
+
+Syynä tähän on, että nykyaikaiset tietokoneet on suunniteltu niin,
+että ne \emph{suosivat} taulukkolistan käyttämistä linkitetyn
+listan sijaan.
+Kuvassa \ref{fig:taulin} näkyy, miten taulukkolista ja linkitetty lista
+asettuvat tietokoneen muistissa.
+Taulukkolistan alkiot ovat peräkkäin, kun taas linkitetyn
+listan alkiot voivat olla eri puolilla muistia sekalaisessa
+järjestyksessä.
+Nykyaikaisen prosessorin välimuistit ja komentojen ennustus
+on toteutettu niin, että ne ovat parhaimmillaan silloin,
+kun tieto on tallennettu muistissa peräkkäin -- eli juuri kuten
+taulukkolistassa.
+Tämä näkyy käytännössä siinä, että taulukkolistan käsittely on selvästi
+nopeampaa kuin linkitetyn listan käsittely.
+
+Tarkastellaan esimerkkinä seuraavaa metodia,
+joka laskee listan lukujen summan.
+Koska metodi on toteutettu tyypille \texttt{List},
+voimme käyttää sitä sekä tyypin \texttt{ArrayList}
+että \texttt{LinkedList} kanssa.
+
+\begin{code}
+long summa(List lista) {
+    long s = 0;
+    for (Integer x : lista) {
+        s += x;
+    }
+    return s;
+}
+\end{code}
