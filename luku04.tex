@@ -83,10 +83,22 @@ Kuva \ref{fig:lisuus} näyttää tällaisen tilanteen,
 jossa uusi alkio 4 ei mahdu taulukkoon.
 Tällöin meidän täytyy varata uusi suurempi taulukko ja
 kopioida kaikki vanhan listan alkiot siihen.
-Tämä on hidas operaatio, johon kuluu aikaa $O(n)$,
-kun listalla on $n$ alkiota.
+Joudumme siis tekemään jotain seuraavanlaista,
+jossa $n$ on taulukon nykyinen koko ja $k$ on varattavien
+lisäpaikkojen määrä.
+
+\begin{code}
+int[] uusi = new int[n+k];
+for (int i = 0; i < n; i++) {
+    uusi[i] = lista[i];
+}
+lista = uusi;
+\end{code}
+
+Tämä on hidas operaatio, johon kuluu aikaa $O(n)$.
 Olemme saaneet siis aikaan listan, johon on \emph{yleensä} nopeaa lisätä
-alkioita, mutta välillä lisääminen viekin aikaa $O(n)$.
+alkioita, mutta välillä lisääminen viekin aikaa $O(n)$
+uuden taulukon varaamisen ja kopioinnin takia.
 
 \begin{figure}
 \center
@@ -126,9 +138,8 @@ ja kopioida vanhan taulukon sisältö sinne.}
 
 Jotta rakenne olisi käyttökelpoinen, meidän täytyy varmistaa,
 että hidas $O(n)$-operaatio ei esiinny liian usein.
-Tämä on mahdollista, kun varaamme reilusti suuremman uuden taulukon
-aina silloin, kun vanha taulukko käy liian pieneksi.
-Esimerkiksi voimme varata uuden taulukon niin,
+Tämä on mahdollista, kun varaamme uuden taulukon aina reilusti aiempaa suuremmaksi.
+Tyypillinen tapa on varata uusi taulukko niin,
 että sen koko on kaksinkertainen vanhaan taulukkoon nähden.
 Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
@@ -151,6 +162,60 @@ ja haluamme, että listan varaama taulukko on samaa kokoluokkaa
 kuin listan todellinen sisältö.
 
 \subsection{Lisääminen alkuun ja loppuun}
+
+Vastaavasti voimme luoda taulukkoon perustuvan listan,
+johon voimme lisätä alkioita tehokkaasti sekä alkuun että loppuun.
+Voimme menetellä lähes samoin kuin ennenkin,
+kunhan luovumme yhdestä periaatteesta:
+taulukon ensimmäinen alkio ei enää välttämättä
+ole listan ensimmäinen alkio.
+
+Kuva \ref{fig:lismol} näyttää esimerkin listan $[3,7,2,5]$
+uudesta tallennustavasta.
+Merkki $\rightarrow$ osoittaa kohdan, josta lista alkaa,
+ja merkki $\leftarrow$ osoittaa kohdan, johon lista päättyy.
+Lista jatkuu taulukon lopusta taulukon alkuun, joten pystymme
+tekemään lisäyksiä listan molemmissa päissä.
+
+Kuten ennenkin, alkion lisääminen listalle vie keskimäärin
+aikaa $O(1)$, kun kaksinkertaistamme taulukon koon listan täyttyessä.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\begin{scope}
+\draw (0,0) grid (8,1);
+\node at (-1,0.5) {(a)};
+\node at (0.5,0.5) {$2$};
+\node at (1.5,0.5) {$5$};
+\node at (2.5,0.5) {$-$};
+\node at (3.5,0.5) {$-$};
+\node at (4.5,0.5) {$-$};
+\node at (5.5,0.5) {$-$};
+\node at (6.5,0.5) {$3$};
+\node at (7.5,0.5) {$7$};
+\node at (1.5,-0.5) {$\leftarrow$};
+\node at (6.5,-0.5) {$\rightarrow$};
+\end{scope}
+\begin{scope}[yshift=-2.5cm]
+\draw (0,0) grid (8,1);
+\node at (-1,0.5) {(b)};
+\node at (0.5,0.5) {$2$};
+\node at (1.5,0.5) {$5$};
+\node at (2.5,0.5) {$-$};
+\node at (3.5,0.5) {$-$};
+\node at (4.5,0.5) {$-$};
+\node at (5.5,0.5) {$6$};
+\node at (6.5,0.5) {$3$};
+\node at (7.5,0.5) {$7$};
+\node at (1.5,-0.5) {$\leftarrow$};
+\node at (5.5,-0.5) {$\rightarrow$};
+\end{scope}
+\end{tikzpicture}
+\caption{(a) Lista $[3,7,2,5]$ tallennettuna taulukkoon. (b) Listan alkuun lisätään alkio 6.}
+\label{fig:lismol}
+\end{figure}
+
 
 \subsection{Javan rakenteet}
 
