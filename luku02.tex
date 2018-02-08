@@ -379,3 +379,85 @@ joten sen aikavaativuus on $O(n)$.
 
 \subsubsection{Algoritmien vertailua}
 
+\section{Lisää algoritmien analysoinnista}
+
+Aikavaativuuksissa käyttämämme $O$-merkintä on yksi monista merkinnöistä,
+joiden avulla voimme arvioida funktioiden kasvunopeutta.
+Algoritmien analysoinnissa tärkeimmät merkinnät ovat:
+
+\begin{itemize}
+\item \emph{Yläraja}: Funktio $g(n)$ on luokkaa $O(f(n))$, jos on olemassa vakiot $c$ ja $n_0$
+niin, että $g(n) \le c f(n)$ aina kun $n \ge n_0$.
+\item \emph{Alaraja}: Funktio $g(n)$ on luokkaa $\Omega(f(n))$, jos on olemassa vakiot $c$ ja $n_0$
+niin, että $g(n) \ge c f(n)$ aina kun $n \ge n_0$.
+\item \emph{Tarkka arvio}: Funktio $g(n)$ on luokkaa $\Theta(f(n))$, jos se on sekä luokkaa $O(f(n))$
+että luokkaa $\Omega(f(n))$.
+\end{itemize}
+
+Kun sanomme, että algoritmi toimii ajassa $O(f(n))$, tarkoitamme, että se suorittaa
+\emph{pahimmassa tapauksessa} enintään $O(f(n))$ komentoa.
+Tämä on yleensä hyvä tapa ilmoittaa algoritmin tehokkuus,
+koska silloin annamme takuun siitä, että algoritmin ajankäytöllä on tietty yläraja,
+vaikka syöte olisi valittu mahdollisimman hankalaksi.
+
+Tarkastellaan esimerkkinä seuraavaa algoritmia, joka laskee
+taulukon lukujen summan:
+
+\begin{code}
+int summa = 0;
+for (int i = 0; i < n; i++) {
+    summa += taulu[i];
+}
+\end{code}
+
+Tämä algoritmi toimii samalla tavalla riippumatta taulukon sisällöstä,
+koska se käy aina läpi koko taulukon.
+Niinpä yläraja ajankäytölle on $O(n)$ ja alaraja ajankäytölle on $\Omega(n)$,
+joten voimme sanoa, että algoritmi vie aikaa $\Theta(n)$ sekä pahimmassa
+että parhaassa tapauksessa.
+
+Tarkastellaan sitten seuraavaa algoritmia, joka selvittää,
+onko taulukossa alkiota $x$:
+
+\begin{code}
+ok = false;
+for (int i = 0; i < n; i++) {
+    if (taulu[i] == x) {
+        ok = true;
+        break;
+    }
+}
+\end{code}
+
+Tässä algoritmin pahin ja paraus tapaus eroavat.
+Ajankäytön yläraja on $O(n)$, koska algoritmi joutuu käymään
+läpi kaikki taulukon alkiot silloin, kun alkio $x$
+ei esiinny taulukossa.
+Toisaalta ajankäytön alaraja on $\Omega(1)$,
+koska jos alkio $x$ on taulukon ensimmäinen alkio,
+algoritmi pysähtyy heti taulukon alussa.
+Voimme myös sanoa, että algoritmi suorittaa pahimmassa
+tapauksessa $\Theta(n)$ komentoa ja parhaassa tapauksessa
+$\Theta(1)$ komentoa.
+
+Huomaa, että $O$-merkinnän antama yläraja voi olla mikä tahansa yläraja.
+On siis oikein sanoa esimerkiksi, että taulukon lukujen summan
+laskeva algoritmi vie aikaa $O(n^2)$, vaikka on olemassa parempi yläraja $O(n)$.
+Miksi sitten käytämme $O$-merkintää, vaikka voisimme ilmaista tarkan
+ajankäytön $\Theta$-merkinnällä?
+Tämä on vakiintunut ja käytännössä toimiva tapa.
+Olisi hyvin harhaanjohtavaa antaa yläraja $O(n^2)$,
+jos näemme suoraan, että aikaa kuluu vain $O(n)$.
+
+Asiaa voi ajatella niin, että $O$-merkintää käytetään algoritmin
+markkinoinnissa. Jos annamme liian suuren ylärajan, algoritmista
+tulee väärä käsitys.
+Vertauksena jos myymme urheiluautoa, jonka huippunopeus on 250 km/h,
+on sinänsä paikkansa pitävä väite, että autolla pystyy ajamaan 100 km/h.
+Meidän ei kuitenkaan kannata ilmoittaa tällaista rajaa,
+vaan kertoa, että autolla pystyy ajamaan 250 km/h.
+
+Merkintöjä $O$, $\Omega$ ja $\Theta$ voi käyttää
+kaikenlaisissa yhteyksissä, ei vain algoritmin ajankäytön arvoinnissa.
+Esimerkiksi voimme sanoa, että algoritmi suorittaa silmukkaa $O(\log n)$ kierrosta
+taulukossa on $O(n^2)$ alkiota.
