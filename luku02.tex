@@ -257,12 +257,13 @@ mitä eri aikavaativuudet tarkoittavat käytännössä.
 
 Aikavaativuutta voi ajatella samalla tavalla kuin vaikkapa
 hotellin tähti\-luokitusta: se kertoo tiiviissä tilassa,
-minkä tasoisesta algoritmista on kyse,
-eikä meidän tarvitse perehtyä tarkemmin
-algoritmin toimintaan.
-Esimerkiksi jos kuulemme, että jonkin algoritmin aikavaativuus on $O(n \log n)$,
-tiedämme heti, että kyseessä on mainio tehokas algoritmi,
-jota voi käyttää myös suurten syötteiden käsittelyyn.
+mistä asiassa on kysymys, eikä meidän tarvitse ottaa selvää yksityiskohdista.
+Jos meille tarjoitaan majoitusta neljän tähden hotellissa,
+saamme heti jonkin käsityksen huoneen tasosta,
+vaikka emme saisi tarkkaa kuvausta huoneen varustelusta.
+Vastaavasti jos kuulemme, että jonkin algoritmin aikavaativuus on $O(n \log n)$,
+voimme heti arvioida karkeasti, miten suuria syötteitä voimme käsitellä,
+vaikka emme saisi tarkkaa kuvausta algoritmin toiminnasta.
 
 \begin{table}
 \center
@@ -307,8 +308,8 @@ algoritmi, joka toimii ajassa $O(n^2)$.
 Toinen algoritmi taas on tehokas algoritmi,
 joka toimii ajassa $O(n)$.
 
-Tehtävämme on seuraava: Annettuna on bittijono, jossa on $n$ bittiä.
-Tehtävämme on laskea, monellako tavalla voimme valita kaksi kohtaa
+Tehtävämme on seuraava: Annettuna on bittijono, jossa on $n$ bittiä,
+ja tehtävämme on laskea, monellako tavalla voimme valita kaksi kohtaa
 niin, että vasen bitti on 0 ja oikea bitti on 1.
 Esimerkiksi bittijonossa 01001 tapoja on neljä:
 \underline{01}001, \underline{0}100\underline{1},
@@ -343,7 +344,7 @@ sisäkkäistä silmukkaa, jotka käyvät läpi syötteen.
 \subsubsection{$O(n)$-ratkaisu}
 
 Kuinka voisimme ratkaista tehtävän tehokkaammin?
-Meidän tulisi käytän\-nössä keksiä tapa, jolla saisimme
+Meidän tulisi keksiä tapa, jolla saisimme
 pois toisen silmukan koodista.
 
 Tässä auttaa lähestyä ongelmaa hieman toisesta
@@ -356,9 +357,9 @@ vasemmalla puolella olevan bitin 0 pariin.
 
 Tämän havainnon ansiosta meidän riittää käydä läpi
 bittijono kerran vasemmalta oikealle ja pitää kirjaa,
-montako nollabittiä olemme nähneet.
-Sitten jokaisen ykkösbitin kohdalla kasvatamme
-vastausta tällä nollabittien määrällä.
+montako bittiä 0 olemme nähneet.
+Sitten jokaisen bitin 1 kohdalla kasvatamme
+vastausta tällä bittien 0 määrällä.
 Seuraava koodi toteuttaa algoritmin:
 
 \begin{code}
@@ -368,7 +369,7 @@ public long laskeParit(int[] bitit) {
     int nollat = 0;
     for (int i = 0; i < n; i++) {
         if (bitit[i] == 0) nollat++;
-        if (bitit[i] == 1) tulos++;
+        if (bitit[i] == 1) tulos += nollat;
     }
     return tulos;
 }
@@ -378,6 +379,45 @@ Algoritmissa on vain yksi silmukka, joka käy syötteen läpi,
 joten sen aikavaativuus on $O(n)$.
 
 \subsubsection{Algoritmien vertailua}
+
+Meillä on siis kaksi algoritmia, joiden aikavaativuudet ovat
+$O(n^2)$ ja $O(n)$, mutta mitä tämä tarkoittaa käytännössä?
+Tämän selvittämiseksi teimme testin,
+jossa mittasimme algoritmien suoritusaikoja
+satunnaisilla syötteillä eri $n$:n arvoilla.
+
+Taulukko \ref{tab:algver} näyttää testin tulokset.
+Pienillä $n$:n arvoilla molemmat algoritmit toimivat
+hyvin tehokkaasti, mutta suuremmilla syötteillä on
+nähtävissä huomattavia eroja.
+Raakaan voimaan perustuva $O(n^2)$-algoritmi
+alkaa hidastua selvästi testistä $n=10000$ alkaen,
+ja testissä $n=1000000$ sillä kuluu jo lähes kolme minuuttia aikaa.
+Tehokas $O(n)$-algoritmi taas selvittää suuretkin testit
+salamannopeasti.
+
+\begin{table}
+\center
+\begin{tabular}{rrr}
+syötteen koko $n$ & $O(n^2)$-algoritmi & $O(n)$-algoritmi \\
+\hline
+$10$ & 0.00 s & 0.00 s\\
+$100$ & 0.00 s & 0.00 s\\
+$1000$ & 0.00 s & 0.00 s\\
+$10000$ & 0.14 s & 0.00 s \\
+$100000$ & 1.66 s & 0.00 s \\
+$1000000$ & 172.52 s & 0.01 s \\
+\end{tabular}
+\caption{Algoritmien suoritusaikojen vertailu.}
+\label{tab:algver}
+\end{table}
+
+Tämän kurssin keskeinen tavoitteemme on luoda algoritmeja,
+jotka toimivat tehokkaasti myös silloin, kun niille annetaan suuria syötteitä.
+Tämä tarkoittaa käytännössä sitä, että algoritmin aikavaativuuden tulisi
+olla $O(n)$ tai $O(n \log n)$.
+Jos algoritmin aikavaativuus on esimerkiksi $O(n^2)$,
+se on auttamatta liian hidas suurien syötteiden käsittelyyn.
 
 \section{Lisää algoritmien analysoinnista}
 
@@ -465,10 +505,58 @@ on sinänsä paikkansa pitävä väite, että autolla pystyy ajamaan 100 km/h.
 Meidän ei kuitenkaan kannata ilmoittaa tällaista rajaa,
 vaan kertoa, että autolla pystyy ajamaan 250 km/h.
 
+\subsection{Tilavaativuus}
+
 Merkintöjä $O$, $\Omega$ ja $\Theta$ voi käyttää
 kaikenlaisissa yhteyksissä, ei vain algoritmin ajankäytön arvoinnissa.
 Esimerkiksi voimme sanoa, että algoritmi suorittaa silmukkaa $O(\log n)$ kierrosta
-taulukossa on $O(n^2)$ alkiota.
+tai että taulukossa on $O(n^2)$ alkiota.
+
+Aikavaativuuden lisäksi kiinnostava tieto algoritmista voi olla sen
+\emph{tilavaativuus}. Tämä tarkoittaa yleensä sitä, miten paljon algoritmi
+käyttää muistia syötteen lisäksi.
+Jos tilavaativuus on $O(1)$, algoritmi tarvitsee muistia
+vain yksittäisille muuttujille syötteen lisäksi.
+Jos tilavaativuus on $O(n)$, algoritmi voi varata esimerkiksi aputaulukon,
+jonka koko vastaa syötteen kokoa.
+
+Tarkastellaan esimerkkinä tehtävää, jossa meille annetaan taulukko,
+joka sisältää luvut $1,2,\dots,n$ yhtä lukuun ottamatta,
+ja tehtävämme on selvittää puuttuva luku.
+Yksi tapa ratkaista tehtävä $O(n)$-ajassa on luoda aputaulukko,
+joka pitää kirjaa nähdyistä luvuista.
+Tällaisen ratkaisun tilavaativuus on $O(n)$.
+
+\begin{code}
+int[] apu = new int[n+1];
+for (int i = 0; i < n-1; i++) {
+    apu[taulu[i]] = 1;
+}
+for (int i = 1; i <= n; i++) {
+    if (apu[i] == 0) puuttuva = i;
+}
+\end{code}
+
+Tehtävään on kuitenkin olemassa myös toinen algoritmi,
+jossa aikavaativuus on edelleen $O(n)$, mutta tilavaativuus on vain $O(1)$.
+Tämä on mahdollista laskemalla ensin lukujen $1,2,\dots,n$ summa
+ja vähentämällä sitten taulukossa esiintyvät luvut siitä.
+Jäljelle jäävä luku on puuttuva luku.
+
+\begin{code}
+int summa = 0;
+for (int i = 1; i <= n; i++) {
+    summa += i;
+}
+for (int i = 0; i < n-1; i++) {
+    summa -= taulu[i];
+}
+puuttuva = summa;
+\end{code}
+
+Käytännössä tilavaativuus on yleensä sivuroolissa algoritmeissa,
+koska jos meillä on tehokas algoritmi, se ei \emph{ehdi} käyttää kovin paljon muistia.
+Erityisesti tilavaativuus ei voi olla suurempi kuin aikavaativuus.
 
 \subsection{Rajojen todistaminen}
 
