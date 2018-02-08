@@ -1,5 +1,24 @@
 \chapter{Tehokkuus}
 
+Algoritmien suunnittelussa keskeinen tavoite on saada aikaan
+algoritmeja, jotka toimivat \emph{tehokkaasti}.
+Haluamme luoda algoritmeja, joiden avulla voimme
+käsitellä myös suuria aineistoja ilman, että joudumme
+odottamaan kauan.
+Tässä luvussa tutustumme työkaluihin, joiden avulla
+voimme arvioida algoritmien tehokkuutta.
+Keskeinen käsite on aikavaativuus, joka antaa meille
+tiiviissä muodossa kuvan algoritmin ajankäytöstä.
+
+Algoritmien tehokkuudella on suuri merkitys käytännössä.
+Esimerkiksi Google-haku on käyttökelpoinen sen vuoksi,
+että saamme hakutulokset välittömästi hakusanan lähettämisen
+jälkeen.
+Jos joutuisimme odottamaan jokaisen tekemämme haun
+tuloksia vaikkapa viikon,
+se rajoittaisi paljon sitä, miten voisimme käyttää hakua.
+
+
 \section{Aikavaativuus}
 
 Voimme arvioida algoritmin tehokkuutta laskemalla,
@@ -13,7 +32,7 @@ $n$ on merkkijonon pituus.
 
 Tarkastellaan esimerkkinä seuraavaa algoritmia,
 joka laskee, montako kertaa luku $x$ esiintyy
-$n$-kokoisessa taulukossa.
+$n$ lukua sisältävässä taulukossa.
 
 \begin{code}[numbers=left]
 int maara = 0;
@@ -36,7 +55,7 @@ Algoritmissa suoritetaan siis vähintään $n+1$ ja enintään $2n+1$
 komentoa.
 
 Näin tarkka analyysi ei ole kuitenkaan yleensä tarpeen,
-vaan meille riittää usein määrittää karkea ajankäytön yläraja.
+vaan meille riittää määrittää karkea ajankäytön yläraja.
 Sanomme, että algoritmi toimii ajassa $O(f(n))$ eli sen
 \emph{aikavaativuus} on $O(f(n))$, jos se suorittaa
 enintään $c f(n)$ komentoa aina silloin kun $n \ge n_0$,
@@ -45,8 +64,8 @@ Esimerkiksi yllä oleva algoritmi toimii ajassa $O(n)$,
 koska se suorittaa selkeästi enintään $3n$ komentoa
 kaikilla $n$:n arvoilla.
 
-Aikavaativuden mukavana puolena on, että yleensä voimme
-määrittää aikavaativuuden hyvin helposti algoritmin
+Aikavaativuuden mukavana puolena on, että voimme yleensä
+päätellä aikavaativuuden hyvin helposti algoritmin
 rakenteesta. Tutustumme seuraavaksi laskusääntöihin,
 joiden avulla tämä on mahdollista.
 
@@ -184,7 +203,7 @@ for (int i = 0; i < n; i++) {
 
 Aikavaativuus $O(n \log n)$ viittaa usein siihen,
 että algoritmi järjestää taulukon,
-koska tehokkaat algoritmit taulukon järjestämiseen
+koska tehokkaat järjestämisalgoritmit
 vievät aikaa $O(n \log n)$.
 Esimerkiksi seuraava algoritmi laskee ajassa
 $O(n \log n)$, montako eri alkiota taulukko sisältää.
@@ -236,7 +255,7 @@ for (int i = 0; i < n; i++) {
 Aikavaativuus $O(2^n)$ viittaa usein siihen,
 että algoritmi käy läpi syötteen alkioiden osajoukot.
 Esimerkiksi alkioiden $\{1,2,3\}$ osajoukot ovat
-$\emptyset$, $\{1\}$, $\{2\}$, $\{3\}$, $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$
+$\emptyset$, $\{1\}$, $\{2\}$, $\{3\}$, $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
 
 \subsubsection{$O(n!)$ (permutaatiot)}
 
@@ -256,7 +275,7 @@ meille alkaa muodostua selkeä kuva,
 mitä eri aikavaativuudet tarkoittavat käytännössä.
 
 Aikavaativuutta voi ajatella samalla tavalla kuin vaikkapa
-hotellin tähti\-luokitusta: se kertoo tiiviissä tilassa,
+hotellin tähti\-luokitusta: se kertoo tiiviissä muodossa,
 mistä asiassa on kysymys, eikä meidän tarvitse ottaa selvää yksityiskohdista.
 Jos meille tarjoitaan majoitusta neljän tähden hotellissa,
 saamme heti jonkin käsityksen huoneen tasosta,
@@ -284,11 +303,11 @@ $O(n!)$ & 10 & \\
 Yksi kiinnostava näkökulma algoritmin tehokkuuteen on,
 miten suuren syötteen algoritmi voi käsitellä sekunnissa.
 Taulukossa \ref{tab:algteh} on joitakin hyödyl\-lisiä arvioita
-olettaen, että algoritmi suoritetaan tavallisella modernilla tietokoneella.
+olettaen, että algoritmi suoritetaan tavallisella nykyaikaisella tietokoneella.
 Esimerkiksi jos meillä on $O(n^2)$-algoritmi, voimme käsitellä sillä
 tehokkaasti taulukon, jossa on muutamia tuhansia alkioita.
 Jos tavoitteemme on käsitellä tehokkaasti suuria syötteitä,
-meidän tulisi pyrkiä löytämään $O(n)$- tai $O(n \log n)$-aikainen
+meidän tulisi pyrkiä löytä\-mään $O(n)$- tai $O(n \log n)$-aikainen
 algoritmi.
 
 Huomaa kuitenkin, että nämä luvut ovat vain arvioita ja algoritmin
@@ -309,7 +328,7 @@ Toinen algoritmi taas on tehokas algoritmi,
 joka toimii ajassa $O(n)$.
 
 Tehtävämme on seuraava: Annettuna on bittijono, jossa on $n$ bittiä,
-ja tehtävämme on laskea, monellako tavalla voimme valita kaksi kohtaa
+ja haluamme laskea, monellako tavalla voimme valita kaksi kohtaa
 niin, että vasen bitti on 0 ja oikea bitti on 1.
 Esimerkiksi bittijonossa 01001 tapoja on neljä:
 \underline{01}001, \underline{0}100\underline{1},
@@ -318,7 +337,7 @@ Esimerkiksi bittijonossa 01001 tapoja on neljä:
 \subsubsection{$O(n^2)$-ratkaisu}
 
 Suoraviivainen tapa ratkaista tehtävä on käydä läpi kaikki
-mahdolliset tavat valita vasen ja oikea kohta ja laskea,
+mahdolliset tavat valita vasen ja oikea kohta ja tutkia,
 monessako tavassa vasen bitti on 0 ja oikea bitti on 1.
 Seuraava metodi \texttt{laskeParit} toteuttaa tällaisen algoritmin.
 Sille annetaan parametrina taulukko \texttt{bitit},
@@ -380,10 +399,10 @@ joten sen aikavaativuus on $O(n)$.
 
 \subsubsection{Algoritmien vertailua}
 
-Meillä on siis kaksi algoritmia, joiden aikavaativuudet ovat
+Meillä on nyt siis kaksi algoritmia, joiden aikavaativuudet ovat
 $O(n^2)$ ja $O(n)$, mutta mitä tämä tarkoittaa käytännössä?
-Tämän selvittämiseksi teimme testin,
-jossa mittasimme algoritmien suoritusaikoja
+Tämän selvittämiseksi voimme tehdä testin,
+jossa mittaamme algoritmien suoritusaikoja
 satunnaisilla syötteillä eri $n$:n arvoilla.
 
 Taulukko \ref{tab:algver} näyttää testin tulokset.
@@ -441,12 +460,15 @@ että luokkaa $\Omega(f(n))$.
 Vakion $c$ tarkoituksena on, että saamme arvion kasvunopeuden suuruusluokalle välittämättä
 vakiokertoimista. Vakion $n_0$ tarkoituksena on, että keskitymme tarkastelemaan
 kasvunopeutta suurilla $n$:n arvoilla.
+Voimme myös kirjoittaa $g(n)=O(f(n))$, kun tarkoitamme,
+että funktio $g(n)$ on luokkaa $O(f(n))$,
+ja vastaavasti $\Omega$- ja $\Theta$-merkinnöissä.
 
 Kun sanomme, että algoritmi toimii ajassa $O(f(n))$, tarkoitamme, että se suorittaa
 \emph{pahimmassa tapauksessa} $O(f(n))$ komentoa.
 Tämä on yleensä hyvä tapa ilmoittaa algoritmin tehokkuus,
 koska silloin annamme takuun siitä, että algoritmin ajankäytöllä on tietty yläraja,
-vaikka syöte olisi valittu mahdollisimman hankalaksi.
+vaikka syöte olisi valittu mahdollisimman ikävästi algoritmin kannalta.
 
 Tarkastellaan esimerkkinä seuraavaa algoritmia, joka laskee
 taulukon lukujen summan:
@@ -494,15 +516,15 @@ laskeva algoritmi vie aikaa $O(n^2)$, vaikka on olemassa parempi yläraja $O(n)$
 Miksi sitten käytämme $O$-merkintää, vaikka voisimme usein myös ilmaista tarkan
 ajankäytön $\Theta$-merkinnällä?
 Tämä on vakiintunut ja käytännössä toimiva tapa.
-Olisi hyvin harhaanjohtavaa antaa yläraja $O(n^2)$,
+Olisi hyvin harhaanjohtavaa antaa algoritmille yläraja $O(n^2)$,
 jos näemme suoraan, että aikaa kuluu vain $O(n)$.
 
 Asiaa voi ajatella niin, että $O$-merkintää käytetään algoritmin
 markkinoinnissa. Jos annamme liian suuren ylärajan, algoritmista
-tulee väärä käsitys.
+tulee väärä käsitys yleisölle.
 Vertauksena jos myymme urheiluautoa, jonka huippunopeus on 250 km/h,
 on sinänsä paikkansa pitävä väite, että autolla pystyy ajamaan 100 km/h.
-Meidän ei kuitenkaan kannata ilmoittaa tällaista rajaa,
+Meidän ei kuitenkaan kannata antaa tällaista vähättelevää tietoa,
 vaan kertoa, että autolla pystyy ajamaan 250 km/h.
 
 \subsection{Tilavaativuus}
@@ -512,7 +534,7 @@ kaikenlaisissa yhteyksissä, ei vain algoritmin ajankäytön arvoinnissa.
 Esimerkiksi voimme sanoa, että algoritmi suorittaa silmukkaa $O(\log n)$ kierrosta
 tai että taulukossa on $O(n^2)$ alkiota.
 
-Aikavaativuuden lisäksi kiinnostava tieto algoritmista voi olla sen
+Aikavaativuuden lisäksi kiinnostava tieto algoritmista on sen
 \emph{tilavaativuus}. Tämä tarkoittaa yleensä sitä, miten paljon algoritmi
 käyttää muistia syötteen lisäksi.
 Jos tilavaativuus on $O(1)$, algoritmi tarvitsee muistia
@@ -525,7 +547,8 @@ joka sisältää luvut $1,2,\dots,n$ yhtä lukuun ottamatta,
 ja tehtävämme on selvittää puuttuva luku.
 Yksi tapa ratkaista tehtävä $O(n)$-ajassa on luoda aputaulukko,
 joka pitää kirjaa nähdyistä luvuista.
-Tällaisen ratkaisun tilavaativuus on $O(n)$.
+Tällaisen ratkaisun tilavaativuus on $O(n)$,
+koska aputaulukko vie $O(n)$ muistia.
 
 \begin{code}
 int[] apu = new int[n+1];
@@ -538,7 +561,7 @@ for (int i = 1; i <= n; i++) {
 \end{code}
 
 Tehtävään on kuitenkin olemassa myös toinen algoritmi,
-jossa aikavaativuus on edelleen $O(n)$, mutta tilavaativuus on vain $O(1)$.
+jossa aikavaativuus on edelleen $O(n)$ mutta tilavaativuus on vain $O(1)$.
 Tämä on mahdollista laskemalla ensin lukujen $1,2,\dots,n$ summa
 ja vähentämällä sitten taulukossa esiintyvät luvut siitä.
 Jäljelle jäävä luku on puuttuva luku.
@@ -555,8 +578,10 @@ puuttuva = summa;
 \end{code}
 
 Käytännössä tilavaativuus on yleensä sivuroolissa algoritmeissa,
-koska jos meillä on tehokas algoritmi, se ei \emph{ehdi} käyttää kovin paljon muistia.
+koska jos algoritmi vie vähän aikaa, se ei \emph{ehdi} käyttää kovin paljon muistia.
 Erityisesti tilavaativuus ei voi olla suurempi kuin aikavaativuus.
+Niinpä meidän riittää keskittyä suunnittelemaan algoritmeja,
+jotka toimivat nopeasti, ja vertailla algoritmien aikavaativuuksia.
 
 \subsection{Rajojen todistaminen}
 
@@ -576,16 +601,21 @@ jolloin voimme arvioida $3n+5 \le 3n+5n=8n$, kun $n \ge 1$.
 Jos haluamme todistaa, että raja ei päde, tilanne on hankalampi,
 koska meidän täytyy näyttää, että ei ole olemassa \emph{mitään} kelvollista
 valintaa vakioille $c$ ja $n_0$.
-Tässä auttaa usein vastaoletuksen tekeminen: oletamme,
+Tässä auttaa tyypillisesti vastaoletuksen tekeminen: oletamme,
 että raja pätee ja voimme valita vakiot,
-ja näytämme sitten, että tämä johtaa kuitenkin ristiriitaan.
+ja näytämme sitten, että tämä oletus johtaa ristiriitaan.
 
 Todistetaan esimerkkinä, että $n^2 \neq O(n)$.
 Jos pätisi $n^2=O(n)$, niin olisi olemassa vakiot $c$ ja $n_0$,
 joille $n^2 \le cn$ aina kun $n \ge n_0$.
-Voimme kuitenkin osoittaa, että tämä aiheuttaisi ristiriidan.
-Jos $n^2 \le cn$, niin voimme jakaa molemmat puolet $n$:llä
+Voimme kuitenkin osoittaa, että tämä aiheuttaa ristiriidan.
+Jos $n^2 \le cn$, niin voimme jakaa epäyhtälön molemmat puolet $n$:llä
 ja saamme $n \le c$.
 Tämä tarkoittaa, että $n$ on aina enintään yhtä suuri kuin vakio $c$.
 Tämä ei ole kuitenkaan mahdollista, koska $n$ voi olla miten
 suuri tahansa, joten ei voi päteä $n^2 = O(n)$.
+
+Tällaiselle määritelmistä lähtevälle todistamiselle ei ole kuitenkaan
+käytän\-nössä tarvetta algoritmien analysoinnissa,
+vaan voimme huoletta esimerkiksi päätellä algoritmin aikavaativuuden
+katsomalla, millaisia silmukoita siinä on, kuten olemme tehneet tämän luvun alkuosassa.
