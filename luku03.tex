@@ -310,7 +310,6 @@ vaihtojärjestämisen toiminnasta.
 \label{fig:vaijar}
 \end{figure}
 
-
 Seuraava koodi toteuttaa vaihtojärjestämisen:
 
 \begin{code}
@@ -338,7 +337,133 @@ $O(n \log n)$-algoritmin käyttämällä apuna kekorakennetta.
 
 \subsection{Lomitusjärjestäminen}
 
+Lomitusjärjestäminen on rekursiivinen järjestämisalgoritmi,
+joka järjestää taulukon seuraavasti:
+
+\begin{enumerate}
+\item Jos taulukossa on vain yksi alkio,
+älä tee mitään, koska taulukko on jo järjestyksessä.
+\item Jaa taulukko keskeltä kahdeksi osataulukoksi ja järjestä
+vasen ja oikea osataulukko rekursiivisesti.
+\item Lomita vasen ja oikea osataulukko yhteen niin, että ne muodostavat
+järjestetyn taulukon.
+\end{enumerate}
+
+Esimerkiksi jos järjestettävänä on taulukko $[4,2,5,8,2,1,5,6]$,
+algoritmi jakaa sen ensin osataulukoiksi $[4,2,5,8]$ ja $[2,1,5,6]$.
+Sitten algoritmi järjestää osataulukot rekursiivisesti,
+jolloin tuloksena ovat taulukot $[2,4,5,8]$ ja $[1,2,5,6]$.
+Lopuksi algoritmi lomittaa osataulukot takaisin yhteen
+ja saa aikaan lopullisen järjestetyn taulukon $[1,2,2,4,5,5,6,8]$.
+
+Lomitusjärjestämisen oleellisena osana on kahden järjestetyn osataulukon
+lomittaminen. Tämä on mahdollista lineaarisessa ajassa, koska
+voimme muodostaa uuden taulukon, johon valitsemme aina pienimmän
+alkion vasemmasta tai oikeasta osataulukosta.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw (0+0.25,0) rectangle (16-0.25,1);
+\foreach \x in {0,8} \draw (\x+0.25,-2.5) rectangle (\x+8-0.25,-1.5);
+\foreach \x in {0,4,8,12} \draw (\x+0.25,-5) rectangle (\x+4-0.25,-4);
+\foreach \x in {0,2,4,6,8,10,12,14} \draw (\x+0.25,-7.5) rectangle (\x+2-0.25,-6.5);
+\foreach \x in {0,2,4,6,8,10,12,14} \node at (\x+1,-9) {$\dots$};
+\end{tikzpicture}
+\caption{Lomitusjärjestämisen toiminta esitettynä puuna.}
+\label{fig:lomjar}
+\end{figure}
+
+Kuinka tehokas lomitusjärjestäminen on?
+Rekursiivisen algoritmin analysoinnissa auttaa esittää
+algoritmin toiminta puuna,
+jossa näkyvät tasoittain rekursiiviset kutsut.
+Kuva \ref{fig:lomjar} näyttää tällaisen puun lomitusjärjestämisestä.
+Koska taulukoiden koko puolittuu joka vaiheessa,
+tasoja on yhteensä $O(\log n)$,
+ja jokaisella tasolla lomittamiset vievät yhteensä aikaa $O(n)$.
+Niinpä voimme todeta, että algoritmin aikavaativuus on $O(n \log n)$.
+
 \subsection{Pikajärjestäminen}
+
+Pikajärjestäminen on toinen rekursiivinen järjestämisalgoritmi,
+joka toimii seuraavasti:
+
+\begin{enumerate}
+\item Jos taulukossa on vain yksi alkio,
+älä tee mitään, koska taulukko on jo järjestyksessä.
+\item Valitse jakoalkioksi jokin taulukossa oleva alkio $x$.
+\item Siirrä jakoalkion vasemmalle puolelle kaikki $x$:ää pienemmät alkiot
+ja oikealle puolelle kaikki $x$:ää suuremmat alkiot.
+\item Järjestä jakoalkion eri puolilla olevat osataulukot rekursiivisesti.
+\end{enumerate}
+
+Pikajärjestäminen muistuttaa siis lomitusjärjestämistä,
+mutta erona on, että taulukkoa ei jaeta kahdeksi yhtä suureksi
+osataulukoksi vaan jaon määrää jakoalkio $x$.
+Esimerkiksi jos haluamme järjestää taulukon $[4,2,5,8,2,1,5,6]$,
+voimme valita jakoalkioksi vaikkapa taulukon ensimmäisen alkion $4$.
+Kun siirrämme muut luvut jakoalkion eri puolille,
+saamme osataulukot $[2,2,1]$ ja $[5,8,5,6]$, jotka järjestämme
+sitten rekursiivisesti.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw (0+0.25,0) rectangle (16-0.25,1);
+\draw (0+0.25,-2.5) rectangle (1-0.25,-1.5);
+\draw (1+0.25,-2.5) rectangle (16-0.25,-1.5);
+\draw (1+0.25,-5) rectangle (2-0.25,-4);
+\draw (2+0.25,-5) rectangle (16-0.25,-4);
+\draw (2+0.25,-7.5) rectangle (3-0.25,-6.5);
+\draw (3+0.25,-7.5) rectangle (16-0.25,-6.5);
+\foreach \x in {4,8,12} \node at (\x+1,-9) {$\dots$};
+\end{tikzpicture}
+\caption{Pikajärjestämisen huonoin tapaus: jokaisessa vaiheessa lähes kaikki
+alkiot jäävät toiseen osataulukkoon.}
+\label{fig:pikjar}
+\end{figure}
+
+Jakoalkion valinnan jälkeen pystymme siirtämään lineaarisessa ajassa
+alkiot jakoalkion eri puolille.
+Pikajärjestämisen tehokkuuden ratkaisee, kuinka tasaisesti
+alkiot jakautuvat osataulukoiksi.
+Parhaassa tapauksessa joka vaiheessa saamme kaksi suunnilleen
+yhtä suurta osataulukkoa, jolloin tilanne vastaa kuvaa \ref{fig:lomjar}.
+Kuitenkin on myös mahdollista, että jaot ovat epätasaisia ja
+joka vaiheessa lähes kaikki alkiot jäävät toiselle puolelle.
+Kuva \ref{fig:pikjar} näyttää esimerkin tällaisesta tilanteesta.
+
+Parhaassa tapauksessa pikajärjestäminen toimii siis yhtä nopeasti
+kuin lomitusjärjestäminen eli ajassa $O(n \log n)$.
+Pahimmassa tapauksessa aikaa kuluu kuitenkin $O(n^2)$,
+koska algoritmin suorituksessa saattaa muodostua $O(n)$ tasoa,
+joista jokainen vie aikaa $O(n)$.
+Miksi haluaisimme siis käyttää pikajärjestämistä,
+joka toimii \emph{ehkä} ajassa $O(n \log n)$,
+kun voisimme käyttää sen sijasta lomitusjärjestämistä,
+joka toimii \emph{varmasti} ajassa $O(n \log n)$?
+
+Ensinnäkin pikajärjestäminen toimii \emph{yleensä}
+ajassa $O(n \log n)$, kunhan valitsemme jakoalkion huolellisesti.
+Taulukon ensimmäinen alkio ei ole käytän\-nössä hyvä jakoalkio,
+koska silloin esimerkiksi valmiiksi järjestyksessä olevan
+taulukon käsittely vie aikaa $O(n^2)$.
+Parempi tapa on esimerkiksi ottaa tarkasteluun taulukon ensimmäinen,
+keskimmäinen ja viimeinen alkio ja valita niistä
+järjestyksessä keskimmäinen jakoalkioksi.
+Tällaisella jakoalkion valinnalla on jo vaikeaa keksiä taulukkoa,
+jossa pikajärjestäminen veisi aikaa $O(n^2)$.
+
+Pikajärjestämisen todellinen etu on kuitenkin siinä,
+että sen vakiokertoimet ovat pienet.
+Vaikka lomitusjärjestäminen ja pikajärjestäminen vievät molemmat
+aikaa $O(n \log n)$, kokemus on osoittanut, että
+pikajärjestäminen toimii yleensä käytännössä nopeammin.
+Yksi syy tähän on, että pikajärjestä\-minen siirtää vähemmän
+alkioita ympäri taulukkoa: aina kun alkiot on siirretty
+jakoalkion eri puolille, niitä ei siirretä enää koskaan
+jakoalkion yli.
 
 \subsection{Järjestämisen alaraja}
 
