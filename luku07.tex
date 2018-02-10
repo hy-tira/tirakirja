@@ -447,11 +447,10 @@ lapseen AVL-puu korkeutta $h-1$ ja oikeaan lapseen
 AVL-puu korkeutta $h-2$ niin,
 että kummassakin alipuussa on mahdollisimman vähän solmuja.
 
-Saamme funktiolle alarajan
+Koska $f(h) \ge 2 f(h-2)$, saamme funktiolle alarajan
 \[f(h) \ge 2^{h/2},\]
-koska arvo $f(h)$ ainakin kaksinkertaistuu kahden askeleen välein.
-Tämä epä\-yhtälö tarkoittaa samaa kuin
-\[ \frac{h}{2} \le \log_2 f(h).\]
+joka tarkoittaa samaa kuin
+\[ h \le 2 \log_2 f(h).\]
 Niinpä jos puussa on $n$ solmua, pätee $f(h) \le n$ ja sen myötä $h = O(\log n)$.
 
 \subsection{Kiertojen toteutus}
