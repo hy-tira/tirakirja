@@ -342,7 +342,88 @@ $O(n \log n)$-algoritmin käyttämällä apuna kekorakennetta.
 
 \subsection{Järjestämisen alaraja}
 
+Onko mahdollista luoda järjestämisalgoritmi, joka toimisi
+nopeammin kuin $O(n \log n)$?
+Tämä ei ole mahdollista, jos oletamme, että algoritmin
+tulee perustua taulukon alkioiden vertailuihin.
+
+Voimme ajatella vertailuihin perustuvaa järjestämistä
+prosessina, jossa jokainen vertailu antaa meille tietoa
+taulukosta ja saamme vietyä taulukkoa lähemmäs järjestystä.
+Oletamme seuraavaksi, että taulukko muodostuu luvuista
+$1,2,\dots,n$, jolloin meillä on $n!$ vaihtoehtoa, mikä
+on taulukon alkuperäinen järjestys.
+Jotta järjestämisalgoritmi voisi toimia oikein,
+sen täytyy käsitellä jokainen järjestys eri tavalla.
+
+Esimerkiksi jos $n=3$, taulukon mahdolliset järjestykset alussa ovat
+$[1,2,3]$, $[1,3,2]$, $[2,1,3]$, $[2,3,1]$, $[3,1,2]$ ja $[3,2,1]$.
+Algoritmi voi vertailla ensin vaikkapa ensimmäistä ja toista alkiota.
+Jos ensimmäinen alkio on pienempi, voimme päätellä,
+että mahdolliset taulukot ovat $[1,2,3]$, $[1,3,2]$ ja $[2,3,1]$.
+Jos taas ensimmäinen alkio on suurempi,
+mahdolliset taulukot ovat $[2,1,3]$, $[3,1,2]$ ja $[3,2,1]$.
+Tämän jälkeen voimme jatkaa vertailuja ja saada lisää tietoa taulukosta.
+Algoritmi voi päättyä vasta silloin, kun jäljellä on vain yksi
+mahdollinen taulukko, jotta voimme olla varmoja, että olemme
+järjestäneet taulukon oikein.
+
+Tärkeä seikka on, että jokaisessa vertailussa ainakin toisessa
+tapauksessa meille jää jäljelle puolet mahdollisista taulukoista.
+Niinpä jos algoritmilla käy huono tuuri, se voi enintään puolittaa
+taulukoiden määrän joka askeleella.
+Tämä tarkoittaa, että pahimmassa tapauksessa algoritmi joutuu
+tekemään luokkaa $\log_2(n!)$ vertailua.
+Logaritmien laskusääntöjen perusteella
+\[
+\log_2(n!) = \log_2(1)+\log_2(2)+\dots+\log_2(n).
+\]
+Saamme tälle summalle alarajan ottamalla huomioon vain
+$n/2$ viimeistä termiä ja arvioimalla niitä alaspäin niin, 
+että jokaisen termin suuruus on vain $\log_2(n/2)$. Tuloksena on alaraja
+\[
+\log_2(n!) \ge (n/2) \log_2(n/2),
+\]
+mikä tarkoittaa, että algoritmi joutuu
+tekemään $\Omega(n \log n)$ vertailua pahimmassa tapauksessa.
+
 \subsection{Laskemisjärjestäminen}
+
+Laskemisjärjestäminen on $O(n)$-aikainen järjestämisalgoritmi,
+jonka toiminta perustuu oletukseen, että taulukon alkiot
+ovat sopivan pieniä kokonaislukuja.
+Tarkemmin ottaen algoritmi olettaa, että jokainen luku on
+kokonaisluku välillä $0 \dots k$, missä $k=O(n)$.
+
+Algoritmissa on ideana luoda kirjanpito, joka kertoo,
+montako kertaa mikäkin mahdollinen luku välillä $0 \dots k$
+esiintyy taulukossa.
+Tällaista kirjanpitoa varten voimme määritellä taulukon
+\texttt{kerrat}, jossa $\texttt{kerrat}[x]$ ilmaisee,
+montako kertaa luku $x$ esiintyy taulukossa.
+Saamme luotua kirjanpidon käymällä läpi taulukon sisällön,
+ja sitten voimme muodostaa järjestetyn taulukon
+kirjanpidon perusteella.
+Seuraava koodi havainnollistaa asiaa:
+
+\begin{code}
+for (int i = 0; i < n; i++) {
+    kerrat[taulu[i]]++;
+}
+int i = 0;
+for (int x = 0; x <= k; x++) {
+    for (int j = 0; j < kerrat[x]; j++) {
+        taulu[i] = x;
+        i++;
+    }
+}
+\end{code}
+
+Algoritmin molemmat vaiheet vievät aikaa $O(n)$,
+joten se toimii ajassa $O(n)$.
+Algoritmi on kuitenkin käyttökelpoinen vain silloin,
+kun raja $k$ on niin pieni, että voimme pitää
+muistissa kirjanpitoa.
 
 \section{Järjestäminen Javassa}
 
