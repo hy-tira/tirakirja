@@ -1,7 +1,7 @@
 \chapter{Hajautustaulu}
 
-Tämän luvun tavoitteemme on luoda tietorakenne,
-jonka avulla voimme pitää yllä tehokkaasti alkioiden joukkoa,
+Hajautustaulu on tietorakenne,
+jonka avulla voimme pitää yllä alkioiden joukkoa,
 jossa on seuraavat operaatiot:
 
 \begin{itemize}
@@ -10,16 +10,28 @@ jossa on seuraavat operaatiot:
 \item poista alkio $x$ joukosta
 \end{itemize}
 
-Jos alkiot olisivat aina kokonaislukuja
-välillä $0,1,\ldots,n-1$, voisimme ratkaista tehtävän
-helposti luomalla $n$-kokoisen taulukon, jonka
-jokaisessa kohdassa $x$ on luku 0 ($x$ ei ole taulukossa)
-tai luku 1 ($x$ on taulukossa).
-Tällaisen taulukon avulla voisimme toteuttaa
-helposti kaikki yllä olevat operaatiot $O(1)$-ajassa
-päivittämällä tai tutkimalla yhtä kohtaa taulukosta.
+Yksi tapa toteuttaa tällainen joukko olisi tallentaa
+alkiot listaan.
+Esimerkiksi voisimme säilyttää alkioita listalla
+järjestyksessä, jolloin voisimme selvittää binäärihaulla,
+kuuluuko tietty alkio joukkoon.
+Tällaista tietorakennetta käyttäen alkion tarkistaminen
+veisi aikaa $O(\log n)$ ja alkion lisääminen ja poistaminen
+veisivät aikaa $O(n)$.
+Ratkaisu ei ole tyydyttävä, koska lisääminen ja poistaminen
+toimivat hitaasti.
 
-Tässä luvussa keskitymme kuitenkin yleisempään tilanteeseen,
+Jos voisimme olettaa, että alkiot ovat sopivan pieniä kokonaislukuja,
+voisimme myös toteuttaa joukon taulukkona $\texttt{joukko}$,
+jossa kohta $\texttt{joukko}[x]$ kertoo meille,
+kuuluuko alkio $x$ joukkoon vai ei.
+Esimerkiksi voisimme sopia, että taulukossa on luku 1,
+jos alkio kuuluu joukkoon, ja muuten luku 0.
+Tällaisen taulukon avulla voisimme toteuttaa kaikki
+joukon operaatiot ajassa $O(1)$, mutta joudumme rajoittumaan
+pieniin kokonaislukuihin joukon alkioina.
+
+Tässä luvussa keskitymme yleisempään tilanteeseen,
 jossa alkiot eivät ole välttämättä sopivan pieniä kokonaislukuja
 vaan ne voivat olla minkä tahansa tyyppisiä, esimerkiksi merkkijonoja.
 Osoittautuu, että voimme yleistää yllä olevan idean toteuttamalla
@@ -29,10 +41,10 @@ tehokkaasti keskimäärin $O(1)$-aikaisesti.
 
 \section{Hajautustaulun toteutus}
 
-\emph{Hajautustaulu} on $n$-kokoinen taulukko,
-joka pitää yllä alkioiden joukkoa.
+Toteutamme hajautustaulun taulukkona,
+jossa on $n$ alkiota.
 Jokaisessa hajautustaulun kohdassa on lista,
-jossa on jokin määrä alkioita.
+jossa voi olla joukossa olevia alkioita.
 Jotta voimme käyttää hajautustaulua,
 meillä täytyy olla myös \emph{hajautusfunktio},
 jonka avulla voimme laskea mille tahansa alkiolle
@@ -58,8 +70,8 @@ Merkkijonojen \texttt{apina} ja \texttt{cembalo} hajautusarvo on 2, ja merkkijon
 
 Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu, jossa on
 merkkijonot \texttt{apina}, \texttt{banaani} ja \texttt{cembalo}.
-Tässä hajautustaulussa on kymmenen mahdollista kohtaa
-($0,1,\ldots,9$), joihin voi tallentaa alkioita listaan.
+Tässä hajautustaulussa $n=10$, joten voimme tallentaa alkioita
+listoihin kohtiin $0,1,\dots,9$.
 Merkkijonojen \texttt{apina} ja \texttt{cembalo}
 hajautusarvo on 2, joten ne ovat samassa listassa kohdassa 2.
 Merkkijonon \texttt{banaani} hajautusarvo taas on 7,
@@ -70,7 +82,7 @@ Kun olemme luoneet hajautustaulun, voimme tarkistaa,
 onko tietty alkio joukossa, laskemalla sen hajautusarvon
 ja käymällä läpi vastaavan listan.
 Vastaavasti voimme lisätä alkion joukkoon
-lisäämällä sen vastaavan listan loppuun ja poistaa
+lisäämällä sen listan loppuun ja poistaa
 alkion joukosta poistamalla sen listasta.
 Näiden operaatioiden aikavaativuus on $O(k)$,
 missä $k$ on alkion hajautusarvoa vastaavan listan pituus,
@@ -94,8 +106,6 @@ Jotta hajautustaulu olisi käyttökelpoinen, hajautusfunktioon
 liittyy kuitenkin toinenkin vaatimus:
 sen tulisi jakaa alkiot mahdollisimman \emph{tasaisesti}
 eri puolille hajautustaulua.
-Syynä tähän on, että hajautustaulun tehokkuus riippuu siitä,
-miten tasaisesti alkiot ovat jakautuneet.
 Jos alkiot ovat jakautuneet tasaisesti ja listat ovat lyhyitä,
 voimme lisätä, etsiä ja poistaa alkioita tehokkaasti.
 
@@ -129,11 +139,11 @@ oikeassa taulussa kaikki alkiot ovat samassa listassa.}
 \end{figure}
 
 Kuva \ref{fig:hajjak} näyttää kaksi hajautustaulua, jotka vastaavat
-samaa joukkoa eri hajautusfunktioilla.
+samaa joukkoa kahdella eri hajautusfunktiolla.
 Vasemmassa taulussa hajautus on onnistunut täydellisesti
 ja jokainen alkio on omassa listassaan.
 Oikeassa taulussa taas kaikki alkiot ovat joutuneet samaan
-listaan eikä hajautustaulusta ole mitään hyötyä.
+listaan eikä hajautuksesta ole mitään hyötyä.
 Tavoitteemme on, että saisimme aikaan hajautusfunktion,
 jonka toiminta on lähempänä vasenta taulua.
 
@@ -159,7 +169,7 @@ Seuraavassa on kolme mahdollista tapaa määritellä hajautusfunktio:
 Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on 5.
 \item Hajautusarvo on merkkikoodien summa
 \[ c_0 + c_1 + \dots + c_{k-1}.\]
-Merkkijonon \texttt{apina} hajautusarvo on
+Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on
 \[97+112+105+110+97=521.\]
 \item Hajautusarvo on painotettu merkkikoodien summa
 \[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
@@ -170,7 +180,7 @@ Esimerkiksi jos $A=7$, merkkijonon \texttt{apina} hajautusarvo on
 
 Kaikki yllä olevat hajautusfunktiot ovat toimivia,
 mutta ne eivät ole yhtä hyviä.
-Funktio 1 ei ole kovin hyvä, koska se antaa monelle
+Funktio 1 ei ole hyvä, koska se antaa monelle
 usein esiintyvälle merkkijonolle saman hajautusarvon.
 Esimerkiksi suomen kielessä on suuri määrä viisikirjaimisia
 sanoja ja ne kaikki saavat saman hajautusarvon tätä
@@ -180,15 +190,15 @@ että jos kahdessa merkkijonossa on samat merkit eri
 järjestyksessä, ne saavat aina saman hajautusarvon.
 Funktio 3 eli \emph{polynominen hajautus} korjaa tämän puutteen
 asettamalla summaan painoja, jotka riippuvat merkkien kohdista.
-Tämä on käytännössä hyvä tapa määritellä hajautusfunktio,
+Tämä on käytännössä hyvä tapa luoda hajautusfunktio,
 jota käytetään esimerkiksi Javan standardikirjastossa.
 
 \subsection{Hajautuksen tehokkuus}
 
-Hajautustaulun tehokkuus riippuu kahdesta asiasta:
+Hajautuksen tehokkuus riippuu kahdesta asiasta:
 kuinka suuri hajautustaulu on (parametri $n$)
 sekä miten tasaisesti hajautusfunktio jakaa alkiota
-eri puolelle hajautustaulua.
+eri puolille hajautustaulua.
 Jos oletamme, että alkiot jakautuvat tasaisesti
 ja joukossa on yhteensä $m$ alkiota,
 jokaiseen listaan osuu noin $m/n$ alkiota
@@ -225,7 +235,9 @@ Luvussa 5.2.4 näemme tästä konkreettisen esimerkin.
 \section{Hajautus Javassa}
 
 Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
-\texttt{HashSet} ja \texttt{HashMap}.
+\texttt{HashSet} pitää yllä alkioiden joukkoa
+hajautustaulun avulla, ja \texttt{HashMap} säilyttää
+joukkoa avain-arvo-pareja, mitä voi ajatella taulukon yleistyksenä.
 Seuraavaksi tutustumme tarkemmin näihin rakenteisiin.
 
 \subsection{\texttt{HashSet}-rakenne}
@@ -234,7 +246,7 @@ Javan \texttt{HashSet}-rakenne pitää yllä joukkoa alkioista.
 Joukkoon voi lisätä alkion metodilla \texttt{add},
 ja siitä voi poistaa alkion metodilla \texttt{remove}.
 Esimerkiksi seuraava koodi luo joukon, jossa voi olla
-kokonaislukuja, ja lisää luvut 3, 5 ja 8 joukkoon.
+kokonaislukuja, ja lisää siihen luvut 3, 5 ja 8.
 Tämän jälkeen koodi poistaa luvun 5 joukosta.
 
 \begin{code}
@@ -269,24 +281,6 @@ joukko.add(5);
 System.out.println(joukko); // [5]
 \end{code}
 
-\subsubsection{Mitä hyötyä \texttt{HashSet}-rakenteesta on?}
-
-\texttt{HashSet} tarjoaa metodit \texttt{add},
-\texttt{contains} ja \texttt{remove},
-mutta tuttu \texttt{ArrayList}
-tarjoaa myös samat metodit eikä siinä ole edes rajoitusta,
-että sama alkio ei voisi esiintyä monta kertaa.
-Miten \texttt{HashSet} hyödyttää siis meitä?
-
-Olennainen etu \texttt{HashSet}-rakenteessa on,
-että metodit \texttt{add}, \texttt{contains} ja \texttt{remove}
-toimivat \emph{kaikki} keskimäärin tehokkaasti ajassa $O(1)$
-hajautustaulun ansiosta.
-\texttt{ArrayList}-rakenteessa vain \texttt{add}
-toimii $O(1)$-ajassa ja \texttt{contains} ja \texttt{remove}
-ovat hitaita, koska ne vievät aikaa $O(n)$.
-
-
 \subsection{\texttt{HashMap}-rakenne}
 
 \texttt{HashMap}-rakenne pitää yllä joukkoa avain-arvo-pareja.
@@ -300,7 +294,7 @@ tarvitse olla peräkkäisiä kokonaislukuja.
 kaksi tyyppiä: avaimen ja arvon tyyppi.
 Esimerkiksi seuraava koodi luo sanakirjan, jossa sekä
 avaimet että arvot ovat merkkijonoja.
-Sanakirjaan voi syöttää merkkijonopareja, jotka kertovat
+Syötämme sanakirjaan merkkijonopareja, jotka kertovat
 sanan käännöksen suomesta englanniksi.
 Metodi \texttt{put} lisää uuden avain-arvo-parin,
 ja metodi \texttt{get} hakee arvon avaimen perusteella.
@@ -330,7 +324,7 @@ if (sanakirja.containsKey(sana)) {
 Koska \texttt{HashMap} on toteutettu hajautustaulun avulla,
 sen operaatiot toimivat tehokkaasti keskimäärin $O(1)$-ajassa.
 
-\subsection{Metodi \texttt{hashCode}}
+\subsection{\texttt{hashCode}-metodi}
 
 Javan hajautustaulut perustuvat siihen, että olioissa
 on metodi \texttt{hashCode}, jonka avulla olio kertoo
@@ -380,4 +374,6 @@ voimme luoda vaikkapa \texttt{HashSet}-rakenteen, jossa on pisteitä:
 HashSet<Piste> joukko = new HashSet<Piste>();
 \end{code}
 
-\subsection{xxx}
+\section{Esimerkki: Yhteiset sanat}
+
+\section{Hajautuksen rikkominen}
