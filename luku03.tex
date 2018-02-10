@@ -235,6 +235,105 @@ keskenään vierekkäisiä alkioita.
 
 \subsection{Vaihtojärjestäminen}
 
+Vaihtojärjestäminen etsii ensin taulukon pienimmän alkion
+ja vaihtaa sen ensimmäiseksi.
+Tämän jälkeen se käsittelee vastaavasti taulukon
+jäljellä olevan osan, jne., kunnes taulukko on järjestyksessä.
+Kuva \ref{fig:vaijar} näyttää esimerkin
+vaihtojärjestämisen toiminnasta.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\begin{scope}
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/4,1/2,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\end{scope}
+\begin{scope}[yshift=-2cm]
+\fill[lightgray] (0,0) rectangle (1,1);
+\fill[lightgray] (5,0) rectangle (6,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/5,3/8,4/2,5/4,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\draw (1,-0.5) -- (1,1.5);
+\end{scope}
+\begin{scope}[yshift=-4cm]
+\fill[lightgray] (1,0) rectangle (2,1);
+\fill[lightgray] (1,0) rectangle (2,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/5,3/8,4/2,5/4,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\draw (2,-0.5) -- (2,1.5);
+\end{scope}
+\begin{scope}[yshift=-6cm]
+\fill[lightgray] (2,0) rectangle (3,1);
+\fill[lightgray] (4,0) rectangle (5,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/8,4/5,5/4,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\draw (3,-0.5) -- (3,1.5);
+\end{scope}
+\begin{scope}[yshift=-8cm]
+\fill[lightgray] (3,0) rectangle (4,1);
+\fill[lightgray] (5,0) rectangle (6,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/8,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\draw (4,-0.5) -- (4,1.5);
+\end{scope}
+\begin{scope}[yshift=-10cm]
+\fill[lightgray] (4,0) rectangle (5,1);
+\fill[lightgray] (4,0) rectangle (5,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/8,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\draw (5,-0.5) -- (5,1.5);
+\end{scope}
+\begin{scope}[yshift=-12cm]
+\fill[lightgray] (5,0) rectangle (6,1);
+\fill[lightgray] (6,0) rectangle (7,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/5,6/8,7/6} \node at (0.5+\x,0.5) {\v};
+\draw (6,-0.5) -- (6,1.5);
+\end{scope}
+\begin{scope}[yshift=-14cm]
+\fill[lightgray] (6,0) rectangle (7,1);
+\fill[lightgray] (7,0) rectangle (8,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/5,6/6,7/8} \node at (0.5+\x,0.5) {\v};
+\draw (7,-0.5) -- (7,1.5);
+\end{scope}
+\begin{scope}[yshift=-16cm]
+\fill[lightgray] (7,0) rectangle (8,1);
+\fill[lightgray] (7,0) rectangle (8,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/5,6/6,7/8} \node at (0.5+\x,0.5) {\v};
+\draw (8,-0.5) -- (8,1.5);
+\end{scope}
+\end{tikzpicture}
+\caption{Esimerkki vaihtojärjestämisen toiminnasta.}
+\label{fig:vaijar}
+\end{figure}
+
+
+Seuraava koodi toteuttaa vaihtojärjestämisen:
+
+\begin{code}
+for (int i = 0; i < n; i++) {
+    int k = i;
+    for (int j = i; j < n; j++) {
+        if (taulu[j] < taulu[k]) k = j;
+    }
+    swap(taulu[i],taulu[k]);
+}
+\end{code}
+
+Toisin kuin kuplajärjestäminen ja lisäysjärjestäminen,
+vaihtojärjestäminen vaihtaa vain $O(n)$ alkiota keskenään
+taulukossa, koska se siirtää aina pienimmän alkion
+suoraan oikeaan kohtaan.
+Algoritmi vie kuitenkin $O(n^2)$ aikaa,
+koska jokaisen pienimmän alkion löytäminen vie $O(n)$ aikaa.
+
+Myöhemmin luvussa X huomaamme kuitenkin,
+että voimme luoda vaihtojärjestämisen idealla tehokkaan
+$O(n \log n)$-algoritmin käyttämällä apuna kekorakennetta.
+
 \section{Tehokkaat algoritmit}
 
 \subsection{Lomitusjärjestäminen}
