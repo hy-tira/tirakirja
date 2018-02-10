@@ -335,6 +335,12 @@ $O(n \log n)$-algoritmin käyttämällä apuna kekorakennetta.
 
 \section{Tehokkaat algoritmit}
 
+Jos meillä on järjestettävänä suuri määrä tietoa,
+$O(n^2)$-aikainen algoritmi ei kelpaa vaan tarvitsemme
+tehokkaamman menetelmän.
+Seuraavaksi tutustumme algoritmeihin,
+joiden avulla voimme toteuttaa järjestämisen tehokkaasti $O(n \log n)$-ajassa.
+
 \subsection{Lomitusjärjestäminen}
 
 Lomitusjärjestäminen on rekursiivinen järjestämisalgoritmi,
@@ -346,7 +352,7 @@ joka järjestää taulukon seuraavasti:
 \item Jaa taulukko keskeltä kahdeksi osataulukoksi ja järjestä
 vasen ja oikea osataulukko rekursiivisesti.
 \item Lomita vasen ja oikea osataulukko yhteen niin, että ne muodostavat
-järjestetyn taulukon.
+kokonaisen järjestetyn taulukon.
 \end{enumerate}
 
 Esimerkiksi jos järjestettävänä on taulukko $[4,2,5,8,2,1,5,6]$,
@@ -453,7 +459,8 @@ Parempi tapa on esimerkiksi ottaa tarkasteluun taulukon ensimmäinen,
 keskimmäinen ja viimeinen alkio ja valita niistä
 järjestyksessä keskimmäinen jakoalkioksi.
 Tällaisella jakoalkion valinnalla on jo vaikeaa keksiä taulukkoa,
-jossa pikajärjestäminen veisi aikaa $O(n^2)$.
+jossa pikajärjestäminen veisi aikaa $O(n^2)$,
+saati sitten että tällainen tilanne esiintyisi käytännössä.
 
 Pikajärjestämisen todellinen etu on kuitenkin siinä,
 että sen vakiokertoimet ovat pienet.
