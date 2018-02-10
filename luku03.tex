@@ -424,4 +424,109 @@ vertailu: 2 3
 vertailu: 2 1
 \end{code}
 
-\section{Esimerkkejä}
+\section{Algoritmien suunnittelusta}
+
+Voimme ratkaista tehokkaasti monia ongelmia järjestämällä
+aineiston ja hyö\-dyntämällä sitten järjestystä tavalla tai toisella
+algoritmissa.
+Seuraavaksi tutustumme esimerkkeihin ongelmista, jotka voimme
+ratkaista tehokkaasti järjes\-tämisen avulla.
+
+\subsection{Perusongelmia}
+
+Taulukon järjestämisen jälkeen voimme vastata tehokkaasti
+mm. seuraaviin kysymyksiin:
+
+\begin{itemize}
+\item Onko taulukossa kahta samaa alkiota?
+\item Kuinka monta eri alkiota taulukossa on?
+\item Mikä on yleisin taulukossa esiintyvä alkio?
+\end{itemize}
+
+Voimme ratkaista ongelmat tehokkaasti, koska taulukon järjestämisen
+jälkeen yhtä suuret alkiot ovat vierekkäin.
+Kaikissa tapauksissa taulukon järjestäminen vie aikaa $O(n \log n)$,
+ja sen jälkeen voimme selvittää ongelman vastauksen
+käymällä taulukon läpi vasemmalta oikealle ajassa $O(n)$.
+
+Esimerkiksi seuraava metodi laskee, montako eri alkiota
+taulukko sisältää:
+
+\begin{code}
+int eriAlkiot(int[] taulu) {
+    int n = taulu.length;
+    Arrays.sort(taulu);
+    int tulos = 1;
+    for (int i = 1; i < n; i++) {
+        if (taulu[i-1] != taulu[i]) tulos++;
+    }
+    return tulos;
+}
+\end{code}
+
+\subsection{Pyyhkäisyviiva}
+
+Pyyhkäisyviiva on tekniikka, jossa mallinnamme ongelman joukkona
+tapahtumia, järjestämme tapahtumat ja käymme läpi tapahtumat
+järjestyksessä.
+Tarkastellaan esimerkkinä ongelmaa, jossa meillä on tiedossa
+$n$ ravintola-asiakkaan saapumis- ja poistumisaika
+ja haluamme selvittää, montako asiakasta ravintolassa oli
+enimmillään samaan aikaan.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw[|-|] (0,0) -- (5,0);
+\draw[|-|] (7,-1.5) -- (10,-1.5);
+\draw[|-|] (4,-3) -- (11,-3);
+\draw[|-|] (5,-4.5) -- (6,-4.5);
+\node at (-2,0) {$A$};
+\node at (-2,-1.5) {$B$};
+\node at (-2,-3) {$C$};
+\node at (-2,-4.5) {$D$};
+\end{tikzpicture}
+\caption{Esimerkki ravintolan asiakkaiden vierailuista.
+Ravintolassa oli enimmillään kolme asiakasta.}
+\label{fig:pyyvii}
+\end{figure}
+
+
+Kuva \ref{fig:pyyvii} näyttää esimerkin tilanteessa,
+jossa ravintolassa on käynyt neljä asiakasta $A$, $B$, $C$ ja $D$.
+Ravintolassa oli enimmillään kolme asiakasta
+asiakkaan $D$ vierailun ajan.
+
+Voimme ratkaista ongelman esittämällä jokaisen asiakkaan kahtena
+tapahtumana aikajanalla: ensimmäinen tapahtuma on asiakkaan
+saapuminen ja toinen tapahtuma on asiakkaan poistuminen.
+Tämän jälkeen voimme järjestää tapahtumat aikajärjestykseen
+ja sen jälkeen käsitellä tapahtumat.
+Pidämme yllä laskuria, joka kertoo, montako asiakasta ravintolassa
+on tällä hetkellä.
+Aina kun asiakas saapuu ravintolaan, laskuri kasvaa yhdellä,
+ja aina kun asiakas poistuu ravintolasta,
+laskuri vähenee yhdellä.
+Laskurin suurin arvo läpikäynnin aikana on sama kuin
+suurin asiakkaiden määrä ravintolassa.
+
+Jotta voimme käsitellä tapahtumia, meidän on hyödyllistä määritellä
+luokka, joka sisältää tapahtuman ajanhetken ja tyypin
+(1 = asiakas saapuu, 2 = asiakas poistuu):
+
+\begin{code}
+class Tapahtuma implements Comparable<Tapahtuma> {
+    int aika, tyyppi;
+
+    int compareTo(Tapahtuma t) {
+        if (this.aika != t.aika) return this.aika-t.aika;
+        else return this.tyyppi-t.tyyppi;
+    }
+}
+\end{code}
+
+Huomaa, että meidän ei tarvitse muistaa tapahtumissa,
+kenestä asiakkaasta on kysymys, vaan riittää tietää,
+onko kyseessä saapuva vai poistuva asiakas.
+
+\subsection{Ahneet algoritmit}
