@@ -346,8 +346,82 @@ $O(n \log n)$-algoritmin käyttämällä apuna kekorakennetta.
 
 \section{Järjestäminen Javassa}
 
-\subsection{Arrays.sort}
+Käytännössä ei ole yleensä hyvä idea toteuttaa itse
+järjestämisalgoritmia, koska nykypäivän ohjelmointikielissä
+on valmiit työkalut järjestämiseen.
+Esimerkiksi Javassa voimme käyttää metodia \texttt{Arrays.sort},
+joka järjestää sille annetun taulukon:
 
-\subsection{Omat luokat}
+\begin{code}
+int[] taulu = {4,2,5,8,2,1,5,6};
+Arrays.sort(taulu);
+\end{code}
+
+Kiinnostava kysymys on, mitä algoritmia Java käyttää
+taulukon järjes\-tämiseen.
+Yllättävää kyllä, tämä riippuu siitä, minkä tyyppistä tietoa
+taulukossa on.
+Jos taulukon alkiot ovat alkeistyyppisiä
+(esimerkiksi \texttt{int}), Java käyttää 
+pikajärjestämisen muunnelmaa.
+Jos taas alkiot ovat oliotyyppisiä
+(esimerkiksi \texttt{String}),
+algoritmina on lomitusjärjestäminen.
+
+Jos haluamme, että Java pystyy järjestämään omia olioitamme,
+meidän täytyy toteuttaa luokkaan metodi \texttt{compareTo} ja
+merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
+Kun \texttt{Arrays.sort} järjestää taulukon,
+se kutsuu metodia \texttt{compareTo} aina, kun se haluaa selvittää
+kahden alkion suuruusjärjestyksen.
+Metodin tulee palauttaa negatiivinen arvo, nolla tai positiivinen arvo
+sen mukaan, onko olio itse pienempi, yhtä suuri vai suurempi
+kuin parametrina annettu olio.
+
+Esimerkiksi seuraava koodi toteuttaa luokan \texttt{Piste},
+johon voidaan tallentaa pisteen x- ja y-koordinaatit.
+Luokassa on metodi \texttt{compareTo}, joka määrittelee,
+että pisteet järjestetään ensisijaisesti x-koordinaatin ja
+toissijaisesti y-koordinaatin mukaan.
+
+\begin{code}
+public class Piste implements Comparable<Piste> {
+    public int x, y;
+
+    public int compareTo(Piste p) {
+        if (this.x != p.x) return this.x-p.x;
+        else return this.y-p.y;
+    }
+}
+\end{code}
+
+Metodin \texttt{compareTo} avulla voimme myös konkreettisesti
+tarkastella, mitä Java tekee järjestäessään taulukon.
+Seuraava luokka sisältää vain yhden luvun,
+mutta ilmoittaa meille aina, kun Java kutsuu
+\texttt{compareTo}-funktiota:
+
+\begin{code}
+public class Luku implements Comparable<Luku> {
+    public int luku;
+
+    public int compareTo(Luku x) {
+        System.out.println("vertailu: " + luku + " " + x.luku);
+        return this.luku-x.luku;
+    }
+}
+\end{code}
+
+Esimerkiksi kun järjestettävänä taulukkona on $[4,1,3,2]$,
+saamme tietää, että Java tekee seuraavat vertailut:
+
+\begin{code}
+vertailu: 1 4
+vertailu: 3 1
+vertailu: 3 4
+vertailu: 3 1
+vertailu: 2 3
+vertailu: 2 1
+\end{code}
 
 \section{Esimerkkejä}
