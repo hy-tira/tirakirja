@@ -158,7 +158,7 @@ void traverse(Node node) {
 }
 \end{code}
 
-\subsection{Binäärihakupuun operaatiot}
+\subsection{Puun operaatiot}
 
 Binäärihakupuu on binääripuu, jossa jokainen solmu vastaa
 yhtä joukkoon kuuluvaa alkiota.
@@ -391,8 +391,68 @@ Eli jos pystymme toteuttamaan puun operaatiot niin,
 että AVL-ehto säilyy, saamme aikaan binäärihakupuun,
 jonka operaatiot toimivat ajassa $O(\log n)$.
 
+\begin{figure}
+\center
+\scriptsize
+\begin{tikzpicture}[scale=0.4]
+\begin{scope}
+\node[draw, circle] (2) at (-2.5,-2) {\phantom{$1$}};
+\end{scope}
+\begin{scope}[xshift=5cm]
+\node[draw, circle] (2) at (-2.5,-2) {\phantom{$1$}};
+\node[draw, circle] (4) at (-3.5,-4) {\phantom{$1$}};
+\path[draw,thick,-] (2) -- (4);
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (2) at (-2.5,-2) {\phantom{$1$}};
+\node[draw, circle] (4) at (-3.5,-4) {\phantom{$1$}};
+\node[draw, circle] (5) at (-1.5,-4) {\phantom{$1$}};
+\node[draw, circle] (7) at (-4.5,-6) {\phantom{$1$}};
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (4) -- (7);
+\end{scope}
+\begin{scope}[xshift=15cm,yshift=-2cm]
+\node[draw, circle] (1) at (0,0) {\phantom{$1$}};
+\node[draw, circle] (2) at (-2.5,-2) {\phantom{$1$}};
+\node[draw, circle] (3) at (2.5,-2) {\phantom{$1$}};
+\node[draw, circle] (4) at (-3.5,-4) {\phantom{$1$}};
+\node[draw, circle] (5) at (-1.5,-4) {\phantom{$1$}};
+\node[draw, circle] (6) at (1.5,-4) {\phantom{$1$}};
+\node[draw, circle] (7) at (-4.5,-6) {\phantom{$1$}};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (4) -- (7);
+\end{scope}
+\end{tikzpicture}
+\caption{Vähiten solmuja sisältävät AVL-puut korkeuksille 1, 2, 3 ja 4.}
+\label{fig:avlkor}
+\end{figure}
+
 Miksi sitten AVL-ehto takaa, että binäärihakupuun korkeus
 on $O(\log n)$?
+Tässä auttaa määritellä funktio $f(h)$, joka antaa AVL-puun
+pienimmän mahdollisen solmujen määrän korkeudelle $h$.
+Kuvan \ref{fig:avlkor} mukaisesti funktion ensimmäiset arvot
+ovat $f(1)=1$, $f(2)=2$, $f(3)=4$ ja $f(4)=7$.
+Yleisemmin
+\[f(h)=f(h-1)+f(h-2)+1,\]
+koska jos haluamme rakentaa AVL-puun korkeutta $h$,
+jossa on mahdollisimman vähän solmuja,
+meidän kannattaa laittaa juuren vasempaan
+lapseen AVL-puu korkeutta $h-1$ ja oikeaan lapseen
+AVL-puu korkeutta $h-2$ niin,
+että kummassakin alipuussa on mahdollisimman vähän solmuja.
+
+Saamme funktiolle alarajan
+\[f(h) \ge 2^{h/2},\]
+koska arvo $f(h)$ ainakin kaksinkertaistuu kahden askeleen välein.
+Tämä epä\-yhtälö tarkoittaa samaa kuin
+\[ \frac{h}{2} \le \log_2 f(h).\]
+Niinpä jos puussa on $n$ solmua, pätee $f(h) \le n$ ja sen myötä $h = O(\log n)$.
 
 \subsection{Kiertojen toteutus}
 
