@@ -609,7 +609,7 @@ alusta tai lopusta.
 Tämän vuoksi \texttt{LinkedList} ei ole hyvä valinta,
 jos haluamme käsitellä alkioita kohdan perusteella.
 
-\subsection{Tehokkuusvertailu}
+\section{Tehokkuusvertailu}
 
 Jokaisessa tietorakenteessa on omat hyvät ja huonot puolensa,
 ja kaikille on tietyt käyttötarkoituksensa.
@@ -640,9 +640,8 @@ käyttää taulukkolistan sijasta.
 \end{figure}
 
 
-Syynä tähän on, että nykyaikaiset tietokoneet on suunniteltu niin,
-että ne \emph{suosivat} taulukkolistan käyttämistä linkitetyn
-listan sijaan.
+Syynä tähän on, että nykyaikaiset tietokoneet
+\emph{suosivat} taulukkolistan käyttämistä linkitetyn listan sijaan.
 Kuvassa \ref{fig:taulin} näkyy, miten taulukkolista ja linkitetty lista
 asettuvat tietokoneen muistissa.
 Taulukkolistan alkiot ovat peräkkäin, kun taas linkitetyn
@@ -656,17 +655,39 @@ Tämä näkyy käytännössä siinä, että taulukkolistan käsittely on selväs
 nopeampaa kuin linkitetyn listan käsittely.
 
 Tarkastellaan esimerkkinä seuraavaa metodia,
-joka laskee listan lukujen summan.
+joka laskee, montako kertaa luku $x$ esiintyy listalla.
 Koska metodi on toteutettu tyypille \texttt{List},
-voimme käyttää sitä sekä tyypin \texttt{ArrayList}
-että \texttt{LinkedList} kanssa.
+voimme käyttää sitä sekä \texttt{ArrayList}-
+että \texttt{LinkedList}-rakenteen kanssa.
 
 \begin{code}
-long summa(List lista) {
-    long s = 0;
-    for (Integer x : lista) {
-        s += x;
+int kerrat(List<Integer> lista, int x) {
+    int tulos = 0;
+    for (Integer u : lista) {
+        if (u == x) tulos++;
     }
     return s;
 }
 \end{code}
+
+Testissä luomme ensin listan, jossa on $n$ satunnaista lukua
+väliltä $1 \dots 100$.
+Tämän jälkeen laskemme jokaiselle luvulle väliltä $1 \dots 100$,
+montako kertaa se esiintyy listalla.
+
+\begin{table}
+\center
+\begin{tabular}{rrrr}
+taulukon koko $n$ & taulukko & \texttt{ArrayList} & \texttt{LinkedList} \\
+\hline
+$10^6$ & 0.06 & 0.15 s & 0.44 s \\
+$2 \cdot 10^6$ & 0.13 s & 0.30 s & 0.90 s \\
+$4 \cdot 10^6$ & 0.26 s & 0.60 s & 1.66 s \\
+$8 \cdot 10^6$ & 0.53 s & 1.30 s & 3.40 s \\
+$16 \cdot 10^6$ & 1.33 s & 3.39 s & 7.99 s \\
+\end{tabular}
+\caption{Algoritmien suoritusaikojen vertailu.}
+\label{tab:kerver}
+\end{table}
+
+Taulukko X näyttää testin tulokset.
