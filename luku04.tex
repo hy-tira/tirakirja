@@ -410,22 +410,98 @@ Koodin tulostus on seuraava:
 
 \subsection{Listan operaatiot}
 
-Taulukkolistaan verrattuna linkitetyn listan etuna on,
-että voimme lisätä alkion mihin tahansa kohtaan listaa
-$O(1)$-ajassa: riittää luoda yksi solmu ja muuttaa paria
-viittausta.
-Samoin voimme poistaa minkä tahansa solmun $O(1)$-ajassa.
-Huonona puolena on kuitenkin, että tietyssä kohdassa listaa
-olevan alkion käsittely vie aikaa $O(n)$: meidän täytyy
-kulkea alkioon askel kerrallaan listan alusta tai lopusta.
+Linkitetyn listan hyvänä puolena on,
+että voimme lisätä tehokkaasti alkion mihin tahansa
+kohtaan listaa luomalla uuden alkiota vastaavan solmun
+ja muuttamalla paria viittausta listassa.
+Samoin voimme poistaa tehokkaasti minkä tahansa alkion
+samaan tapaan viittauksia muuttamalla.
+Sekä lisäykset että poistot toimivat $O(1)$-ajassa.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\begin{scope}
+\node at (-3,0) {(a)};
+\node[draw, rectangle, minimum size=8mm] (1) at (0,0) {$3$};
+\node[draw, rectangle, minimum size=8mm] (2) at (3,0) {$7$};
+\node[draw, rectangle, minimum size=8mm] (3) at (6,0) {$2$};
+\node[draw, rectangle, minimum size=8mm] (4) at (9,0) {$5$};
+\path[draw,thick,->] (1) edge [bend left] (2);
+\path[draw,thick,->] (2) edge [bend left] (3);
+\path[draw,thick,->] (3) edge [bend left] (4);
+\path[draw,thick,->] (4) edge [bend left] (3);
+\path[draw,thick,->] (3) edge [bend left] (2);
+\path[draw,thick,->] (2) edge [bend left] (1);
+\end{scope}
+\begin{scope}[yshift=-2.5cm]
+\node at (-3,0) {(b)};
+\node[draw, rectangle, minimum size=8mm] (1) at (0,0) {$3$};
+\node[draw, rectangle, minimum size=8mm] (2) at (3,0) {$7$};
+\node[draw, rectangle, minimum size=8mm] (3) at (6,0) {$2$};
+\node[draw, rectangle, minimum size=8mm] (4) at (9,0) {$5$};
+\node[draw, rectangle, minimum size=8mm] (5) at (4.5,-2) {$4$};
+\path[draw,thick,->] (1) edge [bend left] (2);
+\path[draw,thick,->] (2) edge [bend left] (5);
+\path[draw,thick,->] (5) edge [bend left] (3);
+\path[draw,thick,->] (3) edge [bend left] (4);
+\path[draw,thick,->] (4) edge [bend left] (3);
+\path[draw,thick,->] (3) edge [bend left] (5);
+\path[draw,thick,->] (5) edge [bend left] (2);
+\path[draw,thick,->] (2) edge [bend left] (1);
+\end{scope}
+\begin{scope}[yshift=-6.5cm]
+\node at (-3,0) {(c)};
+\node[draw, rectangle, minimum size=8mm] (1) at (0,0) {$3$};
+\node[draw, rectangle, minimum size=8mm] (2) at (3,0) {$7$};
+\node[draw, rectangle, minimum size=8mm] (4) at (9,0) {$5$};
+\node[draw, rectangle, minimum size=8mm] (5) at (4.5,-2) {$4$};
+\path[draw,thick,->] (1) edge [bend left] (2);
+\path[draw,thick,->] (2) edge [bend left] (5);
+\path[draw,thick,->] (5) edge [bend left] (4);
+\path[draw,thick,->] (4) edge [bend left] (5);
+\path[draw,thick,->] (5) edge [bend left] (2);
+\path[draw,thick,->] (2) edge [bend left] (1);
+\end{scope}
+\end{tikzpicture}
+\caption{(a) Alkuperäinen lista $[3,7,2,5]$.
+(b) Listan keskelle lisätään alkio $4$.
+(c) Listasta poistetaan alkio $2$.}
+\label{fig:lismuu}
+\end{figure}
+
+Kuva \ref{fig:lismuu} näyttää esimerkin linkitetyn listan käsittelystä.
+Listan sisältönä on aluksi $[3,7,2,5]$.
+Sitten lisämme listan keskelle alkion 4,
+jolloin luomme ensin uuden solmun alkiolle ja muutamme
+sitten viittauksia alkioiden 7 ja 2 välillä niin,
+että alkio 4 tulee niiden väliin.
+Lopuksi poistamme listasta alkion 2, jolloin yhdistämme
+alkiot 4 ja 5 suoraan toisiinsa.
+
+Linkitetyn listan käyttämiseen liittyy kuitenkin yksi hankaluus:
+koska emme tiedä, missä päin muistia listan solmut sijaitsevat,
+ainoa keino päästä käsiksi solmuihin on lähteä liikkeelle
+listan alusta tai lopusta ja seurata viittauksia.
+Niinpä tietyssä kohdassa olevaan alkioon pääseminen
+vie aikaa $O(n)$.
+Voimme siis käytännössä käsitellä tehokkaasti vain listan alkua ja loppua
+mutta kaikki operaatiot listan keskellä ovat hitaita --
+ellei meillä ole sattumalta valmiiksi tiedossa halutun solmun
+sijainti muistissa.
 
 \section{Javan toteutukset}
 
-\subsection{\texttt{ArrayList} ja \texttt{ArrayDeque}}
+Javan standardikirjastossa on monia listojen toteutuksia,
+jotka pohjautuvat taulukkolistaan tai linkitettyyn listaan.
+Seuraavaksi tutustumme rakenteisiin, joista on usein hyötyä
+käytännössä.
 
-Javassa \texttt{ArrayList}-rakenne toteuttaa taulukkolistan,
-jossa on nopeaa lisätä alkio loppuun sekä poistaa alkio lopusta.
-Esimerkiksi seuraava koodi luo listan, lisää siihen alkiot
+\subsection{\texttt{ArrayList}-rakenne}
+
+\texttt{ArrayList}-rakenne toteuttaa taulukkolistan,
+joka sallii tehokkaat lisäykset ja poistot listan lopussa.
+Esimerkkinä seuraava koodi luo listan, lisää siihen alkiot
 1, 2 ja 3 ja tulostaa listan sisällön.
 Sitten koodi poistaa listan viimeisen alkion ja
 tulostaa uudestaan listan sisällön.
@@ -443,14 +519,36 @@ System.out.println(lista); // [1, 2]
 Metodit \texttt{add} ja \texttt{remove}
 toimivat keskimäärin ajassa $O(1)$,
 joten voimme muuttaa tehokkaasti listaa sen lopusta.
-Lisäksi koska lista on tallennetu taulukkona,
-voimme tehokkaasti hakea tietyssä kohdassa olevan alkion
-ja muuttaa tietyssä kohdassa olevaa alkiota
+Lisäksi voimme käyttää listaa tehokkaasti taulukon tavoin
+ja käsitellä tietyssä kohdassa olevaa alkiota
 metodeilla \texttt{get} ja \texttt{set}.
+Esimerkiksi seuraava koodi tulostaa ensin
+listan kohdassa 1 olevan alkion ja muuttaa sitten
+sen arvoksi 5.
 
-Javassa on myös \texttt{ArrayDeque}-rakenne,
-joka toteuttaa taulukkolistan, johon voi tehdä tehokkaita
-lisäyksiä ja poistoja sekä alussa että lopussa.
+\begin{code}
+System.out.println(lista.get(1)); // 2
+lista.set(1,5);
+System.out.println(lista); // [1, 5, 3]
+\end{code}
+
+Luokassa \texttt{Collections} on hyödyllisiä metodeita,
+joiden avulla voi käsitellä \texttt{ArrayList}-rakennetta.
+Seuraava koodi järjestää ensin listan,
+muuttaa sitten sen järjestyksen käänteiseksi
+ja sekoittaa lopuksi järjestyksen.
+
+\begin{code}
+Collections.sort(lista);
+Collections.reverse(lista);
+Collections.shuffle(lista);
+\end{code}
+
+\subsection{\texttt{ArrayDeque}-rakenne}
+
+\texttt{ArrayDeque}-rakenne toteuttaa taulukkolistan,
+joka sallii tehokkaat lisäykset ja poistot
+sekä listan alussa että lopussa.
 Seuraava koodi esittelee rakenteen käyttämistä:
 
 \begin{code}
@@ -463,20 +561,20 @@ lista.removeFirst();
 System.out.println(lista); // [1, 3]
 \end{code}
 
-\texttt{ArrayDeque} sisältää metodit \texttt{getFirst} ja
-\texttt{getLast}, joiden avulla voimme hakea listan
-ensimmäisen ja viimeisen alkion.
-Kuitenkaan rakenteessa ei ole yleistä metodia \texttt{get},
-joten emme pysty hakemaan muita listalla olevia alkioita.
+Rakenteen rajoituksena on, että voimme käsitellä
+vain listan ensimmäistä ja viimeistä alkiota mutta
+emme listan muita alkioita.
+Voimme käyttää metodeita \texttt{getFirst} ja \texttt{getLast}
+hakemaan listan ensimmäisen ja viimeisen alkion,
+mutta rakenteessa ei ole yleistä metodia \texttt{get},
+jolla voisimme hakea minkä tahansa alkion listalta.
 
-\subsection{\texttt{LinkedList}}
+\subsection{\texttt{LinkedList}-rakenne}
 
-Käytännössä meidän ei kuitenkaan tarvitse toteuttaa
-linkitettyä listaa itse Javalla,
-koska voimme käyttää valmista \texttt{LinkedList}-rakennetta.
-Seuraava koodi esittelee rakenteen käyttämistä.
-Voimme helposti lisätä ja poistaa alkioita listan alussa
-ja lopussa $O(1)$-aikaisesti.
+\texttt{LinkedList}-rakenne toteuttaa kaksisuuntaisen
+linkitetyn listan, jossa voimme helposti lisätä ja poistaa
+alkioita listan alussa ja lopussa.
+Seuraava koodi esittelee asiaa:
 
 \begin{code}
 LinkedList<Integer> lista = new LinkedList<>();
@@ -488,8 +586,8 @@ lista.removeFirst();
 System.out.println(lista); // [1,3]
 \end{code}
 
-Jos haluamme tehdä $O(1)$-aikaisia lisäyksiä ja poistoja muualla
-kuin listan alussa tai lopussa, meidän täytyy käyttää iteraattoria.
+Jos haluamme tehdä tehokkaita lisäyksiä ja poistoja muualla listassa,
+meillä täytyy olla \emph{iteraattori}, joka osoittaa haluttuun kohtaan.
 Seuraava koodi luo iteraattorin, joka osoittaa ensin listan alkuun.
 Sitten se siirtää iteraattoria kaksi askelta eteenpäin ja
 lisää alkion 5 iteraattorin kohdalle eli listan
@@ -505,7 +603,7 @@ x.add(5);
 \texttt{LinkedList} tarjoaa myös metodeita,
 joiden avulla voi käsitellä tietyssä kohdassa listaa olevaa alkiota
 (esimerkiksi metodit \texttt{get} ja \texttt{set}).
-Näiden metodien aikavaativuus on kuitenkin $O(n)$,
+Nämä metodit vievät kuitenkin aikaa $O(n)$,
 koska joudumme kulkemaan ensin oikeaan kohtaan listan
 alusta tai lopusta.
 Tämän vuoksi \texttt{LinkedList} ei ole hyvä valinta,
