@@ -389,7 +389,7 @@ s3 = new Node(2, s4, s2);
 s4 = new Node(5, null, s3);
 \end{code}
 
-Tämän jälkeen voisimme käydä listan läpi näin:
+Tämän jälkeen voisimme käydä listan läpi näin alusta loppuun:
 
 \begin{code}
 Node s = s1;
@@ -397,6 +397,15 @@ while (s != null) {
     System.out.println(s.value);
     s = s.next;
 }
+\end{code}
+
+Koodin tulostus on seuraava:
+
+\begin{code}
+3
+7
+2
+5
 \end{code}
 
 \subsection{Listan operaatiot}
