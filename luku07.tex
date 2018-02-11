@@ -449,18 +449,196 @@ että kummassakin alipuussa on mahdollisimman vähän solmuja.
 
 Koska $f(h) \ge 2 f(h-2)$, saamme funktiolle alarajan
 \[f(h) \ge 2^{h/2},\]
-joka tarkoittaa samaa kuin
+kun $h>1$, joka tarkoittaa samaa kuin
 \[ h \le 2 \log_2 f(h).\]
 Niinpä jos puussa on $n$ solmua, pätee $f(h) \le n$ ja sen myötä $h = O(\log n)$.
 
 \subsection{Kiertojen toteutus}
 
+TODO
+
 \section{Javan rakenteet}
+
+Javassa on binäärihakupuuhun pohjautuvat rakenteet
+\texttt{TreeSet} ja \texttt{TreeMap},
+jotka muistuttavat rakenteita \texttt{HashSet} ja \texttt{HashMap}.
+Erona on kuitenkin, että pystymme etsimään
+alkioita niiden järjestyksen perusteella.
 
 \subsection{\texttt{TreeSet}-rakenne}
 
+Seuraava koodi luo \texttt{TreeSet}-rakenteen,
+joka pitää yllä lukujen joukkoa.
+Koodi lisää joukkoon alkioita ja tulostaa sitten sen sisällön.
+
+\begin{code}
+TreeSet<Integer> joukko = new TreeSet<>();
+joukko.add(4);
+joukko.add(1);
+joukko.add(8);
+joukko.add(7);
+System.out.println(joukko); // [1, 4, 7, 8]
+\end{code}
+
+Koska joukko on järjestyksessä, pystymme etsimään tehokkaasti
+pienim\-män ja suurimman alkion metodeilla \texttt{first} ja \texttt{last}:
+
+\begin{code}
+System.out.println(joukko.first()); // 1
+System.out.println(joukko.last()); // 8
+\end{code}
+
+Pystymme myös etsimään seuraavan tiettyä alkiota
+suuremman tai pienemmän alkion metodeilla \texttt{higher} ja \texttt{lower}:
+
+\begin{code}
+System.out.println(joukko.higher(5)); // 7
+System.out.println(joukko.lower(5)); // 4
+\end{code}
+
+Kaikki nämä operaatiot toimivat ajassa $O(\log n)$.
+
 \subsection{\texttt{TreeMap}-rakenne}
 
-\section{Esimerkki: }
+Seuraava koodi luo sanakirjan \texttt{TreeMap}-rakenteen avulla:
+
+\begin{code}
+TreeMap<String,String> sanakirja = new TreeMap<>();
+sanakirja.put("apina","monkey");
+sanakirja.put("banaani","banana");
+sanakirja.put("cembalo","harpsichord");
+\end{code}
+
+Tässä tapauksessa rakenteen avaimet on järjestetty,
+joten pystymme etsimään tietoa avainten perusteella.
+Esimerkiksi voimme selvittää, mikä on aakkosjärjestyksessä
+ensimmäinen ja viimeinen sanakirjassa oleva sana:
+
+\begin{code}
+System.out.println(sanakirja.firstKey()); // apina
+System.out.println(sanakirja.lastKey()); // cembalo
+\end{code}
+
+Samoin voimme selvittää lähinnä tiettyä avainta olevat avaimet:
+
+\begin{code}
+System.out.println(sanakirja.higherKey("bonus")); // cembalo
+System.out.println(sanakirja.lowerKey("bonus")); // banaani
+\end{code}
+
+\subsection{Omat luokat}
+
+TODO
 
 \section{Tehokkuusvertailu}
+
+Monissa ongelmissa meillä on kaksi mahdollista lähestymistapaa:
+voimme käyttää joukkorakenteita tai taulukoita ja järjestämistä.
+Vaikka molemmat tavat johtavat tehokkaaseen ratkaisuun,
+vakiokertoimissa voi olla merkittäviä eroja, jotka vaikuttavat
+käytännön tehokkuuteen.
+
+Keskitymme seuraavaksi ongelmaan, jossa meille on annettu
+$n$ lukua sisältävä taulukko, ja haluamme selvittää,
+montko eri lukua taulukossa on.
+Ratkaisemme ongelman kolmella eri tavalla ja tutkimme sitten
+ratkaisujen tehokkuutta.
+
+\subsubsection{Ratkaisu 1: \texttt{TreeSet}}
+
+Ensimmäinen tapa ratkaista tehtävä on luoda \texttt{TreeSet},
+johon lisäämme kaikki taulukon luvut.
+Koska jokainen luku voi esiintyä joukossa enintään kerran,
+joukon koko ilmaisee meille, montako eri lukua taulukossa on.
+
+\begin{code}
+int eriLuvut(int[] taulu) {
+    TreeSet<Integer> joukko = new TreeSet<>();
+    for (int i = 0; i < taulu.length; i++) {
+        joukko.add(taulu[i]);
+    }
+    return joukko.size();
+}
+\end{code}
+
+\subsubsection{Ratkaisu 2: \texttt{HashSet}}
+
+Emme tarvitse ratkaisussa \texttt{TreeSet}-rakenteen
+tarjoamaa alkioiden järjestystä, joten voimme käyttää
+yhtä hyvin \texttt{HashSet}-rakennetta.
+Koodi säilyy muuten täysin samanlaisena.
+
+\begin{code}
+int eriLuvut(int[] taulu) {
+    HashSet<Integer> joukko = new HashSet<>();
+    for (int i = 0; i < taulu.length; i++) {
+        joukko.add(taulu[i]);
+    }
+    return joukko.size();
+}
+\end{code}
+
+\subsubsection{Ratkaisu 3: järjestäminen}
+
+Kolmas tapa ratkaista tehtävä on käyttää järjestämistä:
+laitamme luvut listaan, järjestämme listaan ja
+tutkimme, monessako kohdassa järjestetyllä listalla
+luku vaihtuu.
+
+\begin{code}
+int eriLuvut(int[] taulu) {
+    int[] lista = taulu.clone();
+    Arrays.sort(lista);
+    int tulos = 1;
+    for (int i = 1; i < lista.length; i++) {
+        if (lista[i-1] != lista[i]) tulos++;
+    }
+    return tulos;
+}
+\end{code}
+
+\subsubsection{Vertailun tulokset}
+
+Taulukko \ref{tab:eriver} esittää tehokkuusvertailun tulokset,
+kun taulukon koko $n$ vaihtelee.
+Jokaisessa testissä taulukko muodostettiin satunnaisesti niin,
+että sen luvut ovat välillä $1 \dots 10^9$.
+
+Osoittautuu, että ratkaisujen välillä on merkittäviä tehokkuuseroja.
+Ensinnäkin \texttt{HashSet}-ratkaisu on noin kolme kertaa
+nopeampi kuin \texttt{TreeSet}-ratkaisu.
+Tämä on siinä mielessä odotettavaa, että hajautustaulun
+operaatiot vievät aikaa $O(1)$, kun taas binäärihakupuun
+operaatiot vievät aikaa $O(\log n)$.
+Selvästi nopein ratkaisu on kuitenkin kolmas järjestämistä
+käyttävä ratkaisu, joka on noin kymmenen kertaa
+\texttt{TreeSet}-ratkaisua nopeampi.
+
+Kiinnostava seikka on, että sekä \texttt{TreeSet}-ratkaisu että
+järjestämisratkaisu vievät aikaa $O(n \log n)$, mutta
+jälkimmäinen ratkaisu on kymmenen kertaa nopeampi.
+Tämä johtuu siitä, että taulukon järjestäminen on hyvin kevyt
+operaatio, ja se tehdään vain kerran.
+Binäärihakupuussa jokaisen lisäyksen jälkeen täytyy muuttaa
+puun rakennetta, mikä on hidasta ja aiheuttaa suuret vakiokertoimet.
+
+Vaikka joukkorakenteet ovat käteviä, niitä ei siis kannata
+käyttää turhaan.
+Joukkorakenteiden etuna on, että alkioiden lisääminen ja poistaminen
+toimivat tehokkaasti.
+Jos tällaiselle ei ole tarvetta, järjestämiseen perustuva ratkaisu
+saattaa olla parempi valinta.
+
+\begin{table}
+\center
+\begin{tabular}{rrrr}
+taulukon koko $n$ & \texttt{TreeSet} & \texttt{HashSet} & järjestäminen \\
+\hline
+$10^6$ & 0.74 s & 0.25 s & 0.09 s \\
+$2 \cdot 10^6$ & 1.60 s & 0.45 s & 0.19 s \\
+$4 \cdot 10^6$ & 5.60 s & 1.56 s & 0.52 s \\
+$8 \cdot 10^6$ & 12.19 s & 4.50 s & 0.97 s \\
+\end{tabular}
+\caption{Algoritmien suoritusaikojen vertailu.}
+\label{tab:eriver}
+\end{table}
