@@ -611,6 +611,120 @@ jos haluamme käsitellä alkioita kohdan perusteella.
 
 \section{Tehokkuusvertailu}
 
+Seuraavaksi teemme kaksi testiä, joiden tarkoituksena on
+antaa kuvaa, kuinka tehokkaita rakenteita
+taulukkolista ja linkitetty lista ovat käytännössä.
+Ensimmäisessä testissä keskitymme listan läpikäyntiin ja otamme
+vertailun mukaan myös tavallisen taulukon.
+Toisessa testissä mittaamme nopeutta, kun muokkaamme listaa
+sen alussa ja lopussa.
+
+\subsection{Testi 1: Läpikäynti}
+
+Käytämme testiaineistona listaa, jossa on $n$ satunnaista
+kokonaislukua väliltä $1 \dots 100$.
+Laskemme jokaiselle kokonaisluvulle $1 \dots 100$,
+montako kertaa se esiintyy listalla.
+
+Koska listan koko on kiinteä, voimme toteuttaa vertailukohtana
+ratkaisun, joka käyttää tavallista taulukkoa.
+Seuraava metodi selvittää, kuinka monta kertaa luku $x$
+esiintyy taulukossa.
+
+\begin{code}
+int kerrat(int[] taulu, int x) {
+    int tulos = 0;
+    for (int i = 0; i < n; i++) {
+        if (taulu[i] == x) tulos++;
+    }
+    return tulos;
+}
+\end{code}
+
+\texttt{ArrayList}- ja \texttt{LinkedList}-rakenteen
+testaamiseksi käytämme seuraavaa metodia.
+Sama metodi toimii molemmille rakenteille,
+koska listan tyypiksi on annettu \texttt{List}.
+
+\begin{code}
+int kerrat(List<Integer> lista, int x) {
+    int tulos = 0;
+    for (Integer luku : lista) {
+        if (luku == x) tulos++;
+    }
+    return s;
+}
+\end{code}
+
+\begin{table}
+\center
+\begin{tabular}{rrrr}
+taulukon koko $n$ & taulukko & \texttt{ArrayList} & \texttt{LinkedList} \\
+\hline
+$10^6$ & 0.06 s & 0.15 s & 0.44 s \\
+$2 \cdot 10^6$ & 0.13 s & 0.30 s & 0.90 s \\
+$4 \cdot 10^6$ & 0.26 s & 0.60 s & 1.66 s \\
+$8 \cdot 10^6$ & 0.53 s & 1.30 s & 3.40 s \\
+$16 \cdot 10^6$ & 1.33 s & 3.39 s & 7.99 s \\
+\end{tabular}
+\caption{Algoritmien suoritusaikojen vertailu.}
+\label{tab:kerver}
+\end{table}
+
+Taulukko \ref{tab:kerver} näyttää testin tulokset.
+Osoittautuu, että tässä testissä taulukko toimii noin
+2,5 kertaa nopeammin kuin \texttt{ArrayList}.
+Tämä on kiinnostava havainto, koska \texttt{ArrayList}
+perustuu taulukkoon eikä sen koko muutu testin aikana.
+Toisaalta \texttt{ArrayList} toimii puolestaan noin
+2,5 kertaa nopeammin kuin \texttt{LinkedList}.
+
+\subsection{Testi 2: Lisäykset ja poistot}
+
+Toisessa testissä vertaamme \texttt{ArrayDeque}- ja \texttt{LinkedList}-rakenteita.
+Käymme läpi luvut $1,2,\dots,n$.
+Luvun ollessa jaollinen kolmella poistamme sen listan alusta
+ja muuten lisäämme sen listan loppuun.
+Lopuksi laskemme listan lukujen summan.
+
+Seuraava koodi toteuttaa testin parametrina annetulle tyhjälle listalle.
+Sekä \texttt{ArrayDeque} että \texttt{LinkedList} toteuttavat
+rajapinnan \texttt{Deque}, joten voimme käyttää samaa koodia
+kummankin rakenteen testaamiseen.
+
+\begin{code}
+long summa(Deque<Integer> lista) {
+    for (int i = 1; i <= n; i++) {
+        if (i%3 == 0) lista.removeFirst();
+        else lista.addLast(i);
+    }
+    long summa = 0;
+    for (Integer x : lista) summa += x;
+    return summa;
+}
+\end{code}
+
+Taulukko \ref{tab:lispoi} näyttää testin tulokset.
+Osoittautuu, että \texttt{ArrayDeque}-raken\-ne on
+2–3 kertaa nopeampi kuin \texttt{LinkedList}-rakenne.
+
+\begin{table}
+\center
+\begin{tabular}{rrr}
+parametri $n$ & \texttt{ArrayDeque} & \texttt{LinkedList} \\
+\hline
+$10^6$ & 0.01 s & 0.02 s \\
+$2 \cdot 10^6$ & 0.02 s & 0.08 s \\
+$4 \cdot 10^6$ & 0.08 s & 0.14 s \\
+$8 \cdot 10^6$ & 0.27 s & 0.44 s \\
+$16 \cdot 10^6$ & 0.88 s & 3.13 s \\
+\end{tabular}
+\caption{Algoritmien suoritusaikojen vertailu.}
+\label{tab:lispoi}
+\end{table}
+
+\subsection{Linkitetyn listan käyttö}
+
 Jokaisessa tietorakenteessa on omat hyvät ja huonot puolensa,
 ja kaikille on tietyt käyttötarkoituksensa.
 Linkitetty lista muodostaa kuitenkin poikkeuksen tähän sääntöön:
@@ -639,7 +753,6 @@ käyttää taulukkolistan sijasta.
 \label{fig:taulin}
 \end{figure}
 
-
 Syynä tähän on, että nykyaikaiset tietokoneet
 \emph{suosivat} taulukkolistan käyttämistä linkitetyn listan sijaan.
 Kuvassa \ref{fig:taulin} näkyy, miten taulukkolista ja linkitetty lista
@@ -654,40 +767,9 @@ taulukkolistassa.
 Tämä näkyy käytännössä siinä, että taulukkolistan käsittely on selvästi
 nopeampaa kuin linkitetyn listan käsittely.
 
-Tarkastellaan esimerkkinä seuraavaa metodia,
-joka laskee, montako kertaa luku $x$ esiintyy listalla.
-Koska metodi on toteutettu tyypille \texttt{List},
-voimme käyttää sitä sekä \texttt{ArrayList}-
-että \texttt{LinkedList}-rakenteen kanssa.
-
-\begin{code}
-int kerrat(List<Integer> lista, int x) {
-    int tulos = 0;
-    for (Integer u : lista) {
-        if (u == x) tulos++;
-    }
-    return s;
-}
-\end{code}
-
-Testissä luomme ensin listan, jossa on $n$ satunnaista lukua
-väliltä $1 \dots 100$.
-Tämän jälkeen laskemme jokaiselle luvulle väliltä $1 \dots 100$,
-montako kertaa se esiintyy listalla.
-
-\begin{table}
-\center
-\begin{tabular}{rrrr}
-taulukon koko $n$ & taulukko & \texttt{ArrayList} & \texttt{LinkedList} \\
-\hline
-$10^6$ & 0.06 & 0.15 s & 0.44 s \\
-$2 \cdot 10^6$ & 0.13 s & 0.30 s & 0.90 s \\
-$4 \cdot 10^6$ & 0.26 s & 0.60 s & 1.66 s \\
-$8 \cdot 10^6$ & 0.53 s & 1.30 s & 3.40 s \\
-$16 \cdot 10^6$ & 1.33 s & 3.39 s & 7.99 s \\
-\end{tabular}
-\caption{Algoritmien suoritusaikojen vertailu.}
-\label{tab:kerver}
-\end{table}
-
-Taulukko X näyttää testin tulokset.
+Linkitetyllä listalla on silti yksi ominaisuus,
+joka puuttuu taulukkolistasta: voimme tehokkaasti
+lisätä ja poistaa alkioita listan keskellä.
+Tämä kuitenkin vaatii sen, että meillä on valmiiksi
+iteraattori haluttuun kohtaan listaa,
+mikä on käytännössä harvinaista.
