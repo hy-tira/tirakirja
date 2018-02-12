@@ -259,8 +259,8 @@ koko taulukko toteuttaa kekoehdon.
 Miksi sitten tämä vie aikaa vain $O(n)$?
 Oletetaan, että keossa on $h$ kerrosta ja kaikki
 kerrokset ovat täynnä solmuja, eli siinä on $n=2^h-1$ solmua.
-Laskemme jokaiseen solmuun, montako kertaa enintään jokin
-arvo laskeutuu alaspäin tästä solmusta. Tästä saamme:
+Laskemme jokaiselle kerrokselle, montako arvoa laskeutuu
+enintään jostakin tämän kerroksen solmusta alaspäin. Tästä saamme:
 
 \begin{itemize}
 \item Kerroksesta 1 kerrokseen 2 laskeutuu enintään 1 arvo.
@@ -276,12 +276,108 @@ kokonaistyömäärä on enintään
 \[(2^1-1)+(2^2-1)+\dots+(2^{h-1}-1)=2^h-h \le n,\]
 joten aikaa kuluu vain $O(n)$.
 
-\section{Javan toteutus}
+\subsection{Kekojärjestäminen}
 
-\subsection{\texttt{PriorityQueue}}
+\section{Prioriteettijono}
 
-\subsection{Kekotyypin valinta}
+Monissa ohjelmointikielissä kekoa vastaava tietorakenne
+tunnetaan nimellä prioriteettijono.
+Näin on myös Javassa, jonka standardikirjastoon 
+kuuluu tietorakenne \texttt{PriorityQueue}.
+Se on binäärikekoon perustuva tietorakenne,
+joka toteuttaa oletuksena minimikeon.
+
+Seuraava koodi esittelee Javan prioriteettijonon toimintaa.
+Metodi \texttt{add} lisää alkion jonoon,
+metodi \texttt{peek} hakee pienimmän alkion
+ja metodi \texttt{poll} hakee ja poistaa pienimmän alkion.
+
+\begin{code}
+PriorityQueue<Integer> jono = new PriorityQueue<>();
+jono.add(5);
+jono.add(3);
+jono.add(8);
+jono.add(7);
+System.out.println(jono.peek()); // 3
+System.out.println(jono.poll()); // 3
+System.out.println(jono.poll()); // 5
+\end{code}
+
+Jos haluamme luoda prioriteettijonon, joka toimiikin
+maksimikekona, voimme tehdä sen seuraavaan tapaan:
+
+\begin{code}
+PriorityQueue<Integer> jono =
+    new PriorityQueue<>(10,Collections.reverseOrder());
+\end{code}
+
+Tässä tilanteessa meidän täytyy antaa konstruktorille kaksi tietoa:
+rakenteelle alussa varattava tila (tässä 10)
+sekä alkioiden järjestämistapa (tässä käänteinen järjestys).
 
 \section{Tehokkuusvertailu}
 
-\section{Kekojärjestäminen}
+Keon käyttämisestä voi olla hyötyä binäärihakupuuhun verrattuna,
+jos meille riittää, että voimme etsiä ja poistaa pienimmän/suurimman alkion
+joukosta.
+Seuraavaksi selvitämme, millainen Javan rakenteilla
+\texttt{PriorityQueue} ja \texttt{TreeSet} on käytännössä.
+
+Testissämme järjestämme luvut $1,2,\dots,n$ ensin satunnaiseen järjestykseen.
+Tämän jälkeen lisäämme puolet luvuista joukkoon
+ja sitten toistuvasti lisäämme uuden luvun joukkoon
+ja poistamme joukosta pienimmän alkion.
+Samalla laskemme joukosta poistettujen alkioiden summan.
+
+Käytämme seuraavaa koodia mittaamaan \texttt{PriorityQueue}-rakenteen tehokkuutta:
+
+\begin{code}
+long summa(int[] luvut) {
+    PriorityQueue<Integer> jono = new PriorityQueue<>();
+    for (int i = 0; i < n/2; i++) {
+        jono.add(luvut[i]);
+    }
+    long summa = 0;
+    for (int i = n/2; i < n; i++) {
+        jono.add(luvut[i]);
+        summa += jono.poll();
+    }
+    return summa;
+}
+\end{code}
+
+Vastaavasti käytämme seuraavaa koodia mittaamaan \texttt{TreeSet}-rakenteen tehokkuutta:
+
+\begin{code}
+long summa(int[] luvut) {
+    TreeSet<Integer> joukko = new TreeSet<>();
+    for (int i = 0; i < n/2; i++) {
+        joukko.add(luvut[i]);
+    }
+    long summa = 0;
+    for (int i = n/2; i < n; i++) {
+        joukko.add(luvut[i]);
+        summa += jono.pollFirst();
+    }
+    return summa;
+}
+\end{code}
+
+Taulukko \ref{tab:kekver} sisältää vertailun tulokset.
+Tässä testissä \texttt{PriorityQueue} toimii 2–3
+kertaa nopeammin kuin \texttt{TreeSet},
+eli sen käyttämisestä on perusteltua hyötyä.
+
+\begin{table}
+\center
+\begin{tabular}{rrrr}
+taulukon koko $n$ & \texttt{PriorityQueue} & \texttt{TreeSet} \\
+\hline
+$10^6$ & 0.29 s & 0.78 s \\
+$2 \cdot 10^6$ & 0.71 s & 1.50 s \\
+$4 \cdot 10^6$ & 1.56 s & 3.72 s \\
+$8 \cdot 10^6$ & 3.68 s & 9.43 s \\
+\end{tabular}
+\caption{Algoritmien suoritusaikojen vertailu.}
+\label{tab:kekver}
+\end{table}
