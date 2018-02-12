@@ -188,9 +188,99 @@ Tässä tapauksessa alkio laskeutuu keon pohjalle asti.
 
 \subsection{Toteutus taulukkona}
 
+Kätevä tapa toteuttaa keko on tallentaa sen solmujen
+sisältö taulukkoon järjestyksessä ylhäältä alas ja vasemmalta oikealle.
+Jotta voimme toteuttaa mukavasti keon operaatiot,
+käytämme 1-indeksoitua taulukkoa.
+Kuva \ref{fig:kektau} näyttää esimerkin keon tallentamisesta taulukkoon.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$8$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$5$};
+\node[draw, circle] (4) at (-4,-4) {$3$};
+\node[draw, circle] (5) at (-1.5,-4) {$3$};
+\node[draw, circle] (6) at (1.5,-4) {$1$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\end{scope}
+\begin{scope}[yshift=-7cm,xshift=-4cm]
+\draw (0,0) grid (7,1);
+\node at (0.5,0.5) {$-$};
+\node at (1.5,0.5) {$8$};
+\node at (2.5,0.5) {$2$};
+\node at (3.5,0.5) {$5$};
+\node at (4.5,0.5) {$3$};
+\node at (5.5,0.5) {$3$};
+\node at (6.5,0.5) {$1$};
+\footnotesize
+\node at (0.5,1.4) {$0$};
+\node at (1.5,1.4) {$1$};
+\node at (2.5,1.4) {$2$};
+\node at (3.5,1.4) {$3$};
+\node at (4.5,1.4) {$4$};
+\node at (5.5,1.4) {$5$};
+\node at (6.5,1.4) {$6$};
+\end{scope}
+\end{tikzpicture}
+\caption{Keko ja sen taulukkoesitys.}
+\label{fig:kektau}
+\end{figure}
+
+Kun meillä on tiedossa solmun kohta taulukossa,
+voimme helposti selvittää sen lasten ja vanhemman kohdat.
+Kohdassa $k$ olevan solmun vasen lapsi on kohdassa $2k$
+ja oikea lapsi on kohdassa $2k+1$.
+Lisäksi solmun vanhempi on kohdassa $\lfloor k/2 \rfloor$.
+Tämän ansiosta voimme toteuttaa keon operaatiot niin,
+että niiden vakiokertoimet ovat pienet.
+
 \subsection{Tehokas luonti}
 
-\section{Prioriteettijono}
+Suoraviivainen tapa luoda $n$ alkiota sisältävä keko
+on lisätä jokainen alkio erikseen kekoon $O(\log n)$-ajassa.
+Tällä tavalla saamme rakennettua keon $O(n \log n)$-ajassa.
+Osoittautuu kuitenkin, että keon luominen taulukon pohjalta
+on mahdollista myös $O(n)$-ajassa.
+
+Ideana on käydä läpi keon solmut lopusta alkuun ja
+jokaisen solmun kohdalla varmistaa,
+että siitä solmusta alkava alipuu toteuttaa kekoehdon
+laskettamalla solmun juuressa olevaa arvoa alaspäin.
+Kun olemme lopulta käsitelleet kaikki solmut juureen asti,
+koko taulukko toteuttaa kekoehdon.
+
+Miksi sitten tämä vie aikaa vain $O(n)$?
+Oletetaan, että keossa on $h$ kerrosta ja kaikki
+kerrokset ovat täynnä solmuja, eli siinä on $n=2^h-1$ solmua.
+Laskemme jokaiseen solmuun, montako kertaa enintään jokin
+arvo laskeutuu alaspäin tästä solmusta. Tästä saamme:
+
+\begin{itemize}
+\item Kerroksesta 1 kerrokseen 2 laskeutuu enintään 1 arvo.
+\item Kerroksesta 2 kerrokseen 3 laskeutuu enintään $1+2$ arvoa.
+\item Kerroksesta 3 kerrokseen 4 laskeutuu enintään $1+2+4$ arvoa.
+\item Jne.
+\end{itemize}
+
+Yleisemmin kerroksesta $k$ kerrokseen $k+1$ laskeutuu
+enintään $1+2+\dots+2^{k-1} = 2^k-1$ arvoa.
+Koska kerroksia on $h$ ja viimeisestä kerroksesta ei voi laskeutua alaspäin,
+kokonaistyömäärä on enintään
+\[(2^1-1)+(2^2-1)+\dots+(2^{h-1}-1)=2^h-h \le n,\]
+joten aikaa kuluu vain $O(n)$.
+
+\section{Javan toteutus}
+
+\subsection{\texttt{PriorityQueue}}
+
+\subsection{Kekotyypin valinta}
 
 \section{Tehokkuusvertailu}
 
