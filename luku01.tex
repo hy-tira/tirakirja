@@ -6,9 +6,114 @@
 
 \subsection{Osajoukkojen läpikäynti}
 
+Joukon osajoukkoja ovat kaikki tavat valita osa joukon alkioista.
+Esimerkiksi joukon $\{1,2,3\}$ osajoukot ovat
+$\emptyset$ (tyhjä joukko), $\{1\}$, $\{2\}$, $\{3\}$,
+$\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
+Jos joukossa on $n$ alkioita, osajoukkoja on $2^n$.
+
+Rekursio tarjoaa kätevän tavan käydä läpi kaikki
+joukon osajoukot. Esimerkiksi seuraava koodi pitää yllä
+rakennetta
+
+\begin{code}
+ArrayDeque<Integer> osajoukko;
+\end{code}
+
+joka sisältää vuorollaan kunkin joukon $\{1,2,\dots,n\}$
+osajoukon. Rekursiivista metodia \texttt{muodosta} kutsutaan
+parametrilla $1$.
+
+\begin{code}
+void muodosta(int x) {
+    if (x == n+1) {
+        System.out.println(osajoukko);
+        return;
+    }
+    muodosta(x+1); // x ei valita osajoukkoon
+    osajoukko.addLast(x);
+    muodosta(x+1); // x valitaan osajoukkoon
+    osajoukko.removeLast(x);
+}
+\end{code}
+
+Jokaisessa kutsussa metodi käy läpi tapaukset,
+otetaanko luku $x$ mukaan osajoukkoon vai ei.
+Molemmissa tapauksissa metodi kutsuu itseään yhtä
+suuremalla $x$:n arvolla.
+Lopulta kun $x=n+1$, kaikki luvut on käyty läpi
+ja on aika tulostaa osajoukko.
+
+Esimerkiksi tapauksessa $n=3$ koodin tulostus on seuraava:
+
+\begin{code}
+[]
+[3]
+[2]
+[2, 3]
+[1]
+[1, 3]
+[1, 2]
+[1, 2, 3]
+\end{code}
+
 \subsection{Permutaatioiden läpikäynti}
 
+Joukon permutaatiot ovat kaikki tavat järjestää joukon alkiot.
+Esimerkiksi joukon $\{1,2,3\}$ permutaatiot ovat
+$(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
+Jos joukossa on $n$ alkiota, permutaatioita on $n!$.
+
+Myös permutaatioiden läpikäynti onnistuu kätevästi rekursiolla.
+Seuraava koodi pitää yllä rakennetta
+
+\begin{code}
+ArrayDeque<Integer> permutaatio;
+\end{code}
+
+joka sisältää vuorollaan kunkin joukon $\{1,2,\dots,n\}$ permutaation.
+Rekursiivista metodia \texttt{muodosta} kutsutaan ilman parametreja.
+
+\begin{code}
+void muodosta() {
+    if (permutaatio.size() == n) {
+        System.out.println(permutaatio);
+        return;
+    }
+    for (int i = 1; i <= n; i++) {
+        if (!permutaatio.contains(i)) {
+            permutaatio.addLast(i);
+            muodosta();
+            permutaatio.removeLast();
+        }
+    }
+}
+\end{code}
+
+Tässä on ideana, että metodi käy joka kutsulla läpi kaikki luvut
+$1,2,\dots,n$ ja aina jos luku ei kuulu vielä permutaatioon,
+koodi haarautuu rekursiivisesti tapaukseen, jossa se lisätään
+seuraavaksi permutaatioon.
+Sitten kun permutaatiossa on $n$ lukua, se on valmis ja
+voimme tulostaa sen.
+
+Esimerkiksi tapauksessa $n=3$ koodin tulostus on seuraava:
+
+\begin{code}
+[1, 2, 3]
+[1, 3, 2]
+[2, 1, 3]
+[2, 3, 1]
+[3, 1, 2]
+[3, 2, 1]
+\end{code}
+
 \subsection{Peruuttava haku}
+
+Peruuttava haku on yleinen rekursiivinen menetelmä,
+joka muodostaa järjes\-telmällisesti kaikki ratkaisut tehtävään.
+Siinä on ideana aloittaa tyhjästä ratkaisusta ja käydä
+joka askeleella läpi kaikki mahdolliset tavat laajentaa ratkaisua.
 
 \section{Matemaattinen tausta}
 
