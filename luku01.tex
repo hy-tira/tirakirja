@@ -1,5 +1,11 @@
 \chapter{Johdanto}
 
+Tässä luvussa luomme ensin katsauksen siihen, mitä kurssin tavoitteena
+on opettaa ja mitä hyötyä näistä taidoista on.
+Tämän jälkeen käymme läpi esimerkkejä rekursion käyttämisestä
+ohjelmoinnissa, ja lopuksi tutustumme muutamaan matematiikan
+käsitteeseen, joista on hyötyä tietorakenteiden ja algoritmien analysoinnissa.
+
 \section{Laskennalliset ongelmat}
 
 Tämän kurssin tarkoituksena on opettaa menetelmiä,
@@ -21,11 +27,19 @@ monellako tavalla voimme valita taulukosta kaksi eri
 kohdissa olevaa lukua, joiden summa on $x$.
 \end{itemize}
 
+Esimerkiksi jos $n=5$, taulukko on $[2,1,8,5,6]$ ja $x=7$,
+niin vastaus on 2, koska mahdolliset parit ovat
+$(2,5)$ ja $(1,6)$.
+
 Ohjelmoinnin peruskursseilla olemme oppineet taitoja,
 joiden avulla voimme ratkaista laskennallisia ongelmia.
-Esimerkiksi yllä olevan ongelman voisi ratkaista seuraavalla algoritmilla,
-joka olettaa, että luvut ovat taulukossa \texttt{taulu},
-ja laskee tapojen määrän muuttujaan \texttt{tulos}.
+Suoraviivainen tapa ratkaista yllä oleva ongelma
+on käydä läpi kaikki tavat, kuinka voimme valita taulukosta
+kaksi kohtaa, ja selvittää, monessako tavassa lukujen summa on $x$.
+
+Seuraava algoritmi ratkaisee tehtävän kahden for-silmukan avulla.
+Algoritmi olettaa, että luvut ovat taulukossa \texttt{taulu},
+ja se laskee tapojen määrän muuttujaan \texttt{tulos}.
 
 \begin{code}
 int tulos = 0;
@@ -43,8 +57,8 @@ ohjelmoinnin perustaidot niin, että osaamme kirjoittaa
 jonkin toimivan koodin, joka ratkaisee annetun ongelman.
 Toinen vaihe, johon keskitymme tällä kurssilla,
 on oppia suunnittelemaan \emph{tehokkaita} algoritmeja.
-Tämä tarkoittaa, että haluamme saada mahdollisuuksien mukaan
-aikaan jotain parempaa kuin suoraviivaisia
+Tämä tarkoittaa, että haluamme saada aikaan mahdollisuuksien mukaan
+jotain parempaa kuin suoraviivaisia
 raakaan voimaan perustuvia algoritmeja.
 
 Algoritmien tehokkuudella on suuri merkitys käytännössä.
@@ -76,11 +90,21 @@ ennen kuin voimme alkaa suunnitella algoritmeja.
 Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
 tekniikoita eri tilanteessa.
 
+Käytämme kirjassa algoritmien esittämiseen Javan kaltaista
+ohjelmointikieltä, ja käymme myös erikseen läpi Java-kielen
+standardikirjaston tietorakenteita ja algoritmeja.
+Ohjelmointikieli ei ole kuitenkaan merkittävässä osassa
+algoritmien suunnittelussa, vaan kirjassa käsitellyt asiat
+ovat voimassa myös muissa ohjelmointikielissä.
+
 \section{Rekursiiviset algoritmit}
 
-Rekursio on kätevä työkalu, jonka avulla voimme käydä
-järjestelmällisesti läpi kaikki tavat ongelman ratkaisuun.
-Seuraavaksi tutustumme esimerkkeihin rekursion käyttämisestä.
+Ohjelmoinnin perusteiden opiskelussa rekursio jää usein sivurooliin,
+mikä on vahinko, koska se on käytännössä hyödyllinen työkalu.
+Voimme toteuttaa rekursion avulla kätevästi algoritmeja,
+jotka käyvät järjestelmällisesti läpi ongelman ratkaisuja.
+Seuraavaksi käymme läpi muutamia esimerkkejä siitä,
+kuinka voimme hyödyntää rekursiota ohjelmoinnissa.
 
 \subsection{Osajoukkojen läpikäynti}
 
