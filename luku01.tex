@@ -2,6 +2,80 @@
 
 \section{Laskennalliset ongelmat}
 
+Tämän kurssin tarkoituksena on opettaa menetelmiä,
+joiden avulla voimme ratkaista \emph{tehokkaasti}
+laskennallisia ongelmia.
+Lähtökohtana on, että meille annetaan ongelman kuvaus,
+jossa kerrotaan täsmällisesti algoritmille annettava
+syöte sekä haluttu tuloste.
+Syöte tarkoittaa, mitä tietoja algoritmille annetaan,
+ja tuloste tarkoittaa, mitä algoritmin tulee tuottaa vastauksena.
+
+Seuraavassa on esimerkki laskennallisesta ongelmasta:
+
+\begin{itemize}
+\item \textbf{Syöte}: Algoritmille annetaan taulukko,
+jossa on $n$ kokonaislukua, sekä kokonaisluku $x$.
+\item \textbf{Tuloste:} Algoritmin tulee ilmoittaa,
+monellako tavalla voimme valita taulukosta kaksi eri
+kohdissa olevaa lukua, joiden summa on $x$.
+\end{itemize}
+
+Ohjelmoinnin peruskursseilla olemme oppineet taitoja,
+joiden avulla voimme ratkaista laskennallisia ongelmia.
+Esimerkiksi yllä olevan ongelman voisi ratkaista seuraavalla algoritmilla,
+joka olettaa, että luvut ovat taulukossa \texttt{taulu},
+ja laskee tapojen määrän muuttujaan \texttt{tulos}.
+
+\begin{code}
+int tulos = 0;
+for (int i = 0; i < n; i++) {
+    for (int j = i+1; j < n; j++) {
+        if (taulu[i]+taulu[j] == x) {
+            tulos++;
+        }
+    }
+}
+\end{code}
+
+Ensimmäinen vaihe algoritmiikan oppimisessa on oppia
+ohjelmoinnin perustaidot niin, että osaamme kirjoittaa
+jonkin toimivan koodin, joka ratkaisee annetun ongelman.
+Toinen vaihe, johon keskitymme tällä kurssilla,
+on oppia suunnittelemaan \emph{tehokkaita} algoritmeja.
+Tämä tarkoittaa, että haluamme saada mahdollisuuksien mukaan
+aikaan jotain parempaa kuin suoraviivaisia
+raakaan voimaan perustuvia algoritmeja.
+
+Algoritmien tehokkuudella on suuri merkitys käytännössä.
+Esimerkiksi Google-haku on käyttökelpoinen sen vuoksi,
+että saamme hakutulokset heti haun lähettämisen jälkeen.
+Jos meidän tulisi odottaa tuloksia vaikkapa viikko,
+tämä rajoittaisi paljon haun käyttömahdollisuuksia.
+Toinen esimerkki on reittihaku, joka kertoo meille parhaan
+tavan matkustaa lähtöpaikasta kohdepaikkaan.
+Tässäkin palvelussa olennainen osa käyttökokemusta on,
+että saamme reitin välittömästi haun jälkeen eikä meidän tarvitse odottaa.
+
+Kiehtova piirre algoritmiikassa on, että monimutkaisetkin algoritmit
+syntyvät yksinkertaisista aineksista. Keskeiset käsitteet ovat
+
+\begin{itemize}
+\item muuttujat, joissa voimme säilyttää tietoa ohjelmassa,
+\item ehtolause (\texttt{if}), jonka avulla voimme haarautua ohjelmassa,
+\item silmukat (\texttt{for} ja \texttt{while}), joiden avulla voimme
+toistaa laskentaa, sekä
+\item taulukot, joissa voimme säilyttää suurta määrää tietoa.
+\end{itemize}
+
+Itse asiassa voimme toteuttaa minkä tahansa algoritmin vain näitä
+aineksia käyttäen.
+Tämä on huojentava tieto, koska meidän ei siis tarvitse opetella
+suurta määrää ohjelmointikielten ominaisuuksia,
+ennen kuin voimme alkaa suunnitella algoritmeja.
+Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
+tekniikoita eri tilanteessa.
+
 \section{Rekursiiviset algoritmit}
 
 Rekursio on kätevä työkalu, jonka avulla voimme käydä
