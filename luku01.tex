@@ -4,6 +4,10 @@
 
 \section{Rekursiiviset algoritmit}
 
+Rekursio on kätevä työkalu, jonka avulla voimme käydä
+järjestelmällisesti läpi kaikki tavat ongelman ratkaisuun.
+Seuraavaksi tutustumme esimerkkeihin rekursion käyttämisestä.
+
 \subsection{Osajoukkojen läpikäynti}
 
 Joukon osajoukkoja ovat kaikki tavat valita osa joukon alkioista.
@@ -115,7 +119,133 @@ joka muodostaa järjes\-telmällisesti kaikki ratkaisut tehtävään.
 Siinä on ideana aloittaa tyhjästä ratkaisusta ja käydä
 joka askeleella läpi kaikki mahdolliset tavat laajentaa ratkaisua.
 
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\newcommand\nelio[9]{
+\draw (0,0) grid (3,3);
+\foreach \x/\y/\v in {0/0/#1,1/0/#2,2/0/#3,0/1/#4,1/1/#5,2/1/#6,0/2/#7,1/2/#8,2/2/#9} \node at (0.5+\x,2.5-\y) {\v};
+}
+\begin{scope}
+\nelio{1}{2}{3}{2}{3}{1}{3}{1}{2}
+\end{scope}
+\begin{scope}[xshift=4cm]
+\nelio{1}{2}{3}{3}{1}{2}{2}{3}{1}
+\end{scope}
+\begin{scope}[xshift=8cm]
+\nelio{1}{3}{2}{2}{1}{3}{3}{2}{1}
+\end{scope}
+\begin{scope}[xshift=12cm]
+\nelio{1}{3}{2}{3}{2}{1}{2}{1}{3}
+\end{scope}
+\begin{scope}[xshift=16cm]
+\nelio{2}{1}{3}{1}{3}{2}{3}{2}{1}
+\end{scope}
+\begin{scope}[xshift=20cm]
+\nelio{2}{1}{3}{3}{2}{1}{1}{3}{2}
+\end{scope}
+\begin{scope}[yshift=-4cm]
+\nelio{2}{3}{1}{1}{2}{3}{3}{1}{2}
+\end{scope}
+\begin{scope}[yshift=-4cm,xshift=4cm]
+\nelio{2}{3}{1}{3}{1}{2}{1}{2}{3}
+\end{scope}
+\begin{scope}[yshift=-4cm,xshift=8cm]
+\nelio{3}{1}{2}{1}{2}{3}{2}{3}{1}
+\end{scope}
+\begin{scope}[yshift=-4cm,xshift=12cm]
+\nelio{3}{1}{2}{2}{3}{1}{1}{2}{3}
+\end{scope}
+\begin{scope}[yshift=-4cm,xshift=16cm]
+\nelio{3}{2}{1}{1}{3}{2}{2}{1}{3}
+\end{scope}
+\begin{scope}[yshift=-4cm,xshift=20cm]
+\nelio{3}{2}{1}{2}{1}{3}{1}{3}{2}
+\end{scope}
+\end{tikzpicture}
+\caption{Kaikki 12 latinalaista neliötä kokoa $3 \times 3$.}
+\label{fig:latnel}
+\end{figure}
+
+Tarkastelemme esimerkkinä tehtävää, jossa haluamme laskea,
+montako $n \times n$ -kokoista latinalaista neliötä on olemassa.
+Latinalaisessa neliössä jokainen luku $1,2,\dots,n$ esiintyy
+tarkalleen kerran kullakin vaaka- ja pystyrivillä.
+Esimerkiksi kuvassa \ref{fig:latnel} on kaikki 12 latinalaista neliötä kokoa $3 \times 3$.
+
+Hakua varten määrittelemme seuraavat taulukot:
+
+\begin{code}
+int[][] nelio = new int[n][n];
+boolean[][] vaaka = new boolean[n][n];
+boolean[][] pysty = new boolean[n][n];
+\end{code}
+
+Numeroimme ruudukon pysty- ja vaakarivit $0,1,\dots,n-1$.
+Tarkoituksena on, että kohdassa $\texttt{nelio}[y][x]$
+on neliössä ruudussa $(y,x)$ oleva luku.
+Lisäksi $\texttt{vaaka}[y][k]$ kertoo, onko vaakarivillä $y$
+jo lukua $k$, ja vastaavasti $\texttt{pysty}[x][k]$ kertoo,
+onko pystyrivillä $x$ jo lukua $k$.
+
+Seuraava rekursiivinen metodi toteuttaa haun, kun sitä
+kutsutaan parametreilla $y=x=0$.
+Metodi laskee latinalaisten neliöiden määrän muuttujaan 
+\texttt{laskuri}.
+
+\begin{code}
+static void muodosta(int y, int x) {
+    if (y == n) laskuri++;
+    else if (x == n) muodosta(y+1,0);
+    else {
+        for (int i = 1; i <= n; i++) {
+            if (!vaaka[y][i] && !pysty[x][i]) {
+                vaaka[y][i] = pysty[x][i] = true;
+                nelio[y][x] = i;
+                muodosta(y, x+1);
+                vaaka[y][i] = pysty[x][i] = false;
+            }
+        }
+    }
+}
+\end{code}
+
+Jokaisella askeleella metodi valitsee luvun ruutuun
+$(y,x)$ ja siirtyy seuraavaan ruutuun oikealle.
+Jos $x=n$, vaakarivi on tullut täyteen ja metodi siirtyy
+seuraavalle vaakariville.
+Jos taas $y=n$, koko ruudukko on tullut täyteen ja
+metodi kasvattaa ruudukoiden määrää yhdellä.
+
+\begin{table}
+\center
+\begin{tabular}{rr}
+ruudukon koko $n$ & neliöiden määrä \\
+\hline
+1 & 1 \\
+2 & 2 \\
+3 & 12 \\
+4 & 576 \\
+5 & 161280 \\
+6 & 812851200 \\
+\end{tabular}
+\caption{Latinalaisten neliöiden määriä pienille $n$:n arvoille.}
+\label{tab:latnel}
+\end{table}
+
+Tämän koodin avulla voimme laskea latinalaisten neliöiden
+määrät ensimmäisille $n$:n arvoille.
+Taulukko \ref{tab:latnel} näyttää nämä tulokset.
+Suuremmilla $n$:n arvoilla haku alkaa kestää liian kauan
+ja meidän tulisi keksiä keino tehostaa hakua,
+jos haluaisimme laskea tuloksia suuremmille arvoille.
+
 \section{Matemaattinen tausta}
+
+Tietorakenteiden ja algoritmien analyysi perustuu matematiikkaan,
+ja käym\-me kirjassa pikkuhiljaa läpi tarvittavia tietoja.
+Seuraavassa on joitakin merkintöjä ja käsitteitä, joista on hyötyä
+useassa kirjan kohdassa.
 
 \subsection{Summakaavat}
 
@@ -130,9 +260,25 @@ Toinen hyödyllinen kaava on
 \[2^0+2^1+\dots+2^n = 2^{n+1}-1.\]
 Esimerkiksi
 \[1+2+4+8+16=32-1.\]
-Tämän kaavan voi ajatella niin, että aloitamme luvusta $2^n$
+Tässä voimme ajatella, että aloitamme luvusta $2^n$
 ja lisäämme siihen aina puolet pienemmän luvun lukuun $1$ asti.
-Niinpä pääsemme yhtä vaille lukuun $2^{n+1}$ asti.
+Tämän seurauksena pääsemme yhtä vaille lukuun $2^{n+1}$ asti.
+
+Esitämme joskus summia merkinnän $\sum$ avulla.
+Siinä on ideana antaa muuttujan ala- ja yläraja sekä
+joka askeleella summaan lisättävä arvo.
+Esimerkiksi voimme merkitä
+\[1^2 + 2^2 + \dots + n^2 = \sum_{i=1}^n i^2.\]
+
+Tämä merkintä on itse asiassa hyvin lähellä ohjelmoinnin
+for-silmukkaa, koska seuraava koodi ajaa saman asian:
+
+\begin{code}
+int summa = 0;
+for (int i = 1; i <= n; i++) {
+    summa += i*i;
+}
+\end{code}
 
 \subsection{Logaritmit}
 
