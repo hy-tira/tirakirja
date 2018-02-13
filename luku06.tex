@@ -324,13 +324,12 @@ if (sanakirja.containsKey(sana)) {
 Koska \texttt{HashMap} on toteutettu hajautustaulun avulla,
 sen operaatiot toimivat tehokkaasti keskimäärin $O(1)$-ajassa.
 
-\subsection{\texttt{hashCode}-metodi}
+\subsection{Omat luokat}
 
-Javan hajautustaulut perustuvat siihen, että olioissa
-on metodi \texttt{hashCode}, jonka avulla olio kertoo
-pyydettäessä hajautusarvonsa.
+Javan olioissa on metodi \texttt{hashCode},
+jonka avulla olio kertoo pyydettäessä hajautusarvonsa.
 Voimme esimerkiksi selvittää merkkijonon \texttt{apina}
-hajautusarvon näin:
+hajautusarvon seuraavasti:
 
 \begin{code}
 System.out.println("apina".hashCode());
@@ -343,23 +342,31 @@ polynomista hajautusta vakiolla $A=31$,
 joten voimme laskea Javan hajautusarvon myös itse kaavalla
 \[31^4 \cdot 97+31^3 \cdot 112+31^2 \cdot 105+31^1 \cdot 110+31^0 \cdot 97=93022541.\]
 
-Metodi \texttt{hashCode} on toteutettu valmiiksi Javan
-sisäisiin tyyppeihin, kuten \texttt{Integer} ja \texttt{String},
-joten voimme käyttää niitä suoraan hajautustauluissa.
-Kuitenkin jos meillä on itse tehty luokka, jonka olioita
-haluamme käyttää hajautustauluissa, meidän on toteutettava
-itse metodi \texttt{hashCode}.
+Jos haluamme käyttää omia oliota hajautustauluissa,
+meidän täytyy toteuttaa luokkaan kaksi metodia:
+\texttt{hashCode}, joka antaa olion hajautusarvon,
+sekä \texttt{equals},
+joka ilmaisee, ovatko kaksi oliota samat.
+Jälkimmäinen metodi on tarpeen,
+jotta Java pystyy varmistamaan, ovatko saman hajautusarvon
+antavat oliot todella samat.
+
 
 Esimerkiksi jos meillä on luokka \texttt{Piste},
 jossa on kenttinä kokonaisluvut \texttt{x} ja \texttt{y},
-voisimme toteuttaa metodin \texttt{hashCode} seuraavasti:
+voisimme toteuttaa metodit seuraavasti:
 
 \begin{code}
-public class Piste {
+class Piste {
     public int x, y;
 
-    int hashCode() {
+    public int hashCode() {
         return 97*x+y;
+    }
+    
+    public boolean equals(Object o) {
+        Piste p = (Piste)o;
+        return x == p.x && y == p.y;
     }
 }
 \end{code}
