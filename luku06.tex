@@ -374,6 +374,66 @@ voimme luoda vaikkapa \texttt{HashSet}-rakenteen, jossa on pisteitä:
 HashSet<Piste> joukko = new HashSet<Piste>();
 \end{code}
 
-\section{Esimerkki: Yhteiset sanat}
+\section{Esimerkki: Anagrammit}
+
+Annettuna on lista sanoja ja haluamme jakaa sanat ryhmiin niin,
+että kukin ryhmä sisältää sanat, jotka ovat keskenään anagrammeja.
+Kaksi sanaa ovat anagrammit, jos ne on mahdollista muuttaa toisikseen
+muuttamalla niiden kirjainten järjestystä.
+
+Esimerkiksi jos sanat ovat ''abc'', ''iines'', ''bac'', ''cba'' ja ''sieni'',
+niistä muodostuu kaksi ryhmää.
+Ensimmäisessä ryhmässä on sanat ''abc'', ''bac'' ja ''cba'',
+ja toisessa ryhmässä on sanat ''iines'' ja ''sieni''.
+
+Voimme ratkaista tehtävän tehokkaasti seuraavan havainnon avulla:
+jos kaksi sanaa ovat anagrammit ja järjestämme niiden kirjaimet,
+niistä tulee samat sanat.
+Esimerkiksi sanoissa ''iines'' ja ''sieni'' kirjaimet
+järjestettyinä ovat ''eiins''.
+Tämän havainnon ansiosta voimme käyttää kunkin anagrammiryhmän
+tunnuksena sen sanojen järjestettyä muotoa.
+
+Luomme ryhmiä varten rakenteen
+
+\begin{code}
+HashMap<String,ArrayList<String>> ryhmat = new HashMap<>();
+\end{code}
+
+jossa avaimena on anagrammiryhmän tunnus ja arvona on lista,
+joka sisältää kaikki listaan kuuluvat sanat.
+Algoritmin runko näyttää seuraavalta, kun oletamme,
+että sanat on tallennettu listaan \texttt{sanat}:
+
+\begin{code}
+for (String sana : sanat) {
+    String avain = tunnus(sana);
+    if (!ryhmat.containsKey(avain)) {
+        ryhmat.put(avain,new ArrayList<>());
+    }
+    ryhmat.get(avain).add(sana);
+}
+System.out.println(ryhmat);
+\end{code}
+
+Tarvitsemme vielä metodin \texttt{tunnus}, joka järjestää
+sanan kirjaimet aakkosjärjestykseen.
+Jotta voimme järjestää sanan, muutamme sen merkkitaulukoksi,
+järjestämme taulukon, ja palautamme sitten uuden merkkijonon,
+joka on muodostettu taulukosta.
+
+\begin{code}
+String tunnus(String sana) {
+    char[] taulu = sana.toCharArray();
+    Arrays.sort(taulu);
+    return new String(taulu);
+}
+\end{code}
+
+Esimerkin tapauksessa ohjelmamme tulostus on seuraava:
+
+\begin{code}
+{abc=[abc, bac, cba], eiins=[iines, sieni]}
+\end{code}
 
 \section{Hajautuksen rikkominen}
