@@ -1,4 +1,68 @@
-\chapter{Algoritmitekniikkaa}
+\chapter{Algoritmien suunnittelu}
+
+\section{Ahneet algoritmit}
+
+Ahne algoritmi valitsee joka askeleella sillä hetkellä parhaalta
+näyttävän vaihtoehdon, joka on usein pienin tai suurin mahdollinen
+tapa muodostaa ratkaisua eteenpäin.
+Tyypillinen ahneen algoritmin ensimmäinen vaihe on aineiston
+järjestäminen, mikä antaa lähtökohdan algoritmin toiminnalle.
+
+Tarkastellaan esimerkkinä tehtävää, jossa tiedossamme on
+$n$ vapaata asuntoa sekä $m$ henkilöä, jotka haluavat vuokrata asunnon.
+Jokaisella asunnolla on tietty vuokra,
+ja jokaisella asunnon hakijalla on vuokraraja,
+kuinka suuren vuokran hän voi maksaa \emph{korkeintaan}.
+Kuinka voimme jakaa asunnot niin, että mahdollisimman moni
+halukas vuokralainen saa asunnon?
+
+Esimerkiksi jos asuntojen vuokrat ovat $[500,550,700,900]$
+ja hakijoiden vuokrarajat ovat $[400,600,800,900]$,
+voimme järjestää niin, että kolme hakijaa saa asunnon.
+Esimerkiksi voimme muodostaa parit $(500,600)$, $(700,800)$
+ja $(900,900)$, missä ensimmäinen arvo on asunnon vuokra
+ja toinen arvo on hakijan vuokraraja.
+On selvää, että tämä on optimaalinen ratkaisu:
+vuokrarajan 400 esittänyt hakija ei voi mitenkään saada asuntoa,
+koska halvimmankin asunnon vuokra on 500.
+
+Voimme ratkaista ongelman ahneella algoritmilla,
+joka käy läpi asunnon hakijat järjestyksessä vuokrarajan
+mukaan pienimmästä suurimpaan.
+Jokaisen hakijan kohdalla annamme hänelle halvimman
+jäljellä olevan asunnon, jos sen vuokra ei ylitä vuokrarajaa.
+Jos halvin asunto on liian kallis, emme anna asuntoa ja
+siirrymme suoraan seuraavaan hakijaan.
+Tällainen algoritmi vie aikaa $O(n \log n + m \log m)$,
+koska meidän riittää järjestää asunnot ja hakijat
+ja käydä niitä sitten läpi rinnakkain.
+
+Yllä olevassa esimerkissä aloitamme vuokrarajan 400
+esittäneestä hakijasta, joka kuitenkaan ei saa asuntoa.
+Tämän jälkeen käymme läpi loput hakijat
+vuokrarajoilla 600, 800 ja 900, ja muodostamme parit
+$(500,600)$, $(550,800)$ ja $(700,900)$.
+Tuloksena on toinen mahdollinen optimaalinen ratkaisu,
+jossa kolme hakijaa saa asunnon.
+
+Tärkeä kysymys ahneissa algoritmeissa on, \emph{miksi}
+algoritmi toimii. Miten voimme olla varmoja, että yllä kuvattu tapa
+jakaa asunnot tuottaa aina optimaalisen ratkaisun?
+
+Tässä tehtävässä voimme ajatella asiaa niin,
+että jos voimme antaa jonkin asunnon hakijalle,
+emme voi koskaan saada parempaa ratkaisua,
+jos päätämmekin olla antamatta asuntoa.
+Koska käsittelemme hakijat järjestyk\-sessä vuokrarajan mukaan,
+jokaisella myöhemmällä hakijalla on paremmat mahdollisuudet
+vuokrata asuntoa kuin nykyisellä hakijalla.
+Jos emme anna asuntoa nykyiselle hakijalle $x$
+ja joku myöhempi hakija $y$ saa sen, voimme kuitenkin 
+muuttaa lopullista ratkaisua niin, että $x$
+saa asunnon $y$:n sijasta ja ratkaisu säilyy yhtä hyvänä.
+Niinpä on turvallinen päätös antaa asunto nykyiselle hakijalle.
+
+\section{Pino ja jono}
 
 \section{Summataulukko}
 
