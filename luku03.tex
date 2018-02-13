@@ -637,168 +637,190 @@ vertailu: 2 3
 vertailu: 2 1
 \end{code}
 
-\section{Algoritmien suunnittelusta}
+\section{Esimerkki: Keskiluvut}
 
-Voimme ratkaista tehokkaasti monia ongelmia järjestämällä
-aineiston ja hyö\-dyntämällä sitten järjestystä tavalla tai toisella
-algoritmissa.
-Seuraavaksi tutustumme esimerkkeihin ongelmista, jotka voimme
-ratkaista tehokkaasti järjes\-tämisen avulla.
+Annettuna on $n$ kokonaisluvun taulukko ja haluamme
+laskea sille mediaanin ja moodin.
+Mediaani on keskimmäinen arvo, kun taulukko järjestetään
+pienimmästä suurimpaan.
+Moodi taas on arvo, joka esiintyy useimmiten taulukossa.
+Esimerkiksi taulukon $[2,1,3,1,5]$ mediaani on 2 ja moodi on 1.
 
-\subsection{Perusongelmia}
-
-Taulukon järjestämisen jälkeen voimme vastata tehokkaasti
-mm. seuraaviin kysymyksiin:
-
-\begin{itemize}
-\item Onko taulukossa kahta samaa alkiota?
-\item Kuinka monta eri alkiota taulukossa on?
-\item Mikä on yleisin taulukossa esiintyvä alkio?
-\end{itemize}
-
-Voimme ratkaista ongelmat tehokkaasti, koska taulukon järjestämisen
-jälkeen yhtä suuret alkiot ovat vierekkäin.
-Kaikissa tapauksissa taulukon järjestäminen vie aikaa $O(n \log n)$,
-ja sen jälkeen voimme selvittää ongelman vastauksen
-käymällä taulukon läpi vasemmalta oikealle ajassa $O(n)$.
-
-Esimerkiksi seuraava metodi laskee, montako eri alkiota
-taulukko sisältää:
+Pystymme laskemaan sekä mediaanin että moodin tehokkaasti
+$O(n \log n)$-ajassa järjestämisen avulla.
+Mediaanin laskeminen on erityisen helppoa,
+koska meidän riittää järjestää taulukko ja valita
+sieltä keskimmäinen luku. Seuraava metodi hoitaa asian:
 
 \begin{code}
-int eriAlkiot(int[] taulu) {
-    int n = taulu.length;
+int mediaani(int[] taulu) {
     Arrays.sort(taulu);
-    int tulos = 1;
-    for (int i = 1; i < n; i++) {
-        if (taulu[i-1] != taulu[i]) tulos++;
+    return taulu[taulu.length/2];
+}
+\end{code}
+
+Tässä tulkintana on, että kun $n$ on parillinen, mediaani
+on kahdesta keskimmäisestä luvusta pienempi.
+
+Moodin laskemisessa auttaa havainto, että taulukon järjestämisen
+jälkeen kaikki yhtä suuret luvut ovat vierekkäin.
+Niinpä voimme ensin järjestää taulukon ja etsiä sitten siitä
+pisimmän samaa lukua toistavan osuuden.
+Seuraava metodi toimii näin:
+
+\begin{code}
+int moodi(int[] taulu) {
+    Arrays.sort(taulu);
+    int tulos = taulu[0];
+    int pituus = 1;
+    int paras = 1;
+    for (int i = 1; i < taulu.length; i++) {
+        if (taulu[i-1] != taulu[i]) pituus = 0;
+        pituus++;
+        if (pituus > paras) {
+            paras = pituus;
+            tulos = taulu[i];
+        }
     }
     return tulos;
 }
 \end{code}
 
-\subsection{Pyyhkäisyviiva}
-
-Pyyhkäisyviiva on tekniikka, jossa mallinnamme ongelman joukkona
-tapahtumia, järjestämme tapahtumat ja käymme läpi tapahtumat
-järjestyksessä.
-Tarkastellaan esimerkkinä ongelmaa, jossa meillä on tiedossa
-$n$ ravintola-asiakkaan saapumis- ja poistumisaika
-ja haluamme selvittää, montako asiakasta ravintolassa oli
-enimmillään samaan aikaan.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.5]
-\draw[|-|] (0,0) -- (5,0);
-\draw[|-|] (7,-1.5) -- (10,-1.5);
-\draw[|-|] (4,-3) -- (11,-3);
-\draw[|-|] (5,-4.5) -- (6,-4.5);
-\node at (-2,0) {$A$};
-\node at (-2,-1.5) {$B$};
-\node at (-2,-3) {$C$};
-\node at (-2,-4.5) {$D$};
-\end{tikzpicture}
-\caption{Esimerkki ravintolan asiakkaiden vierailuista.
-Ravintolassa oli enimmillään kolme asiakasta.}
-\label{fig:pyyvii}
-\end{figure}
-
-Kuva \ref{fig:pyyvii} näyttää esimerkin tilanteessa,
-jossa ravintolassa on käynyt neljä asiakasta $A$, $B$, $C$ ja $D$.
-Ravintolassa oli enimmillään kolme asiakasta
-asiakkaan $D$ vierailun ajan.
-
-Voimme ratkaista ongelman esittämällä jokaisen asiakkaan kahtena
-tapahtumana aikajanalla: ensimmäinen tapahtuma on asiakkaan
-saapuminen ja toinen tapahtuma on asiakkaan poistuminen.
-Tämän jälkeen voimme järjestää tapahtumat aikajärjestykseen
-ja sen jälkeen käsitellä tapahtumat.
-Pidämme yllä laskuria, joka kertoo, montako asiakasta ravintolassa
-on tällä hetkellä.
-Aina kun asiakas saapuu ravintolaan, laskuri kasvaa yhdellä,
-ja aina kun asiakas poistuu ravintolasta,
-laskuri vähenee yhdellä.
-Laskurin suurin arvo läpikäynnin aikana on sama kuin
-suurin asiakkaiden määrä ravintolassa.
-
-Jotta voimme käsitellä tapahtumia, meidän on hyödyllistä määritellä
-luokka, joka sisältää tapahtuman ajanhetken ja tyypin
-(1 = asiakas saapuu, 2 = asiakas poistuu):
+Huomaa, että koska taulukko välitetään viittauksena metodeille,
+taulukon uusi järjestys jää voimaan metodien kutsumisen jälkeen
+eli metodeilla on \emph{sivuvaikutuksia}.
+Seuraava koodi havainnollistaa asiaa:
 
 \begin{code}
-class Tapahtuma implements Comparable<Tapahtuma> {
-    int aika, tyyppi;
-
-    int compareTo(Tapahtuma t) {
-        if (this.aika != t.aika) return this.aika-t.aika;
-        else return this.tyyppi-t.tyyppi;
-    }
-}
+int[] taulu = {2,1,3};
+System.out.println(mediaani(taulu)); // 2
+System.out.println(taulu[0]); // 1
 \end{code}
 
-Huomaa, että meidän ei tarvitse muistaa tapahtumissa,
-kenestä asiakkaasta on kysymys, vaan riittää tietää,
-onko kyseessä saapuva vai poistuva asiakas.
+Koodi laskee taulukon mediaanin, jolloin taulukko
+myös järjestyy. Niinpä taulukon kohdassa 0 oleva luku
+on mediaanin laskemisen jälkeen 1.
 
-\subsection{Ahneet algoritmit}
+Jos emme halua metodiin sivuvaikutuksia voimme metodin
+alussa tehdä kopion taulukosta ja järjestää sen alkuperäisen
+taulukon sijasta. Voimme tehdä kopion seuraavasti \texttt{clone}-metodilla:
 
-Ahne algoritmi valitsee joka askeleella sillä hetkellä parhaalta
-näyttävän vaihtoehdon, joka on usein pienin tai suurin mahdollinen
-tapa muodostaa ratkaisua eteenpäin.
-Tyypillinen ahneen algoritmin ensimmäinen vaihe on aineiston
-järjestäminen, mikä antaa lähtökohdan algoritmin toiminnalle.
+\begin{code}
+int[] kopio = taulu.clone();
+Arrays.sort(kopio);
+...
+\end{code}
 
-Tarkastellaan esimerkkinä tehtävää, jossa tiedossamme on
-$n$ vapaata asuntoa sekä $m$ henkilöä, jotka haluavat vuokrata asunnon.
-Jokaisella asunnolla on tietty vuokra,
-ja jokaisella asunnon hakijalla on vuokraraja,
-kuinka suuren vuokran hän voi maksaa \emph{korkeintaan}.
-Kuinka voimme jakaa asunnot niin, että mahdollisimman moni
-halukas vuokralainen saa asunnon?
+Tämän jälkeen mediaanin laskeminen ei
+muuta taulukon sisältöä:
 
-Esimerkiksi jos asuntojen vuokrat ovat $[500,550,700,900]$
-ja hakijoiden vuokrarajat ovat $[400,600,800,900]$,
-voimme järjestää niin, että kolme hakijaa saa asunnon.
-Esimerkiksi voimme muodostaa parit $(500,600)$, $(700,800)$
-ja $(900,900)$, missä ensimmäinen arvo on asunnon vuokra
-ja toinen arvo on hakijan vuokraraja.
-On selvää, että tämä on optimaalinen ratkaisu:
-vuokrarajan 400 esittänyt hakija ei voi mitenkään saada asuntoa,
-koska halvimmankin asunnon vuokra on 500.
+\begin{code}
+int[] taulu = {2,1,3};
+System.out.println(mediaani(taulu)); // 2
+System.out.println(taulu[0]); // 2
+\end{code}
 
-Voimme ratkaista ongelman ahneella algoritmilla,
-joka käy läpi asunnon hakijat järjestyksessä vuokrarajan
-mukaan pienimmästä suurimpaan.
-Jokaisen hakijan kohdalla annamme hänelle halvimman
-jäljellä olevan asunnon, jos sen vuokra ei ylitä vuokrarajaa.
-Jos halvin asunto on liian kallis, emme anna asuntoa ja
-siirrymme suoraan seuraavaan hakijaan.
-Tällainen algoritmi vie aikaa $O(n \log n + m \log m)$,
-koska meidän riittää järjestää asunnot ja hakijat
-ja käydä niitä sitten läpi rinnakkain.
 
-Yllä olevassa esimerkissä aloitamme vuokrarajan 400
-esittäneestä hakijasta, joka kuitenkaan ei saa asuntoa.
-Tämän jälkeen käymme läpi loput hakijat
-vuokrarajoilla 600, 800 ja 900, ja muodostamme parit
-$(500,600)$, $(550,800)$ ja $(700,900)$.
-Tuloksena on toinen mahdollinen optimaalinen ratkaisu,
-jossa kolme hakijaa saa asunnon.
-
-Tärkeä kysymys ahneissa algoritmeissa on, \emph{miksi}
-algoritmi toimii. Miten voimme olla varmoja, että yllä kuvattu tapa
-jakaa asunnot tuottaa aina optimaalisen ratkaisun?
-
-Tässä tehtävässä voimme ajatella asiaa niin,
-että jos voimme antaa jonkin asunnon hakijalle,
-emme voi koskaan saada parempaa ratkaisua,
-jos päätämmekin olla antamatta asuntoa.
-Koska käsittelemme hakijat järjestyk\-sessä vuokrarajan mukaan,
-jokaisella myöhemmällä hakijalla on paremmat mahdollisuudet
-vuokrata asuntoa kuin nykyisellä hakijalla.
-Jos emme anna asuntoa nykyiselle hakijalle $x$
-ja joku myöhempi hakija $y$ saa sen, voimme kuitenkin 
-muuttaa lopullista ratkaisua niin, että $x$
-saa asunnon $y$:n sijasta ja ratkaisu säilyy yhtä hyvänä.
-Niinpä on turvallinen päätös antaa asunto nykyiselle hakijalle.
+% \section{Algoritmien suunnittelusta}
+% 
+% Voimme ratkaista tehokkaasti monia ongelmia järjestämällä
+% aineiston ja hyö\-dyntämällä sitten järjestystä tavalla tai toisella
+% algoritmissa.
+% Seuraavaksi tutustumme esimerkkeihin ongelmista, jotka voimme
+% ratkaista tehokkaasti järjes\-tämisen avulla.
+% 
+% \subsection{Perusongelmia}
+% 
+% Taulukon järjestämisen jälkeen voimme vastata tehokkaasti
+% mm. seuraaviin kysymyksiin:
+% 
+% \begin{itemize}
+% \item Onko taulukossa kahta samaa alkiota?
+% \item Kuinka monta eri alkiota taulukossa on?
+% \item Mikä on yleisin taulukossa esiintyvä alkio?
+% \end{itemize}
+% 
+% Voimme ratkaista ongelmat tehokkaasti, koska taulukon järjestämisen
+% jälkeen yhtä suuret alkiot ovat vierekkäin.
+% Kaikissa tapauksissa taulukon järjestäminen vie aikaa $O(n \log n)$,
+% ja sen jälkeen voimme selvittää ongelman vastauksen
+% käymällä taulukon läpi vasemmalta oikealle ajassa $O(n)$.
+% 
+% Esimerkiksi seuraava metodi laskee, montako eri alkiota
+% taulukko sisältää:
+% 
+% \begin{code}
+% int eriAlkiot(int[] taulu) {
+%     int n = taulu.length;
+%     Arrays.sort(taulu);
+%     int tulos = 1;
+%     for (int i = 1; i < n; i++) {
+%         if (taulu[i-1] != taulu[i]) tulos++;
+%     }
+%     return tulos;
+% }
+% \end{code}
+% 
+% \subsection{Pyyhkäisyviiva}
+% 
+% Pyyhkäisyviiva on tekniikka, jossa mallinnamme ongelman joukkona
+% tapahtumia, järjestämme tapahtumat ja käymme läpi tapahtumat
+% järjestyksessä.
+% Tarkastellaan esimerkkinä ongelmaa, jossa meillä on tiedossa
+% $n$ ravintola-asiakkaan saapumis- ja poistumisaika
+% ja haluamme selvittää, montako asiakasta ravintolassa oli
+% enimmillään samaan aikaan.
+% 
+% \begin{figure}
+% \center
+% \begin{tikzpicture}[scale=0.5]
+% \draw[|-|] (0,0) -- (5,0);
+% \draw[|-|] (7,-1.5) -- (10,-1.5);
+% \draw[|-|] (4,-3) -- (11,-3);
+% \draw[|-|] (5,-4.5) -- (6,-4.5);
+% \node at (-2,0) {$A$};
+% \node at (-2,-1.5) {$B$};
+% \node at (-2,-3) {$C$};
+% \node at (-2,-4.5) {$D$};
+% \end{tikzpicture}
+% \caption{Esimerkki ravintolan asiakkaiden vierailuista.
+% Ravintolassa oli enimmillään kolme asiakasta.}
+% \label{fig:pyyvii}
+% \end{figure}
+% 
+% Kuva \ref{fig:pyyvii} näyttää esimerkin tilanteessa,
+% jossa ravintolassa on käynyt neljä asiakasta $A$, $B$, $C$ ja $D$.
+% Ravintolassa oli enimmillään kolme asiakasta
+% asiakkaan $D$ vierailun ajan.
+% 
+% Voimme ratkaista ongelman esittämällä jokaisen asiakkaan kahtena
+% tapahtumana aikajanalla: ensimmäinen tapahtuma on asiakkaan
+% saapuminen ja toinen tapahtuma on asiakkaan poistuminen.
+% Tämän jälkeen voimme järjestää tapahtumat aikajärjestykseen
+% ja sen jälkeen käsitellä tapahtumat.
+% Pidämme yllä laskuria, joka kertoo, montako asiakasta ravintolassa
+% on tällä hetkellä.
+% Aina kun asiakas saapuu ravintolaan, laskuri kasvaa yhdellä,
+% ja aina kun asiakas poistuu ravintolasta,
+% laskuri vähenee yhdellä.
+% Laskurin suurin arvo läpikäynnin aikana on sama kuin
+% suurin asiakkaiden määrä ravintolassa.
+% 
+% Jotta voimme käsitellä tapahtumia, meidän on hyödyllistä määritellä
+% luokka, joka sisältää tapahtuman ajanhetken ja tyypin
+% (1 = asiakas saapuu, 2 = asiakas poistuu):
+% 
+% \begin{code}
+% class Tapahtuma implements Comparable<Tapahtuma> {
+%     int aika, tyyppi;
+% 
+%     int compareTo(Tapahtuma t) {
+%         if (this.aika != t.aika) return this.aika-t.aika;
+%         else return this.tyyppi-t.tyyppi;
+%     }
+% }
+% \end{code}
+% 
+% Huomaa, että meidän ei tarvitse muistaa tapahtumissa,
+% kenestä asiakkaasta on kysymys, vaan riittää tietää,
+% onko kyseessä saapuva vai poistuva asiakas.
