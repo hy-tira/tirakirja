@@ -2,4 +2,50 @@
 
 \section{Laskennalliset ongelmat}
 
-\section{Rekursio}
+\section{Rekursiiviset algoritmit}
+
+\subsection{Osajoukkojen läpikäynti}
+
+\subsection{Permutaatioiden läpikäynti}
+
+\subsection{Peruuttava haku}
+
+\section{Matemaattinen tausta}
+
+\subsection{Summakaavat}
+
+Lukujen $1,2,\dots,n$ summaa vastaa kaava
+\[1+2+\dots+n = \frac{n(n+1)}{2}.\]
+Esimerkiksi
+\[1+2+3+4+5 = \frac{5 \cdot 6}{2}=15.\]
+Kaavan voi ymmärtää niin, että laskemme yhteen $n$ lukua,
+joiden suuruus on \emph{keskimäärin} $(n+1)/2$.
+
+Toinen hyödyllinen kaava on
+\[2^0+2^1+\dots+2^n = 2^{n+1}-1.\]
+Esimerkiksi
+\[1+2+4+8+16=32-1.\]
+Tämän kaavan voi ajatella niin, että aloitamme luvusta $2^n$
+ja lisäämme siihen aina puolet pienemmän luvun lukuun $1$ asti.
+Niinpä pääsemme yhtä vaille lukuun $2^{n+1}$ asti.
+
+\subsection{Logaritmit}
+
+Logaritmin määritelmän mukaan $\log_b(n)=a$
+tarkalleen silloin kun $b^a=n$.
+Esimerkiksi $\log_2(32)=5$, koska $2^5=32$.
+
+Algoritmiikassa logaritmin kantaluku $b$ on usein 2,
+ja voimme ajatella, että logaritmi kertoo, montako kertaa
+meidän tulee puolittaa luku $n$, ennen kuin pääsemme lukuun 1.
+Esimerkiksi $\log_2(32)=5$, koska tarvitsemme 5 puolitusta:
+\[32 \rightarrow 16 \rightarrow 8 \rightarrow 4 \rightarrow 2 \rightarrow 1\]
+
+Logaritmeille pätee kaavat
+\[\log_b(x \cdot y) = \log_b(x)+\log_b(y)\]
+ja
+\[\log_b(x / y) = \log_b(x)-\log_b(y).\]
+Ylemmästä kaavasta seuraa myös
+\[\log_b(x^k) = k \log_b(x).\]
+Lisäksi voimme vaihtaa logaritmin kantalukua kaavalla
+\[\log_u(x) = \frac{\log_b(x)}{\log_b(u)}.\]
