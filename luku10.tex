@@ -18,9 +18,9 @@ verkkojen käsittelyyn.
 Verkko on tietorakenne, joka muodostuu \emph{solmuista} ja
 niitä yhdistävistä \emph{kaarista}.
 Merkitsemme tässä kirjassa verkon solmujen
-määrää kirjaimella $n$ ja verkon kaarten määrää
+määrää kirjaimella $n$ ja kaarten määrää
 kirjaimella $m$.
-Lisäksi numeroimme yleensä verkon solmut kokonaisluvuin
+Lisäksi numeroimme verkon solmut kokonaisluvuin
 $1,2,\dots,n$.
 
 Sanomme, että kaksi solmua ovat \emph{vierekkäin} verkossa,
@@ -43,7 +43,7 @@ $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.8]
+\begin{tikzpicture}[scale=0.7]
 \node[draw, circle] (1) at (1,3) {$1$};
 \node[draw, circle] (2) at (4,3) {$2$};
 \node[draw, circle] (3) at (1,1) {$3$};
@@ -74,7 +74,7 @@ ja sen komponentit ovat $\{1,3\}$ ja $\{2,4,5\}$.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.8]
+\begin{tikzpicture}[scale=0.7]
 \node[draw, circle] (1) at (1,3) {$1$};
 \node[draw, circle] (2) at (4,3) {$2$};
 \node[draw, circle] (3) at (1,1) {$3$};
@@ -97,13 +97,14 @@ Esimerkiksi verkossa \ref{fig:veresi} on sykli
 $1 \rightarrow 4 \rightarrow 3 \rightarrow 1$.
 Verkko on \emph{syklitön}, jos siinä ei ole yhtään sykliä.
 Verkko on \emph{puu}, jos se on yhtenäinen ja syklitön.
-Puussa kaarten määrä on aina yhden pienempi kuin solmujen määrä.
+Puussa kaarten määrä on aina yhden pienempi kuin solmujen määrä,
+ja jokaisen kahden solmun välillä on yksikäsitteinen polku.
 Esimerkiksi kuvassa \ref{fig:verpuu} on puu, jossa on 5 solmua ja 4 kaarta.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.8]
+\begin{tikzpicture}[scale=0.7]
 \node[draw, circle] (1) at (1,3) {$1$};
 \node[draw, circle] (2) at (4,3) {$2$};
 \node[draw, circle] (3) at (1,1) {$3$};
@@ -122,15 +123,17 @@ Esimerkiksi kuvassa \ref{fig:verpuu} on puu, jossa on 5 solmua ja 4 kaarta.
 
 Verkko on \emph{suunnattu}, jos kaarilla on merkityt suunnat,
 joiden mukaisesti niitä on kuljettava.
-Kuvassa \ref{fig:versuu} on esimerkkinä suunnattu verkko.
-Esimerkiksi voimme kulkea solmusta 1 solmuun 5
+Kaarten suunnat voivat aiheuttaa, että emme voi liikkua
+verkossa yhtä vapaasti kuin ennen.
+Kuvassa \ref{fig:versuu} on esimerkkinä suunnattu verkko,
+jossa voimme esimerkiksi kulkea solmusta 1 solmuun 5
 polkua $1 \rightarrow 2 \rightarrow 5$,
-mutta emme voi kulkea solmusta 5 solmuun 1.
+mutta emme voi kulkea mitenkään solmusta 5 solmuun 1.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.8]
+\begin{tikzpicture}[scale=0.7]
 \node[draw, circle] (1) at (1,3) {$1$};
 \node[draw, circle] (2) at (4,3) {$2$};
 \node[draw, circle] (3) at (1,1) {$3$};
@@ -165,19 +168,21 @@ Suunnatussa verkossa solmun \emph{lähtöaste} on
 solmusta lähtevien kaarten määrä ja solmun \emph{tuloaste}
 on solmuun tulevien kaarten määrä.
 Esimerkiksi kuvan \ref{fig:versuu} verkossa
-solmun 2 lähtöaste on 2 ja tuloaste on 1.
+solmun 2 lähtöaste on 2, koska siitä lähtee kaaret solmuihin 4 ja 5,
+ja sen tuloaste on 1, koska siihen tulee kaari solmusta 1.
 
 Verkko on \emph{painotettu}, jos sen kaarille on asetettu painot.
 Usein painot kuvaavat kaarien pituuksia, ja polun pituus
 on siinä olevien painojen summa.
 Kuvassa \ref{fig:verpai} on esimerkki painotetusta verkosta.
-Esimerkiksi polun $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$
-pituus on $2+4+3=9$.
+Esimerkiksi polun $1 \rightarrow 2 \rightarrow 5$ pituus on $5+2=7$
+ja polun $1 \rightarrow 4 \rightarrow 5$ pituus on $1+3=4$.
+Tässä verkossa jälkimmäinen polku on \emph{lyhin polku} solmusta 1 solmuun 5.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
 \node[draw, circle] (1) at (1,3) {$1$};
 \node[draw, circle] (2) at (4,3) {$2$};
 \node[draw, circle] (3) at (1,1) {$3$};
@@ -207,7 +212,7 @@ solmut 2, 3 ja 5 punaisiksi.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.8]
+\begin{tikzpicture}[scale=0.7]
 \node[draw, circle, color=blue] (1) at (1,3) {$1$};
 \node[draw, circle, color=red] (2) at (4,3) {$2$};
 \node[draw, circle, color=red] (3) at (1,1) {$3$};
@@ -221,7 +226,8 @@ solmut 2, 3 ja 5 punaisiksi.
 \path[draw,thick,-] (4) -- (5);
 \end{tikzpicture}
 \end{center}
-\caption{Kaksijakoinen verkko.}
+\caption{Kaksijakoinen verkko, jossa voimme värittää solmut 1 ja 4
+sinisiksi ja solmut 2, 3 ja 5 punaisiksi.}
 \label{fig:verkak}
 \end{figure}
 
@@ -322,7 +328,7 @@ sekä kaarten kohdesolmut että painot.
 
 Vieruslistaesitys on yleensä käytännössä hyvä tapa
 tallentaa verkko ohjelmoinnissa.
-Esityksen etuna on, että voimme selvittää helposti,
+Esityksen avulla voimme selvittää helposti,
 mihin solmuihin pääsee kaarta pitkin tietystä solmusta.
 Esimerkiksi voimme käydä seuraavasti läpi
 kaikki tietyn solmun naapurit:
@@ -412,7 +418,7 @@ jolloin vierusmatriisiesitys tuhlaa muistia.
 
 Kaksi tavallista menetelmää verkon läpikäyntiin ovat syvyyshaku ja leveyshaku.
 Molemmat haut lähtevät liikkeelle tietystä verkon solmusta ja käyvät
-kaikissa solmuissa, johon lähtösolmusta pääsee kaaria pitkin.
+kaikissa solmuissa, joihin lähtösolmusta pääsee kaaria pitkin.
 Hakujen erona on järjestys, jossa ne vierailevat solmuissa.
 
 \subsection{Syvyyshaku}
@@ -421,7 +427,7 @@ Syvyyshaku lähtee liikkeelle tietystä verkon solmusta ja siirtyy
 joka askeleella johonkin vielä tutkimattomaan solmuun,
 johon nykyisestä solmusta pääsee kaarta pitkin.
 Kuitenkin jos mitään tällaista solmua ei ole olemassa,
-syvyyshaku palaa takaisin kulkemallaan reitillä.
+haku palaa takaisin kulkemallaan reitillä.
 
 \begin{figure}
 \center
@@ -502,7 +508,7 @@ Jokaisessa vaiheessa harmaat solmut ovat solmuja,
 joissa haku on jo vieraillut.
 Haku lähtee liikkeelle solmusta 1 ja etenee ensin
 solmuihin 2, 4 ja 5.
-Tämän jälkeen haku perääntyy takaisin solmuun 1
+Tämän jälkeen haku palaa takaisin solmuun 1
 ja käy vielä solmussa 3.
 
 Syvyyshaku on mukavaa toteuttaa rekursiivisesti.
@@ -527,7 +533,8 @@ void syvyyshaku(int solmu) {
 
 Syvyyshaku käynnistyy, kun kutsumme yllä olevaa metodia
 parametrina lähtösolmu.
-Metodi tarkistaa ensin, olemmeko jo käyneet solmussa,
+Jokaisella kutsulla metodi tarkistaa ensin,
+olemmeko jo käyneet parametrina annetussa solmussa,
 ja päättyy heti tässä tilanteessa.
 Muuten metodi merkitsee, että olemme nyt käyneet solmussa
 ja etenee rekursiivisesti kaikkiin solmun naapureihin.
@@ -618,19 +625,19 @@ Tämän järjestyksen mukaisesti haku tarkistaa jokaisesta solmusta,
 mihin solmuihin siitä voi päästä.
 Etäisyys solmuihin 2 ja 3 on 1, ja etäisyys solmuihin 4 ja 5 on 2.
 
-Leveyshaku on vaikeampaa toteuttaa kuin syvyyshaku,
-koska meidän täytyy pystyä edistämään hakua verkon eri puolilta.
-Tätä varten määritte\-lemme jonon, joka sisältää solmuja,
+Leveyshaku on vaikeampi toteuttaa kuin syvyyshaku,
+koska meidän täytyy pystyä edistämään hakua vuorotellen verkon eri puolilta.
+Tätä varten määrit\-telemme jonon, joka sisältää solmuja,
 jotka odottavat läpikäyntiä.
 Valitsemme aina seuraavaksi käsiteltävän solmun jonon alusta,
 ja lisämme uudet vieraillut solmut jonon loppuun.
-Voimme määritellä jonon näin:
+Voimme luoda jonon näin:
 
 \begin{code}
 ArrayDeque<Integer> jono = new ArrayDeque<>();
 \end{code}
 
-Lisäksi määrittelemme taulukot, joiden avulla pidämme kirjaa,
+Lisäksi määrittelemme taulukot, joissa pidämme kirjaa,
 missä solmuissa olemme käyneet sekä mitkä ovat solmujen
 etäisyydet lähtösolmusta:
 
@@ -658,7 +665,7 @@ while (jono.size() > 0) {
 
 Koodi merkitsee aluksi, että olemme käyneet lähtösolmussa
 ja etäisyys siihen on 0, sekä lisää lähtösolmun jonoon.
-Sen jälkeen niin kauan kuin jonossa on solmuja
+Sen jälkeen niin kauan kuin jonossa on solmuja,
 koodi valitsee aina jonon ensimmäisen solmun
 ja tarkastaa siitä lähtevät kaaret.
 Jos pääsemme uuteen solmuun, päivitämme taulukkoja
@@ -681,11 +688,11 @@ ovat yhteydessä toisiinsa.
 Voimme tarkistaa yhtenäisyyden lähtemällä liikkeelle
 mielivaltaisesta solmusta.
 Verkko on yhtenäinen tarkalleen silloin,
-kun pääsemme kaikkiin muihin verkon solmuihin läpikäynnin aikana.
+kun pääsemme kaikkiin muihin solmuihin läpikäynnin aikana.
 
 Jos verkko ei ole yhtenäinen, voimme myös etsiä kaikki sen
-komponentit läpikäynnin avulla.
-Tässä tapauksessa käymme läpi kaikki verkon solmut.
+komponentit läpikäyntien avulla.
+Tässä tapauksessa tarkastamme järjestyksessä kaikki verkon solmut.
 Aina kun vuoroon tulee solmu, jossa emme ole vielä käyneet,
 aloitamme siitä läpikäynnin, joka muodostaa uuden komponentin.
 
@@ -716,8 +723,8 @@ ja yksi sen komponentti on $\{1,2,3\}$.}
 
 Kuva \ref{fig:veryhk} näyttää esimerkin, jossa aloitamme läpikäynnin
 solmusta 1. Koska emme pääse kaikkiin verkon solmuihin,
-toteamme, että verkko ei ole yhtenäinen, mutta olemme löytäneet
-yhden sen komponentin, jossa on solmut 1, 2 ja 3.
+toteamme, että verkko ei ole yhtenäinen. Olemme kuitenkin samalla löytäneet
+yhden verkon komponentin, jossa on solmut 1, 2 ja 3.
 
 \subsubsection{Syklin etsiminen}
 
@@ -765,8 +772,8 @@ Tässä tapauksessa sykli muodostuu solmuista 2, 4 ja 5.
 Voimme ratkaista monia ongelmia sekä syvyyshaun että leveyshaun avulla.
 Kumpaa kannattaisi siis käyttää?
 
-Jos voimme käyttää kumpaa tahansa, syvyyshaku on käytännössä parempi
-valinta, koska se on helpompi ohjelmoida.
+Jos meillä on mahdollisuus valita, kumpaa hakutapaa käytämme,
+syvyyshaku on käytännössä parempi valinta, koska se on helpompi ohjelmoida.
 Syvyyshaussa riittää toteuttaa muutaman rivin metodi,
 kun taas leveyshaun ohjelmointi vaatii enemmän koodia.
 
