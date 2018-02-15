@@ -311,12 +311,12 @@ Vieruslistaesitys on yleensä käytännössä hyvä tapa
 tallentaa verkko ohjelmoinnissa.
 Esityksen etuna on, että voimme selvittää helposti,
 mihin solmuihin pääsee kaarta pitkin tietystä solmusta.
-Esimerkiksi voimme käydä seuraavasti läpi solmut,
-joihin pääsee kaarella solmusta $x$:
+Esimerkiksi voimme käydä seuraavasti läpi
+kaikki tietyn solmun naapurit:
 
 \begin{code}
-for (Integer u : verkko[x]) {
-    // käsittele solmu u
+for (Integer naapuri : verkko[solmu]) {
+    // käsittele naapuri
 }
 \end{code}
 
@@ -397,7 +397,128 @@ jolloin vierusmatriisiesitys tuhlaa muistia.
 
 \section{Läpikäyntitavat}
 
+Kaksi tavallista menetelmää verkon läpikäyntiin ovat syvyyshaku ja leveyshaku.
+Molemmat haut lähtevät liikkeelle tietystä verkon solmusta ja käyvät
+kaikissa solmuissa, johon lähtösolmusta pääsee kaaria pitkin.
+Hakujen erona on järjestys, jossa ne vierailevat solmuissa.
+
 \subsection{Syvyyshaku}
+
+Syvyyshaku lähtee liikkeelle tietystä verkon solmusta ja siirtyy
+joka askeleella johonkin vielä tutkimattomaan solmuun,
+johon nykyisestä solmusta pääsee kaarta pitkin.
+Kuitenkin jos mitään tällaista solmua ei ole olemassa,
+syvyyshaku palaa takaisin kulkemallaan reitillä.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\scriptsize
+\newcommand\verkko[6]{
+\node[draw, circle, fill=#2] (1) at (0,0) {$1$};
+\node[draw, circle, fill=#3] (2) at (2,0) {$2$};
+\node[draw, circle, fill=#4] (3) at (0,-2) {$3$};
+\node[draw, circle, fill=#5] (4) at (2,-2) {$4$};
+\node[draw, circle, fill=#6] (5) at (4,-1) {$5$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (4) -- (5);
+\path[draw,thick,-] (1) -- (3);
+\node at (2,-3) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{lightgray}{white}{white}{white}{white}
+\end{scope}
+\begin{scope}[xshift=6cm]
+\verkko{2}{lightgray}{lightgray}{white}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\end{scope}
+\begin{scope}[xshift=12cm]
+\verkko{3}{lightgray}{lightgray}{white}{lightgray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\begin{scope}[xshift=18cm]
+\verkko{4}{lightgray}{lightgray}{white}{lightgray}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (5);
+\end{scope}
+\begin{scope}[yshift=-5cm]
+\verkko{5}{lightgray}{lightgray}{white}{lightgray}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (5);
+\path[draw=red,thick,->,line width=2pt] (5) -- (2);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=6cm]
+\verkko{6}{lightgray}{lightgray}{white}{lightgray}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (5);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=12cm]
+\verkko{7}{lightgray}{lightgray}{white}{lightgray}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=18cm]
+\verkko{8}{lightgray}{lightgray}{white}{lightgray}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\end{scope}
+\begin{scope}[yshift=-10cm]
+\verkko{9}{lightgray}{lightgray}{white}{lightgray}{lightgray}
+\end{scope}
+\begin{scope}[yshift=-10cm,xshift=6cm]
+\verkko{10}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[yshift=-10cm,xshift=12cm]
+\verkko{11}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki syvyyshaun toiminnasta.}
+\label{fig:syvhak}
+\end{figure}
+
+Kuvassa \ref{fig:syvhak} on esimerkki syvyyshaun toiminnasta verkossa.
+Jokaisessa vaiheessa harmaat solmut ovat solmuja,
+joissa haku on jo vieraillut.
+Haku lähtee liikkeelle solmusta 1 ja etenee ensin
+solmuihin 2, 4 ja 5.
+Tämän jälkeen haku perääntyy takaisin solmuun 1
+ja käy vielä solmussa 3.
+
+Syvyyshaku on mukavaa toteuttaa rekursiivisesti.
+Tarvitsemme ensinnäkin taulukon, joka kertoo,
+missä solmuissa olemme käyneet:
+
+\begin{code}
+boolean[] vierailtu = new boolean[n+1];
+\end{code}
+
+Tämän jälkeen voimme toteuttaa syvyyshaun näin:
+
+\begin{code}
+void syvyyshaku(int solmu) {
+    if (vierailtu[solmu]) return;
+    vierailtu[solmu] = true;
+    for (Integer naapuri : verkko[solmu]) {
+        syvyyshaku(naapuri);
+    }
+}
+\end{code}
+
+Syvyyshaku käynnistyy, kun kutsumme yllä olevaa metodia
+parametrina lähtösolmu.
+Metodi tarkistaa ensin, olemmeko jo käyneet solmussa,
+ja päättyy heti tässä tilanteessa.
+Muuten metodi merkitsee, että olemme nyt käyneet solmussa
+ja etenee rekursiivisesti kaikkiin solmun naapureihin.
 
 \subsection{Leveyshaku}
 
+\subsection{Sovelluksia}
