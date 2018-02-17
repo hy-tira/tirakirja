@@ -424,6 +424,92 @@ Niinpä algoritmin aikavaativuudeksi tulee $O((n+m) \log n)$.
 
 \subsection{Toteutus}
 
+Dijkstran algoritmi on mukavaa toteuttaa niin, että
+se käyttää verkon vieruslistaesitystä
+
+\begin{code}
+ArrayList<Kaari>[] verkko = new ArrayList<>();
+\end{code}
+
+Luomme seuraavat taulukot, jotka pitävät kirjaa solmujen etäisyyksistä
+sekä käsitellyistä solmuista:
+
+\begin{code}
+int[] etaisyys = new int[n+1];
+boolean[] kasitelty = new boolean[n+1];
+\end{code}
+
+Lisäksi jotta voimme löytää nopeasti pienimmän etäisyyden solmun,
+otamme käyttöön prioriteettijonon
+
+\begin{code}
+PriorityQueue<Solmu> solmut = new PriorityQueue<>();
+\end{code}
+
+Etäisyyksiä varten tarvitsemme uuden luokan,
+jonka oliot järjestyvät etäisyyden mukaan pienimmästä suurimpaan:
+
+\begin{code}
+class Solmu implements Comparable<Solmu> {
+    public int id, etaisyys;
+
+    public int compareTo(Solmu s) {
+        if (etaisyys != s.etaisyys) return etaisyys-s.etaisyys;
+        else return id-s.id;
+    }
+
+    public bool equals(Object o) {
+        Solmu s = (Solmu)o;
+        return etaisyys == s.etaisyys && id == s.id;
+    }
+
+    public Solmu(int id, int etaisyys) {
+        this.id = id;
+        this.etaisyys = etaisyys;
+    }
+}
+\end{code}
+
+Haluamme selvittää lyhimmät polut solmusta $x$ alkaen,
+joten alustamme rakenteet seuraavasti:
+
+\begin{code}
+for (int i = 1; i <= n; i++) {
+    etaisyys[i] = 1e9;
+}
+etaisyys[x] = 0;
+solmut.add(new Solmu(x,0));
+\end{code}
+
+Tämän jälkeen voimme toteuttaa algoritmin näin:
+
+\begin{code}
+while (!solmut.isEmpty()) {
+    Solmu solmu = solmut.poll();
+    if (kasitelty[solmu.id]) continue;
+    kasitelty[solmu.id] = true;
+    for (Kaari kaari : verkko[solmu]) {
+        int vanha = etaisyys[kaari.loppu];
+        int uusi = solmu.etaisyys+kaari.paino;
+        if (uusi < vanha) {
+            etaisyys[kaari.loppu] = uusi;
+            solmut.add(new Solmu(kaari.loppu,uusi))
+        }
+    }
+}
+\end{code}
+
+Huomaa, että koska voimme poistaa prioriteettijonosta
+vain pienimmän etäisyyden solmun,
+lisäämme solmun etäisyyden muuttuessa uuden solmun jonoon.
+Jos olemme käsitelleet jonosta tulevan solmun,
+emme käsittele sitä uudestaan.
+
+Vaikka jonossa on ''ylimääräisiä'' solmuja, ratkaisu säilyy
+tehokkaana ja toimii ajassa $O((n+m) \log n)$.
+Jonossa voi olla enintään $m$ solmua, ja koska $m=O(n^2)$,
+jokainen operaatio jonoon vie aikaa $O(\log n^2)=O(2 \log n)=O(\log n)$.
+
 \section{Floyd-Warshallin algoritmi}
 
 \subsection{Analyysi}
