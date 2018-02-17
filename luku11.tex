@@ -149,12 +149,12 @@ Tämä ei ole kuitenkaan mahdollista,
 koska ei olisi järkeä kulkea monta kertaa saman solmun kautta,
 kun haluamme saada aikaan lyhimmän polun.
 
-Toinen havainto on, että jos lyhin polku solmusta $x$ solmuun $y$ on
-$x \rightarrow s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k \rightarrow y$,
-niin myös lyhin polku solmusta $x$ solmuun $s_1$ on $x \rightarrow s_1$,
-lyhin polku solmusta $x$ solmuun $s_2$ on $x \rightarrow s_1 \rightarrow s_2$, jne.,
+Toinen havainto on, että jos lyhin polku solmusta $s_1$ solmuun $s_k$ on
+$s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k$,
+niin myös lyhin polku solmusta $s_1$ solmuun $s_2$ on $s_1 \rightarrow s_2$,
+lyhin polku solmusta $s_1$ solmuun $s_3$ on $s_1 \rightarrow s_2 \rightarrow s_3$, jne.,
 eli jokainen polun alkuosa on myös lyhin polku vastaavaan solmuun.
-Jos näin ei olisi, voisimme parantaa lyhintä polkua solmusta $x$ solmuun $y$
+Jos näin ei olisi, voisimme parantaa lyhintä polkua solmusta $s_1$ solmuun $s_k$
 parantamalla jotain polun alkuosaa.
 
 Tarkastellaan nyt, mitä tapahtuu algoritmin kierroksissa.
@@ -167,11 +167,35 @@ lyhimmät polut, joissa on $n-1$ kaarta.
 Koska missään lyhimmässä polussa ei voi olla enempää kaaria,
 olemme löytäneet kaikki lyhimmät polut.
 
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,->] (1) -- node[font=\small,label=above:1] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=left:3] {} (3);
+\path[draw,thick,<-] (3) -- node[font=\small,label=below:4] {} (4);
+\path[draw,thick,->] (2) -- node[font=\small,label=left:$-7$] {} (4);
+\path[draw,thick,<-] (2) -- node[font=\small,label=above:2] {} (5);
+\path[draw,thick,->] (4) -- node[font=\small,label=below:3] {} (5);
+\end{tikzpicture}
+\end{center}
+\caption{Negatiivinen sykli $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$,
+jonka avulla voimme lyhentää polkuja loputtomasti.}
+\label{fig:belsyk}
+\end{figure}
+
 Huomaa, että Bellman–Fordin algoritmi ei toimi järkevästi,
 jos verkossa on \emph{negatiivinen sykli}
 eli sykli, jonka kokonaispituus on negatiivinen.
-Esimerkki tästä on kuvan X verkossa oleva sykli X.
-Tällöin voimme lyhentää polkua loputtomasti kulkemalla
+Esimerkki tästä on kuvan \ref{fig:belsyk} verkossa oleva sykli
+$2 \rightarrow 4 \rightarrow 5 \rightarrow 2$, jonka paino on $-2$.
+Negatiivisen syklin avulla voimme lyhentää polkuja loputtomasti kulkemalla
 sykliä uudestaan ja uudestaan, eikä lyhimmän polun pituudella ole alarajaa.
 Voimme havaita negatiivisen syklin olemassaolon suorittamalla
 algoritmia $n$ kierrosta tavallisen $n-1$ sijaan.
