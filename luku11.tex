@@ -1,6 +1,147 @@
 \chapter{Reitinhaku}
 
+Reitinhaku on keskeinen algoritmiikan ongelma, jossa haluamme
+löytää parhaan reitin paikasta $a$ paikkaan $b$.
+Esimerkiksi voimme haluta etsiä nopeimman tavan
+matkustaa kotoa yliopistolle
+tai halvimman lentoyhteyden kaupungista $a$
+kaupunkiin $b$.
+Verkkojen kielellä sanomme, että tavoitteemme on löytää \emph{lyhin polku}
+solmusta $a$ solmuun $b$.
+
+Jos verkon kaarilla ei ole painoja,
+voimme löytää lyhimmät polut helposti leveyshaun avulla,
+kuten olemme tehneet edellisessä luvussa.
+Tässä luvussa kuitenkin keskitymme tilanteeseen,
+jossa verkon kaarilla on painot.
+Tässä tilanteessa tarvitsemme kehittyneempiä algoritmeja
+lyhimpien polkujen löytämiseen.
+
+Tutustumme kolmeen keskeiseen reitinhakumenetelmään:
+
+\begin{itemize}
+\item \textbf{Bellman–Fordin algoritmi} etsii lyhimmät polut
+lähtösolmusta kaikkiin muihin solmuihin ajassa $O(nm)$.
+\item \textbf{Dijkstran algoritmi} etsii lyhimmät polut
+lähtösolmusta kaikkiin muihin solmuihin \emph{tehokkaammin} ajassa $O(m \log n)$
+olettaen, että verkossa ei ole negatiivisen painoisia kaaria.
+\item \textbf{Floyd–Warshallin algoritmi} etsii lyhimmät polut
+\emph{kaikkien} verkon solmuparien välillä ajassa $O(n^3)$.
+\end{itemize}
+
 \section{Bellman–Fordin algoritmi}
+
+Bellman–Fordin algoritmi laskee jokaiselle verkon solmulle,
+kuinka pitkä on lyhin polku lähtösolmusta $x$ solmuun.
+Algoritmi pitää yllä verkon solmuille arvioita,
+mikä on etäisyys solmusta $x$ kyseiseen solmuun.
+Aluksi etäisyys lähtösolmuun on 0 ja etäisyys kaikkiin muihin
+solmuihin on $\infty$ (ääretön).
+Sitten algoritmi alkaa parantaa etäisyyksiä
+hyödyntämällä verkon kaaria.
+
+Algoritmi muodostuu $n-1$ kierroksesta, joista jokainen käy läpi
+kaikki verkon kaaret.
+Jokaisen kaaren $a \rightarrow b$ kohdalla algoritmi tarkastaa,
+voiko kaaren avulla parantaa etäisyyttä solmusta $x$ solmuun $b$
+kulkemalla solmun $a$ kautta.
+Jos näin on, algoritmi merkitsee uuden etäisyyden muistiin.
+Algoritmin päätteeksi jokaisen solmun etäisyys on sama kuin
+lyhimmän polun pituus solmusta $x$ kyseiseen solmuun.
+
+Kuva X näyttää esimerkin Bellman–Fordin algoritmin toiminnasta.
+Tässä lähtösolmuna on solmu 1, ja haluamme selvittää siitä
+lyhimmät polut muihin solmuihin.
+Jokaisen solmun vieressä on ilmoitettu sen etäisyysarvio. TODO
+
+\subsection{Analyysi}
+
+Bellman–Fordin algoritmi muodostuu $n-1$ kierroksesta,
+joista jokainen käy läpi verkon $m$ kaarta,
+joten on helppoa nähdä, että algoritmi toimii ajassa $O(nm)$.
+Mutta miksi on varmaa, että $n-1$ kierroksen jälkeen olemme
+määrittäneet kaikki lyhimmät polut?
+
+Ensimmäinen havainto on,
+että $n$ solmun verkossa jokainen lyhin polku voi
+sisältää enintään $n-1$ kaarta.
+Jos polkuun kuuluisi $n$ tai enemmän kaaria,
+jokin solmu esiintyisi polulla monta kertaa.
+Tämä ei ole kuitenkaan mahdollista,
+koska ei olisi järkeä kulkea monta kertaa saman solmun kautta,
+kun haluamme saada aikaan lyhimmän polun.
+
+Toinen havainto on, että jos lyhin polku solmusta $x$ solmuun $y$ on
+$x \rightarrow s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k \rightarrow y$,
+niin myös lyhin polku solmusta $x$ solmuun $s_1$ on $x \rightarrow s_1$,
+lyhin polku solmusta $x$ solmuun $s_2$ on $x \rightarrow s_1 \rightarrow s_2$, jne.,
+eli jokainen polun alkuosa on myös lyhin polku vastaavaan solmuun.
+Jos näin ei olisi, voisimme parantaa lyhintä polkua solmusta $x$ solmuun $y$
+parantamalla jotain polun alkuosaa.
+
+Tarkastellaan nyt, mitä tapahtuu algoritmin kierroksissa.
+Ensimmäisen kierroksen jälkeen olemme löytäneet lyhimmät polut,
+joissa on yksi kaari.
+Toisen kierroksen jälkeen olemme löytäneet lyhimmät polut,
+joissa on kaksi kaarta.
+Sama jatkuu, kunnes $n-1$ kierroksen jälkeen olemme löytäneet
+lyhimmät polut, joissa on $n-1$ kaarta.
+Koska missään lyhimmässä polussa ei voi olla enempää kaaria,
+olemme löytäneet kaikki lyhimmät polut.
+
+Huomaa, että Bellman–Fordin algoritmi ei toimi järkevästi,
+jos verkossa on \emph{negatiivinen sykli}
+eli sykli, jonka kokonaispituus on negatiivinen.
+Esimerkki tästä on kuvan X verkossa oleva sykli X.
+Tällöin voimme lyhentää polkua loputtomasti kulkemalla
+sykliä uudestaan ja uudestaan, eikä lyhimmän polun pituudella ole alarajaa.
+Voimme havaita negatiivisen syklin olemassaolon suorittamalla
+algoritmia $n$ kierrosta tavallisen $n-1$ sijaan.
+Jos viimeisellä kierroksella jokin etäisyys pienenee,
+verkossa on negatiivien sykli.
+
+\subsection{Toteutus}
+
+Bellman–Fordin algoritmi on kätevää toteuttaa käyttäen verkon
+kaarilista\-esitystä. Meillä on siis lista
+
+\begin{code}
+ArrayList<Kaari> kaaret = new ArrayList<>();
+\end{code}
+
+jonka jokainen alkio vastaa yhtä kaarta.
+Lisäksi määrittelemme taulukon
+
+\begin{code}
+int[] etaisyys = new int[n+1];
+\end{code}
+
+joka pitää kirjaa solmujen etäisyyksistä.
+Alustamme taulukon näin:
+
+\begin{code}
+for (int i = 1; i <= n; i++) {
+    etaisyys[i] = 1e9;
+}
+etaisyys[x] = 0;
+\end{code}
+
+Koska Javassa ei ole käsitettä ''ääretön'', käytämme sen sijasta
+suurta lukua $10^9$, eli oletamme, että kaikki etäisyydet
+ovat todellisuudessa pienempiä kuin $10^9$.
+Jos etäisyydet voivat olla suurempia, tätä lukua täytyy muuttaa.
+
+Tämän jälkeen voimme toteuttaa algoritmin näin:
+
+\begin{code}
+for (int i = 1; i <= n-1; i++) {
+    for (Kaari kaari : kaaret) {
+        int vanha = etaisyys[kaari.mihin];
+        int uusi = etaisyys[kaari.mista]+kaari.paino;
+        etaisyys[kaari.mihin] = Math.min(vanha, uusi);
+    }
+}
+\end{code}
 
 \section{Dijsktran algoritmi}
 
