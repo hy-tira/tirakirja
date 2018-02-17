@@ -524,8 +524,8 @@ Algoritmin alussa etäisyysmatriisi sisältää vain polut,
 jotka vastaavat yksittäistä verkon kaarta.
 Sitten algoritmi suorittaa $n$ kierrosta,
 jotka on numeroitu $1,2,\dots,n$.
-Kierroksella $i$ algoritmi etsii polkuja, joissa on välisolmuna
-solmu $i$ sekä mahdollisesti solmuja $1,2,\dots,i-1$.
+Kierroksella $k$ algoritmi etsii polkuja, joissa on välisolmuna
+solmu $k$ sekä mahdollisesti solmuja $1,2,\dots,k-1$.
 Viimeisen kierroksen jälkeen jokainen solmu voi olla
 välisolmuna poluilla, jolloin algoritmi on saanut selville
 kaikki lyhimmät polut.
@@ -600,8 +600,8 @@ Kuva \ref{fig:flowar} näyttää esimerkin Floyd–Warshallin algoritmin toiminn
 Etäisyysmatriisin rivillä $a$ sarakkeessa $b$ on lyhin tunnettu etäisyys
 solmusta $a$ solmuun $b$.
 Alussa matriisin sisältö on muodostettu suoraan verkon vierusmatriisista,
-ja vaiheessa $i$ parannamme etäisyyksiä poluilla, jotka kulkevat solmun $i$
-(ja mahdollisesti solmujen $1,2,\dots,i-1$) kautta.
+ja vaiheessa $k$ parannamme etäisyyksiä poluilla, jotka kulkevat solmun $k$
+(ja mahdollisesti solmujen $1,2,\dots,k-1$) kautta.
 
 Vaiheessa 1 emme voi muodostaa mitään uusia polkuja,
 koska mistään solmusta ei pääse solmuun 1.
@@ -612,30 +612,52 @@ kautta kulkevat polut.
 
 \subsection{Analyysi}
 
-Floyd–Warshallin algoritmi on mahdollista toteuttaa
-$O(n^3)$-ajassa kolmen sisäkkäisen for-silmukan avulla.
-Seuraavaksi näemme, miten tämä tapahtuu käytännössä.
+Yksi tapa ymmärtää Floyd–Warshallin algoritmia on
+ajatella algoritmin toimintaa ''käänteisesti'' rekursiivisesti:
+kun verkossa on lyhin polku solmusta $a$ solmuun $b$,
+millainen tämä polku voi olla?
+
+Jos solmu $x$ kuuluu polkuun, meille syntyy kaksi osaongelmaa:
+meidän tulee etsiä ensin lyhin polku solmusta $a$ solmuun $x$
+ja sitten lyhin polku solmusta $x$ solmuun $b$.
+Näiden polkujen muodostamisessa voimme jälleen käy läpi tapauksia,
+mitkä solmut kuuluvat polkuihin.
+Esimerkiksi lyhin polku solmusta $a$ solmuun $x$
+voi kulkea vuorostaan solmun $y$ kautta,
+jolloin haluamme etsiä lyhimmät polut solmusta $a$ solmuun $y$
+ja solmusta $y$ solmuun $x$.
+
+Floyd–Warshallin algoritmissa muodostamme joka vaiheessa
+polkuja, joissa voi olla välisolmuina solmuja $1,2,\dots,i$.
+Kun haluamme muodostaa lyhimmän polun solmusta $a$ solmuun $b$,
+meillä on kaksi vaihtoehtoa:
+Jos solmu $i$ on välisolmuna, yhdistämme lyhimmät polut
+solmusta $a$ solmuun $i$ ja solmusta $i$ solmuun $b$.
+Jos taas solmu $i$ ei ole välisolmuna, olemme käsitelleet
+polun jo aiemmin. 
+
+Seuraavaksi näemme, kuinka voimme toteuttaa algoritmin
+tehokkaasti ajassa $O(n^3)$ kolmen sisäkkäisen for-silmukan avulla.
 
 \subsection{Toteutus}
 
-Floyd–Warshallin algoritmin toteutus perustuu verkon
-vierusmatriisiesitykseen:
+Toteutuksemme lähtökohtana on verkon vierusmatriisiesitys:
 
 \begin{code}
 int[][] verkko = new int[n+1][n+1];
 \end{code}
 
-Tämän esityksen rinnalle algoritmi luo toisen matriisin,
-joka tulee sisältä\-mään solmujen etäisyydet:
+Tämän esityksen rinnalle luomme etäisyysmatriisin,
+joka tulee sisältämään solmujen etäisyydet:
 
 \begin{code}
 int[][] etaisyys = new int[n+1][n+1];
 \end{code}
 
-Algoritmin ensimmäinen vaihe on alustaa etäisyydet niin,
+Ensin alustamme etäisyysmatriisin niin,
 että jos solmusta $a$ solmuun $b$ on kaari,
 etäisyys on kaaren paino, ja muuten etäisyys on ääretön.
-Tämän voi tehdä seuraavasti:
+Voimme tehdä tämän seuraavasti:
 
 \begin{code}
 for (int i = 1; i <= n; i++) {
@@ -662,3 +684,6 @@ for (int k = 1; k <= n; k++) {
     }
 }
 \end{code}
+
+Tässä muuttuja $k$ on kierroslaskuri, joka ilmaisee, mikä solmu toimii
+välisolmuna uusilla poluilla.
