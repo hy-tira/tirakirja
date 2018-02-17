@@ -23,7 +23,7 @@ Tutustumme kolmeen keskeiseen reitinhakumenetelmään:
 \item \textbf{Bellman–Fordin algoritmi} etsii lyhimmät polut
 lähtösolmusta kaikkiin muihin solmuihin ajassa $O(nm)$.
 \item \textbf{Dijkstran algoritmi} etsii lyhimmät polut
-lähtösolmusta kaikkiin muihin solmuihin \emph{tehokkaammin} ajassa $O(m \log n)$
+lähtösolmusta kaikkiin muihin solmuihin \emph{tehokkaammin} ajassa $O((n+m) \log n)$
 olettaen, että verkossa ei ole negatiivisen painoisia kaaria.
 \item \textbf{Floyd–Warshallin algoritmi} etsii lyhimmät polut
 \emph{kaikkien} verkon solmuparien välillä ajassa $O(n^3)$.
@@ -261,6 +261,171 @@ kun jokin etäisyys pienenee.
 Taulukon avulla voimme muodostaa käänteisesti
 lyhimmän polun mihin tahansa solmuun.
 
-\section{Dijsktran algoritmi}
+\section{Dijkstran algoritmi}
+
+Dijkstran algoritmi on Bellman–Fordin algoritmin tehostettu versio,
+jonka toiminta perustuu oletukseen, että verkossa ei ole
+negatiivisen painoisia kaaria.
+Bellman–Fordin algoritmin tapaan Dijkstran algoritmi pitää
+yllä arvioita etäisyyksistä lähtösolmusta $x$ muihin solmuihin.
+Erona on kuitenkin tapa, miten Dijkstran algoritmi parantaa etäisyyksiä.
+
+Algoritmi etsii jokaisessa vaiheessa solmun, jota ei ole vielä
+käsitelty ja jonka etäisyys on pienin.
+Sitten algoritmi käy läpi kaikki solmusta lähtevät kaaret ja
+koettaa parantaa etäisyyksiä niiden avulla.
+Tämän jälkeen solmu on käsitelty eikä sen etäisyys enää
+muutu algoritmin aikana.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\small
+\newcommand\verkko[6]{
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:8] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:2] {} (3);
+\path[draw,thick,->] (3) -- node[font=\small,label=right:4] {} (2);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:5] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:7] {} (5);
+\path[draw,thick,->] (5) -- node[font=\small,label=right:3] {} (4);
+\node[color=red] at (0,-0.25) {$#2$};
+\node[color=red] at (2,0.75) {$#3$};
+\node[color=red] at (2,-2.75) {$#4$};
+\node[color=red] at (4,0.75) {$#5$};
+\node[color=red] at (4,-2.75) {$#6$};
+\node at (2,-3.5) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{0}{\infty}{\infty}{\infty}{\infty}
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\verkko{2}{0}{8}{2}{\infty}{\infty}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[xshift=13cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\verkko{3}{0}{6}{2}{\infty}{9}
+\path[draw=red,thick,->,line width=2pt] (3) -- (2);
+\path[draw=red,thick,->,line width=2pt] (3) -- (5);
+\end{scope}
+\begin{scope}[yshift=-5.5cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\node[draw, circle, fill=lightgray] (2) at (2,0) {$2$};
+\verkko{4}{0}{6}{2}{11}{9}
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=6.5cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\node[draw, circle, fill=lightgray] (2) at (2,0) {$2$};
+\node[draw, circle, fill=lightgray] (5) at (4,-2) {$5$};
+\verkko{5}{0}{6}{2}{11}{9}
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=13cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\node[draw, circle, fill=lightgray] (2) at (2,0) {$2$};
+\node[draw, circle, fill=lightgray] (5) at (4,-2) {$5$};
+\node[draw, circle, fill=lightgray] (4) at (4,0) {$4$};
+\verkko{6}{0}{6}{2}{11}{9}
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki Dijkstran algoritmin toiminnasta.}
+\label{fig:dijalg}
+\end{figure}
+
+Kuva \ref{fig:dijalg} näyttää esimerkin Dijkstran algoritmin
+toiminnasta.
+Solmun harmaa väri tarkoittaa, että se on käsitelty.
+Alussa valitsemme solmun 1, koska sen etäisyys 0 on pienin.
+Sitten valittavana ovat solmut 2, 3, 4 ja 5,
+joista valitsemme solmun 3, jonka etäisyys 2 on pienin.
+Sama jatkuu, kunnes olemme käsitelleet kaikki verkon solmut.
+
+Huomaa, että aina kun olemme käsitelleet solmun,
+olemme saaneet selville sen lopullisen etäisyyden.
+Esimerkiksi vaiheen 3 jälkeen tiedämme,
+että lyhin polku solmuun 3 on pituudeltaan 2,
+vaikka emme ole vielä käsitelleet kaikkia verkon solmuja.
+
+\subsection{Analyysi}
+
+Dijkstran algoritmiin liittyy kaksi tärkeää kysymystä:
+miksi algoritmi toimii ja kuinka voimme toteuttaa sen tehokkaasti?
+
+Algoritmin toiminnassa on keskeisessä osassa oletuksemme,
+että minkään kaaren paino ei voi olla negatiivinen.
+Tämän oletuksen ansiosta voimme aina käsitellä seuraavaksi solmun,
+jonka etäisyys on pienin, ja olla varmoja siitä, että sen nykyinen
+etäisyys on pienin mahdollinen.
+
+Asiaa voi ajatella käänteisesti: jos pienimmän etäisyyden solmun
+etäisyys ei olisi lopullinen, meidän tulisi pystyä parantamaan
+sitä kulkemalla solmuun jotain toista kautta.
+Kuitenkin kaikkialla muualla on vain solmuja, joiden etäisyydet
+ovat suurempia tai yhtä suuria eivätkä etäisyydet voi lyhentyä,
+koska verkossa ei ole negatiivisia kaaria.
+Tästä syystä voimme turvallisesti valita pienimmän etäisyyden
+solmun ja käsitellä sen.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\node[draw, circle] (1) at (0,1) {$1$};
+\node[draw, circle] (2) at (2.5,2) {$2$};
+\node[draw, circle] (3) at (2.5,0) {$3$};
+\node[draw, circle] (4) at (5,1) {$4$};
+
+\path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:7] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:3] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:$-4$] {} (4);
+\end{tikzpicture}
+\end{center}
+\caption{Dijkstran algoritmi ei toimi oikein tässä verkossa
+negatiivisen kaaren takia.}
+\label{fig:dijneg}
+\end{figure}
+
+Jos verkossa on negatiivinen kaari,
+Dijkstran algoritmi ei toimi välttä\-mättä oikein.
+Kuva \ref{fig:dijneg} näyttää esimerkin tällaisesta verkosta.
+Dijkstran algoritmi seuraa ahneesti ylempää polkua ja toteaa,
+että pienin etäisyys solmusta 1 solmuun 4 on 8.
+Kuitenkin parempi tapa olisi kulkea alempaa polkua,
+jolloin negatiivisen kaaren asiosta pienin etäisyys on vain 3.
+
+Jotta voimme toteuttaa Dijkstran algoritmin tehokkaasti,
+meidän täytyy pystyä löytämään nopeasti seuraavaksi käsiteltävä
+solmu kussakin vaiheessa.
+Tarvitsemme siis tietorakenteen, jossa voimme säilyttää
+solmuja järjestykses\-sä niiden etäisyyden mukaan.
+Sopivia tietorakenteita tähän ovat binääri\-hakupuu ja keko,
+joita käyttäen pystymme päivittämään etäisyyttä ja löytämään
+pienimmän etäisyyden $O(\log n)$-ajassa.
+
+Algoritmin ajankäyttö muodostuu kahdesta osasta:
+meidän tulee löytää $n$ kertaa pienimmän etäisyyden solmu,
+ja lisäksi etäisyydet saattavat muuttua $m$ kertaa
+kunkin kaaren käsittelyn yhteydessä.
+Niinpä algoritmin aikavaativuudeksi tulee $O((n+m) \log n)$.
+
+\subsection{Toteutus}
 
 \section{Floyd-Warshallin algoritmi}
+
+\subsection{Analyysi}
+
+\subsection{Toteutus}
