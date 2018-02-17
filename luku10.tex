@@ -233,12 +233,17 @@ sinisiksi ja solmut 2, 3 ja 5 punaisiksi.}
 
 \section{Verkot ohjelmoinnissa}
 
-Seuraavaksi käymme läpi kaksi tavallista tapaa
-käsitellä verkkoa ohjelmoinnissa.
-Vieruslistaesityksessä tallennamme jokaiselle
-solmulle listan solmuista, joihin siitä pääsee kaarella.
-Vierusmatriisiesityksessä taas luomme kaksiulotteisen
-taulukon, joka ilmaisee verkossa olevat kaaret.
+Seuraavaksi käymme läpi kolme tavallista esitystapaa,
+joiden avulla voimme käsitellä verkkoja ohjelmoinnissa.
+
+\begin{itemize}
+\item \textbf{Vieruslistat} muodostuvat solmuista,
+joihin voimme siirtyä kustakin solmusta yhdellä kaarella.
+\item \textbf{Vierusmatriisi} on kaksiulotteinen taulukko,
+joka kertoo, mitkä kaaret verkossa on solmujen välillä.
+\item \textbf{Kaarilista} sisältää kaikki verkossa olevat kaaret listassa.
+\end{itemize}
+
 
 \subsection{Vieruslistaesitys}
 
@@ -324,7 +329,7 @@ verkko[4].add(5);
 Jos verkko on suuntaamaton, voimme menetellä muuten samoin,
 mutta tallennamme kunkin kaaren molempiin suuntiin.
 Jos taas verkko on painotettu, voimme tallentaa listaan
-sekä kaarten kohdesolmut että painot.
+olioita, joissa on kaaren kohdesolmu ja paino.
 
 Vieruslistaesitys on yleensä käytännössä hyvä tapa
 tallentaa verkko ohjelmoinnissa.
@@ -346,7 +351,7 @@ Verkon vierusmatriisiesityksessä luomme $n \times n$ -matriisin
 Matriisissa rivin $a$ sarakkeessa $b$ on luku 1,
 jos verkossa on kaari solmusta $a$ solmuun $b$,
 ja muuten luku 0.
-Kuvassa \ref{fig:vervil} on esimerkki verkon
+Kuvassa \ref{fig:vervim} on esimerkki verkon
 vierusmatriisiesityksestä.
 
 \begin{figure}
@@ -382,7 +387,7 @@ vierusmatriisiesityksestä.
 \end{tikzpicture}
 \end{center}
 \caption{Verkon vierusmatriisiesitys.}
-\label{fig:vervil}
+\label{fig:vervim}
 \end{figure}
 
 Javassa voimme määritellä vierusmatriisia varten seuraavanlaisen taulukon:
@@ -413,6 +418,94 @@ kun verkossa on $n$ kaarta, vierusmatriisi varten tarvitaan taulukko,
 jossa on $O(n^2)$ alkiota.
 Usein verkossa on vain pieni osa mahdollisista kaarista,
 jolloin vierusmatriisiesitys tuhlaa muistia.
+
+\subsection{Kaarilistaesitys}
+
+Verkon kaarilistaesityksessä tallennamme listan,
+jonka jokainen alkio on yksi verkon kaarista.
+Kuva \ref{fig:verkal} näyttää esimerkin kaarilistaesityksestä.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\begin{scope}
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,<-] (1) -- (3);
+\path[draw,thick,<-] (1) -- (4);
+\path[draw,thick,->] (3) -- (4);
+\path[draw,thick,->] (2) -- (4);
+\path[draw,thick,->] (2) -- (5);
+\path[draw,thick,->] (4) -- (5);
+\end{scope}
+\begin{scope}[scale=0.8,xshift=0cm,yshift=-1.5cm]
+\node[draw, rectangle] (1) at (0,0) {$(1,2)$};
+\node[draw, rectangle] (2) at (3,0) {$(2,4)$};
+\node[draw, rectangle] (3) at (6,0) {$(2,5)$};
+\node[draw, rectangle] (4) at (9,0) {$(3,1)$};
+\node[draw, rectangle] (5) at (12,0) {$(3,4)$};
+\node[draw, rectangle] (6) at (15,0) {$(4,1)$};
+\node[draw, rectangle] (7) at (18,0) {$(4,5)$};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (2) -- (3);
+\path[draw,thick,->] (3) -- (4);
+\path[draw,thick,->] (4) -- (5);
+\path[draw,thick,->] (5) -- (6);
+\path[draw,thick,->] (6) -- (7);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Verkon kaarilistaesitys.}
+\label{fig:verkal}
+\end{figure}
+
+Kaaria varten voimme luoda seuraavanlaisen luokan:
+
+\begin{code}
+class Kaari {
+    public int alku, loppu;
+
+    public Kaari(int alku, int loppu) {
+        this.alku = alku;
+        this.loppu = loppu;
+    }
+}
+\end{code}
+
+Tämän jälkeen voimme muodostaa listan seuraavasti:
+
+\begin{code}
+ArrayList<Kaari> kaaret = new ArrayList<>();
+kaaret.add(new Kaari(1,2));
+kaaret.add(new Kaari(2,4));
+kaaret.add(new Kaari(2,5));
+kaaret.add(new Kaari(3,1));
+kaaret.add(new Kaari(3,4));
+kaaret.add(new Kaari(4,1));
+kaaret.add(new Kaari(4,5));
+\end{code}
+
+Jos kaarilla on painot, voimme lisätä luokkaan yhden kentän lisää,
+johon tallennetaan kaaren paino.
+
+Kaarilistaesitys on kätevä silloin, jos algoritmin tulee käydä
+kaikki verkon kaaret läpi, koska silloin riittää tehdä yksi
+for-silmukka, joka käy listan läpi:
+
+\begin{code}
+for (Kaari kaari : kaaret) {
+    // käsittele kaari
+}
+\end{code}
+
+Esityksen huonona puolena on, että listalta on hidasta etsiä tietystä
+solmusta lähtevät kaaret.
 
 \section{Verkon läpikäynti}
 
