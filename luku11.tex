@@ -489,11 +489,11 @@ while (!solmut.isEmpty()) {
     if (kasitelty[solmu.id]) continue;
     kasitelty[solmu.id] = true;
     for (Kaari kaari : verkko[solmu]) {
-        int vanha = etaisyys[kaari.loppu];
+        int vanha = etaisyys[kaari.kohde];
         int uusi = solmu.etaisyys+kaari.paino;
         if (uusi < vanha) {
-            etaisyys[kaari.loppu] = uusi;
-            solmut.add(new Solmu(kaari.loppu,uusi))
+            etaisyys[kaari.kohde] = uusi;
+            solmut.add(new Solmu(kaari.kohde,uusi))
         }
     }
 }
@@ -512,18 +512,103 @@ jokainen operaatio jonoon vie aikaa $O(\log (n^2))=O(2 \log n)=O(\log n)$.
 
 \section{Floyd–Warshallin algoritmi}
 
-Floyd-Warshallin algoritmi lähestyy lyhimpien polkujen etsimistä
-toisesta näkökulmasta: se laskee samalla kertaa etäisyydet
-kaikkien verkon solmuparien välille.
-Algoritmi luo etäisyysmatriisin, joka vastaa idealtaan verkon
-vierusmatriisiesitystä.
+Floyd-Warshallin algoritmi on idealtaan erilainen kuin
+Bellman–Fordin ja Dijkstran algoritmit:
+se laskee samalla kertaa kaikki mahdolliset
+solmujen välimatkat verkossa.
+Algoritmin lopputuloksena on etäisyysmatriisi,
+josta voimme lukea lyhimmän polun pituuden mistä tahansa solmusta $a$
+mihin tahansa solmuun $b$.
 
-Algoritmi muodostuu $n$ kierroksesta $1,2,\dots,n$.
-Kierroksella $i$ algoritmi etsii polkuja, joissa voi olla
-välisolmuina solmut $1,2,\dots,i$.
+Algoritmin alussa etäisyysmatriisi sisältää vain polut,
+jotka vastaavat yksittäistä verkon kaarta.
+Sitten algoritmi suorittaa $n$ kierrosta,
+jotka on numeroitu $1,2,\dots,n$.
+Kierroksella $i$ algoritmi etsii polkuja, joissa on välisolmuna
+solmu $i$ sekä mahdollisesti solmuja $1,2,\dots,i-1$.
 Viimeisen kierroksen jälkeen jokainen solmu voi olla
 välisolmuna poluilla, jolloin algoritmi on saanut selville
 kaikki lyhimmät polut.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\small
+\newcommand\verkko[5]{
+\begin{scope}[xshift=0.75cm,yshift=2cm]
+\node[draw, circle, fill=#2] (1) at (0,0) {$1$};
+\node[draw, circle, fill=#3] (2) at (2.5,0) {$2$};
+\node[draw, circle, fill=#4] (3) at (0,-2.5) {$3$};
+\node[draw, circle, fill=#5] (4) at (2.5,-2.5) {$4$};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=left:1] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=right:3] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,->] (4) -- node[font=\small,label=below:4] {} (3);
+\end{scope}
+
+\foreach \x in {1,2,3,4} \node at (-0.5,-2.5-\x) {\x};
+\foreach \x in {1,2,3,4} \node at (-0.5+\x,-2.5) {\x};
+\draw (0,-3) grid (4,-7);
+
+\node at (2,-8) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{lightgray}{white}{white}{white}
+\foreach \x/\v in {1/\infty,2/5,3/1,4/\infty} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/\infty,4/\infty} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/4,4/\infty} \node at (-0.5+\x,-6.5) {$\v$};
+\end{scope}
+\begin{scope}[xshift=5.5cm]
+\verkko{2}{white}{lightgray}{white}{white}
+\foreach \x/\v in {1/\infty,2/5,3/1,4/} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/\infty,4/} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/4,4/\infty} \node at (-0.5+\x,-6.5) {$\v$};
+\node[color=red] at (3.5,-3.5) {$8$};
+\node[color=red] at (3.5,-5.5) {$5$};
+\end{scope}
+\begin{scope}[xshift=11cm]
+\verkko{3}{white}{white}{lightgray}{white}
+\foreach \x/\v in {1/\infty,2/,3/1,4/8} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/\infty,4/5} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/,3/4,4/} \node at (-0.5+\x,-6.5) {$\v$};
+\node[color=red] at (1.5,-3.5) {$3$};
+\node[color=red] at (1.5,-6.5) {$6$};
+\node[color=red] at (3.5,-6.5) {$9$};
+\end{scope}
+\begin{scope}[xshift=16.5cm]
+\verkko{4}{white}{white}{white}{lightgray}
+\foreach \x/\v in {1/\infty,2/3,3/1,4/8} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/,3/,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/,4/5} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/6,3/4,4/9} \node at (-0.5+\x,-6.5) {$\v$};
+\node[color=red] at (1.5,-4.5) {$9$};
+\node[color=red] at (2.5,-4.5) {$7$};
+\node[color=red] at (2.5,-5.5) {$9$};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki Floyd–Warshallin algoritmin toiminnasta.}
+\label{fig:flowar}
+\end{figure}
+
+Kuva \ref{fig:flowar} näyttää esimerkin Floyd–Warshallin algoritmin toiminnasta.
+Etäisyysmatriisin rivillä $a$ sarakkeessa $b$ on lyhin tunnettu etäisyys
+solmusta $a$ solmuun $b$.
+Alussa matriisin sisältö on muodostettu suoraan verkon vierusmatriisista,
+ja vaiheessa $i$ parannamme etäisyyksiä poluilla, jotka kulkevat solmun $i$
+(ja mahdollisesti solmujen $1,2,\dots,i-1$) kautta.
+
+Vaiheessa 1 emme voi muodostaa mitään uusia polkuja,
+koska mistään solmusta ei pääse solmuun 1.
+Vaiheessa 2 pääsemme solmun 2 kautta solmusta 1 solmuun 4 ja
+solmusta 3 solmuun 4; vastaavat polkujen pituudet ovat 8 ja 5.
+Sitten muodostamme vastaavalla tavalla solmujen 3 ja 4
+kautta kulkevat polut.
 
 \subsection{Analyysi}
 
