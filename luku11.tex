@@ -508,10 +508,72 @@ emme käsittele sitä uudestaan.
 Vaikka jonossa on ''ylimääräisiä'' solmuja, ratkaisu säilyy
 tehokkaana ja toimii ajassa $O((n+m) \log n)$.
 Jonossa voi olla enintään $m$ solmua, ja koska $m=O(n^2)$,
-jokainen operaatio jonoon vie aikaa $O(\log n^2)=O(2 \log n)=O(\log n)$.
+jokainen operaatio jonoon vie aikaa $O(\log (n^2))=O(2 \log n)=O(\log n)$.
 
-\section{Floyd-Warshallin algoritmi}
+\section{Floyd–Warshallin algoritmi}
+
+Floyd-Warshallin algoritmi lähestyy lyhimpien polkujen etsimistä
+toisesta näkökulmasta: se laskee samalla kertaa etäisyydet
+kaikkien verkon solmuparien välille.
+Algoritmi luo etäisyysmatriisin, joka vastaa idealtaan verkon
+vierusmatriisiesitystä.
+
+Algoritmi muodostuu $n$ kierroksesta $1,2,\dots,n$.
+Kierroksella $i$ algoritmi etsii polkuja, joissa voi olla
+välisolmuina solmut $1,2,\dots,i$.
+Viimeisen kierroksen jälkeen jokainen solmu voi olla
+välisolmuna poluilla, jolloin algoritmi on saanut selville
+kaikki lyhimmät polut.
 
 \subsection{Analyysi}
 
+Floyd–Warshallin algoritmi on mahdollista toteuttaa
+$O(n^3)$-ajassa kolmen sisäkkäisen for-silmukan avulla.
+Seuraavaksi näemme, miten tämä tapahtuu käytännössä.
+
 \subsection{Toteutus}
+
+Floyd–Warshallin algoritmin toteutus perustuu verkon
+vierusmatriisiesitykseen:
+
+\begin{code}
+int[][] verkko = new int[n+1][n+1];
+\end{code}
+
+Tämän esityksen rinnalle algoritmi luo toisen matriisin,
+joka tulee sisältä\-mään solmujen etäisyydet:
+
+\begin{code}
+int[][] etaisyys = new int[n+1][n+1];
+\end{code}
+
+Algoritmin ensimmäinen vaihe on alustaa etäisyydet niin,
+että jos solmusta $a$ solmuun $b$ on kaari,
+etäisyys on kaaren paino, ja muuten etäisyys on ääretön.
+Tämän voi tehdä seuraavasti:
+
+\begin{code}
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= n; j++) {
+        if (verkko[i][j] == 0) {
+            etaisyys[i][j] = 1e9;
+        } else {
+            etaisyys[i][j] = verkko[i][j];
+        }
+    }
+}
+\end{code}
+
+Tämän jälkeen voimme laskea etäisyydet seuraavasti:
+
+\begin{code}
+for (int k = 1; k <= n; k++) {
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            int vanha = etaisyys[i][j];
+            int uusi = etaisyys[i][k]+etaisyys[k][j];
+            etaisyys[i][j] = Math.min(vanha,uusi);
+        }
+    }
+}
+\end{code}
