@@ -49,10 +49,88 @@ Jos näin on, algoritmi merkitsee uuden etäisyyden muistiin.
 Algoritmin päätteeksi jokaisen solmun etäisyys on sama kuin
 lyhimmän polun pituus solmusta $x$ kyseiseen solmuun.
 
-Kuva X näyttää esimerkin Bellman–Fordin algoritmin toiminnasta.
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\small
+\newcommand\verkko[6]{
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:8] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:2] {} (3);
+\path[draw,thick,->] (3) -- node[font=\small,label=right:4] {} (2);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:5] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:7] {} (5);
+\path[draw,thick,->] (5) -- node[font=\small,label=right:3] {} (4);
+\node[color=red] at (0,-0.25) {$#2$};
+\node[color=red] at (2,0.75) {$#3$};
+\node[color=red] at (2,-2.75) {$#4$};
+\node[color=red] at (4,0.75) {$#5$};
+\node[color=red] at (4,-2.75) {$#6$};
+\node at (2,-3.5) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{0}{\infty}{\infty}{\infty}{\infty}
+%\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\verkko{2}{0}{8}{\infty}{\infty}{\infty}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\end{scope}
+\begin{scope}[xshift=13cm]
+\verkko{3}{0}{8}{2}{\infty}{\infty}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[yshift=-5.5cm]
+\verkko{4}{0}{8}{2}{13}{\infty}
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=6.5cm]
+\verkko{5}{0}{6}{2}{13}{\infty}
+\path[draw=red,thick,->,line width=2pt] (3) -- (2);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=13cm]
+\verkko{6}{0}{6}{2}{13}{9}
+\path[draw=red,thick,->,line width=2pt] (3) -- (5);
+\end{scope}
+\begin{scope}[yshift=-11cm]
+\verkko{7}{0}{6}{2}{12}{9}
+\path[draw=red,thick,->,line width=2pt] (5) -- (4);
+\end{scope}
+\begin{scope}[yshift=-11cm,xshift=6.5cm]
+\verkko{8}{0}{6}{2}{11}{9}
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki Bellman–Fordin algoritmin toiminnasta.}
+\label{fig:belfor}
+\end{figure}
+
+Kuva \ref{fig:belfor} näyttää esimerkin Bellman–Fordin algoritmin toiminnasta.
 Tässä lähtösolmuna on solmu 1, ja haluamme selvittää siitä
 lyhimmät polut muihin solmuihin.
-Jokaisen solmun vieressä on ilmoitettu sen etäisyysarvio. TODO
+Jokaisen solmun vieressä on ilmoitettu sen etäisyysarvio:
+alussa etäisyys solmuun 1 on 0 ja etäisyys kaikkiin muihin solmuihin on ääretön.
+
+Jokainen etäisyyden muutos näkyy kuvassa omana vaiheenaan.
+Esimerkiksi ensimmäinen muutos on,
+että saamme parannettua etäisyyttä solmuun 2,
+koska voimme kulkea kaarta $1 \rightarrow 2$.
+Tässä tapauksessa vanha etäisyys on $\infty$ ja uudeksi
+etäisyydeksi tulee $8$.
+Tässä esimerkissä vaiheiden 2--7 muutokset tapahtuvat
+kierroksella 1 ja vaiheen 8 muutos tapahtuu kierroksella 2.
+Tämän jälkeen kaikki etäisyydet ovat lopullisia,
+eikä niihin tule enää muutoksia myöhemmillä kierroksilla.
+
+Kuvasta voimme nähdä esimerkiksi,
+että lyhin polku solmusta 1 solmuun 4 on painoltaan 11.
+Tämä vastaa polkua $1 \rightarrow 3 \rightarrow 2 \rightarrow 4$.
 
 \subsection{Analyysi}
 
@@ -128,7 +206,7 @@ etaisyys[x] = 0;
 
 Koska Javassa ei ole käsitettä ''ääretön'', käytämme sen sijasta
 suurta lukua $10^9$, eli oletamme, että kaikki etäisyydet
-ovat todellisuudessa pienempiä kuin $10^9$.
+ovat pienempiä kuin $10^9$.
 Jos etäisyydet voivat olla suurempia, tätä lukua täytyy muuttaa.
 
 Tämän jälkeen voimme toteuttaa algoritmin näin:
@@ -136,12 +214,28 @@ Tämän jälkeen voimme toteuttaa algoritmin näin:
 \begin{code}
 for (int i = 1; i <= n-1; i++) {
     for (Kaari kaari : kaaret) {
-        int vanha = etaisyys[kaari.mihin];
-        int uusi = etaisyys[kaari.mista]+kaari.paino;
-        etaisyys[kaari.mihin] = Math.min(vanha, uusi);
+        int vanha = etaisyys[kaari.loppu];
+        int uusi = etaisyys[kaari.alku]+kaari.paino;
+        etaisyys[kaari.loppu] = Math.min(vanha, uusi);
     }
 }
 \end{code}
+
+Entä jos haluamme myös saada selville,
+mitä kaaria on lyhimmällä polulla solmusta $x$ solmuun $y$?
+Tällöin voimme laajentaa algoritmia niin,
+että se pitää yllä myös taulukkoa
+
+\begin{code}
+int[] edellinen = new int[n+1];
+\end{code}
+
+joka kertoo jokaiselle solmulle, mikä on sitä edeltävä
+solmu lyhimmällä polulla.
+Päivitämme tätä taulukkoa aina silloin,
+kun jokin etäisyys pienenee.
+Taulukon avulla voimme muodostaa käänteisesti
+lyhimmän polun mihin tahansa solmuun.
 
 \section{Dijsktran algoritmi}
 
