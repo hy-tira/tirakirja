@@ -161,15 +161,38 @@ että asetamme \emph{pienemmän} joukon edustajan viittaamaan
 \emph{suuremman} joukon edustajaan. Jos joukot ovat yhtä suuria,
 voimme valita kummin vain.
 
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (0,-2) {$2$};
+\node[draw, circle] (3) at (4,0) {$3$};
+\node[draw, circle] (4) at (3,-2) {$4$};
+\node[draw, circle] (5) at (5,-2) {$5$};
+\path[draw,thick,->] (2) -- (1);
+\path[draw,thick,->] (4) -- (3);
+\path[draw,thick,->] (5) -- (3);
+\path[draw,thick,->,dashed] (1) -- (3);
+\end{tikzpicture}
+\end{center}
+\caption{Tehokas yhdistäminen. Alkion $1$ joukon koko on 2
+ja alkion $3$ joukon koko on 3,
+joten yhdistämme alkion 1 alkioon 3.}
+\label{fig:tehyhd}
+\end{figure}
+
+
 Tätä varten pidämme jokaiselle alkiolle $x$ yllä tietoa
 $\texttt{size}[x]$: jos alkio $x$ on joukon edustaja,
 kuinka monta alkiota joukossa on.
-Kuvassa \ref{fig:unifin} esimerkiksi $\texttt{size}[1]=2$
-ja $\texttt{size}[5]=3$.
-Huomaa, että jos solmu $x$ ei ole joukon edustaja,
-arvo $\texttt{size}[x]$ ei sisällä oikeaa tietoa.
+Kuvassa \ref{fig:tehyhd} on esimerkki tilanteesta,
+jossa haluamme yhdistää alkioiden $1$ ja $3$ edustamat joukot.
+Koska $\texttt{size}[1]=2$ ja $\texttt{size}[3]=3$,
+asetamme viittauksen alkiosta 1 alkioon 3.
+Tämän seurauksena $\texttt{size}[3]=5$.
 
-Nyt voimme toteuttaa joukkojen yhdistämisen näin:
+Voimme käytännössä toteuttaa joukkojen yhdistämisen näin:
 
 \begin{code}
 void union(int a, int b) {
@@ -202,8 +225,68 @@ Niinpä jos polulla on $k$ askelta, se johtaa joukkoon,
 jossa on ainakin $2^k$ alkiota, eli jos joukossa on enintään $n$
 alkiota, polun pituus on enintään $O(\log n)$ askelta.
 
-
 \subsection{Polkujen tiivistäminen}
+
+Pystymme saamaan union-find-rakenteen vielä tehokkaammaksi
+toteuttamalla \texttt{find}-operaation seuraavasti:
+
+\begin{code}
+int find(int x) {
+    return next[x] = find(x);
+}
+\end{code}
+
+Tässä ideana on \emph{tiivistää} polkuja niin,
+että aina kun kuljemme polkua pitkin, asetamme samalla
+jokaisen polun alkion \texttt{next}-arvoksi niiden edustajan.
+Tämän ansiosta jos kuljemme samaa polkua myöhemmin, 
+pääsemme suoraan edustajaan.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-2,0) {$2$};
+\node[draw, circle] (3) at (-4,0) {$3$};
+\node[draw, circle] (4) at (-6,0) {$4$};
+\path[draw,thick,->] (4) -- (3);
+\path[draw,thick,->] (3) -- (2);
+\path[draw,thick,->] (2) -- (1);
+\node at (-8,0) {(a)};
+\end{scope}
+\begin{scope}[yshift=-2.5cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-2,0) {$2$};
+\node[draw, circle] (3) at (-4,0) {$3$};
+\node[draw, circle] (4) at (-6,0) {$4$};
+\path[draw,thick,->] (4) edge [bend left] (1);
+\path[draw,thick,->] (3) edge [bend right] (1);
+\path[draw,thick,->] (2) -- (1);
+\node at (-8,0) {(b)};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Polun tiivistäminen. (a) Alkuperäinen polku $4 \rightarrow 3 \rightarrow 2 \rightarrow 1$.
+(b) Tiivistetty polku, jossa kaikki alkiot viittaavat suoraan edustajaan.}
+\label{fig:poltii}
+\end{figure}
+
+Kuva \ref{fig:poltii} näyttää esimerkin polun tiivistämisestä.
+Kuljemme aluksi polkua $4 \rightarrow 3 \rightarrow 2 \rightarrow 1$,
+jolloin kaikki alkiot asetetaan viittaamaan edustajaan $1$.
+Seuraavan kerran pääsemme suoraan alkiosta $4$ edustajaan $1$.
+
+On mahdollista osoittaa, että polkujen tiivistämisen ansiosta
+$\texttt{find}$-ope\-raatiot vievät keskimäärin aikaa vain
+$O(\alpha(n))$, missä $\alpha(n)$ on hyvin hitaasti kasvava
+käänteinen Ackermannin funktio.
+Tämä tarkoittaa käytännössä, että rakenteen operaatiot
+ovat vakioaikaisia.
+Tämän tuloksen osoittaminen on kuitenkin vaikeaa,
+emmekä käsittele asiaa tällä kurssilla.
+
 
 \section{Esimerkki: Kaupungit}
 
