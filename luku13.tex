@@ -575,9 +575,155 @@ Tässä kuluu aikaa $O(m \log n)$ tai $O(m \alpha(n))$
 riippuen rakenteen toteutuksesta.
 Algoritmi vie siis yhteensä aikaa $O(m \log n)$.
 
-
 \subsection{Primin algoritmi}
 
+Primin algoritmi aloittaa virittävän puun muodostamisen
+mielivaltaisesti valitusta solmusta.
+Tämän jälkeen se lisää joka vaiheessa puuhun uuden solmun,
+joka yhdistyy valmiina olevaan puuhun kaarella.
+Lisättävä solmu valitaan niin, että kaari on kevein mahdollinen.
+Kun kaikki solmut on lisätty puuhun, pienin virittävä puu on valmis.
+
+Kuva \ref{fig:priesi} näyttää esimerkin Primin algoritmin toiminnasta.
+Voimme aloittaa puun rakentamisen mistä tahansa solmusta;
+tässä valitsemme solmun 1.
+Lisäämme sen jälkeen puuhun kaaret järjestyksessä
+$(1,2)$, $(2,3)$, $(2,4)$, $(4,5)$, ja saamme aikaan pienimmän
+virittävän puun.
+
+Primin algoritmi muistuttaa paljon Dijkstran algoritmia.
+Erona on, että Dijkstran algoritmissa valitsemme joka vaiheessa
+seuraavaksi solmun, jonka etäisyys alkusolmusta on pienin
+mahdollinen.
+Primin algoritmissa taas valitsemme solmun, jonka etäisyys
+johonkin puun solmuun on pienin mahdollinen.
+
+Voimme myös toteuttaa Primin algoritmin tehokkaasti samaan
+tapaan kuin Dijkstran algoritmin.
+Jotta voimme löytää tehokkaasti seuraavaksi lisät\-tävän solmun,
+säilytämme solmuja keossa tai binäärihakupuussa.
+Jokaisen solmun yhteydessä on tieto, kuinka painava on kaari,
+jolla voi yhdistää solmun puuhun, ja solmut on järjestetty
+näiden painojen mukaan.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\small
+\newcommand\verkko[1]{
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\node at (2,-3.5) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\verkko{2}
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\end{scope}
+\begin{scope}[xshift=13cm]
+\verkko{3}
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\end{scope}
+\begin{scope}[yshift=-5.5cm]
+\verkko{4}
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=6.5cm]
+\verkko{5}
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki Primin algoritmin toiminnasta.}
+\label{fig:priesi}
+\end{figure}
+
 \subsection{Miksi algoritmit toimivat?}
+
+Kruskalin ja Primin algoritmit ovat ahneita algoritmeja:
+ne lisäävät joka askeleella keveimmän mahdollisen kaaren puuhun.
+Miksi on varmaa, että algoritmit tuottavat pienimmän virittävän
+puun joka tilanteessa?
+
+Voimme ajatella asiaa näin: 
+Jos meillä on kaksi solmua $a$ ja $b$, jotka ovat eri komponenteissa,
+meidän on yhdistettävä ne jotenkin samaan komponenttiin algoritmin aikana.
+Jos kevein saatavilla oleva kaari on solmujen $a$ ja $b$ välillä,
+meidän kannattaa valita se, koska muuten joutuisimme yhdistämään komponentit
+käyttäen raskaampaa kaarta.
+
+Tarkastellaan esimerkkinä Kruskalin algoritmin alkua:
+mitä tapahtuu, jos emme valitse puuhun keveintä kaarta?
+Kuvassa \ref{fig:pietod} näkyy kuvitteellinen tilanne,
+jossa katkoviivoilla esitetty pienin virittävä puu ei sisällä
+keveintä kaarta $(2,3)$, jonka paino on 1.
+Ei ole kuitenkaan mahdollista, että tämä olisi todellisuudessa
+pienin virittävä puu, koska voisimme vaihtaa jonkin puun kaaren
+kaareen $(2,3)$ ja saada pienennettyä puun painoa.
+
+Tämä tarkoittaa, että on varmasti turvallinen ratkaisu valita
+kevein kaari puuhun Kruskalin algoritmin alussa.
+Vastaavasti voimme perustella, miksi seuraavaksi kannattaa
+valita seuraavaksi kevein kaari jne.
+
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{scope}
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=below:4] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-] (3) -- node[font=\small,label=below:7] {} (5);
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-,dashed] (1) -- (2);
+\path[draw,thick,-,dashed] (1) -- (3);
+\path[draw,thick,-,dashed] (4) -- (5);
+\path[draw,thick,-,dashed] (2) -- (4);
+\end{scope}
+\begin{scope}[xshift=13cm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-,dashed] (1) -- (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-,dashed] (4) -- (5);
+\path[draw,thick,-,dashed] (2) -- (4);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Pienin virittävä puu sisältää varmasti kaaren $(2,3)$,
+koska muuten voisimme pienentää puun painoa valitsemalla sen.}
+\label{fig:pietod}
+\end{figure}
+
 
 \section{Esimerkki: X}
