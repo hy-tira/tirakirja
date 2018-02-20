@@ -1,4 +1,18 @@
-\chapter{Virittävät puut}
+\chapter{Komponentit ja virittävät puut}
+
+Tämän luvun alussa tutustumme union-find-rakenteeseen,
+jonka avulla voimme pitää yllä verkon
+yhtenäisiä komponentteja ja lisätä kaaria verkkoon.
+Missä tahansa vaiheessa voimme selvittää tehokkaasti,
+ovatko kaksi solmua samassa komponentissa.
+
+Tämän jälkeen käymme läpi kaksi tapaa etsiä verkolle
+pienin virittävä puu eli kokoelma kaaria,
+jotka kytkevät kaikki solmut toisiinsa ja joiden
+yhteispaino on pienin mahdollinen.
+Voimme ratkaista ongelman union-find-rakenteeseen
+perustuvalla Kruskalin algoritmilla tai
+Dijkstran algoritmin tapaisella Primin algoritmilla.
 
 \section{Union-find-rakenne}
 
@@ -678,6 +692,8 @@ kevein kaari puuhun Kruskalin algoritmin alussa.
 Vastaavasti voimme perustella, miksi seuraavaksi kannattaa
 valita seuraavaksi kevein kaari jne.
 
+TODO parempi todistus?
+
 
 \begin{figure}
 \center
@@ -725,5 +741,93 @@ koska muuten voisimme pienentää puun painoa valitsemalla sen.}
 \label{fig:pietod}
 \end{figure}
 
+\section{Esimerkki: Agentit}
 
-\section{Esimerkki: X}
+Olet salaisen palvelun päällikkö ja palveluksessasi on $n$ agenttia.
+Jokainen agentti on onnistunut hankkimaan tietoa ja haluat kerätä
+kaikki tiedot itsellesi.
+Agentit voivat tavata toisiaan ja voit tavata agentteja.
+Ongelmana on kuitenkin, että on hankalaa järjestää tapaamisia turvallisesti.
+
+Sinulla on lista $m$ agenttiparista, jotka voivat tavata toisensa turvallisesti.
+Tapaamisessa kaksi agenttia kertoo toisilleen kaikki tietonsa,
+ja tapaamiseen liittyy tietty kustannus.
+Tämän jälkeen sopivasti valittu osajoukko agenteista tapaa sinut ja välittää tietonsa.
+Voit tavata kenet tahansa agenteista, mutta jokaiseen tapaamiseen liittyy
+kaikille sama kustannus $x$.
+
+Mikä on pienin kokonaiskustannus, jolla saat kaikki tiedot itsellesi?
+
+Esimerkiksi oletetaan, että $n=4$, $m=5$, $x=4$,
+ja mahdolliset agenttien tapaamiset ovat seuraavat:
+
+\begin{itemize}
+\item agentit 1 ja 2 tapaavat (kustannus 5)
+\item agentit 1 ja 3 tapaavat (kustannus 3)
+\item agentit 2 ja 3 tapaavat (kustannus 2)
+\item agentit 2 ja 4 tapaavat (kustannus 6)
+\item agentit 3 ja 4 tapaavat (kustannus 7)
+\end{itemize}
+
+Optimaalinen ratkaisu on, että ensin agentit 1 ja 3 tapaavat,
+sitten agentit 2 ja 3 tapaavat, ja lopuksi tapaat itse agentit 3 ja 4.
+Agentti 3 on saanut kaikki tiedot agenteilta 1 ja 2.
+Tämän ratkaisun kustannus on $3+2+4+4=13$, joka on pienin mahdollinen.
+
+\subsubsection{Ratkaisu}
+
+Voimme mallintaa ongelman verkkona, jossa on $n+1$ solmua:
+jokaisella agentilla on oma solmu ja lisäksi sinulla on oma solmu.
+Jos kaksi agenttia voivat tavata, niiden välillä on kaari,
+jonka painona on tapaamisen kustannus.
+Sinusta on kaari jokaiseen agenttiin painolla $x$.
+Nyt pienin virittävä puu tässä verkossa vastaa optimaalista ratkaisua tehtävään.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (0,-3) {$2$};
+\node[draw, circle] (3) at (3,0) {$3$};
+\node[draw, circle] (4) at (3,-3) {$4$};
+\node[draw, circle] (5) at (6,-1.5) {$*$};
+\path[draw,thick,-] (1) -- node[font=\small,label=left:5] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:3] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:2] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=below:6] {} (4);
+\path[draw,thick,-] (3) -- node[font=\small,label=right:7] {} (4);
+
+\path[draw,thick,-] (1) edge [bend left=50] node[font=\small,label=above:4] {} (5);
+\path[draw,thick,-] (2) edge [bend right=50] node[font=\small,label=below:4] {} (5);
+\path[draw,thick,-] (3) -- node[font=\small,label=above:4] {} (5);
+\path[draw,thick,-] (4) -- node[font=\small,label=below:4] {} (5);
+\end{scope}
+\begin{scope}[xshift=9cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (0,-3) {$2$};
+\node[draw, circle] (3) at (3,0) {$3$};
+\node[draw, circle] (4) at (3,-3) {$4$};
+\node[draw, circle] (5) at (6,-1.5) {$*$};
+%\path[draw,thick,-] (1) -- node[font=\small,label=left:5] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:3] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:2] {} (3);
+%\path[draw,thick,-] (2) -- node[font=\small,label=below:6] {} (4);
+%\path[draw,thick,-] (3) -- node[font=\small,label=right:7] {} (4);
+
+%\path[draw,thick,-] (1) edge [bend left=50] node[font=\small,label=above:4] {} (5);
+%\path[draw,thick,-] (2) edge [bend right=50] node[font=\small,label=below:4] {} (5);
+\path[draw,thick,-] (3) -- node[font=\small,label=above:4] {} (5);
+\path[draw,thick,-] (4) -- node[font=\small,label=below:4] {} (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Verkko ja pienin virittävä puu agenttitehtävässä.}
+\label{fig:ageesi}
+\end{figure}
+
+Kuva \ref{fig:ageesi} näyttää verkon ja pienimmän virittävän puun esimerkkitapauksessa.
+Tähdellä merkitty solmu on oma solmusi, joka on yhteydessä kaikkiin
+muihin solmuihin.
+Puun paino on $3+2+4+4=13$, mikä vastaa optimaalista ratkaisua.
