@@ -287,8 +287,110 @@ ovat vakioaikaisia.
 Tämän tuloksen osoittaminen on kuitenkin vaikeaa,
 emmekä käsittele asiaa tällä kurssilla.
 
-
 \section{Esimerkki: Kaupungit}
+
+Maassa on $n$ kaupunkia, joiden välillä ei ole vielä yhtään tietä.
+Sitten teitä aletaan rakentaa yksi kerrallaan, yhteensä $m$ tietä.
+Jokainen tie on kaksisuuntainen ja yhdistää kaksi kaupunkia.
+Minkä tien rakentamisen jälkeen kaikki kaupungit ovat ensimmäistä
+kertaa yhteydessä toisiinsa?
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\small
+\newcommand\verkko[6]{
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\node at (2,-3.5) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{0}{\infty}{\infty}{\infty}{\infty}
+\path[draw,thick,-] (1) -- (2);
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\verkko{2}{0}{8}{\infty}{\infty}{\infty}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\end{scope}
+\begin{scope}[xshift=13cm]
+\verkko{3}{0}{8}{2}{\infty}{\infty}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (3);
+\end{scope}
+\begin{scope}[yshift=-5.5cm]
+\verkko{4}{0}{8}{2}{13}{\infty}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (4) -- (5);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=6.5cm]
+\verkko{5}{0}{6}{2}{13}{\infty}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (4) -- (5);
+\path[draw,thick,-] (2) -- (4);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=13cm]
+\verkko{6}{0}{6}{2}{13}{9}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (4) -- (5);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki kaupunkien yhdistämisestä teillä. Vaiheen 5 jälkeen
+kaikki kaupungit ovat yhteydessä toisiinsa.}
+\label{fig:kauesi}
+\end{figure}
+
+
+Kuva \ref{fig:kauesi} näyttää esimerkkitapauksen, jossa $n=5$, $m=6$
+ja tiet rakennetaan järjestyksessä $(1,2)$, $(1,3)$, $(2,3)$, $(4,5)$, $(2,4)$ ja $(2,5)$.
+Kaikki kaupungit ovat yhteydessä toisiinsa vaiheen 5 jälkeen.
+
+\subsubsection{Ratkaisu 1: Union-find-rakenne}
+
+Voimme ratkaista tehtävän tehokkaasti union-find-rakenteen avulla.
+Alussa jokainen kaupunkin on solmuna omassa komponentissaan.
+Tämän jälkeen käymme läpi tiet, ja jos tien päissä olevat kaupungit
+ovat eri komponenteissa, yhdistämme komponentit ja kasvatamme
+laskurin arvoa. Kun laskurin arvo saavuttaa arvon $n$,
+kaikki kaupungit ovat yhteydessä toisiinsa.
+
+Tässä ratkaisussa jokaisen tien kohdalla suoritamme yhden
+union-find-rakenteen \texttt{same}-operaation ja mahdollisesti
+yhden \texttt{union}-operaation.
+Ratkaisu vie aikaa $O(m \log n)$ tai $O(m \alpha(n))$
+riippuen rakenteen toteutuksesta.
+
+\subsubsection{Ratkaisu 2: Binäärihaku}
+
+Toinen tapa ratkaista tehtävä on hyödyntää \emph{binäärihakua}.
+Jos meillä on arvaus, että kaikki kaupungit ovat yhteydessä
+$x$ lisäyksen jälkeen, voimme tarkistaa helposti,
+pitääkö arvaus paikkansa:
+lisäämme ensin $x$ ensimmäistä tietä verkkoon ja tarkastamme
+sitten, onko verkko yhtenäinen. Tämä vie aikaa $O(m)$
+käyttäen esimerkiksi syvyyshakua.
+
+Tämän jälkeen voimme etsiä binäärihaun avulla suurimman arvon
+$x$, jolle pätee, että kaikki kaupungit eivät ole yhteydessä
+$x$ lisäyksen jälkeen. Tästä voimme päätellä, että kaupungit
+ovat ensi kertaa yhteydessä $x+1$ lisäyksen jälkeen.
+Koska mahdolliset $x$:n arvot ovat $1,2,\ldots,n$,
+binäärihaku suorittaa $O(\log n)$ askelta ja ratkaisu vie
+aikaa $O(m \log n)$.
 
 \section{Pienin virittävä puu}
 
