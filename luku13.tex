@@ -309,29 +309,29 @@ kertaa yhteydessä toisiinsa?
 \node at (2,-3.5) {vaihe #1};
 }
 \begin{scope}
-\verkko{1}{0}{\infty}{\infty}{\infty}{\infty}
+\verkko{1}
 \path[draw,thick,-] (1) -- (2);
 \end{scope}
 \begin{scope}[xshift=6.5cm]
-\verkko{2}{0}{8}{\infty}{\infty}{\infty}
+\verkko{2}
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \end{scope}
 \begin{scope}[xshift=13cm]
-\verkko{3}{0}{8}{2}{\infty}{\infty}
+\verkko{3}
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (2) -- (3);
 \end{scope}
 \begin{scope}[yshift=-5.5cm]
-\verkko{4}{0}{8}{2}{13}{\infty}
+\verkko{4}
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (2) -- (3);
 \path[draw,thick,-] (4) -- (5);
 \end{scope}
 \begin{scope}[yshift=-5.5cm,xshift=6.5cm]
-\verkko{5}{0}{6}{2}{13}{\infty}
+\verkko{5}
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (2) -- (3);
@@ -339,7 +339,7 @@ kertaa yhteydessä toisiinsa?
 \path[draw,thick,-] (2) -- (4);
 \end{scope}
 \begin{scope}[yshift=-5.5cm,xshift=13cm]
-\verkko{6}{0}{6}{2}{13}{9}
+\verkko{6}
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (2) -- (3);
@@ -394,8 +394,190 @@ aikaa $O(m \log n)$.
 
 \section{Pienin virittävä puu}
 
+Verkon \emph{virittävä} puu on kokoelma verkon kaaria,
+jotka kytkevät kaikki verkon solmut toisiinsa.
+Kuten puut yleensäkin, virittävä puu on syklitön eli
+jokaisen kahden solmun välillä on yksikäsitteinen reitti.
+Kuvassa \ref{fig:virpuu} on esimerkkinä verkko ja yksi sen virittävistä puista.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\begin{scope}
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (4) -- (5);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+%\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (3);
+%\path[draw,thick,-] (4) -- (5);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Verkko ja yksi sen virittävistä puista.}
+\label{fig:virpuu}
+\end{figure}
+
+Jos verkko on painotettu, kiinnostava ongelma on etsiä verkon
+\emph{pienin virittävä puu}.
+Tämä on virittivä puu, jonka kaarten painojen summa on
+mahdollisimman pieni.
+Esimerkiksi kuvassa \ref{fig:pievir} on painotettu verkko ja kaksi sen virittävää puuta.
+Vasemman puun paino on 12 ja oikean puun paino on 10.
+Oikea puu on tämän verkon pienin virittävä puu.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{scope}
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=below:4] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-] (3) -- node[font=\small,label=below:7] {} (5);
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+%\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=below:4] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+%\path[draw,thick,-] (3) -- node[font=\small,label=below:7] {} (5);
+\end{scope}
+\begin{scope}[xshift=13cm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+%\path[draw,thick,-] (1) -- node[font=\small,label=below:5] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+%\path[draw,thick,-] (3) -- node[font=\small,label=below:7] {} (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Vasemman virittävän puun paino on $5+1+2+4=12$
+ja oikean virittävän puun paino on $1+2+2+5=10$.}
+\label{fig:pievir}
+\end{figure}
+
+Seuraavaksi tutustumme kahteen algoritmiin, joiden avulla voimme
+selvittää tehokkaasti verkon pienimmän virittävän puun.
+Kruskalin algoritmi perustuu union-find-rakenteeseen,
+ja Primin algoritmi on Dijkstran algoritmin muunnelma.
+
 \subsection{Kruskalin algoritmi}
 
+Kruskalin algoritmissa lähdemme liikkeelle verkosta,
+jossa on valmiina kaikki solmut mutta ei vielä mitään kaaria.
+Käymme läpi kaaret järjestyksessä niiden painon mukaan
+keveimmästä raskaimpaan, ja jokaisen kaaren kohdalla
+lisäämme sen verkkoon, jos se yhdistää kaksi eri komponenttia.
+Kun kaikki komponentit on yhdistetty, pienin virittävä puu on valmis.
+
+Kuva \ref{fig:kruesi} näyttää, kuinka Kruskalin algoritmi löytää pienimmän virittävän
+puun esimerkkiverkossamme.
+Algoritmi lisää ensin puuhun kaaren $(2,3)$, jonka paino on 1,
+sekä kaaret $(1,2)$ ja $(2,4)$, joiden paino on 2.
+Seuraavaksi vuorossa on kaari $(1,3)$, jonka paino on 4,
+mutta tätä ei lisätä puuhun, koska se aiheuttaisi syklin.
+Tämän jälkeen algoritmi lisää kaaren $(4,5)$ painolla 5,
+jolloin pienin virittävä puu on valmis.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\small
+\newcommand\verkko[1]{
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\node at (2,-3.5) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\verkko{2}
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\end{scope}
+\begin{scope}[xshift=13cm]
+\verkko{3}
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\end{scope}
+\begin{scope}[yshift=-5.5cm]
+\verkko{4}
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-,dashed] (1) -- node[font=\small,label=below:4] {} (3);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=6.5cm]
+\verkko{5}
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki Kruskalin algoritmin toiminnasta.}
+\label{fig:kruesi}
+\end{figure}
+
+Kruskalin algoritmi on mahdollista toteuttaa tehokkaasti
+käyttäen union-find-rakennetta.
+Algoritmin alussa järjestämme kaaret painojärjestykseen,
+missä kuluu aikaa $O(m \log m)$.
+Tämän jälkeen käymme kaaret läpi, ja jokaisen kaaren
+kohdalla lisäämme sen puuhun, jos se yhdistää kaksi eri komponenttia.
+Tässä kuluu aikaa $O(m \log n)$ tai $O(m \alpha(n))$
+riippuen rakenteen toteutuksesta.
+Algoritmi vie siis yhteensä aikaa $O(m \log n)$.
+
+
 \subsection{Primin algoritmi}
+
+\subsection{Miksi algoritmit toimivat?}
 
 \section{Esimerkki: X}
