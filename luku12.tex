@@ -404,13 +404,78 @@ laskiessamme arvoja.
 Tällä tavalla saamme kuhunkin ongelmaan ratkaisun, joka
 vie aikaa $O(n+m)$.
 
-
 \subsection{Ongelmat verkkoina}
 
-Itse asiassa minkä tahansa dynaamisen ohjelmoinnin ratkaisun voi
+Itse asiassa \emph{minkä tahansa} dynaamisen ohjelmoinnin ratkaisun voi
 esittää suunnattuna syklittömänä verkkona.
 Tällöin jokainen verkon solmu vastaa yhtä laskettavaa funktion arvoa,
 ja kaaret näyttävät, miten funktion arvot riippuvat toisistaan.
+
+Tarkastellaan esimerkkinä tuttua tehtävää,
+jossa haluamme muodostaa rahasumman annetuista kolikoista.
+Esimerkiksi jos kolikot ovat $\{1,3,4\}$ ja rahasumma on 6,
+ratkaisut ovat seuraavat:
+
+\begin{multicols}{2}
+\begin{itemize}
+\item $4+1+1$
+\item $1+4+1$
+\item $1+1+4$
+\item $3+3$
+\item $3+1+1+1$
+\item $1+3+1+1$
+\item $1+1+3+1$
+\item $1+1+1+3$
+\item $1+1+1+1+1+1$
+\end{itemize}
+\end{multicols}
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\node[draw, circle] (0) at (0,0) {$0$};
+\node[draw, circle] (1) at (2,0) {$1$};
+\node[draw, circle] (2) at (4,0) {$2$};
+\node[draw, circle] (3) at (6,0) {$3$};
+\node[draw, circle] (4) at (8,0) {$4$};
+\node[draw, circle] (5) at (10,0) {$5$};
+\node[draw, circle] (6) at (12,0) {$6$};
+\path[draw,thick,->] (0) -- (1);
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (2) -- (3);
+\path[draw,thick,->] (3) -- (4);
+\path[draw,thick,->] (4) -- (5);
+\path[draw,thick,->] (5) -- (6);
+\path[draw,thick,->] (0) edge [bend left] (2);
+\path[draw,thick,->] (1) edge [bend left] (3);
+\path[draw,thick,->] (2) edge [bend left] (4);
+\path[draw,thick,->] (3) edge [bend left] (5);
+\path[draw,thick,->] (4) edge [bend left] (6);
+\path[draw,thick,->] (0) edge [bend right] (3);
+\path[draw,thick,->] (1) edge [bend right] (4);
+\path[draw,thick,->] (2) edge [bend right] (5);
+\path[draw,thick,->] (3) edge [bend right] (6);
+\end{tikzpicture}
+\end{center}
+\caption{Kolikkotehtävä esitettynä verkkona.}
+\label{fig:verkol}
+\end{figure}
+
+Voimme esittää tämän tehtävän verkkona niin,
+että solmut ovat rahasummia ja kaaret kertovat,
+kuinka voimme valita kolikkoja.
+Esimerkiksi kuva \ref{fig:verkol} näyttää verkon,
+joka vastaa yllä olevaa tapausta.
+Tässä verkossa lyhin polku solmusta 0 solmuun 6
+($0 \rightarrow 3 \rightarrow 6$)
+vastaa ratkaisua $3+3$, jossa kolikoiden määrä on pienin,
+ja polkujen yhteismäärä solmusta 0 solmuun 6 on 9,
+joka on sama kuin kaikkien ratkaisuiden määrä.
+
+Olemme saaneet siis uuden tavan luonnehtia dynaamista ohjelmointia:
+voimme käyttää dynaamista ohjelmointia,
+jos pystymme esittämään ongelman suunnattuna syklittömänä verkkona.
 
 \section{Vahvasti yhtenäisyys}
 
