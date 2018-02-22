@@ -315,8 +315,9 @@ Lyhin polun pituus on 2 ja pisin polun pituus on 3.
 \end{figure}
 
 Osoittautuu, että voimme ratkaista
-suunnatussa syklittömässä verkossa kaikki yllä mainitut ongelmat
-ajassa $O(n+m)$ dynaamisella ohjelmoinnilla.
+kaikki yllä mainitut ongelmat
+ajassa $O(n+m)$ dynaamisella ohjelmoinnilla,
+kun oletamme, että verkko on suunnattu ja syklitön.
 Yleisessä verkossa tilanne on toinen:
 voimme etsiä lyhimmän polun Dijkstran algoritmilla
 ajassa $O(m \log n)$, mutta pisimmän polun etsimiseen
@@ -325,46 +326,83 @@ mitään tehokasta menetelmää.
 
 \subsection{Polkujen käsittely}
 
-Tarkastellaan aluksi tilannetta, jossa haluamme löytää
-lyhimmän tai pisimmän polun solmusta $a$ solmuun $b$.
-Voimme ratkaista molemmat tehtävät samalla tavalla,
-ja keskitymme seuraavaksi lyhimmän polun etsimiseen.
+Jotta voimme käyttää dynaamista ohjelmointia,
+meidän täytyy määritellä ongelmat rekursiivisesti.
+Sopivat funktiot ovat seuraavat:
 
-Ideana on määritellä laske arvoja funktiolle $f(x)$,
-joka kertoo, kuinka pitkä on lyhin polku solmusta
-$a$ solmuun $x$.
-Funktion arvo $f(b)$ kertoo siis,
-kuinka pitkä on lyhin polku solmusta $a$ solmuun $b$.
-Esimerkiksi kuvan \ref{fig:verpol}
-verkossa $f(4)=2$, kun lähtösolmuna on $a=1$.
+\begin{itemize}
+\item $\texttt{lyhin}(x)$: lyhimmän polun pituus solmusta $a$ solmuun $x$
+\item $\texttt{pisin}(x)$: pisimmän polun pituus solmusta $a$ solmuun $x$
+\item $\texttt{maara}(x)$: polkujen yhteismäärä solmusta $a$ solmuun $x$
+\end{itemize}
 
-Kun haluamme selvittää vastauksen solmulle $x$,
-meillä on kaksi mahdollista tapausta.
-Pohjatapauksessa $x=a$ ja $f(x)=0$, koska pääsemme solmusta
-$a$ solmuun $a$ kulkematta ollenkaan kaaria.
-Yleisessä tapauksessa käymme läpi kaikki tavat,
-kuinka olemme voineet saapua solmuun $x$.
-Oletetaan, että solmuun $x$ pääsee kaarilla
-solmuista $u_1,u_2,\dots,u_k$
-ja tiedossamme on arvot $f(u_1),f(u_2),\dots,f(u_k)$.
-Tällöin
-\[f(x)=\min(f(u_1),f(u_2),\dots,f(u_k)).\]
+Esimerkiksi kuvan \ref{fig:verpol} tilanteessa lähtösolmu on $a=1$
+ja funktiot saavat arvot $\texttt{lyhin}(4)=2$,
+$\texttt{pisin}(4)=3$ ja $\texttt{maara}(4)=3$.
 
-Koska tiedämme, että verkko on syklitön, olemme saaneet
-aikaan rekursiivisen funktion, jota voimme käyttää
-dynaamisessa ohjelmoinnissa.
+Funktioiden pohjatapaukset ovat seuraavat:
+
+\begin{align*}
+\texttt{lyhin}(a)&=0 \\
+\texttt{pisin}(a)&=0 \\
+\texttt{maara}(a)&=1
+\end{align*}
+
+Tämä tarkoittaa tilannetta, jossa haluamme kulkea solmusta $a$
+solmuun $a$. Koska polulla ei ole yhtään kaaria,
+sekä lyhimmän että pisimmän polun pituus on 0.
+Polkujen määrä on 1, koska ainoa polku on tyhjä polku.
+
+Seuraavaksi määrittelemme yleisen tapauksen solmulle $x$.
+Oletamme, että solmuun $x$ pääsee kaarella $k$ solmusta,
+joiden tunnukset ovat $u_1,u_2,\dots,u_k$.
+Tällöin saamme seuraavat rekursiiviset kaavat:
+
+\begin{align*}
+\texttt{lyhin}(x)&=\min(\texttt{lyhin}(u_1),\texttt{lyhin}(u_2),\dots,\texttt{lyhin}(u_k))+1 \\
+\texttt{pisin}(x)&=\max(\texttt{pisin}(u_1),\texttt{pisin}(u_2),\dots,\texttt{pisin}(u_k))+1 \\
+\texttt{maara}(x)&=\texttt{maara}(u_1)+\texttt{maara}(u_2)+\dots+\texttt{maara}(u_k)
+\end{align*}
+
+Kun haluamme muodostaa lyhimmän polun solmusta $a$ solmuun $x$,
+meidän tulee valita edellinen solmu niin,
+että siihen on lyhin matka solmusta $a$.
+Niinpä valitsemme minimin edellisistä arvoista
+ja lisäämme siihen yhden.
+Vastaavasti kun haluamme muodostaa pisimmän polun,
+valitsemme maksimin edellisistä arvoista.
+Kun taas haluamme laskea polkujen yhteismäärän,
+laskemme yhteen kaikki solmuun johtavat polut.
+
+Tarkastellaan esimerkkinä kuvan \ref{fig:verpol} verkkoa,
+jossa tutkimme polkuja solmusta 1 solmuun 4.
+Kun haluamme laskea funktioiden arvot solmulle 4,
+otamme huomioon kaaret
+$2 \rightarrow 4$, $3 \rightarrow 4$ ja $5 \rightarrow 4$,
+joita kulkemalla pääsee muista solmuista solmuun 4.
+Oletamme, että olemme laskeneet aiemmin funktioiden
+arvot solmuille 2, 3 ja 5.
+
+Nyt esimerkiksi lyhin polku solmusta 1 solmuun 4 on pituudeltaan
+\[ \texttt{lyhin}(4)=\min(\texttt{lyhin}(2),\texttt{lyhin}(3),\texttt{lyhin}(5))+1.\]
+Aiemmat arvot ovat $\texttt{lyhin}(2)=1$, $\texttt{lyhin}(3)=2$ ja $\texttt{lyhin}(5)=\infty$.
+Valitsemme näistä pienimmän, eli tulemme solmuun 4 solmusta 2.
+Tämä tuottaa polun, jonka pituus on $\texttt{lyhin}(2)+1=2$.
+
+Huomaa, että jos solmuun $x$ ei tule kaarta mistään solmusta,
+oletamme, että $\texttt{lyhin}(x)=\infty$ ja $\texttt{pisin}(x)=-\infty$.
+Tämä on luonteva tulkinta, kun laskemme minimin tai maksimin
+tyhjälle joukolle.
+Tämän ansiosta emme koskaan muodosta polkua,
+joka ei ala solmusta $a$.
+
+Koska tiedämme, että verkko on syklitön,
+voimme laskea rekursiivisten funktioiden arvot
+tehokkaasti dynaamisella ohjelmoinnilla.
 Oleellista on, että emme voi joutua koskaan silmukkaan
-laskiessamme dynaamisen ohjelmoinnin arvoja.
-Tuloksena oleva algoritmi vie aikaa $O(n+m)$.
-
-Jos haluammekin selvittää pisimmän polun pituuden,
-voimme käyttää kaavaa
-\[f(x)=\max(f(u_1),f(u_2),\dots,f(u_k))\]
-ja kaikki toimii muuten samalla tavalla.
-
-Lopulta jos haluamme laskea eri polkujen määrän,
-voimme määritellä $f(a)=1$ ja käyttää kaavaa
-\[f(x)=f(u_1)+f(u_2)+f(u_k),\]
+laskiessamme arvoja.
+Tällä tavalla saamme kuhunkin ongelmaan ratkaisun, joka
+vie aikaa $O(n+m)$.
 
 
 \subsection{Ongelmat verkkoina}
