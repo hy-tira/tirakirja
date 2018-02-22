@@ -87,21 +87,6 @@ muunnettua syvyyshakua, jossa jokaisella solmulla on kolme tilaa:
 \item tila 2 (musta): solmun käsittely on valmis
 \end{itemize}
 
-Algoritmin alussa jokainen solmu on valkoinen.
-Käymme läpi kaikki verkon solmut ja aloitamme aina syvyyshaun
-solmusta, jos se on valkoinen.
-Aina kun saavumme uuteen solmuun, sen väri muuttuu
-valkoisesta harmaaksi.
-Sitten kun olemme käsitelleet kaikki solmusta lähtevät
-kaaret, sen väri muuttuu harmaasta mustaksi.
-
-Algoritmin aikana luomme listan, johon lisäämme solmun
-aina silloin, kun sen väri muuttuu mustaksi.
-Tämä lista käänteisessä järjestyksessä on verkon
-topologinen järjestys.
-Kuitenkin jos saavumme jossain vaiheessa uudestaan harmaaseen solmuun,
-verkossa on sykli eikä topologista järjestystä voi muodostaa.
-
 \begin{figure}
 \center
 \begin{center}
@@ -171,6 +156,22 @@ verkossa on sykli eikä topologista järjestystä voi muodostaa.
 \label{fig:topesi}
 \end{figure}
 
+
+Algoritmin alussa jokainen solmu on valkoinen.
+Käymme läpi kaikki verkon solmut ja aloitamme aina syvyyshaun
+solmusta, jos se on valkoinen.
+Aina kun saavumme uuteen solmuun, sen väri muuttuu
+valkoisesta harmaaksi.
+Sitten kun olemme käsitelleet kaikki solmusta lähtevät
+kaaret, sen väri muuttuu harmaasta mustaksi.
+
+Algoritmin aikana luomme listan, johon lisäämme solmun
+aina silloin, kun sen väri muuttuu mustaksi.
+Tämä lista käänteisessä järjestyksessä on verkon
+topologinen järjestys.
+Kuitenkin jos saavumme jossain vaiheessa uudestaan harmaaseen solmuun,
+verkossa on sykli eikä topologista järjestystä voi muodostaa.
+
 Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
 järjestyksen esimerkkiverkossamme.
 Tässä tapauksessa syvyyshakuja on kaksi,
@@ -236,7 +237,31 @@ Algoritmin toiminta vastaa syvyyshakua, joten se vie aikaa $O(n+m)$.
 
 \subsection{Miksi algoritmi toimii?}
 
-TODO
+Miten voimme tietää, että tässä kuvattu algoritmi toimii
+oikein kaikissa mahdollisissa tilanteissa?
+
+Tarkastellaan ensin tilannetta, jossa verkossa on sykli.
+Jos algoritmi saapuu uudestaan harmaaseen solmuun $x$,
+on selvää, että verkossa on sykli,
+koska algoritmi on onnistunut pääsemään solmusta $x$
+takaisin itseensä kulkemalla jotain polkua verkossa.
+
+Toisaalta jos verkossa on sykli, algoritmi saapuu
+jossain vaiheessa ensimmäistä kertaa johonkin sykliin
+kuuluvaan solmuun $x$. Sen jälkeen se käy läpi solmusta
+lähtevät kaaret ja aikanaan saapuu varmasti toista reittiä
+solmuun $x$. Niinpä algoritmi onnistuu tunnistamaan,
+jos verkossa on sykli.
+
+Jos sitten verkossa ei ole sykliä, algoritmi lisää jokaisen
+solmun listaan sen jälkeen, kun se on käsitellyt
+kaikki solmusta lähtevät kaaret.
+Jos siis verkossa on mikä tahansa kaari $a \rightarrow b$,
+solmu $b$ lisätään listaan ennen solmua $a$.
+Lopuksi lista käännetään, jolloin solmu $a$
+tulee ennen solmua $b$.
+Tämän ansiosta jokaiselle kaarelle $a \rightarrow b$ pätee,
+että solmu $a$ on järjestyksessä ennen solmua $b$.
 
 \section{Dynaaminen ohjelmointi}
 
