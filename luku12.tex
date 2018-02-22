@@ -1,11 +1,24 @@
 \chapter{Syklittömät verkot}
 
+Verkon käsittelyssä keskeinen haaste ovat verkossa olevat syklit.
+Jos voimme olettaa, että verkossa ei ole syklejä,
+voimme ratkaista monia ongelmia helpommin kuin yleisissä verkoissa,
+joissa saattaa olla syklejä.
+
+Tässä luvussa keskitymme verkkoihin, jotka ovat suunnattuja
+ja syklit\-tömiä.
+Englanniksi tällaisia verkkoja kutsutaan usein nimellä \emph{dag},
+joka tulee sanoista \emph{directed acyclic graph}.
+Tässä tapauksessa voimme muodostaa verkolle topologisen
+järjestyksen ja käyttää sen jälkeen dynaamista ohjelmointia
+verkko-ongelmien ratkaisemiseen.
+
 \section{Topologinen järjestys}
 
 Suunnatun verkon \emph{topologinen järjestys} on solmujen järjestys,
 jossa pätee, että jos solmusta $a$ on kaari solmuun $b$,
 niin solmu $a$ on ennen solmua $b$ järjestyksessä.
-Topologinen järjestys voidaan antaa listana,
+Topologinen järjestys voidaan esittää listana,
 joka sisältää kaikki verkon solmut sopivassa järjestyksessä.
 
 \begin{figure}
@@ -44,7 +57,7 @@ joka sisältää kaikki verkon solmut sopivassa järjestyksessä.
 \label{fig:topjar}
 \end{figure}
 
-Kuvassa \ref{fig:topjar} on esimerkkinä verkko ja sitä vastaava topologinen
+Kuvassa \ref{fig:topjar} on esimerkkinä verkko ja yksi sen topologinen
 järjestys $[1,3,5,2,4]$.
 Huomaa, että verkolla on usein monta mahdollista
 topologista järjestystä.
@@ -226,6 +239,8 @@ Algoritmin toiminta vastaa syvyyshakua, joten se vie aikaa $O(n+m)$.
 TODO
 
 \section{Dynaaminen ohjelmointi}
+
+
 
 \section{Vahvasti yhtenäisyys}
 
