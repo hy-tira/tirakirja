@@ -263,6 +263,8 @@ tulee ennen solmua $b$.
 Tämän ansiosta jokaiselle kaarelle $a \rightarrow b$ pätee,
 että solmu $a$ on järjestyksessä ennen solmua $b$.
 
+\section{Esimerkki: Kurssivalinnat}
+
 \section{Dynaaminen ohjelmointi}
 
 Kun tiedämme, että suunnattu verkko on syklitön,
@@ -588,14 +590,17 @@ lisäämme solmun listalle.
 Toimimme siis kuten topologisen järjestyksen muodostamisessa,
 mutta emme välitä, jos tulemme uudestaan samaan solmuun.
 
-Toisen vaiheen alussa käännämme jokaisen verkon kaaren suunnan.
+Algoritmin toisen vaiheen alussa
+käännämme jokaisen verkon kaaren suunnan.
 Tämän jälkeen käymme läpi ensimmäisen vaiheen tuottaman
 solmujen listan kääntei\-sessä järjestyksessä.
 Jokaisen solmun kohdalla muodostamme uuden vahvasti yhtenäisen
-komponentin, jossa on kaikki vielä käsittelemättömät solmut,
+komponentin, jossa on kaikki vielä käsittelemät\-tömät solmut,
 joihin pääsemme solmusta.
 
 Kuvassa X on esimerkki Kosarajun algoritmin toiminnasta.
 Vaiheen 
 
 \subsection{Miksi algoritmi toimii?}
+
+\section{Esimerkki: Luolapeli}
