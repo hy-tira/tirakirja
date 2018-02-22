@@ -89,12 +89,141 @@ topologinen järjestys.
 Kuitenkin jos saavumme jossain vaiheessa uudestaan harmaaseen solmuun,
 verkossa on sykli eikä topologista järjestystä voi muodostaa.
 
-Kuva X näyttää, kuinka algoritmi muodostaa topologisen
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\scriptsize
+\newcommand\verkko[6]{
+\node[draw, circle, fill=#2] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=#3] (2) at (2,0) {$2$};
+\node[draw, circle, fill=#4] (3) at (2,-2) {$3$};
+\node[draw, circle, fill=#5] (4) at (4,0) {$4$};
+\node[draw, circle, fill=#6] (5) at (4,-2) {$5$};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (3) -- (2);
+\path[draw,thick,->] (2) -- (4);
+\path[draw,thick,->] (3) -- (4);
+\path[draw,thick,->] (5) -- (4);
+\node at (2,-3) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{lightgray}{lightgray}{white}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\end{scope}
+\begin{scope}[xshift=6cm]
+\verkko{2}{lightgray}{lightgray}{white}{lightgray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\begin{scope}[xshift=12cm]
+\verkko{3}{lightgray}{lightgray}{white}{gray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\end{scope}
+\begin{scope}[xshift=18cm]
+\verkko{4}{lightgray}{gray}{white}{gray}{white}
+\end{scope}
+\begin{scope}[yshift=-5cm]
+\verkko{5}{lightgray}{gray}{lightgray}{gray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=6cm]
+\verkko{6}{lightgray}{gray}{lightgray}{gray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (2);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=12cm]
+\verkko{7}{lightgray}{gray}{lightgray}{gray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (4);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=18cm]
+\verkko{8}{lightgray}{gray}{gray}{gray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[yshift=-10cm]
+\verkko{9}{gray}{gray}{gray}{gray}{white}
+\end{scope}
+\begin{scope}[yshift=-10cm,xshift=6cm]
+\verkko{10}{gray}{gray}{gray}{gray}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (5) -- (4);
+\end{scope}
+\begin{scope}[yshift=-10cm,xshift=12cm]
+\verkko{11}{gray}{gray}{gray}{gray}{gray}
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki topologisen järjestyksen muodostamisesta.}
+\label{fig:topesi}
+\end{figure}
+
+Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
 järjestyksen esimerkkiverkossamme.
 Tässä tapauksessa syvyyshakuja on kaksi,
 joista ensimmäinen alkaa solmusta 1 ja toinen alkaa solmusta 5.
 Algoritmin tuloksena on lista $[4,2,3,1,5]$,
 joten käänteinen lista $[5,1,3,2,4]$ on verkon topologinen järjestys.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\scriptsize
+\newcommand\verkko[6]{
+\node[draw, circle, fill=#2] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=#3] (2) at (2,0) {$2$};
+\node[draw, circle, fill=#4] (3) at (2,-2) {$3$};
+\node[draw, circle, fill=#5] (4) at (4,0) {$4$};
+\node[draw, circle, fill=#6] (5) at (4,-2) {$5$};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (3) -- (2);
+\path[draw,thick,->] (2) -- (4);
+\path[draw,thick,->] (4) -- (3);
+\path[draw,thick,->] (5) -- (4);
+\node at (2,-3) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{lightgray}{lightgray}{white}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\end{scope}
+\begin{scope}[xshift=6cm]
+\verkko{2}{lightgray}{lightgray}{white}{lightgray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\begin{scope}[xshift=12cm]
+\verkko{3}{lightgray}{lightgray}{lightgray}{lightgray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (3);
+\end{scope}
+\begin{scope}[xshift=18cm]
+\verkko{3}{lightgray}{lightgray}{lightgray}{lightgray}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (2);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Topologista järjestystä ei voi muodostaa syklin takia.}
+\label{fig:topsyk}
+\end{figure}
+
+Kuva \ref{fig:topsyk} näyttää puolestaan esimerkin tilanteesta,
+jossa topologista järjestystä ei voi muodostaa verkossa
+olevan syklin takia.
+Tässä verkossa on sykli $2 \rightarrow 4 \rightarrow 3 \rightarrow 2$,
+jonka olemassaolon huomaamme siitä, että tulemme uudestaan
+harmaaseen solmuun 2.
+
+Algoritmin toiminta vastaa syvyyshakua, joten se vie aikaa $O(n+m)$.
+
+\subsection{Miksi algoritmi toimii?}
+
+TODO
 
 \section{Dynaaminen ohjelmointi}
 
