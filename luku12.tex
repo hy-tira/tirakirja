@@ -1,17 +1,19 @@
 \chapter{Syklittömät verkot}
 
-Verkon käsittelyssä keskeinen haaste ovat verkossa olevat syklit.
+Verkkoalgoritmien suunnittelussa keskeinen haaste ovat verkossa olevat syklit,
+koska monessa tilanteessa syklien takia meidän on hankalaa päättää,
+missä järjestyksessä kävisimme läpi verkon solmuja.
 Jos voimme olettaa, että verkossa ei ole syklejä,
-voimme ratkaista monia ongelmia helpommin kuin yleisissä verkoissa,
+voimmekin ratkaista monia verkko-ongelmia helpommin kuin yleisissä verkoissa,
 joissa saattaa olla syklejä.
 
 Tässä luvussa keskitymme verkkoihin, jotka ovat suunnattuja
 ja syklit\-tömiä.
 Englanniksi tällaisia verkkoja kutsutaan usein nimellä \emph{dag},
 joka tulee sanoista \emph{directed acyclic graph}.
-Tässä tapauksessa voimme muodostaa verkolle topologisen
-järjestyksen ja käyttää sen jälkeen dynaamista ohjelmointia
-verkko-ongelmien ratkaisemiseen.
+Voimme muodostaa tällaisille verkoille topologisen
+järjestyksen, joka antaa solmuille luontevan käsittelyjärjestyksen,
+ja käyttää dynaamista ohjelmointia verkko-ongelmien ratkaisemiseen.
 
 \section{Topologinen järjestys}
 
@@ -19,7 +21,7 @@ Suunnatun verkon \emph{topologinen järjestys} on solmujen järjestys,
 jossa pätee, että jos solmusta $a$ on kaari solmuun $b$,
 niin solmu $a$ on ennen solmua $b$ järjestyksessä.
 Topologinen järjestys voidaan esittää listana,
-joka sisältää kaikki verkon solmut sopivassa järjestyksessä.
+joka ilmaisee solmujen järjestyksen.
 
 \begin{figure}
 \center
@@ -78,8 +80,8 @@ tai todeta, että verkossa on sykli eikä järjestys ole mahdollinen.
 
 \subsection{Järjestyksen muodostaminen}
 
-Voimme muodostaa topologisen järjestyksen käyttämällä
-muunnettua syvyyshakua, jossa jokaisella solmulla on kolme tilaa:
+Voimme muodostaa topologisen järjestyksen suorittamalla
+joukon syvyyshakuja, joissa jokaisella solmulla on kolme mahdollista tilaa:
 
 \begin{itemize}
 \item tila 0 (valkoinen): solmussa ei ole käyty
@@ -162,7 +164,7 @@ solmusta, jos se on valkoinen.
 Aina kun saavumme uuteen solmuun, sen väri muuttuu
 valkoisesta harmaaksi.
 Sitten kun olemme käsitelleet kaikki solmusta lähtevät
-kaaret, sen väri muuttuu harmaasta mustaksi.
+kaaret, solmun väri muuttuu harmaasta mustaksi.
 
 Algoritmin aikana luomme listan, johon lisäämme solmun
 aina silloin, kun sen väri muuttuu mustaksi.
@@ -173,7 +175,7 @@ verkossa on sykli eikä topologista järjestystä voi muodostaa.
 
 Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
 järjestyksen esimerkkiverkossamme.
-Tässä tapauksessa syvyyshakuja on kaksi,
+Tässä tapauksessa suoritamme kaksi syvyyshakua,
 joista ensimmäinen alkaa solmusta 1 ja toinen alkaa solmusta 5.
 Algoritmin tuloksena on lista $[4,2,3,1,5]$,
 joten käänteinen lista $[5,1,3,2,4]$ on verkon topologinen järjestys.
@@ -232,7 +234,8 @@ Tässä verkossa on sykli $2 \rightarrow 4 \rightarrow 3 \rightarrow 2$,
 jonka olemassaolon huomaamme siitä, että tulemme uudestaan
 harmaaseen solmuun 2.
 
-Algoritmin toiminta vastaa syvyyshakua, joten se vie aikaa $O(n+m)$.
+Algoritmi käy läpi verkon solmut ja kaaret syvyyshaun avulla,
+joten sen aikavaativuus on $O(n+m)$.
 
 \subsection{Miksi algoritmi toimii?}
 
@@ -248,15 +251,15 @@ takaisin itseensä kulkemalla jotain polkua verkossa.
 Toisaalta jos verkossa on sykli, algoritmi saapuu
 jossain vaiheessa ensimmäistä kertaa johonkin sykliin
 kuuluvaan solmuun $x$. Sen jälkeen se käy läpi solmusta
-lähtevät kaaret ja aikanaan saapuu varmasti toista reittiä
+lähtevät kaaret ja aikanaan saapuu varmasti uudestaan
 solmuun $x$. Niinpä algoritmi onnistuu tunnistamaan,
 jos verkossa on sykli.
 
 Jos sitten verkossa ei ole sykliä, algoritmi lisää jokaisen
-solmun listaan sen jälkeen, kun se on käsitellyt
+solmun listalle sen jälkeen, kun se on käsitellyt
 kaikki solmusta lähtevät kaaret.
-Jos siis verkossa on mikä tahansa kaari $a \rightarrow b$,
-solmu $b$ lisätään listaan ennen solmua $a$.
+Jos siis verkossa on kaari $a \rightarrow b$,
+solmu $b$ lisätään listalle ennen solmua $a$.
 Lopuksi lista käännetään, jolloin solmu $a$
 tulee ennen solmua $b$.
 Tämän ansiosta jokaiselle kaarelle $a \rightarrow b$ pätee,
@@ -328,7 +331,7 @@ OHPE, OHJA, TIPE, TITO, JYM, TIRA, LAMA.
 \end{figure}
 
 On selvää, että kurssien ja esitietovaatimusten muodostaman
-verkon tulee olla syklitön.
+verkon tulee olla syklitön, jotta kurssit voi suorittaa halutulla tavalla.
 Jos verkossa on sykli, topologista järjestystä ei ole olemassa
 eikä meillä ole mitään mahdollisuutta suorittaa kursseja
 esitietovaatimusten mukaisesti.
@@ -346,8 +349,8 @@ Esimerkkejä tällaisista ongelmista ovat:
 \item Montako erilaista polkua on solmusta $a$ solmuun $b$?
 \end{itemize}
 
-Esimerkiksi kuvan \ref{fig:verpol} verkossa on kolme
-mahdollista polkua solmusta 1 solmuun 4:
+Esimerkiksi kuvan \ref{fig:verpol} verkossa on yhteensä
+kolme polkua solmusta 1 solmuun 4:
 $1 \rightarrow 2 \rightarrow 4$,
 $1 \rightarrow 3 \rightarrow 2 \rightarrow 4$ ja
 $1 \rightarrow 3 \rightarrow 4$.
@@ -417,7 +420,10 @@ Yleisessä verkossa tilanne on toinen:
 voimme etsiä lyhimmän polun Dijkstran algoritmilla
 ajassa $O(m \log n)$, mutta pisimmän polun etsimiseen
 tai polkujen yhteismäärän laskemiseen ei tunneta
-mitään tehokasta menetelmää.
+mitään tehokasta menetelmää\footnote{Oletamme, että sama solmu
+ei saa esiintyä polulla monta kertaa. Ilman tätä oletusta
+pisin polku voi olla äärettömän pituinen ja erilaisia
+polkuja voi olla ääretön määrä.}.
 
 \subsection{Polkujen käsittely}
 
@@ -444,12 +450,12 @@ Funktioiden pohjatapaukset ovat seuraavat:
 \end{align*}
 
 Tämä tarkoittaa tilannetta, jossa haluamme kulkea solmusta $a$
-solmuun $a$. Koska polulla ei ole yhtään kaaria,
+solmuun $a$. Koska polulla ei voi olla kaaria,
 sekä lyhimmän että pisimmän polun pituus on 0.
 Polkujen määrä on 1, koska ainoa polku on tyhjä polku.
 
 Seuraavaksi määrittelemme yleisen tapauksen solmulle $x$.
-Oletamme, että solmuun $x$ pääsee kaarella $k$ solmusta,
+Oletamme, että solmuun $x$ pääsee kaarella solmuista,
 joiden tunnukset ovat $u_1,u_2,\dots,u_k$.
 Tällöin saamme seuraavat rekursiiviset kaavat:
 
@@ -459,18 +465,19 @@ Tällöin saamme seuraavat rekursiiviset kaavat:
 \texttt{maara}(x)&=\texttt{maara}(u_1)+\texttt{maara}(u_2)+\dots+\texttt{maara}(u_k)
 \end{align*}
 
+Voimme perustella kaavat seuraavasti:
 Kun haluamme muodostaa lyhimmän polun solmusta $a$ solmuun $x$,
-meidän tulee valita edellinen solmu niin,
+meidän tulee valita polun edellinen solmu niin,
 että siihen on lyhin matka solmusta $a$.
 Niinpä valitsemme minimin edellisistä arvoista
 ja lisäämme siihen yhden.
 Vastaavasti kun haluamme muodostaa pisimmän polun,
-valitsemme maksimin edellisistä arvoista.
+valitsemme maksimin edellisistä arvoista ja lisäämme siihen yhden.
 Kun taas haluamme laskea polkujen yhteismäärän,
 laskemme yhteen kaikki solmuun johtavat polut.
 
 Tarkastellaan esimerkkinä kuvan \ref{fig:verpol} verkkoa,
-jossa tutkimme polkuja solmusta 1 solmuun 4.
+jossa olemme kiinnostuneita poluista solmusta 1 solmuun 4.
 Kun haluamme laskea funktioiden arvot solmulle 4,
 otamme huomioon kaaret
 $2 \rightarrow 4$, $3 \rightarrow 4$ ja $5 \rightarrow 4$,
@@ -483,6 +490,7 @@ Nyt esimerkiksi lyhin polku solmusta 1 solmuun 4 on pituudeltaan
 Aiemmat arvot ovat $\texttt{lyhin}(2)=1$, $\texttt{lyhin}(3)=2$ ja $\texttt{lyhin}(5)=\infty$.
 Valitsemme näistä pienimmän, eli tulemme solmuun 4 solmusta 2.
 Tämä tuottaa polun, jonka pituus on $\texttt{lyhin}(2)+1=2$.
+Vastaavalla tavalla voimme laskea arvot $\texttt{pisin}(4)$ ja $\texttt{maara}(4)$.
 
 Huomaa, että jos solmuun $x$ ei tule kaarta mistään solmusta,
 oletamme, että $\texttt{lyhin}(x)=\infty$ ja $\texttt{pisin}(x)=-\infty$.
@@ -496,6 +504,8 @@ voimme laskea rekursiivisten funktioiden arvot
 tehokkaasti dynaamisella ohjelmoinnilla.
 Oleellista on, että emme voi joutua koskaan silmukkaan
 laskiessamme arvoja.
+Käytännössä voimme laskea arvot solmujen
+topologisessa järjestyksessä.
 Tällä tavalla saamme kuhunkin ongelmaan ratkaisun, joka
 vie aikaa $O(n+m)$.
 
@@ -563,8 +573,8 @@ kuinka voimme valita kolikkoja.
 Esimerkiksi kuva \ref{fig:verkol} näyttää verkon,
 joka vastaa yllä olevaa tapausta.
 Tässä verkossa lyhin polku solmusta 0 solmuun 6
-($0 \rightarrow 3 \rightarrow 6$)
-vastaa ratkaisua $3+3$, jossa kolikoiden määrä on pienin,
+on $0 \rightarrow 3 \rightarrow 6$, joka
+vastaa pienimmän kolikkomäärän ratkaisua $3+3$,
 ja polkujen yhteismäärä solmusta 0 solmuun 6 on 9,
 joka on sama kuin kaikkien ratkaisuiden määrä.
 
@@ -579,13 +589,13 @@ emme voi muodostaa sille topologista järjestystä
 emmekä käyttää dynaamista ohjelmointia.
 Mikä neuvoksi, jos kuitenkin haluaisimme tehdä näin?
 
-Joskus voimme ratkaista asian etsimällä
+Joskus voimme selvityä tilanteesta etsimällä
 verkon vahvasti yhtenäiset komponentit.
 Vahvasti yhtenäinen komponentti on joukko verkon solmuja,
 jossa pätee, että mistä tahansa solmusta on polku
-mihin tahansa solmuun.
+mihin tahansa solmuun emmekä voi lisätä enempää solmuja joukkoon.
 Kun esitämme jokaisen vahvasti yhtenäisen komponentin
-yhtenä solmuna, saamme esille verkon syvärakenteen,
+yhtenä solmuna, saamme selville verkon syvärakenteen,
 joka on aina syklitön verkko.
 
 \begin{figure}
@@ -638,7 +648,7 @@ Komponenteista muodostuu syklitön komponenttiverkko,
 jossa on kaari solmusta $\{1,2,3,4\}$ solmuun $\{5,6\}$.
 
 Seuraavaksi tutustumme Kosarajun algoritmiin,
-jonka avulla pystymme etsimään tehokkaasti suunnatun
+jonka avulla pystymme muodostamaan tehokkaasti suunnatun
 verkon vahvasti yhtenäiset komponentit ja niitä
 vastaavan komponenttiverkon.
 
@@ -646,13 +656,13 @@ vastaavan komponenttiverkon.
 
 Kosarajun algoritmi muodostuu kahdesta verkon läpikäynnistä.
 Ensimmäinen läpikäynti muistuttaa topologisen järjestyksen
-muodostamista ja tuottaa listan solmuista.
+etsimistä ja tuottaa listan solmuista.
 Toinen läpikäynti muodostaa vahvasti yhtenäiset komponentit
 ensimmäisen läpikäynnin tuottaman listan avulla.
 
 Algoritmin ensimmäinen läpikäynti aloittaa vuorollaan
 syvyyshaun jokaisesta solmusta, jota ei ole vielä käsitelty.
-Jokaisessa solmussa käymme ensin läpi kaikki
+Kun saavumme solmuun, käymme ensin läpi kaikki
 solmusta lähtevät kaaret ja lisäämme tämän jälkeen solmun listalle.
 Toimimme siis kuten topologisen järjestyksen muodostamisessa,
 mutta emme välitä, jos tulemme uudestaan samaan solmuun.
@@ -837,13 +847,13 @@ Voimme tarkastella asiaa muodostettavana olevan syklittömän
 komponenttiverkon näkökulmasta.
 Jos meillä on komponentti $A$, josta pääsee kaarella
 komponenttiin $B$, 
-algoritmin ensimmäinen läpikäynti takaa,
+algoritmin ensimmäinen läpikäynti takaa, että
 jokin $A$:n solmu lisätään listalle kaikkien $B$:n
 solmujen jälkeen.
 Kun sitten käymme läpi listan käänteisessä järjestyksessä,
 jokin $A$:n solmu tulee vastaan ennen kaikkia $B$:n
 solmuja.
-Niinpä alamme rakentaa komponenttia $A$,
+Niinpä alamme rakentaa ensin komponenttia $A$
 emmekä mene komponentin $B$ puolelle,
 koska verkon kaaret on käännetty.
 
