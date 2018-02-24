@@ -644,23 +644,22 @@ vastaavan komponenttiverkon.
 
 \subsection{Kosarajun algoritmi}
 
-Kosarajun algoritmi muodostuu kahdesta vaiheesta,
-jotka molemmat perustuvat syvyyshakuun.
-Ensimmäinen vaihe muistuttaa topologisen järjestyksen
-muodostamista, ja toinen vaihe muodostaa
-vahvasti yhtenäiset komponentit ensimmäisen vaiheen perusteella.
+Kosarajun algoritmi muodostuu kahdesta verkon läpikäynnistä.
+Ensimmäinen läpikäynti muistuttaa topologisen järjestyksen
+muodostamista ja tuottaa listan solmuista.
+Toinen läpikäynti muodostaa vahvasti yhtenäiset komponentit
+ensimmäisen läpikäynnin tuottaman listan avulla.
 
-Algoritmin ensimmäisessä vaiheessa
-käymme läpi verkon solmut, ja aina kun tulemme solmuun,
-jota ei vielä ole käsitelty, aloitamme syvyyshaun siitä solmusta.
-Kun olemme käsitelleet kaikki solmusta lähtevät kaaret,
-lisäämme solmun listalle.
+Algoritmin ensimmäinen läpikäynti aloittaa vuorollaan
+syvyyshaun jokaisesta solmusta, jota ei ole vielä käsitelty.
+Jokaisessa solmussa käymme ensin läpi kaikki
+solmusta lähtevät kaaret ja lisäämme tämän jälkeen solmun listalle.
 Toimimme siis kuten topologisen järjestyksen muodostamisessa,
 mutta emme välitä, jos tulemme uudestaan samaan solmuun.
 
-Algoritmin toisen vaiheen alussa
+Algoritmin toisen läpikäynnin alussa
 käännämme jokaisen verkon kaaren suunnan.
-Tämän jälkeen käymme läpi ensimmäisen vaiheen tuottaman
+Tämän jälkeen käsittelemme ensimmäisen läpikäynnin tuottaman
 solmujen listan kääntei\-sessä järjestyksessä.
 Jokaisen solmun kohdalla muodostamme uuden vahvasti yhtenäisen
 komponentin, jossa on kaikki vielä käsittelemät\-tömät solmut,
@@ -745,18 +744,17 @@ joihin pääsemme solmusta.
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Kosarajun algoritmin ensimmäinen vaihe.}
+\caption{Kosarajun algoritmin ensimmäinen läpikäynti.}
 \label{fig:koseka}
 \end{figure}
 
-
 Tarkastelemme seuraavaksi, kuinka Kosarajun algoritmi
 toimii esimerkkiverkossamme.
-Kuva \ref{fig:koseka} näyttää algoritmin ensimmäisen vaiheen,
+Kuva \ref{fig:koseka} näyttää ensimmäisen läpikäynnin,
 joka muodostaa solmuista listan $[2,5,6,4,3,1]$.
 Tämän jälkeen käännämme kaikki verkon kaaret ja
 käsittelemme solmut järjestyksessä $[1,3,4,6,5,2]$.
-Kuva \ref{fig:kostok} näyttää algoritmin toisen vaiheen.
+Kuva \ref{fig:kostok} näyttää toisen läpikäynnin.
 Vahvasti yhtenäiset komponentit syntyvät
 solmuista 1 ja 6 alkaen.
 Kaarten kääntämisen ansiosta
@@ -797,33 +795,66 @@ solmujen 5 ja 6 alueelle.
 \path[draw=red,thick,->,line width=2pt] (1) -- (2);
 \end{scope}
 \begin{scope}[xshift=12cm]
-\verkko{3}{lightgray}{lightgray}{white}{lightgray}{white}{white}
+\verkko{3}{lightgray}{lightgray}{lightgray}{white}{white}{white}
 \path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=2pt] (2) -- (3);
 \end{scope}
 \begin{scope}[xshift=18cm]
-\verkko{4}{lightgray}{lightgray}{lightgray}{lightgray}{white}{white}
+\verkko{4}{lightgray}{lightgray}{lightgray}{white}{white}{white}
 \path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
-\path[draw=red,thick,->,line width=2pt] (4) -- (3);
-\draw[red,dashed,thick,line width=1.5pt] (-0.75,0.75) rectangle (2.75,-2.75);
 \end{scope}
 \begin{scope}[yshift=-5cm]
-\verkko{5}{lightgray}{lightgray}{lightgray}{lightgray}{white}{lightgray}
+\verkko{5}{lightgray}{lightgray}{lightgray}{lightgray}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\draw[red,dashed,thick,line width=1.5pt] (-0.75,0.75) rectangle (2.75,-2.75);
 \end{scope}
 \begin{scope}[yshift=-5cm,xshift=6cm]
-\verkko{6}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}
+\verkko{6}{lightgray}{lightgray}{lightgray}{lightgray}{white}{lightgray}
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=12cm]
+\verkko{7}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}
 \path[draw=red,thick,<-,line width=2pt] (5) edge [bend left] (6);
 \draw[red,dashed,thick,line width=1.5pt] (3.25,0.75) rectangle (4.75,-2.75);
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Kosarajun algoritmin toinen vaihe.}
+\caption{Kosarajun algoritmin toinen läpikäynti.}
 \label{fig:kostok}
 \end{figure}
 
+Koska algoritmi muodostuu kahdesta verkon läpikäynnistä,
+sen aikavaativuus on $O(n+m)$.
 
 \subsection{Miksi algoritmi toimii?}
+
+Keskeinen kysymys Kosarajun algoritmiin liittyen on,
+miten voimme olla varmoja, että saamme verkon toisessa läpikäynnissä
+muodostettua vahvasti yhtenäisiä komponentteja,
+joihin ei tule ylimääräisiä solmuja?
+
+Voimme tarkastella asiaa muodostettavana olevan syklittömän
+komponenttiverkon näkökulmasta.
+Jos meillä on komponentti $A$, josta pääsee kaarella
+komponenttiin $B$, 
+algoritmin ensimmäinen läpikäynti takaa,
+jokin $A$:n solmu lisätään listalle kaikkien $B$:n
+solmujen jälkeen.
+Kun sitten käymme läpi listan käänteisessä järjestyksessä,
+jokin $A$:n solmu tulee vastaan ennen kaikkia $B$:n
+solmuja.
+Niinpä alamme rakentaa komponenttia $A$,
+emmekä mene komponentin $B$ puolelle,
+koska verkon kaaret on käännetty.
+
+Vastaavasti jos meillä on komponentti $A$,
+johon pääsee komponentista $B$,
+muodostamme komponentin $B$ ennen komponenttia $A$.
+Niinpä kun käänteisessä verkossa
+komponentista $A$ on kaari komponenttiin $B$,
+tämä ei haittaa, koska olemme jo muodostaneet
+komponentin $B$ eikä komponenttiin $A$ tule ylimääräisiä solmuja
+komponentista $B$.
 
 \section{Esimerkki: Luolapeli}
 
@@ -909,6 +940,5 @@ Koska verkko on syklitön, tämä onnistuu dynaamisella ohjelmoinnilla.
 
 Kuva \ref{fig:luovah} näyttää vahvasti yhtenäiset komponentit
 esimerkkiverkossamme.
-Tämä esitys selkeyttää tilannetta huomattavasti,
-ja näemme, että optimaalisia reittejä on kaksi:
+Tästä esityksestä näemme suoraan, että optimaalisia reittejä on kaksi:
 voimme kulkea joko luolan 3 tai luolan 5 kautta.
