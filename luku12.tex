@@ -156,7 +156,6 @@ muunnettua syvyyshakua, jossa jokaisella solmulla on kolme tilaa:
 \label{fig:topesi}
 \end{figure}
 
-
 Algoritmin alussa jokainen solmu on valkoinen.
 Käymme läpi kaikki verkon solmut ja aloitamme aina syvyyshaun
 solmusta, jos se on valkoinen.
@@ -667,8 +666,162 @@ Jokaisen solmun kohdalla muodostamme uuden vahvasti yhtenäisen
 komponentin, jossa on kaikki vielä käsittelemät\-tömät solmut,
 joihin pääsemme solmusta.
 
-Kuvassa X on esimerkki Kosarajun algoritmin toiminnasta.
-Vaiheen 
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\scriptsize
+\newcommand\verkko[7]{
+\node[draw, circle, fill=#2] (1) at (0,0) {$1$};
+\node[draw, circle, fill=#3] (2) at (0,-2) {$2$};
+\node[draw, circle, fill=#4] (3) at (2,0) {$3$};
+\node[draw, circle, fill=#5] (4) at (2,-2) {$4$};
+\node[draw, circle, fill=#6] (5) at (4,0) {$5$};
+\node[draw, circle, fill=#7] (6) at (4,-2) {$6$};
+
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (3) -- (4);
+\path[draw,thick,->] (4) -- (2);
+\path[draw,thick,->] (2) -- (1);
+\path[draw,thick,->] (3) -- (2);
+\path[draw,thick,->] (5) edge [bend left] (6);
+\path[draw,thick,->] (6) edge [bend left] (5);
+\path[draw,thick,->] (3) -- (5);
+\path[draw,thick,->] (4) -- (6);
+
+\node at (2,-3) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{lightgray}{white}{white}{white}{white}{white}
+\end{scope}
+\begin{scope}[xshift=6cm]
+\verkko{2}{lightgray}{white}{lightgray}{white}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[xshift=12cm]
+\verkko{3}{lightgray}{gray}{lightgray}{white}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (2);
+\end{scope}
+\begin{scope}[xshift=18cm]
+\verkko{4}{lightgray}{gray}{lightgray}{white}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[yshift=-5cm]
+\verkko{5}{lightgray}{gray}{lightgray}{lightgray}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (4);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=6cm]
+\verkko{6}{lightgray}{gray}{lightgray}{lightgray}{white}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (6);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=12cm]
+\verkko{7}{lightgray}{gray}{lightgray}{lightgray}{gray}{lightgray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (6);
+\path[draw=red,thick,->,line width=2pt] (6) edge [bend left] (5);
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=18cm]
+\verkko{8}{lightgray}{gray}{lightgray}{lightgray}{gray}{gray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (6);
+\end{scope}
+\begin{scope}[yshift=-10cm]
+\verkko{9}{lightgray}{gray}{lightgray}{gray}{gray}{gray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=2pt] (3) -- (4);
+\end{scope}
+\begin{scope}[yshift=-10cm,xshift=6cm]
+\verkko{10}{lightgray}{gray}{gray}{gray}{gray}{gray}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[yshift=-10cm,xshift=12cm]
+\verkko{11}{gray}{gray}{gray}{gray}{gray}{gray}
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Kosarajun algoritmin ensimmäinen vaihe.}
+\label{fig:koseka}
+\end{figure}
+
+
+Tarkastelemme seuraavaksi, kuinka Kosarajun algoritmi
+toimii esimerkkiverkossamme.
+Kuva \ref{fig:koseka} näyttää algoritmin ensimmäisen vaiheen,
+joka muodostaa solmuista listan $[2,5,6,4,3,1]$.
+Tämän jälkeen käännämme kaikki verkon kaaret ja
+käsittelemme solmut järjestyksessä $[1,3,4,6,5,2]$.
+Kuva \ref{fig:kostok} näyttää algoritmin toisen vaiheen.
+Vahvasti yhtenäiset komponentit syntyvät
+solmuista 1 ja 6 alkaen.
+Kaarten kääntämisen ansiosta
+solmusta 1 alkava
+vahvasti yhtenäinen komponentti ei ''vuoda''
+solmujen 5 ja 6 alueelle.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\scriptsize
+\newcommand\verkko[7]{
+\node[draw, circle, fill=#2] (1) at (0,0) {$1$};
+\node[draw, circle, fill=#3] (2) at (0,-2) {$2$};
+\node[draw, circle, fill=#4] (3) at (2,0) {$3$};
+\node[draw, circle, fill=#5] (4) at (2,-2) {$4$};
+\node[draw, circle, fill=#6] (5) at (4,0) {$5$};
+\node[draw, circle, fill=#7] (6) at (4,-2) {$6$};
+
+\path[draw,thick,<-] (1) -- (3);
+\path[draw,thick,<-] (3) -- (4);
+\path[draw,thick,<-] (4) -- (2);
+\path[draw,thick,<-] (2) -- (1);
+\path[draw,thick,<-] (3) -- (2);
+\path[draw,thick,<-] (5) edge [bend left] (6);
+\path[draw,thick,<-] (6) edge [bend left] (5);
+\path[draw,thick,<-] (3) -- (5);
+\path[draw,thick,<-] (4) -- (6);
+
+\node at (2,-3) {vaihe #1};
+}
+\begin{scope}
+\verkko{1}{lightgray}{white}{white}{white}{white}{white}
+\end{scope}
+\begin{scope}[xshift=6cm]
+\verkko{2}{lightgray}{lightgray}{white}{white}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\end{scope}
+\begin{scope}[xshift=12cm]
+\verkko{3}{lightgray}{lightgray}{white}{lightgray}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\begin{scope}[xshift=18cm]
+\verkko{4}{lightgray}{lightgray}{lightgray}{lightgray}{white}{white}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=2pt] (4) -- (3);
+\draw[red,dashed,thick,line width=1.5pt] (-0.75,0.75) rectangle (2.75,-2.75);
+\end{scope}
+\begin{scope}[yshift=-5cm]
+\verkko{5}{lightgray}{lightgray}{lightgray}{lightgray}{white}{lightgray}
+\end{scope}
+\begin{scope}[yshift=-5cm,xshift=6cm]
+\verkko{6}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}
+\path[draw=red,thick,<-,line width=2pt] (5) edge [bend left] (6);
+\draw[red,dashed,thick,line width=1.5pt] (3.25,0.75) rectangle (4.75,-2.75);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Kosarajun algoritmin toinen vaihe.}
+\label{fig:kostok}
+\end{figure}
+
 
 \subsection{Miksi algoritmi toimii?}
 
@@ -694,12 +847,12 @@ niin, että kuljemme mahdollisimman monen solmun kautta.
 \begin{center}
 \begin{tikzpicture}[scale=0.7]
 \node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (3,0) {$2$};
-\node[draw, circle] (3) at (-2,-2) {$3$};
-\node[draw, circle] (4) at (1.5,-2) {$4$};
-\node[draw, circle] (5) at (3,-4) {$5$};
-\node[draw, circle] (6) at (-1,-4) {$6$};
-\node[draw, circle] (7) at (1,-6) {$7$};
+\node[draw, circle] (2) at (2,-1) {$2$};
+\node[draw, circle] (3) at (-2,0) {$3$};
+\node[draw, circle] (4) at (0,-2) {$4$};
+\node[draw, circle] (5) at (0,-4) {$5$};
+\node[draw, circle] (6) at (-2,-2) {$6$};
+\node[draw, circle] (7) at (-2,-4) {$7$};
 
 \path[draw,thick,->] (1) -- (4);
 \path[draw,thick,->] (4) -- (2);
@@ -720,10 +873,11 @@ Haluamme kulkea luolasta 1 luolaan 7 keräten mahdollisimman paljon aarteita.}
 
 Esimerkiksi kuva \ref{fig:luopel} näyttää verkkona luolaston, joka muodostuu
 7 luolasta ja 10 käytävästä.
-Kun haluamme liikkua luolasta 1 luolaan 7 keräten mahdollisimman
-paljon aarteita, yksi mahdollinen reitti on
-$1 \rightarrow 4 \rightarrow 2 \rightarrow 1 \rightarrow 3 \rightarrow 6 \rightarrow 7$.
-Tämän reitin avulla saamme kaikki aarteet paitsi luolassa 5 olevan aarteen.
+Oletetaan, että haluamme liikkua luolasta 1 luolaan 7
+keräten mahdollisimman paljon aarteita.
+Tällöin yksi mahdollinen reitti on
+$1 \rightarrow 4 \rightarrow 2 \rightarrow 1 \rightarrow 3 \rightarrow 6 \rightarrow 7$,
+jonka avulla saamme kaikki aarteet paitsi luolassa 5 olevan aarteen.
 Ei ole olemassa reittiä, jota seuraamalla saisimme kaikki luolaston aarteet.
 
 \begin{figure}
