@@ -533,3 +533,60 @@ myös niiden painojen suuruuksista.
 Jotta algoritmi on käyttökelpoinen, painojen summan $s$
 täytyy olla niin pieni, että voimme varata sitä
 vastaavan taulukon.
+
+\subsection{Binomikertoimet}
+
+Binomikerroin $\binom{n}{k}$ kertoo, monellako tavalla voimme
+muodostaa $n$ alkion joukosta $k$ alkion osajoukon.
+Esimerkiksi $\binom{5}{3}=10$, koska voimme muodostaa
+joukosta $\{1,2,3,4,5\}$ seuraavat 3 alkion osajoukot:
+
+\begin{multicols}{3}
+\begin{itemize}
+\item $\{1,2,3\}$
+\item $\{1,2,4\}$
+\item $\{1,2,5\}$
+\item $\{1,3,4\}$
+\item $\{1,3,5\}$
+\item $\{1,4,5\}$
+\item $\{2,3,4\}$
+\item $\{2,3,5\}$
+\item $\{2,4,5\}$
+\item $\{3,4,5\}$
+\end{itemize}
+\end{multicols}
+
+Binomikerrointen laskemiseen on monia tapoja.
+Dynaamisen ohjelmoinnin kannalta kiinnostava tapa on rekursiivinen kaava
+\[\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}.\]
+
+Ideana on, että meillä on kaksi tapaa muodostaa $k$ alkion osajoukko
+joukosta $\{1,2,\dots,n\}$.
+Jos otamme osajoukkoon mukaan alkion $n$, meidän tulee muodostaa
+vielä $k-1$ alkion osajoukko joukosta $\{1,2,\dots,n-1\}$.
+Jos taas emme ota osajoukkoon mukaan alkiota $n$, meidän tulee muodostaa
+$k$ alkion osajoukko samaisesta joukosta.
+
+Lisäksi pohjatapauksina
+\[ \binom{n}{0} = 1,\]
+koska voimme muodostaa tyhjän osajoukon yhdellä tavalla, ja
+\[ \binom{n}{k} = 0,\,\textrm{jos $k>n$},\]
+koska $n$ alkiosta ei voi muodostaa osajoukkoa, jossa on yli $n$ alkiota.
+
+Tämä rekursiivinen määritelmä tarjoaa meille tavan laskea tehokkaasti
+binomikertoimia dynaamisen ohjelmoinnin avulla.
+Voimme toteuttaa laskennan seuraavasti:
+
+\begin{code}
+for (int i = 1; i <= n; i++) {
+    binom[i][0] = 1;
+    for (int j = 1; j <= k; j++) {
+        binom[i][j] = binom[i-1][j-1]+binom[i-1][j];
+    }
+}
+\end{code}
+
+Tämän koodin suorituksen jälkeen taulukon kohdassa
+$\texttt{binom}[n][k]$ on binomikerroin $\binom{n}{k}$.
+Algoritmi vie aikaa $O(nk)$, joten sitä voi käyttää
+melko suurten binomikerrointen laskemiseen.
