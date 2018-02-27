@@ -231,26 +231,28 @@ eli meillä on yli 10562 miljardia tapaa rakentaa korkeuden 50 torni.
 
 \section{Esimerkkejä}
 
-Nyt olemme käyneet läpi dynaamisen ohjelmoinnin perustekniikat
-ja on aika ottaa käsittelyyn lisää tehtäviä,
-jotka opettavat meille lisää dynaamisesta ohjelmoinnista.
+Olemme nyt tutustuneet dynaamisen ohjelmoinnin perusideaan,
+mutta tämä on vasta alkua sille, mitä kaikkea tekniikan
+avulla pystyy tekemään.
+Seuraavaksi käymme läpi joukon tehtäviä,
+jotka esittelevät lisää dynaamisen ohjelmoinnin mahdollisuuksia.
 
-Dynaamista ohjelmointia voi käyttää aina silloin,
-kun voimme esittää tilanteen rekursiivisena funktiona,
-jonka eri parametrien määrä on niin pieni, että voimme
-tallentaa muistiin funktion arvot kaikilla parametreilla.
-Vaikeutena on usein keksiä, mikä on hyvä rekursiivinen
-muotoilu tehtävälle.
+Jotta voimme käyttää dynaamista ohjelmointia ongelman
+ratkaisemiseen, meidän täytyy pystyä muotoilemaan ongelma
+rekursiivisesti niin, että voimme tallentaa muistiin
+jokaisen osaongelman ratkaisun.
+Käytännössä haasteena on keksiä, mikä on hyvä rekursiivinen
+muotoilu ongelmalle.
 
 \subsection{Pisin nouseva alijono}
 
-Ensimmäinen tehtävämme on laskea, kuinka pitkä on
-$n$ lukua sisältävän taulukon \emph{pisin nouseva alijono}.
+Ensimmäinen ongelmamme on selvittää, kuinka pitkä on
+$n$ alkiota sisältävän taulukon \emph{pisin nouseva alijono}.
 Tämä tarkoittaa, että meidän tulee valita taulukosta
 mahdollisimman pitkä jono alkioita niin,
 että seuraava alkio on aina edellistä suurempi.
 Kuvassa \ref{fig:pisnou} on esimerkki taulukosta,
-jonka pisin nouseva alijono on pituudeltaan 4.
+jonka pisin nouseva alijono $[2,5,7,8]$ on pituudeltaan 4.
 
 \begin{figure}
 \center
@@ -286,46 +288,85 @@ jonka pisin nouseva alijono on pituudeltaan 4.
 \end{figure}
 
 Voimme lähestyä tehtävää laskemalla jokaiselle taulukon
-kohdalle $x=0,1,\dots,n-1$ arvon $\texttt{pisin}(x)$:
-kuinka pitkä on pisin nouseva alijono, joka päättyy tähän kohtaan.
-Kun olemme laskeneet kaikki nämä arvot, suurin arvoista kertoo,
+kohdalle $k=0,1,\dots,n-1$ arvon $\texttt{pisin}(k)$:
+kuinka pitkä on pisin nouseva alijono, joka päättyy kohtaan $k$.
+Kun olemme laskeneet kaikki nämä arvot, suurin arvoista kertoo meille,
 kuinka pitkä on pisin nouseva alijono koko taulukossa.
 Esimerkiksi kuvan \ref{fig:pisnou} taulukossa $\texttt{pisin}(6)=4$,
-koska kohdassa $6$ pisin nouseva alijono on pituudeltaan $4$.
+koska kohtaan $6$ päättyvä pisin nouseva alijono on pituudeltaan $4$.
 
-Millainen on sitten pisin kohtaan $x$ päättyvä alijono?
-Yksi mahdollisuus on, että alijonossa on vain yksi alkio,
-jolloin $\texttt{pisin}(x)=1$.
-Jos kuitenkin alijonossa on useampia alkioita,
-voimme käydä läpi vaihtoehdot, missä kohdassa on alijonon
-toiseksi viimeinen alkio.
-Meidän täytyy siis tarkastella kohtia $k$, joille pätee $k<x$
-ja joiden alkiot ovat pienempiä kuin kohdan $x$ alkio.
-Jokaisessa tällaisessa tapauksessa voimme muodostaa alijonon,
-jossa on ensin pisin kohtaan $k$ päättyvä alijono ja
-sitten vielä kohdan $x$ alkio.
-Tuloksena olevan alijonon pituus on $\texttt{pituus}(k)+1$.
-Jokin tällainen alijono on varmasti pisin kohtaan $x$ päättyvä alijono.
+Millainen on sitten pisin kohtaan $k$ päättyvä alijono?
+Yksi mahdollisuus on, että alijonossa on vain kohdan $k$ alkio,
+jolloin $\texttt{pisin}(k)=1$.
+Muussa tapauksessa alijono muodostuu niin,
+että siinä on ensin kohtaan $x$ päättyvä
+pisin nouseva alijono, missä $x<k$, ja sitten vielä kohdan $k$ alkio.
+Tämä edellyttää, että kohdan $x$ alkio on pienempi
+kuin kohdan $k$ alkio.
+Tuloksena olevan alijonon pituus on $\texttt{pituus}(x)+1$.
+Voimmekin käydä läpi kaikki mahdolliset tavat valita kohta $x$
+ja ottaa niistä parhaan vaihtoehdon.
 
-Seuraava koodi laskee jokaiseen kohtaan $x=0,1,\dots,n-1$
-pisimmän kohtaan päättyvän alijonon pituuden yllä kuvattua
+Seuraava koodi laskee jokaiselle $k=0,1,\dots,n-1$
+pisimmän kohtaan $k$ päättyvän alijonon pituuden yllä kuvattua
 ideaa käyttäen.
 Koodi olettaa, että taulukon sisältö on taulukossa \texttt{taulu},
 ja se muodostaa taulukon \texttt{pisin}, jossa on pisimpien
 alijonojen pituudet.
-Koodin suoritus vie aikaa $O(n^2)$, koska siinä on kaksi sisäkkäistä silmukkaa.
 
 \begin{code}
-for (int i = 0; i < n; i++) {
-    pisin[i] = 1;
-    for (int j = 0; j < i; j++) {
-        if (taulu[j] < taulu[i]) {
-            pisin[i] = max(pisin[i],pisin[j]+1);
+for (int k = 0; k < n; k++) {
+    pisin[k] = 1;
+    for (int x = 0; x < k; x++) {
+        if (taulu[x] < taulu[k] && pisin[x]+1 > pisin[k]) {
+            pisin[k] = pisin[x]+1;
         }
     }
 }
 \end{code}
 
-\subsection{Repunpakkaus}
+Koodin suorituksen jälkeen pisimmän nousevan alijonon pituus on
+siis suurin taulukon \texttt{pisin} arvoista.
+Tämä algoritmi vie aikaa $O(n^2)$, koska siinä on kaksi
+sisäkkäistä silmukkaa.
+
+Mitä jos haluaisimme myös laskennan jälkeen selvittää, mistä alkioista
+pisin nouseva alijono muodostuu? Tämä onnistuu laajentamalla hieman koodia.
+Ideana on rakentaa taulukko \texttt{aiempi},
+joka kertoo jokaisessa kohdassa, missä on tähän kohtaan
+päättyvän pisimmän alijonon edellinen alkio.
+Voimme muodostaa taulukon seuraavasti:
+
+\begin{code}
+for (int k = 0; k < n; k++) {
+    pisin[k] = 1;
+    aiempi[k] = -1;
+    for (int x = 0; x < k; x++) {
+        if (taulu[x] < taulu[k] && pisin[x]+1 > pisin[k]) {
+            pisin[k] = pisin[x]+1;
+            aiempi[k] = x;
+        }
+    }
+}
+\end{code}
+
+Tämän jälkeen jokaisessa kohdassa $k$ arvo $\texttt{aiempi}[k]$
+kertoo pisimmän alijonon edellisen alkion kohdan.
+Kuitenkin jos alijonon pituus on 1, taulukossa on arvo $-1$.
+Voimme selvittää kohtaan $k$ päättyvän alijonon alkiot
+käänteisesti seuraavasti:
+
+\begin{code}
+while (k != -1) {
+    print(taulu[k]);
+    k = aiempi[k];
+}
+\end{code}
+
+Voimme käyttää vastaavaa tekniikkaa
+dynaamisessa ohjelmoinnissa aina, kun haluamme
+selvittää, miten voimme muodostaa parhaan ratkaisun.
 
 \subsection{Reitti ruudukossa}
+
+\subsection{Repunpakkaus}
