@@ -39,7 +39,6 @@ Monellako tavalla voimme rakentaa tornin?
 \newcommand\palikka[3]{
 \draw (2*#1,#2) rectangle (2*#1+1,#2+#3);
 }
-%\foreach \i in {0,1,...,6} \draw (2*\i,0) grid (2*\i+1,4);
 \palikka{0}{0}{1} \palikka{0}{1}{1} \palikka{0}{2}{1} \palikka{0}{3}{1}
 \palikka{1}{0}{1} \palikka{1}{1}{1} \palikka{1}{2}{2}
 \palikka{2}{0}{1} \palikka{2}{1}{2} \palikka{2}{3}{1}
@@ -330,8 +329,9 @@ siis suurin taulukon \texttt{pisin} arvoista.
 Tämä algoritmi vie aikaa $O(n^2)$, koska siinä on kaksi
 sisäkkäistä silmukkaa.
 
-Mitä jos haluaisimme myös laskennan jälkeen selvittää, mistä alkioista
-pisin nouseva alijono muodostuu? Tämä onnistuu laajentamalla hieman koodia.
+Mitä jos haluaisimme selvittää pisimmän nousevan alijonon
+pituuden lisäksi, mistä alkioista se muodostuu?
+Tämä onnistuu laajentamalla hieman koodia.
 Ideana on rakentaa taulukko \texttt{aiempi},
 joka kertoo jokaisessa kohdassa, missä on tähän kohtaan
 päättyvän pisimmän alijonon edellinen alkio.
@@ -368,5 +368,83 @@ dynaamisessa ohjelmoinnissa aina, kun haluamme
 selvittää, miten voimme muodostaa parhaan ratkaisun.
 
 \subsection{Reitti ruudukossa}
+
+Olemme $n \times n$ -ruudukon vasemmassa yläkulmassa ja haluamme
+päästä oikeaan alakulmaan.
+Jokaisella vuorolla voimme siirtyä ruudun alaspäin tai oikealle.
+Kuitenkin joissakin ruuduissa on este, emmekä voi kulkea sellaisen
+ruudun kautta.
+Montako mahdollista reittiä on olemassa?
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\newcommand\ruudukko{
+\fill[color=gray] (1,1) rectangle (2,2);
+\fill[color=gray] (1,3) rectangle (2,4);
+\fill[color=gray] (3,2) rectangle (4,3);
+\draw (0,0) grid (4,4);
+}
+\begin{scope}
+\ruudukko
+\draw[thick,->,red,line width=2pt] (0.5,3.5) -- (0.5,0.5) -- (3.5,0.5);
+\end{scope}
+\begin{scope}[xshift=5.5cm]
+\ruudukko
+\draw[thick,->,red,line width=2pt] (0.5,3.5) -- (0.5,2.5) -- (2.5,2.5) -- (2.5,0.5) -- (3.5,0.5);
+\end{scope}
+\begin{scope}[xshift=11cm]
+\ruudukko
+\draw[thick,->,red,line width=2pt] (0.5,3.5) -- (0.5,2.5) -- (2.5,2.5) -- (2.5,1.5) -- (3.5,1.5) -- (3.5,0.5);
+\end{scope}
+\end{tikzpicture}
+\caption{Mahdolliset reitit vasemmasta yläkulmasta oikeaan alakulmaan.}
+\label{fig:reiruu}
+\end{figure}
+
+Kuvassa \ref{fig:reiruu} on esimerkkitilanne, jossa ruudukon koko on $4 \times 4$.
+Tässä tapauksessa meillä on kolme mahdollisuutta, kuinka voimme liikkua
+vasemmasta yläkulmasta oikeaan alakulmaan.
+
+Tässä tehtävässä ratkaisun tila on \emph{kaksiulotteinen},
+koska olemme reitin joka vaiheessa tietyn rivin tietyllä sarakkeella.
+Niinpä määritte\-lemme rekursiivisen funktion, jolla on kaksi
+parametria: $\texttt{reitit}(y,x)$ kertoo, montako reittiä on
+vasemmasta yläkulmasta ruutuun $(y,x)$.
+Tätä funktiota käyttäen $\texttt{reitit}(n,n)$ antaa meille
+vastauksen tehtävään.
+
+Olennainen havainto on, että jokaisessa ruudussa meillä on kaksi
+mahdollisuutta, kuinka reitti voi tulla ruutuun,
+koska voimme tulla joko ylhäältä tai vasemmalta.
+Kun haluamme laskea reittien määrää, laskemme yhteen ylhäältä
+ja vasemmalta tulevat reitit.
+Rajoituksena jos ruudussa on este, siihen tulevien reittien
+määrä on aina nolla.
+
+Voimme toteuttaa dynaamisen ohjelmoinnin seuraavasti:
+
+\begin{code}
+reitit[1][1] = 1;
+for (int y = 1; y <= n; y++) {
+    for (int x = 1; x <= n; x++) {
+        if (este[y][x]) continue;
+        reitit[y][x] += reitit[y-1][x];
+        reitit[y][x] += reitit[y][x-1];
+    }
+}
+\end{code}
+
+Aluksi merkitsemme muistiin, että vasempaan yläkulmaan on yksi reitti,
+koska lähdemme liikkeelle siitä.
+Tämän jälkeen laskemme reittien määrän kaikkiin muihin ruutuihin.
+Jos ruudussa on este, siihen ei tule mitään reittiä,
+ja muuten laskemme yhteen ylhäältä ja vasemmalta tulevat reitit.
+Tuloksena on koodi, joka vie aikaa $O(n^2)$.
+
+Huomaa, että tässä käytämme taulukon indeksejä $1,2,\dots,n$
+ja oletamme, että indekseissä $0$ on arvona nolla.
+Tämä on kätevää, koska meidän ei tarvitse tehdä erikoistapauksia
+ruudukon yläreunaa ja vasenta reunaa varten.
 
 \subsection{Repunpakkaus}
