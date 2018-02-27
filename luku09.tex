@@ -448,3 +448,88 @@ Tämä on kätevää, koska meidän ei tarvitse tehdä erikoistapauksia
 ruudukon yläreunaa ja vasenta reunaa varten.
 
 \subsection{Repunpakkaus}
+
+Termi \emph{repunpakkaus} viittaa ongelmiin, jossa meillä on joukko
+tavaroita, joilla on tietyt painot, 
+ja haluamme selvittää, millaisia yhdistelmiä niistä voi muodostaa.
+Ongelmasta on monia muunnelmia, joiden yhdistävänä tekijänä on,
+että ne voi ratkaista tehokkaasti dynaamisella ohjelmoinnilla.
+
+Seuraavaksi keskitymme ongelmaan, jossa meillä on $n$ tavaraa,
+joilla on tietyt painot $p_1,p_2,\dots,p_n$.
+Haluamme selvittää kaikki mahdolliset yhteispainot,
+jotka voimme muodostaa valitsemalla jonkin osajoukon tavaroista.
+Esimerkiksi jos tavaroiden painot ovat $[1,3,3,4]$,
+niin mahdolliset yhteispainot ovat $[0,1,3,4,5,6,7,8,10,11]$.
+
+Merkitään kaikkien tavaroiden painojen summaa $s=p_1+p_2+\dots+p_n$.
+Tämä on suurin mahdollinen yhteispaino, joka tavaroista voidaan
+muodostaa, ja se syntyy valitsemalla osajoukkoon kaikki tavarat.
+Tavaroiden yhteispaino on siis aina jokin luku välillä $0 \dots s$.
+
+Voimme lähestyä tehtävää dynaamisella ohjelmoinnilla määrittelemällä
+funktion $\texttt{painot}(k)$: mitä kaikki yhteispainot voimme
+muodostaa, jos käytös\-sämme on tavarat $1,2,\dots,k$?
+Esimerkiksi $\texttt{painot}(2)$ kertoo, mitkä yhteispainot ovat
+mahdollisia, kun saamme käyttää painoja $p_1$ ja $p_2$.
+
+Saamme aikaan tehokkaan ratkaisun aloittamalla tapauksesta
+$k=0$, jolloin emme voi käyttää mitään tavaroita,
+ja ottamalla joka askeleella käyttöön uuden tavaran.
+Tapaus $k=0$ on helppo: kun meillä ei ole mitään tavaroita,
+ainoa mahdollinen yhteispaino on $0$.
+Sitten aina kun meille tulee käyttöön uusi tavara painolla $p_k$,
+meidän tulee selvittää, mitä uusia yhteispainoja voimme saada
+aikaan tämän tavaran avulla.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw (0,0) grid (12,5);
+\foreach \x in {0,1,...,11} \node at (\x+0.5,5.5) {\x};
+\foreach \y in {0,1,2,3,4} \node at (-1.5,4.5-\y) {$k=\y$};
+\foreach \x in {0} \node at (\x+0.5,4.5) {\checkmark};
+\foreach \x in {0,1} \node at (\x+0.5,3.5) {\checkmark};
+\foreach \x in {0,1,3,4} \node at (\x+0.5,2.5) {\checkmark};
+\foreach \x in {0,1,3,4,6,7} \node at (\x+0.5,1.5) {\checkmark};
+\foreach \x in {0,1,3,4,5,6,7,8,10,11} \node at (\x+0.5,0.5) {\checkmark};
+\end{tikzpicture}
+\caption{Mahdolliset yhteispainot, kun painot ovat $[1,3,3,4]$.}
+\label{fig:reppak}
+\end{figure}
+
+Kätevä tapa toteuttaa dynaaminen ohjelmointi on pitää yllä
+taulukkoa, jossa on $s+1$ alkiota: jokaiselle yhteispainolle
+$0,1,\dots,s$ tieto siitä, voimmeko muodostaa sen tällä hetkellä.
+Kuva \ref{fig:reppak} näyttää taulukon sisällön esimerkissämme, jossa painot ovat
+$[1,3,3,4]$. Esimerkiksi tapauksessa $k=2$ olemme ottaneet käyttöön
+kaksi ensimmäistä tavaraa ja voimme muodostaa yhteispainot $[0,1,3,4]$.
+
+Seuraava koodi toteuttaa tässä kuvatun idean:
+
+\begin{code}
+boolean[] painot = new boolean[s+1];
+painot[0] = true;
+for (int i = 1; i <= n; i++) {
+    for (int j = s; j >= 0; j--) {
+        if (painot[j]) painot[j+p[i]] = true;
+    }
+}
+\end{code}
+
+Koodi luo taulukon \texttt{painot}, jossa on indeksit $0,1,\dots,s$.
+Aluksi merkitsemme, että voimme saavuttaa yhteispainon $0$.
+Tämän jälkeen käymme läpi tavarat ja päivitämme taulukkoa
+jokaisen tavaran kohdalla.
+Algoritmin päätteeksi taulukko \texttt{painot} kertoo
+jokaiselle painolle $0,1,\dots,s$, voimmeko muodostaa kyseisen
+painon valitsemalla jonkin tavaroiden osajoukon.
+Huomaa kätevä tapa päivittää taulukkoa oikealta vasemmalle,
+minkä ansiosta tulemme toimeen yhdellä taulukolla.
+
+Tämän algoritmin aikavaativuus on $O(ns)$.
+Algoritmin tehokkuus riippuu siis paitsi tavaroiden määrästä,
+myös niiden painojen suuruuksista.
+Jotta algoritmi on käyttökelpoinen, painojen summan $s$
+täytyy olla niin pieni, että voimme varata sitä
+vastaavan taulukon.
