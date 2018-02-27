@@ -5,7 +5,7 @@ jota voi käyttää kahdenlaisissa tilanteissa:
 
 \begin{itemize}
 \item \textbf{Optimiratkaisun etsiminen}: Haluamme etsiä ratkaisun,
-joka on jollain tavalla suurin tai pienin.
+joka on jollakin tavalla suurin tai pienin.
 \item \textbf{Ratkaisumäärän laskeminen}: Haluamme laskea,
 montako erilaista ratkaisua on olemassa.
 \end{itemize}
@@ -15,244 +15,219 @@ rekursiivisesti niin, että voimme ratkaista tehtävän
 ratkaisemalla ensin osatehtävinä saman tehtävän pienempiä tapauksia.
 Aina kun olemme ratkaisseet tietyn osatehtävän,
 kirjaamme sen ratkaisun muistiin, minkä ansiosta
-pystymme hakemaan ratkaisun tehokkaasti uudelleen,
-jos tarvitsemme sitä myöhemmin.
+pystymme hakemaan ratkaisun tehokkaasti uudestaan,
+kun tarvitsemme sitä myöhemmin.
 
 Tässä luvussa tutustumme ensin dynaamisen ohjelmoinnin perusteisiin
-käyttäen esimerkkinä tehtävää, jossa haluamme jakaa annetun
-rahamäärän kolikoiksi.
+käyttäen esimerkkinä tehtävää, jossa haluamme laskea,
+monellako tavalla voimme rakentaa tornin palikoista.
 Tämän jälkeen käymme läpi joukon muita tehtäviä, jotka esittelevät
 dynaamisen ohjelmoinnin mahdollisuuksia.
 
 \section{Perustekniikat}
 
-Ensimmäinen esimerkkitehtävämme on seuraava:
-Meillä on joukko kolikoita sekä rahamäärä,
-jonka haluamme jakaa kolikoiksi.
-Voimme käyttää jokaista kolikkoa miten tahansa
-monta kertaa ratkaisussa.
-Esimerkiksi jos kolikot ovat $\{1,3,4\}$
-ja rahamäärä on $5$, yksi mahdollinen
-jakotapa on $1+1+3=5$.
-Haluamme selvittää vastauksen kahteen kysymykseen:
+Aloitamme dynaamiseen ohjelmointiin tutustumisen
+seuraavasta tehtävästä:
+meillä on palikoita, joiden korkeudet ovat 1, 2 ja 3,
+ja haluamme rakentaa niistä tornin, jonka korkeus on $n$.
+Jokaista palikkatyyppiä on saatavilla rajattomasti.
+Monellako tavalla voimme rakentaa tornin?
 
-\begin{itemize}
-\item \textbf{Optimiratkaisun etsiminen}:
-Mikä on pienin määrä kolikoita, joilla voimme muodostaa rahamäärän?
-\item \textbf{Ratkaisumäärän laskeminen}:
-Monellako eri tavalla voimme muodostaa rahamäärän kolikoista?
-\end{itemize}
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\newcommand\palikka[3]{
+\draw (2*#1,#2) rectangle (2*#1+1,#2+#3);
+}
+%\foreach \i in {0,1,...,6} \draw (2*\i,0) grid (2*\i+1,4);
+\palikka{0}{0}{1} \palikka{0}{1}{1} \palikka{0}{2}{1} \palikka{0}{3}{1}
+\palikka{1}{0}{1} \palikka{1}{1}{1} \palikka{1}{2}{2}
+\palikka{2}{0}{1} \palikka{2}{1}{2} \palikka{2}{3}{1}
+\palikka{3}{0}{2} \palikka{3}{2}{1} \palikka{3}{3}{1}
+\palikka{4}{0}{2} \palikka{4}{2}{2}
+\palikka{5}{0}{1} \palikka{5}{1}{3}
+\palikka{6}{0}{3} \palikka{6}{3}{1}
+\end{tikzpicture}
+\caption{Voimme rakentaa korkeuden 4 tornin 7 tavalla palikoista,
+joiden korkeudet ovat 1, 2 ja 3.}
+\label{fig:dyntor}
+\end{figure}
 
-Yllä olevassa esimerkissä pienin määrä kolikoita on 2,
-koska voimme tehdä jaon $1+4=5$. Erilaisia ratkaisuja taas on 6:
+Kuva \ref{fig:dyntor} näyttää esimerkin, jossa $n=4$.
+Tässä esimerkissä meillä on 7 tapaa rakentaa torni palikoista.
+Voimme luonnehtia torneja myös summina luvuista 1, 2 ja 3.
+Tässä tapauksessa vasen torni vastaa summaa $1+1+1+1$,
+seuraava torni vastaa summaa $1+1+2$, jne.
 
-\begin{multicols}{2}
-\begin{itemize}
-\item $1+1+1+1+1=5$
-\item $1+1+3=5$
-\item $1+3+1=5$
-\item $3+1+1=5$
-\item $1+4=5$
-\item $4+1=5$
-\end{itemize}
-\end{multicols}
+Jos $n$ on pieni, voimme laskea tornien määrän helposti
+käymällä läpi kaikki tavat, mutta tornien määrä kasvaa
+nopeasti emmekä voi käyttää raakaa voimaa suuremmilla
+$n$:n arvoilla.
+Seuraavaksi ratkaisemmekin ongelman tehokkaasti
+dynaamisen ohjelmoinnin avulla.
 
-Osoittautuu, että molemmat kysymykset ratkeavat tehokkaasti
-dynaamisella ohjelmoinnilla
-etsimällä niille sopiva rekursiivinen esitys.
-
-\subsection{Optimiratkaisun etsiminen}
-
-Haluamme selvittää ensin, mikä on pienin määrä
-kolikoita, joilla voimme muodostaa annetun rahamäärän.
-Tätä varten määrittelemme funktion $\texttt{pienin}(x)$,
-joka antaa pienimmän määrän kolikoita, joilla voimme
-muodostaa rahamäärän $x$.
-Esimerkiksi kun kolikot ovat $\{1,3,4\}$,
-niin $\texttt{pienin}(5)=2$, mikä vastaa ratkaisua $1+4=5$.
+\subsection{Rekursiivinen esitys}
 
 Jotta voimme käyttää dynaamista ohjelmointia,
-meidän täytyy pystyä laskemaan funktion \texttt{pienin}
-arvo rekursiivisesti kutsumalla sitä itseään.
-Pohjatapauksena on $\texttt{pienin}(0)=0$, koska voimme
-muodostaa rahamäärän 0 käyttämättä yhtään kolikkoa.
-Lisäksi on hyödyllistä määritellä $\texttt{pienin}(x)=\infty$,
-kun $x<0$. Tämä tarkoittaa, että ei ole sallittua muodostaa
-ratkaisua, jossa rahamäärä olisi ääretön.
+meidän täytyy esittää ongelma rekursiivisesti
+niin, että saamme laskettua ongelman ratkaisun
+käyttäen osaongelmina pienempiä vastaavia ongelmia.
 
-Kuinka voimme sitten laskea arvon $\texttt{pienin}(x)$,
-missä $x>0$? Nyt on kätevää tarkastella \emph{viimeistä}
-kolikkoa, joka kuuluu ratkaisuun.
-Esimerkiksi jos kolikot ovat $\{1,3,4\}$, viimeinen kolikko
-on joko 1, 3 tai 4.
-Jos viimeinen kolikko on 1, meidän tulee muodostaa vielä
-rahamäärä $x-1$, mihin kuluu $\texttt{pienin}(x-1)$ kolikkoa.
-Vastaavasti jos viimeinen kolikko on 3 tai 4,
-meidän tulee muodostaa rahamäärä $x-3$ tai $x-4$.
-Niinpä saamme seuraavan rekursiivisen kaavan tapaukseen $x>0$:
+Tässä tehtävässä meidän on luontevaa määritellä rekursiivinen
+funktio $\texttt{tornit}(n)$: monellako tavalla voimme
+rakentaa tornin, jonka korkeus on $n$?
+Esimerkiksi $\texttt{tornit}(4)=7$, koska tiedämme
+esimerkkimme ansiosta,
+että voimme rakentaa korkeuden 4 tornin 7 tavalla.
+
+Funktion pienten arvojen laskeminen on helppoa.
+Ensinnäkin $\texttt{tornit}(0)=1$, koska voimme
+muodostaa tyhjän tornin yhdellä tavalla:
+siinä ei ole mitään palikoita.
+Sitten $\texttt{tornit}(1)=1$, koska ainoa mahdollisuus
+on valita korkeuden 1 palikka,
+ja $\texttt{tornit}(2)=2$, koska voimme joko valita
+kaksi korkeuden 1 palikkaa tai yhden korkeuden 2 palikan.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\draw (0,0) rectangle (1,1);
+\draw[dashed] (0,1) rectangle (1,4);
+\draw (4,0) rectangle (5,2);
+\draw[dashed] (4,2) rectangle (5,4);
+\draw (8,0) rectangle (9,3);
+\draw[dashed] (8,3) rectangle (9,4);
+\draw [decorate,decoration={brace,amplitude=4pt},xshift=0.2cm] (1,4) -- (1,1) node [midway,right,xshift=.1cm] {$n-1$};
+\draw [decorate,decoration={brace,amplitude=4pt},xshift=0.2cm] (5,4) -- (5,2) node [midway,right,xshift=.1cm] {$n-2$};
+\draw [decorate,decoration={brace,amplitude=4pt},xshift=0.2cm] (9,4) -- (9,3) node [midway,right,xshift=.1cm] {$n-3$};
+\end{tikzpicture}
+\caption{Rekursiivinen idea: kun alamme rakentaa tornia, voimme laittaa pohjalle
+korkeuden 1, 2 tai 3 palikan.}
+\label{fig:dynrek}
+\end{figure}
+
+
+Kuinka voisimme sitten laskea funktion arvon yleisessä tapauksessa,
+kun tornin korkeus on $n$?
+Tässä voimme miettiä, kuinka tornin rakentaminen alkaa.
+Meillä on kolme mahdollisuutta: voimme laittaa ensin palikan
+korkeutta 1, 2 tai 3.
+Jos valitsemme korkeuden 1 palikan, meidän täytyy rakentaa
+sen päälle korkeuden $n-1$ torni.
+Vastaavasti jos valitsemme korkeuden 2 tai 3 palikan,
+meidän täytyy rakentaa sen päälle torni,
+jonka korkeus on $n-2$ tai $n-3$.
+Kuva \ref{fig:dynrek} havainnollistaa tämän idean.
+
+Niinpä voimme laskea tornien määrän rekursiivisesti kaavalla
 \[
-\texttt{pienin}(x) =
-    \min(\texttt{pienin}(x-1),\texttt{pienin}(x-3),\texttt{pienin}(x-4))
+\texttt{tornit}(n) = \texttt{tornit}(n-3)+\texttt{tornit}(n-2)+\texttt{tornit}(n-1),
 \]
-Tässä tapauksessa funktion \texttt{pienin} ensimmäiset arvot ovat:
+kun $n \ge 3$.
+Esimerkiksi voimme laskea
+\[
+\texttt{tornit}(3) = \texttt{tornit}(0)+\texttt{tornit}(1)+\texttt{tornit}(2)=4
+\]
+ja
+\[
+\texttt{tornit}(4) = \texttt{tornit}(1)+\texttt{tornit}(2)+\texttt{tornit}(3)=7,
+\]
+jolloin olemme saaneet laskettua esimerkkitapaustamme vastaavasti,
+että voimme rakentaa korkeuden 4 tornin 7 tavalla.
 
-\begin{center}
-\begin{tabular}{rrrrrrrrrrrr}
-$x$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\begin{table}
+\center
+\begin{tabular}{rrr}
+korkeus $n$ & $\texttt{tornit}(n)$ \\
 \hline
-$\texttt{pienin}(x)$ & 0 & 1 & 2 & 1 & 1 & 2 & 2 & 2 & 2 & 3 & 3 \\
+0 & 1 \\
+1 & 1 \\
+2 & 2 \\
+3 & 4 \\
+4 & 7 \\
+5 & 13 \\
+6 & 24 \\
+7 & 44 \\
+8 & 81 \\
+9 & 149 \\
 \end{tabular}
-\end{center}
+\caption{Tornien määrät, kun korkeus $n$ on $0,1,\dots,9$.}
+\label{tab:dyntor}
+\end{table}
 
+Taulukko \ref{tab:dyntor} näyttää yhteenvedon funktion
+$\texttt{tornit}(n)$ arvoista, kun $n=0,1,\dots,9$.
+Kuten taulukosta voi huomata, funktion arvo kasvaa nopeasti:
+se lähes kaksinkertaistuu joka askeleella.
+Kun $n$ on suuri,
+meillä onkin valtavasti mahdollisuuksia tornin rakentamiseen.
 
-Tarkastellaan sitten yleistä tilannetta, jossa meillä on $k$ kolikkoa,
-joiden arvot ovat $\{c_0,c_1,\ldots,c_{k-1}\}$.
-Nyt voimme jälleen muodostaa rekursiivisen kaavan samalla idealla:
+\subsection{Tehokas toteutus}
+
+Nyt kun olemme saaneet aikaan rekursiivisen funktion,
+voimme toteuttaa sen ohjelmoimalla seuraavasti:
+
+\begin{code}
+long tornit(int n) {
+    if (n == 0) return 1;
+    if (n == 1) return 1;
+    if (n == 2) return 2;
+    return tornit(n-3)+tornit(n-2)+tornit(n-1);
+}
+\end{code}
+
+Tämä on toimiva ratkaisu, mutta siinä on yksi ongelma:
+funktion arvon laskeminen vie kauan aikaa, jos $n$ on
+vähänkin suurempi.
+Käytännössä laskenta alkaa hidastua parametrin $n=30$ tienoilla.
+Esimerkiksi arvon $\texttt{tornit}(40)$ laskeminen vie aikaa
+jo useita minuutteja, ja voimme arvioida, että
+arvon $\texttt{tornit}(50)$ laskeminen veisi aikaa noin vuorokauden.
+
+Syynä laskennan hitauteen on, että metodia $\texttt{tornit}$
+kutsutaan uudestaan ja uudestaan samoilla parametreilla
+ja tornien määrä lasketaan loppujen lopuksi summana
+luvuista 1 ja 2 pohjatapauksista.
+Niinpä kun tornien määrä on suuri,
+laskenta on tuomittu viemään kauan aikaa.
+Voimme kuitenkin selviytyä ongelmasta toteuttamalla
+laskennan hieman toisella tavalla.
+
+Tässä astuu kuvaan dynaamisen ohjelmoinnin keskeinen idea:
+laskemme funktion arvon kullekin parametrille vain kerran
+ja tallennamme tulokset taulukkoon myöhempää käyttöä varten.
+Tätä varten luomme taulukon $\texttt{tornit}$,
+jossa kohtaan $\texttt{tornit}[i]$ tallennetaan funktion
+arvo $\texttt{tornit}(i)$.
+Kun haluamme laskea korkeuden $n$ tornien määrän,
+täytämme taulukon kohdat $0,1,\dots,n$.
+Seuraava koodi toteuttaa laskennan:
+
+\begin{code}
+long[] tornit = new long[n+1];
+tornit[0] = 1;
+tornit[1] = 1;
+tornit[2] = 2;
+for (int i = 3; i <= n; i++) {
+    tornit[i] = tornit[i-3]+tornit[i-2]+tornit[i-1];
+}
+\end{code}
+
+Koodin suorituksen jälkeen taulukon arvo $\texttt{tornit}[n]$
+kertoo meille, monellako tavalla voimme rakentaa
+korkeuden $n$ tornin.
+
+Tämän toteutuksen etuna on, että se on huomattavasti
+nopeampi kuin rekursiivinen metodi.
+Koska koodissa on vain yksi for-silmukka, se vie aikaa
+vain $O(n)$, eli voimme käsitellä tehokkaasti myös
+suuria $n$:n arvoja.
+Esimerkiksi voimme nyt laskea salamannopeasti, että
 \[
-\texttt{pienin}(x) =
-    \min(\texttt{pienin}(x-c_0),\texttt{pienin}(x-c_1),\dots,\texttt{pienin}(x-c_{k-1}))
+\texttt{tornit}(50) = 10562230626642,
 \]
-
-Nyt meillä on koossa kaikki ainekset tehtävän ratkaisemiseen,
-ja voimme käyttää tehtävän rekursiivista muotoilua ohjelmoinnissa
-seuraavasti:
-
-\begin{code}
-int pienin(int x) {
-    if (x == 0) return 0;
-    if (x < 0) return INF;
-    int p = INF;
-    for (int i = 0; i < k; i++) {
-        p = min(p,pienin(x-c[i])+1);
-    }
-    return p;
-}
-\end{code}
-
-Tässä toteutuksessa \texttt{INF} on suuri luku, joka kuvastaa ääretöntä.
-Käytän\-nössä luku voisi olla esimerkiksi $10^9$,
-joka on varmasti kelvollinen yläraja kolikoiden määrälle.
-
-Ainoa ongelma yllä olevassa ratkaisussa on,
-että se ei ole vielä tehokas.
-Syynä tähän on, että suuren arvon $x$ käsittelyssä
-funktiota \texttt{pienin} kutsutaan lukuisia kertoja
-pienempien osatehtävien ratkomisessa.
-Nyt kuvaan astuukin dynaamisen ohjelmoinnin keskeinen idea:
-tallennamme funktion arvoja muistiin niin, että meidän
-tarvitsee laskea jokainen arvo vain kerran.
-Tätä varten tarvitsemme seuraavat taulukot:
-
-\begin{code}
-boolean laskettu[];
-int muisti[];
-\end{code}
-
-Taulukko \texttt{laskettu} kertoo meille, onko funktion arvo
-tietyllä parametrilla laskettu jo muistiin.
-Jos on, taulukko \texttt{muisti} kertoo, mikä arvo on.
-Nyt voimme muuttaa funktion toteutusta seuraavasti:
-
-\begin{code}
-int pienin(int x) {
-    if (x == 0) return 0;
-    if (x < 0) return INF;
-    if (laskettu[x]) return muisti[x];
-    int p = INF;
-    for (int i = 0; i < k; i++) {
-        p = min(p,pienin(x-c[i])+1);
-    }
-    laskettu[x] = true;
-    muisti[x] = p;
-    return p;
-}
-\end{code}
-
-Funktio toimii kuten ennenkin, mutta ennen rekursiivisia kutsuja
-funktio tarkastaa, onko sen arvo parametrilla $x$ jo laskettu.
-Jos on, funktio palauttaa tämän arvon suoraan.
-Muussa tapauksessa funktio laskee arvon rekursiivisesti
-ja merkitsee sitten taulukoihin, että arvo on laskettu.
-
-Tämän muutoksen ansiosta funktio toimii tehokkaasti,
-koska jokainen funktion arvo täytyy laskea rekursiivisesti vain kerran
-ja myöhemmillä kerroilla arvon saa suoraan taulukosta.
-Saamme laskettua vastauksen rahamäärälle $n$ ajassa $O(nk)$,
-koska jokaisessa osatehtävässä
-$x=1,2,\ldots,n$ meidän täytyy käydä kerran rekursiivisesti läpi
-kaikki $k$ kolikkoa.
-
-\subsection{Ratkaisumäärän laskeminen}
-
-Seuraavaksi haluamme laskea, montako erilaista ratkaisua
-tehtävään on olemassa.
-Tätä varten määrittelemme uuden funktion $\texttt{maara}(x)$,
-joka kertoo, monellako tavalla voimme muodostaa rahamäärän $x$.
-Esimerkiksi kun kolikot ovat $\{1,3,4\}$, niin $\texttt{maara}(5)=6$.
-
-Tässä tapauksessa ensinnäkin $\texttt{maara}(0)=1$, koska on yksi tapa
-muodostaa rahamäärä $0$: emme ota mukaan mitään kolikoita.
-Sitten $\texttt{maara}(x)=0$, jos $x<0$,
-koska ei ole mitään tapaa muodostaa negatiivista rahamäärää.
-Rekursiivisessa tapauksessa $x>0$ laskemme yhteen kaikki
-tavat, miten voimme poistaa viimeisen kolikon:
-\[
-\texttt{maara}(x) =
-    \texttt{maara}(x-c_0)+\texttt{maara}(x-c_1)+\dots+\texttt{maara}(x-c_{k-1})
-\]
-Esimerkiksi kolikoiden $\{1,3,4\}$ tapauksessa saamme laskettua
-arvon $\texttt{maara}(5)$ kaavalla
-\[
-\texttt{maara}(5) =
-    \texttt{maara}(4)+\texttt{maara}(2)+\texttt{maara}(1).
-\]
-
-Seuraava metodi toteuttaa laskennan rahamäärälle $n$
-tehokkaasti dynaamisella ohjelmoinnilla ajassa $O(nk)$:
-
-\begin{code}
-int maara(int x) {
-    if (x == 0) return 1;
-    if (x < 0) return 0;
-    if (laskettu[x]) return muisti[x];
-    int m = 0;
-    for (int i = 0; i < k; i++) {
-        m += maara(x-c[i]);
-    }
-    laskettu[x] = true;
-    muisti[x] = m;
-    return m;
-}
-\end{code}
-
-\subsection{Iteratiivinen toteutus}
-
-Dynaamisen ohjelmoinnin laskennan voi toteuttaa myös iteratiivisesti
-ilman rekursiota.
-Tällaisessa toteutuksessa laskemme funktion arvot taulukkoon
-pienimmästä arvosta suurimpaan.
-Esimerkiksi voimme laskea seuraavasti, monellako tavalla
-voimme muodostaa rahamäärän $n$:
-
-\begin{code}
-int maara(int n) {
-    muisti[0] = 1;
-    for (int i = 1; i <= n; i++) {
-        muisti[i] = 0;
-        for (int j = 0; j < k; j++) {
-            if (i-c[j] >= 0) {
-                muisti[i] += muisti[i-c[j]];
-            }
-        }
-    }
-    return muisti[n];
-}
-\end{code}
-
-Tämä ratkaisu vie aikaa $O(nk)$, eli se on yhtä nopea kuin
-rekursiivinen versio.
-Ratkaisun etuna on, että se on hieman lyhyempi kirjoittaa
-kuin rekursiivinen ratkaisu.
+eli meillä on yli 10562 miljardia tapaa rakentaa korkeuden 50 torni.
 
 \section{Esimerkkejä}
 
