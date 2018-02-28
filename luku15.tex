@@ -184,7 +184,7 @@ että näytämme yleisen tavan muuntaa ongelman $A$ syöte
 ongelman $B$ syötteeksi.
 Palautuksen täytyy säilyttää syötteen vastaus
 (päätösongelmassa ''kyllä'' tai ''ei'') ennallaan.
-Jos palautus onnistuu, voimme keskittyä ratkomaan ongelman
+Jos pystymme tekemään palautuksen, voimme keskittyä ratkomaan ongelman
 $A$ sijasta ongelmaa $B$.
 
 Näytämme seuraavaksi, miten voimme palauttaa SAT-ongelman
@@ -193,6 +193,37 @@ Tämä osoittaa, että sekä 3SAT että CLIQUE
 ovat NP-täydellisiä ongelmia.
 
 \subsubsection{Palautus SAT $\rightarrow$ 3SAT}
+
+3SAT-ongelma on SAT-ongelman erikoistapaus, jossa jokaisessa
+$\land$-merkeillä yhdistetyssä lausekkessa on tarkalleen kolme muuttujaa.
+Haluamme näyttää, että voimme muuttaa minkä tahansa
+SAT-ongelman syötteen 3SAT-ongelman syötteeksi,
+jonka totuusarvo on sama.
+
+Ideana on muokata jokaista lauseketta niin, 
+että tuloksena on yksi tai useampia kolmen muuttujan lausekkeita.
+Merkitään $k$ lausekkeen muuttujien määrää.
+Jos $k=1$ tai $k=2$, toistamme viimeistä muuttujaa uudestaan,
+jotta saamme aikaan kolme muuttujaa.
+Esimerkiksi jos lauseke on $(x_1)$, muutamme sen muotoon
+$(x_1 \lor x_1 \lor x_1)$, ja jos lauseke on $(x_1 \lor x_2)$, muutamme
+sen muotoon $(x_1 \lor x_2 \lor x_2)$.
+
+Jos $k=3$, meidän ei tarvitse tehdä mitään. Jos sitten $k>3$,
+jaamme lausekkeen osiin, jotka ketjutetaan apumuuttujien avulla.
+Ketjun jokaisessa kohdassa vasemman lausekkeen viimeinen
+muuttuja on $a_i$ ja oikean lausekkeen ensimmäinen muuttuja on $\neg a_i$.
+Tämä takaa, että ainakin yksi alkuperäinen muuttuja saa oikean arvon.
+Esimerkiksi jos lauseke on $(x_1 \lor x_2 \lor x_3 \lor x_4 \lor x_5)$,
+muutamme sen kolmeksi lausekkeeksi $(x_1 \lor x_2 \lor a_1)$,
+$(\neg a_1 \lor x_3 \lor a_2)$ ja $(\neg a_2 \lor x_4 \lor x_5)$.
+
+Tämä palautus osoittaa, että 3SAT on NP-täydellinen ongelma --
+eli SAT-ongelman oleellinen vaikeus syntyy siitä, että lausekkeissa
+voi olla kolme muuttujaa.
+Palautuksen hyötynä on toisaalta myös, että kolmen muuttujan lausekkeita
+on helpompaa käsitellä myöhemmissä todistuksissa
+kuin vaihtelevan pituisia lausekkeita.
 
 \subsubsection{Palautus 3SAT $\rightarrow$ CLIQUE}
 
