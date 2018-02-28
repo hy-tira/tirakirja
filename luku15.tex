@@ -7,14 +7,14 @@ hetkellä tunneta mitään tehokasta algoritmia.
 Jos vastaamme tulee tällaisia ongelmia, hyvät neuvot ovat kalliit.
 
 Vaikeiden ongelmien yhteydessä vastaan tulee usein
-kirjainyhdistelmä $NP$.
-Erityisen tunnettu on $P$ vs. $NP$ -ongelma,
+kirjainyhdistelmä NP.
+Erityisen tunnettu on P vs. NP -ongelma,
 jonka ratkaisijalle on luvattu miljoonan dollarin potti.
 Hankalalta tuntuvasta ongelmasta saatetaan mainita, että
-se on $NP$-täydellinen tai $NP$-vaikea.
+se on NP-täydellinen tai NP-vaikea.
 Nyt on aika selvittää, mitä nämä käsitteet oikeastaan tarkoittavat.
 
-\section{Luokat $P$ ja $NP$}
+\section{Luokat P ja NP}
 
 Kun tässä luvussa käsittelemme algoritmisia ongelmia,
 muotoilemme ne niin, että voimme esittää ne \emph{päätösongelmina}.
@@ -23,9 +23,9 @@ vastaus ''kyllä'' tai ''ei''.
 Tämä voi tuntua aluksi hieman rajoittavalta, mutta huomaamme myöhemmin,
 että voimme esittää helposti monenlaisia ongelmia päätösongelmina.
 
-\subsection{Luokka $P$}
+\subsection{Luokka P}
 
-Luokka $P$ sisältää päätösongelmat, joiden ratkaisemiseen on
+Luokka P sisältää päätösongelmat, joiden ratkaisemiseen on
 \emph{polynominen} algoritmi eli algoritmi, jonka aikavaativuus
 on muotoa $O(n^k)$, missä $k$ on vakio.
 Lähes kaikki tässä kirjassa esitetyt algoritmit toimivat
@@ -33,15 +33,15 @@ polynomisessa ajassa.
 Tuttuja polynomisia aikavaativuuksia ovat esimerkiksi
 $O(1)$, $O(\log n)$ $O(n)$, $O(n \log n)$, $O(n^2)$ ja $O(n^3)$.
 
-Esimerkki luokkaan $P$ kuuluvasta ongelmasta on
+Esimerkki luokkaan P kuuluvasta ongelmasta on
 ''onko taulukossa kahta samaa alkiota?''.
-Tämä ongelma kuuluu luokkaan $P$, koska voimme ratkaista
+Tämä ongelma kuuluu luokkaan P, koska voimme ratkaista
 sen monellakin tavalla polynomisessa ajassa.
 Helpoin tapa on käydä läpi kaikki tavat valita taulukosta
 kaksi alkiota ja tarkastaa ovatko jotkin kaksi samat,
 jolloin tuloksena on ajassa $O(n^2)$ toimiva algoritmi.
 
-Luokan $P$ tarkoituksena on kuvata ongelmia, jotka voimme
+Luokan P tarkoituksena on kuvata ongelmia, jotka voimme
 ratkaista \emph{tehokkaasti}.
 Tässä tehokkuuden määritelmä on varsin karkea:
 pidämme algoritmia tehokkaana, jos sillä on mikä tahansa
@@ -50,9 +50,9 @@ Onko $O(n^{100})$-aikainen algoritmi siis tehokas?
 Ei, mutta tällaisia algoritmeja ei esiinny käytännössä
 eikä meidän tarvitse murehtia asiasta.
 
-\subsection{Luokka $NP$}
+\subsection{Luokka NP}
 
-Luokka $NP$ sisältää päätösongelmat, joissa jokaiseen
+Luokka NP sisältää päätösongelmat, joissa jokaiseen
 algoritmin antamaan ''kyllä''-vastaukseen voidaan liittää
 polynomisen kokoinen \emph{todiste}, jonka avulla voimme
 \emph{tarkastaa} polynomisessa ajassa, että vastaus on oikein.
@@ -60,7 +60,7 @@ Todiste antaa meille lisätietoa siitä,
 minkä takia algoritmin ''kyllä''-vastaus
 pitää paikkansa syötteelle.
 
-Esimerkki luokkaan $NP$ kuuluvasta ongelmasta on
+Esimerkki luokkaan NP kuuluvasta ongelmasta on
 \emph{kauppamatkustajan ongelma}: onko verkossa reittiä,
 joka alkaa jostakin solmusta, käy kerran kaikissa muissa
 solmuissa ja palaa lähtösolmuun?
@@ -79,12 +79,153 @@ Esimerkiksi kauppamatkustajan ongelmassa on helppoa
 todistaa, että reitti on olemassa, koska voimme vain
 näyttää reitin, mutta vaikeaa todistaa, että reittiä ei ole olemassa.
 
-Huomaa, että kaikki luokan $P$ ongelmat kuuluvat myös
-luokkaan $NP$. Tämä johtuu siitä, että luokan $P$ ongelmissa
+Huomaa, että kaikki luokan P ongelmat kuuluvat myös
+luokkaan NP. Tämä johtuu siitä, että luokan P ongelmissa
 voimme tarkastaa ''kyllä''-vastauksen
 \emph{tyhjän} todisteen avulla: voimme saman tien ratkaista
 koko ongelman alusta alkaen polynomisessa ajassa.
 
-\subsection{$P$ vs. $NP$}
+\subsection{P vs. NP}
 
-\section{$NP$-täydellisyys}
+Äkkiseltään tuntuu selvältä, että luokassa NP täytyy olla
+enemmän ongelmia kuin luokassa P.
+Luokassa NP meidän riittää vain tarkastaa ''kyllä''-vastauksen
+todiste, mikä tuntuu helpommalta kuin keksiä ongelman ratkaisu tyhjästä.
+Monet uskovatkin, että luokka NP on suurempi kuin luokka P --
+mutta kukaan ei ole onnistunut todistamaan asiaa.
+
+Tietojenkäsittelytieteen merkittävä avoin ongelma onkin,
+päteekö $P=NP$ vai $P \neq NP$.
+Monet tutkijat ovat tarttuneet haasteeseen
+70-luvulta lähtien, mutta kaikki ovat epäonnistuneet.
+Ongelman ratkaisija saisi maineen ja kunnian lisäksi
+myös tuntuvan rahallisen korvauksen, koska
+Clay-instituutti on luvannut miljoonan dollarin palkinnon
+sille, joka todistaa, että $P=NP$ tai $P \neq NP$.
+Voi olla kuitenkin, että tämä on yksi \emph{vaikeimmista}
+tavoista ansaita miljoona dollaria.
+
+Asialla on myös suuri käytännön merkitys,
+koska moni tärkeä ongelma kuuluu luokkaan NP,
+mutta sen ei tiedetä kuuluvan luokkaan P.
+Yksi esimerkki tällaisesta ongelmasta on kokonaisluvun
+jakaminen alkutekijöihin (esimerkiksi luvun $15$
+alkutekijät ovat $3$ ja $5$).
+Tämän ongelman päätösversio kuuluu luokkaan NP,
+koska meidän on helppoa tarkastaa,
+onko alkutekijöiden tulo haluttu luku,
+mutta ongelman ei tiedetä kuuluvan luokkaan P.
+Laajasti käytössä olevat salausmenetelmät perustuvat siihen,
+että emme voi selvittää tehokkaasti luvun alkutekijöitä.
+Niinpä jos päteekin $P=NP$, nämä salausmenetelmät voivat
+muuttua käyttökelvottomiksi.
+
+Jos pätee $P \neq NP$, kuten uskotaan,
+vaikeutena on keksiä keino todistaa, että jotakin
+luokan NP ongelmaa on mahdotonta ratkaista
+polynomisessa ajassa.
+Tämän todistaminen on vaikeaa, koska meidän pitää näyttää,
+että tehokasta algoritmia ei ole olemassa,
+vaikka laatisimme algoritmin miten tahansa.
+Vaikka moni on koettanut tuloksetta ratkoa
+tunnettuja NP-ongelmia, kysymys saattaa silti olla siitä,
+että tehokas algoritmi olisi olemassa mutta kukaan ei
+vain ole vielä löytänyt sitä.
+
+\section{NP-täydellisyys}
+
+Sanomme, että ongelma on \emph{NP-täydellinen},
+jos se kuuluu luokkaan NP ja mikä tahansa luokan NP
+ongelma voidaan \emph{palauttaa} siihen polynomisessa ajassa.
+NP-täydelliset ongelmat ovat luokan NP vaikeimpia ongelmia:
+jos voisimme ratkaista jonkin NP-täydellisen ongelman tehokkaasti,
+voisimme ratkaista minkä tahansa luokan NP ongelman tehokkaasti.
+
+Kiinnostava ilmiö on, että lähes kaikki tunnetut luokan NP
+ongelmat joko kuuluvat myös luokkaan P tai ovat
+NP-täydellisiä.
+Nykyään tunnetaankin tuhansia erilaisia NP-täydellisiä ongelmia.
+Jos keksisimme mihin tahansa niistä polynomisessa ajassa toimivan
+ratkaisun, olisimme samalla todistaneet, että $P=NP$.
+
+\subsection{SAT-ongelma}
+
+Ensimmäinen löydetty NP-täydellinen ongelma oli
+SAT-ongelma, jossa annettuna on looginen lauseke ja haluamme
+selvittää, voimmeko valita muuttujien arvot niin,
+että lauseke on tosi.
+Lauseke muodostuu osista, jotka on yhdistetty
+ja-operaatiolla ($\land$). Jokainen osa puolestaan muodostuu
+muuttujista ja niiden negaatioista, jotka on yhdistetty
+tai-operaatiolla ($\lor$).
+
+Esimerkiksi lauseke
+\[(\neg x_1 \lor x_3) \land (x_1 \lor x_2 \lor x_3) \land (\neg x_2 \lor \neg x_3)\]
+on mahdollista saada todeksi, koska voimme esimerkiksi asettaa
+muuttujat $x_1$ ja $x_2$ epätosiksi ja muuttujan $x_3$ todeksi.
+
+Tämä ongelma kuuluu selvästi luokkaan NP, koska ''kyllä''-vastauksen
+todisteena on jokaiselle muuttujalle valittu arvo.
+Huomattavasti vaikeampaa on osoittaa, että \emph{jokainen} luokan
+NP ongelma voidaan palauttaa tähän ongelmaan polynomisessa ajassa.
+
+TODO
+
+\subsection{Ongelmien palautukset}
+
+Kun meillä on tiedossamme yksi NP-täydellinen ongelma,
+voimme osoittaa muita ongelmia NP-täydellisiksi palautusten avulla.
+Ideana on, että jos ongelma $A$ on NP-täydellinen ja
+voimme palauttaa sen polynomisessa ajassa ongelmaksi $B$,
+myös ongelma $B$ on NP-täydellinen.
+
+Ongelman $A$ palauttaminen ongelmaksi $B$ tarkoittaa,
+että näytämme yleisen tavan muuntaa ongelman $A$ syöte
+ongelman $B$ syötteeksi.
+Palautuksen täytyy säilyttää syötteen vastaus
+(päätösongelmassa ''kyllä'' tai ''ei'') ennallaan.
+Jos palautus onnistuu, voimme keskittyä ratkomaan ongelman
+$A$ sijasta ongelmaa $B$.
+
+Näytämme seuraavaksi, miten voimme palauttaa SAT-ongelman
+3SAT-ongelmaksi ja edelleen 3SAT-ongelman CLIQUE-ongelmaksi.
+Tämä osoittaa, että sekä 3SAT että CLIQUE
+ovat NP-täydellisiä ongelmia.
+
+\subsubsection{Palautus SAT $\rightarrow$ 3SAT}
+
+\subsubsection{Palautus 3SAT $\rightarrow$ CLIQUE}
+
+\subsection{Esimerkkejä}
+
+\subsection{NP-vaikeat ongelmat}
+
+Sanomme, että ongelma on NP-vaikea, jos voimme palauttaa
+NP-täydellisen ongelman siihen mutta ongelma ei välttämättä
+kuulu luokkaan NP.
+Jos ongelma on NP-vaikea, se on siis ainakin yhtä vaikea
+kuin luokan NP vaikeimmat ongelmat.
+
+Tähän mennessä olemme käsitelleet päätösongelmia,
+mutta käytännössä moni ongelma \emph{ei} ole päätösongelma
+vaan optimointiongelma: haluamme löytää jollakin
+tavalla parhaan ratkaisun ongelmaan.
+Vaikuttaa siis, että päätöson\-gelmien ulkopuolelle jää
+monia kiinnostavia ongelmia.
+
+Osoittautuu kuitenkin, että voimme ratkaista optimointiongelmia
+muotoilemalla ne päätösongelman avulla.
+Lisäksi jos meillä on tehokas ratkaisu päätösongelmaan,
+pystymme sen avulla saamaan aikaan myös tehokkaan
+ratkaisun optimointiongelmaan.
+Ideana on muuttaa optimointiongelma päätös\-ongelmaksi niin,
+että kysymme, onko olemassa ratkaisua, jonka hyvyys ylittää
+tietyn rajan $x$. Tämän jälkeen voimme selvittää binäärihaun
+avulla, mikä on suurin $x$:n arvo, jolle ratkaisu on olemassa.
+
+Tarkastellaan esimerkkinä ongelmaa, jossa haluamme selvittää,
+mikä on verkon suurin \emph{klikki} eli joukko solmuja,
+jossa minkä tahansa kahden solmun välillä on kaari.
+Voimme muotoilla tämän ongelman päätösongelmana
+''onko verkossa klikkiä, jonka koko on vähintään $x$''
+ja etsiä sitten suurimman $x$:n arvon binäärihaun avulla.
