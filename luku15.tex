@@ -1,1 +1,90 @@
 \chapter{NP-ongelmat}
+
+Olemme tässä kirjassa tutustuneet menetelmiin, joiden avulla voimme
+ratkaista tehokkaasti ongelmia.
+Kuitenkin on myös monia ongelmia, joiden ratkaisemiseen ei tällä
+hetkellä tunneta mitään tehokasta algoritmia.
+Jos vastaamme tulee tällaisia ongelmia, hyvät neuvot ovat kalliit.
+
+Vaikeiden ongelmien yhteydessä vastaan tulee usein
+kirjainyhdistelmä $NP$.
+Erityisen tunnettu on $P$ vs. $NP$ -ongelma,
+jonka ratkaisijalle on luvattu miljoonan dollarin potti.
+Hankalalta tuntuvasta ongelmasta saatetaan mainita, että
+se on $NP$-täydellinen tai $NP$-vaikea.
+Nyt on aika selvittää, mitä nämä käsitteet oikeastaan tarkoittavat.
+
+\section{Luokat $P$ ja $NP$}
+
+Kun tässä luvussa käsittelemme algoritmisia ongelmia,
+muotoilemme ne niin, että voimme esittää ne \emph{päätösongelmina}.
+Tämä tarkoittaa, että algoritmin tulee antaa jokaiselle syötteelle
+vastaus ''kyllä'' tai ''ei''.
+Tämä voi tuntua aluksi hieman rajoittavalta, mutta huomaamme myöhemmin,
+että voimme esittää helposti monenlaisia ongelmia päätösongelmina.
+
+\subsection{Luokka $P$}
+
+Luokka $P$ sisältää päätösongelmat, joiden ratkaisemiseen on
+\emph{polynominen} algoritmi eli algoritmi, jonka aikavaativuus
+on muotoa $O(n^k)$, missä $k$ on vakio.
+Lähes kaikki tässä kirjassa esitetyt algoritmit toimivat
+polynomisessa ajassa.
+Tuttuja polynomisia aikavaativuuksia ovat esimerkiksi
+$O(1)$, $O(\log n)$ $O(n)$, $O(n \log n)$, $O(n^2)$ ja $O(n^3)$.
+
+Esimerkki luokkaan $P$ kuuluvasta ongelmasta on
+''onko taulukossa kahta samaa alkiota?''.
+Tämä ongelma kuuluu luokkaan $P$, koska voimme ratkaista
+sen monellakin tavalla polynomisessa ajassa.
+Helpoin tapa on käydä läpi kaikki tavat valita taulukosta
+kaksi alkiota ja tarkastaa ovatko jotkin kaksi samat,
+jolloin tuloksena on ajassa $O(n^2)$ toimiva algoritmi.
+
+Luokan $P$ tarkoituksena on kuvata ongelmia, jotka voimme
+ratkaista \emph{tehokkaasti}.
+Tässä tehokkuuden määritelmä on varsin karkea:
+pidämme algoritmia tehokkaana, jos sillä on mikä tahansa
+polynominen aikavaativuus.
+Onko $O(n^{100})$-aikainen algoritmi siis tehokas?
+Ei, mutta tällaisia algoritmeja ei esiinny käytännössä
+eikä meidän tarvitse murehtia asiasta.
+
+\subsection{Luokka $NP$}
+
+Luokka $NP$ sisältää päätösongelmat, joissa jokaiseen
+algoritmin antamaan ''kyllä''-vastaukseen voidaan liittää
+polynomisen kokoinen \emph{todiste}, jonka avulla voimme
+\emph{tarkastaa} polynomisessa ajassa, että vastaus on oikein.
+Todiste antaa meille lisätietoa siitä,
+minkä takia algoritmin ''kyllä''-vastaus
+pitää paikkansa syötteelle.
+
+Esimerkki luokkaan $NP$ kuuluvasta ongelmasta on
+\emph{kauppamatkustajan ongelma}: onko verkossa reittiä,
+joka alkaa jostakin solmusta, käy kerran kaikissa muissa
+solmuissa ja palaa lähtösolmuun?
+Tämän ongelman ratkaisemiseen ei tunneta tehokasta algoritmia,
+mutta jokaiseen ''kyllä''-tapaukseen liittyy todiste,
+jonka voimme tarkastaa tehokkaasti.
+Todisteena on reitti, jota kauppamatkustaja noudattaa.
+Voimme tarkastaa tehokkaasti, että reitti kulkee verkon
+kaaria pitkin ja käy kerran jokaisessa solmussa.
+
+Jos algoritmi antaa ''ei''-vastauksen, tähän ei tarvitse
+liittyä tehokkaasti tarkastettavaa todistetta.
+Usein olisikin hankalaa antaa todiste siitä, että jotain
+asiaa \emph{ei} ole olemassa.
+Esimerkiksi kauppamatkustajan ongelmassa on helppoa
+todistaa, että reitti on olemassa, koska voimme vain
+näyttää reitin, mutta vaikeaa todistaa, että reittiä ei ole olemassa.
+
+Huomaa, että kaikki luokan $P$ ongelmat kuuluvat myös
+luokkaan $NP$. Tämä johtuu siitä, että luokan $P$ ongelmissa
+voimme tarkastaa ''kyllä''-vastauksen
+\emph{tyhjän} todisteen avulla: voimme saman tien ratkaista
+koko ongelman alusta alkaen polynomisessa ajassa.
+
+\subsection{$P$ vs. $NP$}
+
+\section{$NP$-täydellisyys}
