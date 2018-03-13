@@ -611,10 +611,12 @@ TODO
 
 \section{Javan rakenteet}
 
-Javan rakenteet \texttt{TreeSet} ja \texttt{TreeMap}
-pohjautuvat binäärihakupuuhun.
+Javan tietorakenteet \texttt{TreeSet} ja \texttt{TreeMap}
+pohjautuvat punamustaan puuhun,
+joka on AVL-puun tapainen mutta monimutkaisempi
+binäärihakupuu.
 Ne muistuttavat rakenteita \texttt{HashSet} ja \texttt{HashMap},
-mutta erona on, että pystymme etsimään
+mutta erona on, että pystymme lisäksi etsimään
 alkioita niiden järjestyksen perusteella.
 
 \subsection{\texttt{TreeSet}-rakenne}
@@ -661,7 +663,7 @@ sanakirja.put("banaani","banana");
 sanakirja.put("cembalo","harpsichord");
 \end{code}
 
-Tässä tapauksessa rakenteen avaimet on järjestetty,
+Sanakirjan avaimet on järjestetty,
 joten pystymme etsimään tietoa avainten perusteella.
 Esimerkiksi voimme selvittää, mikä on aakkosjärjestyksessä
 ensimmäinen ja viimeinen sanakirjassa oleva sana:
@@ -674,20 +676,70 @@ System.out.println(sanakirja.lastKey()); // cembalo
 Samoin voimme selvittää lähinnä tiettyä avainta olevat avaimet:
 
 \begin{code}
-System.out.println(sanakirja.higherKey("bonus")); // cembalo
-System.out.println(sanakirja.lowerKey("bonus")); // banaani
+System.out.println(sanakirja.higherKey("biisoni")); // cembalo
+System.out.println(sanakirja.lowerKey("biisoni")); // banaani
 \end{code}
 
 \subsection{Omat luokat}
 
-TODO
+Jos haluamme käyttää omia olioitamme \texttt{TreeSet}-joukon alkioina
+tai \texttt{TreeMap}-rakenteen avaimina, meidän tulee toteuttaa
+luokkaan kaksi metodia:
+\texttt{equals} määrittää, ovatko kaksi oliota samat,
+ja \texttt{compareTo} kertoo kahden olion suuruusjärjestyksen.
+Jälkimmäisen metodin ansiosta luokka toteuttaa rajapinnan
+\texttt{Comparable}.
 
-\section{Esimerkki: X}
+Esimerkiksi seuraava luokkaa sisältää henkilön etu- ja sukunimen.
+Henkilöt järjestetään ensisijaisesti sukunimen mukaan ja
+toissijaisesti etunimen mukaan.
+
+\begin{code}
+class Henkilo implements Comparable<Henkilo> {
+    String etunimi, sukunimi;
+
+    bool equals(Object o) {
+        Henkilo h = (Henkilo)o;
+        return etunimi.equals(h.etunimi) &&
+               sukunimi.equals(h.sukunimi);
+    }
+
+    int compareTo(Henkilo h) {
+        if (sukunimi.equals(h.sukunimi)) {
+            return etunimi.compareTo(etunimi);
+        } else {
+            return sukunimi.compareTo(sukunimi);
+        }
+    }
+
+    // ...
+}
+\end{code}
+
+Tämän jälkeen voimme lisätä henkilöitä joukkoon seuraavasti:
+
+\begin{code}
+TreeSet<Henkilo> joukko = new TreeSet<>();
+joukko.add(new Henkilo("Aku","Ankka"));
+joukko.add(new Henkilo("Iines","Ankka"));
+joukko.add(new Henkilo("Pelle","Peloton));
+\end{code}
+
+Sitten voimme vaikkapa tarkastaa, onko joukossa henkilöä,
+jonka sukunimi alkaa P-kirjaimella.
+Tämä onnistuu luomalla ''valehenkilö'', jonka sukunimi
+on ''P'' ja etunimi on tyhjä.
+Jos joukossa on henkilö, jonka sukunimi alkaa P-kirjaimella,
+se on tätä henkilöä seuraava henkilö.
+
+\begin{code}
+Henkilo haettu = joukko.higher(new Henkilo("","P"));
+\end{code}
 
 \section{Tehokkuusvertailu}
 
-Monissa ongelmissa meillä on kaksi mahdollista lähestymistapaa:
-voimme käyttää joukkorakenteita tai taulukoita ja järjestämistä.
+Monissa tehtävissä meillä on kaksi mahdollista lähestymistapaa:
+voimme käyttää joko joukkorakenteita tai sitten taulukoita ja järjestämistä.
 Vaikka molemmat tavat johtavat tehokkaaseen ratkaisuun,
 vakiokertoimissa voi olla merkittäviä eroja, jotka vaikuttavat
 käytännön tehokkuuteen.
@@ -704,6 +756,8 @@ Ensimmäinen tapa ratkaista tehtävä on luoda \texttt{TreeSet},
 johon lisäämme kaikki taulukon luvut.
 Koska jokainen luku voi esiintyä joukossa enintään kerran,
 joukon koko ilmaisee meille, montako eri lukua taulukossa on.
+Tämä ratkaisu vie aikaa $O(n \log n)$, koska jokainen
+\texttt{add}-operaatio vie aikaa $O(\log n)$.
 
 \begin{code}
 int eriLuvut(int[] taulu) {
@@ -717,10 +771,11 @@ int eriLuvut(int[] taulu) {
 
 \subsubsection{Ratkaisu 2: \texttt{HashSet}}
 
-Emme tarvitse ratkaisussa \texttt{TreeSet}-rakenteen
-tarjoamaa alkioiden järjestystä, joten voimme käyttää
+Koska emme tarvitse ratkaisussa \texttt{TreeSet}-rakenteen
+alkioiden järjestystä, voimme käyttää
 yhtä hyvin \texttt{HashSet}-rakennetta.
 Koodi säilyy muuten täysin samanlaisena.
+Tämä ratkaisu vie aikaa $O(n)$ hajautuksen ansiosta.
 
 \begin{code}
 int eriLuvut(int[] taulu) {
@@ -735,9 +790,10 @@ int eriLuvut(int[] taulu) {
 \subsubsection{Ratkaisu 3: järjestäminen}
 
 Kolmas tapa ratkaista tehtävä on käyttää järjestämistä:
-laitamme luvut listaan, järjestämme listaan ja
-tutkimme, monessako kohdassa järjestetyllä listalla
-luku vaihtuu.
+kopioimme ensin luvut uuteen taulukkoon, järjestämme tämän taulukon ja
+tutkimme sitten, monessako kohdassa järjestetyssä taulukossa luku vaihtuu.
+Tämä ratkaisu vie aikaa $O(n \log n)$, koska taulukon järjestäminen
+vie aikaa $O(n \log n)$.
 
 \begin{code}
 int eriLuvut(int[] taulu) {
@@ -768,9 +824,9 @@ Selvästi nopein ratkaisu on kuitenkin kolmas järjestämistä
 käyttävä ratkaisu, joka on noin kymmenen kertaa
 \texttt{TreeSet}-ratkaisua nopeampi.
 
-Kiinnostava seikka on, että sekä \texttt{TreeSet}-ratkaisu että
-järjestämisratkaisu vievät aikaa $O(n \log n)$, mutta
-jälkimmäinen ratkaisu on kymmenen kertaa nopeampi.
+Miten on mahdollista, että sekä \texttt{TreeSet}-ratkaisun että
+järjestämisrat\-kaisun aikavaativuus on $O(n \log n)$, mutta
+järjestämisratkaisu on kymmenen kertaa nopeampi?
 Tämä johtuu siitä, että taulukon järjestäminen on hyvin kevyt
 operaatio, ja se tehdään vain kerran.
 Binäärihakupuussa jokaisen lisäyksen jälkeen täytyy muuttaa
