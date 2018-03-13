@@ -1,8 +1,8 @@
 \chapter{Hajautustaulu}
 
-Hajautustaulu on tietorakenne,
-jonka avulla voimme pitää yllä alkioiden joukkoa,
-jossa on seuraavat operaatiot:
+Ohjelmoinnissa on usein tarvetta
+tietorakenteelle, joka pitää yllä alkioiden joukkoa
+ja toteuttaa seuraavat operaatiot:
 
 \begin{itemize}
 \item lisää alkio $x$ joukkoon
@@ -10,46 +10,40 @@ jossa on seuraavat operaatiot:
 \item poista alkio $x$ joukosta
 \end{itemize}
 
-Yksi tapa toteuttaa tällainen joukko olisi tallentaa
-alkiot listaan.
-Esimerkiksi voisimme säilyttää alkioita listalla
-järjestyksessä, jolloin voisimme selvittää binäärihaulla,
-kuuluuko tietty alkio joukkoon.
-Tällaista tietorakennetta käyttäen alkion tarkistaminen
-veisi aikaa $O(\log n)$ ja alkion lisääminen ja poistaminen
-veisivät aikaa $O(n)$.
-Ratkaisu ei ole tyydyttävä, koska lisääminen ja poistaminen
-toimivat hitaasti.
+Voimme helposti toteuttaa tällaisen tietorakenteen
+tallentamalla joukon alkiot listaan.
+Kun lisäämme joukkoon uuden alkion,
+lisäämme sen listan loppuun ajassa $O(1)$.
+Kun haluamme etsiä alkiota joukosta,
+käymme läpi listan, missä kuluu aikaa $O(n)$.
+Poistaminen vie myös aikaa $O(n)$, koska meidän täytyy
+etsiä poistettava alkio listasta ja poistaa se.
+Tämä ei ole tyydyttävä ratkaisu,
+koska etsiminen ja poistaminen toimivat hitaasti.
 
-Jos voisimme olettaa, että alkiot ovat sopivan pieniä kokonaislukuja,
-voisimme myös toteuttaa joukon taulukkona $\texttt{joukko}$,
-jossa kohta $\texttt{joukko}[x]$ kertoo meille,
-kuuluuko alkio $x$ joukkoon vai ei.
-Esimerkiksi voisimme sopia, että taulukossa on luku 1,
-jos alkio kuuluu joukkoon, ja muuten luku 0.
-Tällaisen taulukon avulla voisimme toteuttaa kaikki
-joukon operaatiot ajassa $O(1)$, mutta joudumme rajoittumaan
-pieniin kokonaislukuihin joukon alkioina.
+Tässä ja seuraavassa luvussa käymme läpi kaksi
+tietorakennetta, joiden avulla voimme toteuttaa kaikki
+kolme joukon operaatiota \emph{tehokkaasti}.
+Tämän luvun aiheena on hajautustaulu,
+jonka avulla pystymme toteuttamaan operaatiot
+keskimäärin ajassa $O(1)$.
+Seuraavassa luvussa tutustumme binäärihaku\-puuhun,
+jonka operaatiot toimivat ajassa $O(\log n)$
+ja johon voimme toteuttaa lisäksi alkioiden järjestykseen
+liittyviä operaatioita.
 
-Tässä luvussa keskitymme yleisempään tilanteeseen,
-jossa alkiot eivät ole välttämättä sopivan pieniä kokonaislukuja
-vaan ne voivat olla minkä tahansa tyyppisiä, esimerkiksi merkkijonoja.
-Osoittautuu, että voimme yleistää yllä olevan idean toteuttamalla
-hajautustaulun, jossa jokaisen alkion sijainnin määrää sen hajautusarvo,
-ja pystymme edelleen toteuttamaan kaikki operaatiot
-tehokkaasti keskimäärin $O(1)$-aikaisesti.
+\section{Hajautustaulun toiminta}
 
-\section{Hajautustaulun toteutus}
-
-Toteutamme hajautustaulun taulukkona,
-jossa on $n$ alkiota.
-Jokaisessa hajautustaulun kohdassa on lista,
-jossa voi olla joukossa olevia alkioita.
+\emph{Hajautustaulu} on $N$-alkioinen taulukko,
+jonka jokaisessa kohdassa on lista joukkoon kuuluvia alkioita.
 Jotta voimme käyttää hajautustaulua,
-meillä täytyy olla myös \emph{hajautusfunktio},
-jonka avulla voimme laskea mille tahansa alkiolle
-\emph{hajautusarvon} eli kohdan, johon alkio
-tallennetaan hajautustaulussa.
+meillä täytyy olla \emph{hajautusfunktio} $f$,
+joka antaa \emph{hajautusarvon}
+$f(x)$ mille tahansa joukon alkiolle $x$.
+Hajautusarvo on kokonaisluku väliltä
+$0,1,\dots,N-1$, missä $N$ vastaa hajautustaulun kokoa.
+Tallennamme kohdan $k$ listaan ne joukon alkiot,
+joiden hajautusarvo on $k$.
 
 \begin{figure}
 \begin{tikzpicture}[scale=0.5]
@@ -63,51 +57,46 @@ tallennetaan hajautustaulussa.
 \node at (2.5,-3.5) {\texttt{cembalo}};
 \end{tikzpicture}
 \caption{Hajautustaulu, joka vastaa joukkoa $\{\texttt{apina},\texttt{banaani},\texttt{cembalo}\}$.
-Merkkijonojen \texttt{apina} ja \texttt{cembalo} hajautusarvo on 2, ja merkkijonon
-\texttt{banaani} hajautusarvo on 7.}
+Alkioiden \texttt{apina} ja \texttt{cembalo} hajautusarvo on 2,
+ja alkion \texttt{banaani} hajautusarvo on 7.}
 \label{fig:hajtau}
 \end{figure}
 
-Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu, jossa on
-merkkijonot \texttt{apina}, \texttt{banaani} ja \texttt{cembalo}.
-Tässä hajautustaulussa $n=10$, joten voimme tallentaa alkioita
-listoihin kohtiin $0,1,\dots,9$.
-Merkkijonojen \texttt{apina} ja \texttt{cembalo}
-hajautusarvo on 2, joten ne ovat samassa listassa kohdassa 2.
-Merkkijonon \texttt{banaani} hajautusarvo taas on 7,
-joten se on yksin omassa listassaan.
+Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu,
+johon on tallennettu alkiot \texttt{apina}, \texttt{banaani} ja \texttt{cembalo}.
+Tässä hajautustaulussa $N=10$, joten kunkin alkion tulee
+saada hajautusarvo väliltä $0,1,\dots,9$.
+Oletamme, että meillä on käytössämme hajautusfunktio,
+joka antaa alkioille \texttt{apina} ja \texttt{cembalo}
+hajautusarvon 2 ja alkiolle \texttt{banaani} hajautusarvon 7.
+Niinpä alkiot \texttt{apina} ja \texttt{cembalo} ovat
+samassa listassa kohdassa 2 ja alkio \texttt{banaani}
+on yksin listassa kohdassa 7.
 Kaikki muut hajautustaulun listat ovat tällä hetkellä tyhjiä.
 
-Kun olemme luoneet hajautustaulun, voimme tarkistaa,
-onko tietty alkio joukossa, laskemalla sen hajautusarvon
-ja käymällä läpi vastaavan listan.
-Vastaavasti voimme lisätä alkion joukkoon
-lisäämällä sen listan loppuun ja poistaa
-alkion joukosta poistamalla sen listasta.
-Näiden operaatioiden aikavaativuus on $O(k)$,
-missä $k$ on alkion hajautusarvoa vastaavan listan pituus,
-koska meidän täytyy käydä läpi listalla olevat alkiot.
-Hajautustaulun tehokkuus riippuukin siitä,
-kuinka pitkiä listat ovat.
+Kun haluamme tarkistaa, onko joukossa alkiota $x$,
+laskemme ensin sen hajautusarvon $f(x)$.
+Tämän jälkeen käymme läpi kaikki kohdan $f(x)$
+listassa olevat alkiot ja tarkistamme,
+onko jokin niistä alkio $x$.
+Vastaavasti kun haluamme lisätä alkion $x$ joukkoon
+tai poistaa alkion $x$ joukosta,
+teemme muutoksen kohdassa $f(x)$ olevaan listaan.
+Näiden operaatioiden aikavaativuus on $O(m)$,
+kun jokaisen listan pituus on enintään $m$.
 
 \subsection{Hajautusfunktio}
 
-Hajautusfunktio määrittää, mihin kohtaan hajautustaulua
-alkio sijoitetaan.
+Hajautusfunktio $f(x)$ määrittää, mihin kohtaan hajautustaulua
+alkio $x$ sijoitetaan.
 Sen täytyy antaa jokaiselle mahdolliselle alkiolle
-hajautusarvo eli kokonaisluku väliltä $0 \dots n-1$,
-missä $n$ on hajautustaulun koko.
-Muuten meillä on vapaat kädet hajautusfunktion suunnitteluun:
-ainoa välttämätön vaatimus on, että tietty alkio saa aina
-saman hajautusarvon, jotta voimme löytää sen uudelleen
-hajautustaulusta.
-
-Jotta hajautustaulu olisi käyttökelpoinen, hajautusfunktioon
-liittyy kuitenkin toinenkin vaatimus:
-sen tulisi jakaa alkiot mahdollisimman \emph{tasaisesti}
-eri puolille hajautustaulua.
-Jos alkiot ovat jakautuneet tasaisesti ja listat ovat lyhyitä,
-voimme lisätä, etsiä ja poistaa alkioita tehokkaasti.
+hajautusarvo eli kokonaisluku väliltä $0,1,\dots,N-1$,
+missä $N$ on hajautustaulun koko.
+Lisäksi jotta hajautustaulu olisi käyttökelpoinen,
+hajautusfunktion tulisi jakaa alkiot mahdollisimman
+\emph{tasaisesti} eri puolille hajautustaulua.
+Tällöin hajautustaulun listat ovat lyhyitä ja
+operaatiot toimivat tehokkaasti.
 
 \begin{figure}
 \begin{tikzpicture}[scale=0.5]
@@ -148,11 +137,11 @@ Tavoitteemme on, että saisimme aikaan hajautusfunktion,
 jonka toiminta on lähempänä vasenta taulua.
 
 Tarkastelemme seuraavaksi esimerkkinä hajautusfunktioita,
-joilla voi laskea hajautusarvoja merkkijonoille.
-Käytännössä meidän riittää määritellä hajautusfunktio,
+joiden avulla voi laskea hajautusarvon merkkijonolle.
+Meidän riittää määritellä hajautusfunktio,
 joka muuttaa merkkijonon epänegatiiviseksi kokonaisluvuksi,
 koska tämän jälkeen saamme helposti kokonaisluvun
-väliltä $0 \dots n-1$ ottamalla alkuperäisestä luvusta jakojäännöksen $n$:llä.
+väliltä $0 \dots N-1$ ottamalla alkuperäisestä luvusta jakojäännöksen $N$:llä.
 
 Oletamme, että merkkijonossa on $k$ merkkiä,
 joiden merkkikoodit\footnote{Käytämme tässä merkkien ASCII-koodeja.
@@ -171,27 +160,27 @@ Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on 5.
 \[ c_0 + c_1 + \dots + c_{k-1}.\]
 Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on
 \[97+112+105+110+97=521.\]
-\item Hajautusarvo on painotettu merkkikoodien summa
+\item Hajautusarvo on summa
 \[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
-missä $A$ on sopiva vakio.
+missä $A$ on sopiva vakio (\emph{polynominen hajautus}).
 Esimerkiksi jos $A=7$, merkkijonon \texttt{apina} hajautusarvo on
 \[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=61235.\]
 \end{enumerate}
 
-Kaikki yllä olevat hajautusfunktiot ovat toimivia,
-mutta ne eivät ole yhtä hyviä.
-Funktio 1 ei ole hyvä, koska se antaa monelle
-usein esiintyvälle merkkijonolle saman hajautusarvon.
-Esimerkiksi suomen kielessä on suuri määrä viisikirjaimisia
-sanoja ja ne kaikki saavat saman hajautusarvon tätä
-hajautusfunktiota käyttämällä.
-Funktio 2 on jo parempi, mutta siinä on heikkoutena,
-että jos kahdessa merkkijonossa on samat merkit eri
-järjestyksessä, ne saavat aina saman hajautusarvon.
-Funktio 3 eli \emph{polynominen hajautus} korjaa tämän puutteen
-asettamalla summaan painoja, jotka riippuvat merkkien kohdista.
-Tämä on käytännössä hyvä tapa luoda hajautusfunktio,
-jota käytetään esimerkiksi Javan standardikirjastossa.
+Funktiot 1 ja 2 eivät ole käytännössä hyviä hajautusfunktioita,
+koska ne antavat saman hajautusarvon monille merkkijonoille.
+Funktio 1 antaa kahdelle merkkijonolle saman hajautusarvon,
+jos ne ovat yhtä pitkiä,
+ja funktio 2 antaa kahdelle merkkijonolle saman hajautusarvon,
+jos ne sisältävät samat merkit eri järjestyksessä.
+
+Funktio 3, jota kutsutaan nimellä polynominen hajautus,
+on käytännössä hyvä hajautustapa, joka on käytössä esimerkiksi
+Javan standardikirjastossa.
+Koska hajautusarvo lasketaan painotettuna summana,
+kaksi eri merkkijonoa eivät yleensä saa samaa hajautusarvoa.
+Toisaalta pystymme laskemaan hajautusarvon tehokkaasti
+mille tahansa merkkijonolle.
 
 \subsection{Hajautuksen tehokkuus}
 
