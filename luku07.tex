@@ -220,14 +220,14 @@ void jarjestys(Solmu puu) {
 }
 \end{code}
 
-\section{Binäärihakupuun toteutus}
+\section{Binäärihakupuun toiminta}
 
-Binäärihakupuu on binääripuu, jonka jokainen solmu
-on yksi joukon alkioista.
-Solmut on järjestetty niin, että jokaisessa solmussa
+Binäärihakupuu on binääripuu, jonka jokaisen solmun
+arvona on yksi joukon alkioista.
+Jokaisessa solmussa
 kaikki arvot vasemmassa alipuussa ovat pienempiä
 kuin solmun arvo ja vastaavasti kaikki arvot 
-oikeassa alipuussa ovat suurempia.
+oikeassa alipuussa ovat suurempia kuin solmun arvo.
 Tämän ominaisuuden ansiosta voimme löytää helposti
 alkion puusta aloittamalla haun puun juuresta.
 
@@ -252,31 +252,31 @@ alkion puusta aloittamalla haun puun juuresta.
 
 Kuvassa \ref{fig:bihpuu} on binäärihakupuu,
 joka vastaa joukkoa $\{2,3,5,7,8,9\}$.
-Tässä tapauksessa puun juuren arvo on 5,
-joten vasemmassa alipuussa kaikki arvot
-ovat pienempiä kuin 5 ja oikeassa alipuussa
-kaikki arvot ovat suurempia kuin 5.
-Sama ehto pätee kaikissa muissakin puun solmuissa.
+Tässä tapauksessa puun juurena on alkio 5.
+Vasemmassa alipuussa on kaikki alkiota 5
+pienemmät alkiot, eli se vastaa joukkoa $\{2,3\}$.
+Oikeassa alipuussa taas on kaikki alkiota 5
+suuremmat alkiot, eli se vastaa joukkoa $\{7,8,9\}$.
+
+\subsection{Operaatioiden toteutus}
 
 Seuraavaksi käymme läpi, kuinka voimme toteuttaa
-haluamamme joukko-operaatiot
-binäärihakupuun avulla.
-Jokainen operaatio vie aikaa $O(h)$,
-missä $h$ on puun korkeus.
-
-\subsection{Joukko-operaatiot}
+binäärihakupuun avulla joukon operaatioita.
+Osoittautuu, että voimme toteuttaa kaikki
+operaatiot ajassa $O(h)$, missä $h$ on puun korkeus.
 
 \subsubsection{Alkion etsiminen}
 
-Kun haluamme löytää puusta solmun $x$, lähdemme liikkeelle
-puun juuresta ja kuljemme rekursiivisesti alaspäin puussa.
+Kun haluamme etsiä joukosta alkiota $x$, lähdemme liikkeelle
+puun juuresta ja kuljemme alaspäin puussa.
 Kun olemme solmussa, jonka arvo on $a$,
 vaihtoehtoja on kolme.
-Jos $a=x$, olemme löytäneet halutun solmun,
-jos $a<x$, jatkamme hakua solmun oikeaan lapseen,
-ja jos $a>x$, jatkamme hakua solmun vasempaan lapseen.
-Kuitenkin jos haluttua lasta ei ole, toteamme,
-että solmua $x$ ei esiinny puussa.
+Jos $a=x$, olemme löytäneet halutun alkion,
+jos $a>x$, jatkamme hakua solmun vasempaan lapseen,
+ja jos $a<x$, jatkamme hakua solmun oikeaan lapseen.
+Jos kuitenkaan solmulla ei ole lasta,
+johon meidän tulisi edetä, toteamme,
+että joukossa ei ole alkiota $x$.
 
 \begin{figure}
 \center
@@ -301,19 +301,21 @@ että solmua $x$ ei esiinny puussa.
 
 Kuva \ref{fig:bihets} näyttää, kuinka löydämme alkion 7
 joukosta $\{2,3,5,7,8,9\}$.
-Juuren arvona on 5, joten alkion täytyy olla juuren
+Juurena on alkio 5, joten alkion 7 täytyy olla juuren
 oikeassa alipuussa.
-Tämän solmun arvona on 8,
-joten nyt taas tiedämme, että alkion täytyy olla
+Tämän alipuun juurena on alkio 8,
+joten nyt taas tiedämme, että alkion 7 täytyy olla
 vasemmassa alipuussa, josta se löytyykin.
 
 \subsubsection{Alkion lisääminen}
 
-Kun haluamme lisätä puuhun solmun $x$, kuljemme ensin
-puussa aivan kuin etsisimme solmua $x$.
+Kun haluamme lisätä joukkoon alkion $x$,
+jota ei vielä ole joukossa, kuljemme ensin
+puussa aivan kuin etsisimme alkiota $x$.
 Sitten kun olemme päässeet solmuun,
 jolla ei ole lasta, johon meidän tulisi edetä,
-lisäämme solmun $x$ tällaiseksi lapseksi.
+luomme uuden solmun alkiolle $x$ ja lisäämme
+sen tähän kohtaan lapseksi.
 
 \begin{figure}
 \center
@@ -343,68 +345,96 @@ Kun haemme puusta solmua 4, päädymme solmuun 3,
 jolla ei ole oikeaa lasta.
 Niinpä lisäämme solmun 4 solmun 3 oikeaksi lapseksi.
 
+\subsubsection{Pienin alkio / suurin alkio}
+
+Kun haluamme löytää pienimmän alkion,
+lähdemme liikkeelle juuresta ja etenemme joka askeleella
+solmun vasempaan lapseen.
+Kun solmulla ei ole enää vasenta lasta,
+olemme löytäneet joukon pienimmän alkion.
+
+Vastaavalla tavalla löydämme suurimman alkion
+etenemällä koko ajan oikeaan lapseen juuresta.
+
+\subsubsection{Seuraava suurempi alkio / edellinen pienempi alkio}
+
+Kun haluamme löytää pienimmän alkion,
+joka on suurempi kuin $x$,
+lähdemme liikkeelle puun juuresta.
+Aina kun solmun arvona on $a$,
+etenemme vasempaan lapseen,
+jos $a>x$, ja oikeaan lapseen, jos $a \le x$.
+Jatkamme näin, kunnes emme voi edetä alemmas.
+Haluttu alkio on pienin alkiota $x$ suurempi alkio
+kaikista alkioista, joiden kautta kuljimme.
+
+Kun haluamme vastaavasti löytää pienimmän alkion,
+joka on suurempi kuin $x$,
+menettelemme käänteisesti edelliseen nähden.
+
 \subsubsection{Alkion poistaminen}
 
-Kun haluamme poistaa puusta solmun $x$, etsimme ensin
-solmun $x$ tavalliseen tapaan.
-Jos solmulla $x$ ei ole lapsia, poistamme sen vain puusta.
-Jos solmulla $x$ on yksi lapsi, korvaamme solmun $x$
-sen lapsella.
-Jos kuitenkin solmulla $x$ on kaksi lasta,
+Kun haluamme poistaa joukosta alkion $x$, etsimme ensin
+alkiota $x$ vastaavan solmun tavalliseen tapaan.
+Jos solmulla ei ole lapsia tai vain yksi lapsi,
+meidän on helppoa poistaa solmu puusta ja säilyttää
+puun rakenne muuten ennallaan.
+Jos kuitenkin solmulla on kaksi lasta,
 tilanne on hankalampi.
-Tällöin etsimme puusta solmusta $x$ seuraavan
-suuremman alkion $y$ (pian kuvattavalla tavalla), vaihdamme keskenään
-solmujen $x$ ja $y$ arvot,
-ja poistamme sitten solmun $y$.
-Solmulla $y$ ei voi olla kahta lasta, joten poistaminen on helppoa.
+Tällöin etsimme alkion $y$,
+joka on pienin $x$:ää suurempi alkio,
+ja vaihdamme keskenään arvot $x$ ja $y$ puussa.
+Tämän jälkeen meidän on helppoa poistaa solmu,
+jossa on nyt arvo $x$,
+koska sillä ei voi olla kahta lasta
+(koska jos solmulla olisi vasen lapsi,
+$y$ ei olisi pienin $x$:ää suurempi alkio).
 
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.6]
-\node[draw, circle] (1) at (0,0) {$7$};
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$5$};
 \node[draw, circle] (2) at (-2.5,-2) {$3$};
 \node[draw, circle] (3) at (2.5,-2) {$8$};
 \node[draw, circle] (4) at (-4,-4) {$2$};
-\node[draw, circle, dashed] (5) at (1,-4) {$5$};
+\node[draw, circle] (5) at (1,-4) {$7$};
 \node[draw, circle] (6) at (4,-4) {$9$};
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-,dashed] (3) -- (5);
+\path[draw,thick,-] (3) -- (5);
 \path[draw,thick,-] (3) -- (6);
-\path[draw,thick,<->,dashed] (1) -- (5);
+\path[draw,thick,red,line width=2pt,->] (1) -- (3);
+\path[draw,thick,red,line width=2pt,->] (3) -- (5);
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,0) {$7$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$8$};
+\node[draw, circle] (4) at (-4,-4) {$2$};
+\node[draw, circle] (5) at (1,-4) {$5$};
+\node[draw, circle] (6) at (4,-4) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,<->] (1) -- (5);
+\end{scope}
 \end{tikzpicture}
-\caption{Alkion 5 poistaminen joukosta $\{2,3,5,7,8,9\}$.}
+\caption{Alkion 5 poistaminen joukosta $\{2,3,5,7,8,9\}$. (a) Koska alkiolla
+5 on kaksi lasta, etsimme seuraavan suuremman alkion 7.
+(b) Vaihdamme keskenään alkiot 5 ja 7, minkä jälkeen voimme poistaa helposti alkion 5.}
 \label{fig:bihpu3}
 \end{figure}
 
-Kuva \ref{fig:bihpu3} näyttää, kuinka poistamme joukosta $\{2,3,5,7,8,9\}$
-alkion 5, joka vastaa binäärihakupuun juurta.
-Solmun seuraava suurempi alkio on 7,
-joten vaihdamme keskenään arvot 5 ja 7.
-Tämän jälkeen meidän on helppoa poistaa solmu puusta.
-
-\subsubsection{Pienin/suurin alkio}
-
-Löydämme puun pienimmän alkion lähtemällä liikkeelle
-puun juuresta ja siirtymällä vasempaan lapseen niin
-kauan kuin tämä on mahdollista.
-Solmu, johon päädymme lopulta, on puun pienin alkio.
-Vastaavalla tavalla löydämme suurimman alkion
-etenemällä koko ajan oikealle juuresta.
-
-\subsubsection{Seuraava suurempi alkio}
-
-Jos solmulla on oikea lapsi, siirrymme ensin solmusta oikealle
-ja sitten vasemmalle niin kauan kuin mahdollista.
-Muuten kuljemme solmusta ylöspäin, kunnes saavumme solmuun,
-jonka vasen lapsi on edellinen lapsi.
-Jos tällaista solmua ei ole, solmulla ei ole seuraavaa
-suurempaa alkiota.
-
-\subsubsection{Edellinen pienempi alkio}
-
-Menettelemme käänteisesti edelliseen kohtaan nähden.
+Kuva \ref{fig:bihpu3} näyttää, kuinka poistamme joukosta $\{2,3,5,7,8,9\}$ alkion 5.
+Alkio on puun juuressa, ja solmulla on kaksi lasta,
+joten meidän tulee etsiä ensin pienin alkiota 5 suurempi alkio,
+joka on 7.
+Vaihdamme sitten keskenään arvot 5 ja 7,
+minkä jälkeen meidän on helppoa poistaa alkio 5.
 
 \subsection{Operaatioiden tehokkuus}
 
