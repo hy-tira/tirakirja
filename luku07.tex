@@ -222,7 +222,7 @@ void jarjestys(Solmu puu) {
 
 \section{Binäärihakupuun toiminta}
 
-Binäärihakupuu on binääripuu, jonka jokaisen solmun
+\emph{Binäärihakupuu} on binääripuu, jonka jokaisen solmun
 arvona on yksi joukon alkioista.
 Jokaisessa solmussa
 kaikki arvot vasemmassa alipuussa ovat pienempiä
@@ -420,7 +420,7 @@ $y$ ei olisi pienin $x$:ää suurempi alkio).
 \path[draw,thick,-] (2) -- (4);
 \path[draw,thick,-] (3) -- (5);
 \path[draw,thick,-] (3) -- (6);
-\path[draw,thick,<->] (1) -- (5);
+\path[draw,thick,<->,dashed] (1) -- (5);
 \end{scope}
 \end{tikzpicture}
 \caption{Alkion 5 poistaminen joukosta $\{2,3,5,7,8,9\}$. (a) Koska alkiolla
@@ -443,9 +443,9 @@ missä $h$ on puun korkeus, joten operaatioiden tehokkuus
 riippuu puun korkeudesta.
 Niinpä puun tehokkuuteen vaikuttaa, miten olemme
 rakentaneet sen.
-Esimerkiksi kuvassa \ref{fig:bihkor} on kaksi mahdollista puuta
-joukolle $\{1,2,3,4,5\}$.
-Vasemman puun korkeus on 3, kun taas oikean puun korkeus on 5.
+Esimerkiksi kuvassa \ref{fig:bihkor} on kaksi mahdollista
+binäärihakupuuta joukolle $\{1,2,3,4,5\}$.
+Vasemman puun korkeus on 2, kun taas oikean puun korkeus on 4.
 
 \begin{figure}
 \center
@@ -474,18 +474,19 @@ Vasemman puun korkeus on 3, kun taas oikean puun korkeus on 5.
 \end{scope}
 \end{tikzpicture}
 \caption{Kaksi binäärihakupuuta joukolle $\{1,2,3,4,5\}$.
-Vasemman puun korkeus on 3, kun taas oikean puun korkeus on 5.}
+Vasemman puun korkeus on 2 ja oikean puun korkeus on 4.}
 \label{fig:bihkor}
 \end{figure}
 
-
 Jotta binäärihakupuu toimii tehokkaasti, haluamme,
 että puun korkeus ei kasva liian suureksi.
-Tarkemmin ottaen tavoitteemme on, että puun korkeus on
-aina vain $O(\log n)$ eli puu on \emph{tasapainoinen}.
+Tarkemmin ottaen tavoitteemme on, että
+solmut ovat jakautuneet tasaisesti puun eri puolille
+ja puun korkeus on $O(\log n)$.
+Tällöin sanomme, että puu on \emph{tasapainoinen}.
 Jos onnistumme tässä, kaikki puun operaatiot toimivat
-siis tehokkaasti ajassa $O(\log n)$.
-Osoittautuu, että saavutamme tavoitteemme
+tehokkaasti ajassa $O(\log n)$.
+Saavutamme tavoitteemme
 lisäämällä puuhun ehtoja, jotka rajoittavat
 sen korkeutta sopivasti.
 
@@ -510,15 +511,15 @@ että tasapainoehto säilyy voimassa kaikissa solmuissa.
 
 \subsection{Tasapainoehto}
 
-AVL-puun tasapainoehto on, että
+AVL-puun tasapainoehtona on, että
 jokaisessa solmussa vasemman ja oikean lapsen alipuiden korkeusero 
 on enintään 1.
 
-Esimerkiksi kuvassa \ref{fig:bihkor} vasen puu on
+Esimerkiksi kuvan \ref{fig:bihkor} vasen puu on
 AVL-puu, kun taas oikea puu ei ole.
 Oikea puu ei ole AVL-puu, koska esimerkiksi solmussa 1
-vasemman lapsen alipuun korkeus on 0 mutta oikean lapsen
-alipuun korkeus on 4.
+vasemman lapsen alipuun korkeus on $-1$ mutta oikean lapsen
+alipuun korkeus on 3.
 Korkeuksien erona on siis 4, vaikka ero saisi olla enintään 1.
 
 Kutsumme AVL-puun tasapainoehtoa \emph{AVL-ehdoksi}.
@@ -565,7 +566,7 @@ jonka operaatiot toimivat ajassa $O(\log n)$.
 \path[draw,thick,-] (4) -- (7);
 \end{scope}
 \end{tikzpicture}
-\caption{Vähiten solmuja sisältävät AVL-puut korkeuksille 1, 2, 3 ja 4.}
+\caption{Vähiten solmuja sisältävät AVL-puut korkeuksille 0, 1, 2 ja 3.}
 \label{fig:avlkor}
 \end{figure}
 
@@ -581,22 +582,20 @@ AVL-puussa, jonka korkeus on $h$.
 Merkitään $f(h)$:lla korkeutta $h$ olevan AVL-puun
 pienintä mahdollista solmujen määrää.
 Kuvan \ref{fig:avlkor} mukaisesti funktion ensimmäiset arvot
-ovat $f(1)=1$, $f(2)=2$, $f(3)=4$ ja $f(4)=7$.
+ovat $f(0)=1$, $f(1)=2$, $f(2)=4$ ja $f(3)=7$.
 Yleisemmin
-\[f(h)=f(h-1)+f(h-2)+1,\]
-koska jos haluamme rakentaa AVL-puun korkeutta $h$,
+\[f(h)=1+f(h-1)+f(h-2),\]
+kun $h \ge 2$, koska jos haluamme rakentaa AVL-puun korkeutta $h$,
 jossa on mahdollisimman vähän solmuja,
-meidän kannattaa laittaa juuren vasempaan
-lapseen AVL-puu korkeutta $h-1$ ja oikeaan lapseen
-AVL-puu korkeutta $h-2$ niin,
+meidän kannattaa laittaa juuren lapsiksi AVL-puut
+korkeutta $h-1$ ja $h-2$ niin,
 että kummassakin alipuussa on mahdollisimman vähän solmuja.
-
-Kun $h \ge 3 $, funktiolle pätee
+Funktiolle pätee
 \[f(h) \ge 2 f(h-2),\]
 eli funktion arvo ainakin kaksinkertaistuu kahden askeleen välein.
-Voimme esittää tämän alarajan muodossa
+Voimme ilmaista tämän alarajan
 \[f(h) \ge 2^{h/2},\]
-joka taas tarkoittaa samaa kuin
+jonka voimme taas muuttaa muotoon
 \[ h \le 2 \log_2 f(h).\]
 
 Tarkastellaan sitten puuta, jossa on $n$ solmua.
