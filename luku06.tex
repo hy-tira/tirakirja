@@ -1,6 +1,6 @@
 \chapter{Hajautustaulu}
 
-Ohjelmoinnissa on usein tarvetta
+Algoritmien suunnittelussa on usein tarvetta
 tietorakenteelle, joka pitää yllä alkioiden joukkoa
 ja toteuttaa seuraavat operaatiot:
 
@@ -162,7 +162,7 @@ Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on
 \[97+112+105+110+97=521.\]
 \item Hajautusarvo on summa
 \[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
-missä $A$ on sopiva vakio (\emph{polynominen hajautus}).
+missä $A$ on vakio (\emph{polynominen hajautus}).
 Esimerkiksi jos $A=7$, merkkijonon \texttt{apina} hajautusarvo on
 \[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=61235.\]
 \end{enumerate}
@@ -177,6 +177,7 @@ jos ne sisältävät samat merkit eri järjestyksessä.
 Funktio 3, jota kutsutaan nimellä polynominen hajautus,
 on käytännössä hyvä hajautustapa, joka on käytössä esimerkiksi
 Javan standardikirjastossa.
+Vakio $A$ valitaan tyypillisesti niin, että se on pieni alkuluku.
 Koska hajautusarvo lasketaan painotettuna summana,
 kaksi eri merkkijonoa eivät yleensä saa samaa hajautusarvoa.
 Toisaalta pystymme laskemaan hajautusarvon tehokkaasti
@@ -184,42 +185,48 @@ mille tahansa merkkijonolle.
 
 \subsection{Hajautuksen tehokkuus}
 
-Hajautuksen tehokkuus riippuu kahdesta asiasta:
-kuinka suuri hajautustaulu on (parametri $n$)
-sekä miten tasaisesti hajautusfunktio jakaa alkiota
-eri puolille hajautustaulua.
-Jos oletamme, että alkiot jakautuvat tasaisesti
-ja joukossa on yhteensä $m$ alkiota,
-jokaiseen listaan osuu noin $m/n$ alkiota
-eli hajautustaulun operaatiot toimivat $O(m/n)$-ajassa.
-Jos edelleen $n$ on valittu niin suureksi,
-että $m/n$ on pieni vakio, voimme ajatella,
-että hajautustaulun operaatiot toimivat $O(1)$-ajassa.
+Hajautustaulun operaatiot vievät aikaa $O(m)$,
+jossa $m$ on pisimmän listan pituus.
+Mutta kuinka suuri $m$ on? Tämä riippuu siitä,
+mikä on alkioiden määrä $n$, hajautustaulun koko $N$
+sekä hajautusfunktio $f$.
 
-Tämän analyysin heikkoutena on, että \emph{oletamme}
-hajautusfunktion toimivan hyvin ja jakavan alkioita
-tasaisesti hajautustauluun. Entä jos näin ei olekaan?
-Jos käytämme polynomista hajautusta, miten vakio $A$
-pitäisi valita, jotta hajautus onnistuisi hyvin?
+Jos kaikki sujuu hyvin ja hajautusfunktio jakaa alkioita
+tasaisesti hajautustaulun eri puolille,
+jokaisessa listassa on noin $n/N$ alkiota.
+Niinpä jos valitsemme hajautustaulun koon niin,
+että $N$ on samaa luokkaa kuin $n$,
+operaatiot toimivat tehokkaasti ajassa $O(1)$.
+Kuitenkin on mahdollista että hajautus epäonnistuu
+ja alkiot jakautuvat hajautustauluun epätasaisesti.
+Pahimmassa tapauksessa kaikki alkiot saavat saman
+hajautusarvon ja ne kaikki tallennetaan samaan listaan,
+jolloin operaatiot vievät aikaa $O(n)$.
 
-Kaikeksi onneksi hajautus toimii yleensä aina käytännössä hyvin.
-Riski siitä, että jokainen tai edes suuri osa alkioista
-menisi samaan listaan, on niin pieni,
-että siitä ei tarvitse murehtia.
-Jotkut suosittelevat valitsemaan $A$:n alkuluvuksi,
-joka ei ole lähellä 2:n potensseja,
-mutta käytännössä muutkaan $A$:n arvot tuskin
-tuottavat ongelmia.
+Voimme helposti vaikuttaa hajautustaulun kokoon $N$,
+mutta hajautusfunktion suunnittelu on epämääräisempi ala.
+Miten voimme tietää, että valitsemamme hajautusfunktio
+toimii hyvin?
+Tämä on hyvä kysymys ja luvussa 6.4
+paneudumme asiaan tarkemmin tutkimalla polynomisen
+hajautuksen toimivuutta todellisella aineistolla.
 
-Hajautustaulun tehokkuus riippuu kuitenkin aina myös siitä,
-mitä alkioita sinne laitetaan.
-Vaikka olisimme valinneet hajautustaulun koon ja
-hajautusfunktion miten huolellisesti tahansa,
-ilkeä vastustaja voi kuitenkin antaa meillä alkioita,
-joilla kaikilla on sama hajautusarvo ja jotka
-menevät samaan listaan hajautustaulussa.
-Tällöin hajautustaulun operaatiot vievät aikaa $O(m)$.
-Luvussa 5.2.4 näemme tästä konkreettisen esimerkin.
+Toisaalta vaikka meillä olisi erittäin hyvä hajautusfunktio,
+\emph{ilkeä vastustaja} voi kuitenkin antaa
+meille joukon alkioita, jotka kaikki saavat saman hajautusarvon.
+Ilkeä vastustaja tarkoittaa kuvitteellista tai todellista vihollista,
+joka paljastaa heikkouden hajautusfunktiossamme.
+Tämä riski on aina hajautuksessa, koska mahdollisten
+hajautusarvojen määrä on pienempi kuin mahdollisten alkioiden määrä
+eikä ole mahdollista toteuttaa hajautusfunktiota niin,
+että se jakaisi alkiot \emph{varmasti} tasaisesti hajautustauluun.
+
+Kaikeksi onneksi hajautus toimii yleensä aina \emph{käytännössä}
+hyvin ja voimme ajatella, että hajautustaulun operaatiot ovat
+$O(1)$-aikaisia.
+Vaikka on mahdollista, että hajautus epäonnistuu,
+tämän riski on niin pieni, että meidän ei tarvitse murehtia
+siitä käytännössä.
 
 \section{Hajautus Javassa}
 
@@ -249,7 +256,7 @@ System.out.println(joukko); // [3, 8]
 \end{code}
 
 Metodin \texttt{contains} avulla voimme selvittää,
-esiintyykö tietty alkio joukossa.
+esiintyykö tietty alkio joukossa:
 
 \begin{code}
 if (joukko.contains(5)) {
@@ -279,8 +286,8 @@ $0,1,\ldots,n-1$, mutta \texttt{HashMap} sallii
 avaimina minkä tahansa tyyppisiä alkioita eikä niiden
 tarvitse olla peräkkäisiä kokonaislukuja.
 
-\texttt{HashMap}-rakenteen määrittelyssä annetaan
-kaksi tyyppiä: avaimen ja arvon tyyppi.
+\texttt{HashMap}-rakenteen määrittelyssä tulee antaa
+avaimen ja arvon tyyppi.
 Esimerkiksi seuraava koodi luo sanakirjan, jossa sekä
 avaimet että arvot ovat merkkijonoja.
 Syötämme sanakirjaan merkkijonopareja, jotka kertovat
@@ -357,6 +364,8 @@ class Piste {
         Piste p = (Piste)o;
         return x == p.x && y == p.y;
     }
+
+    // ...
 }
 \end{code}
 
@@ -368,6 +377,9 @@ voimme luoda vaikkapa \texttt{HashSet}-rakenteen, jossa on pisteitä:
 
 \begin{code}
 HashSet<Piste> joukko = new HashSet<Piste>();
+joukko.add(new Piste(3,2));
+joukko.add(new Piste(1,4));
+joukko.add(new Piste(1,3));
 \end{code}
 
 \section{Esimerkki: Anagrammit}
@@ -384,7 +396,7 @@ ja toisessa ryhmässä on sanat ''iines'' ja ''sieni''.
 
 Voimme ratkaista tehtävän tehokkaasti seuraavan havainnon avulla:
 jos kaksi sanaa ovat anagrammit ja järjestämme niiden kirjaimet,
-niistä tulee samat sanat.
+ne muuttuvat samoiksi.
 Esimerkiksi sanoissa ''iines'' ja ''sieni'' kirjaimet
 järjestettyinä ovat ''eiins''.
 Tämän havainnon ansiosta voimme käyttää kunkin anagrammiryhmän
@@ -432,4 +444,6 @@ Esimerkin tapauksessa ohjelmamme tulostus on seuraava:
 {abc=[abc, bac, cba], eiins=[iines, sieni]}
 \end{code}
 
-\section{Hajautuksen rikkominen}
+\section{Hajautuksen parametrit}
+
+TODO
