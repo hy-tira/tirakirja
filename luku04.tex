@@ -1,57 +1,48 @@
 \chapter{Listarakenteet}
 
-Lista on tietorakenne, joka pitää yllä
-peräkkäisten alkioiden kokoelmaa.
+Lista on tietorakenne, joka sisältää kokoelman
+peräkkäisiä alkioita.
 Esimerkiksi $[3,7,2,5]$ on lista, jossa on neljä alkiota.
-Tässä luvussa tutustumme kahteen tapaan toteuttaa lista:
-\emph{taulukkolista} perustuu taulukkoon ja \emph{linkitetty lista}
-muodostuu solmuista, jotka viittaavat toisiinsa.
+Haluamme toteuttaa listan niin, että pääsemme mukavasti
+käsiksi sen alkioihin sekä voimme
+lisätä ja poistaa alkioita ohjelman suorituksen aikana.
 
-Haluamme toteuttaa listan niin, että pystymme \emph{lisäämään} ja
-\emph{poistamaan} alkioita.
-Tämä erottaa listan taulukosta:
-kun luomme taulukon, meidän tulee päättää pysyvästi,
-montako alkiota siinä on,
-mutta listan alkioiden määrä voi vaihdella
-ohjelman suorituksen aikana.
-
-Listan toteutustapa vaikuttaa siihen, kuinka nopeasti
-pääsemme käsiksi alkioihin sekä pystymme lisäämään
-ja poistamaan alkioita.
-Tulemme huomaamaan, että sekä taulukkolistassa että
-linkitetyssä listassa on omat vahvuutensa ja heikkoutensa.
+Tässä luvussa tutustumme kahteen menetelmään listan toteuttamiseen.
+Toteutamme listan ensin taulukkona, jolloin vaikeutena on
+toteuttaa alkioiden lisäykset ja poistot tehokkaasti.
+Tämän jälkeen käsittelemme linkitettyä listaa,
+joka muodostuu toisiinsa viittaavista solmuista.
 
 \section{Taulukkolista}
 
-Kun luomme ohjelmoinnissa taulukon,
-ilmoitamme sen alkioiden määrän.
-Esimerkiksi seuraava koodi luo taulukon
-$x$, johon mahtuu $n$ alkiota:
+\emph{Taulukkolista} on lista, joka on tallennettu taulukkoon.
+Esimerkiksi seuraava koodi luo taulukon,
+joka vastaa listaa $[3,7,2,5]$:
 
 \begin{code}
-int[] x = new int[n];
+int[] lista = {3,7,2,5};
 \end{code}
 
-Taulukon luonnin yhteydessä sille varataan muistista
-yhtenäinen $n$ alkion alue, johon taulukon sisältö tallennetaan.
-Koska taulukon alkiot tallennetaan muistiin peräkkäin,
-pääsemme tehokkaasti käsiksi niihin:
-voimme viitata kohdassa $k$ olevaan alkioon
-merkinnällä $x[k]$ ja hakea minkä tahansa arvon tai
-muuttaa sitä ajassa $O(1)$.
+Koska taulukon alkiot tallennetaan muistissa peräkkäin
+yhtenäiseen alueeseen, pääsemme käsiksi mihin tahansa
+listan alkioon tehokkaasti ajassa $O(1)$ käyttäen $[]$-syntaksia.
+Esimerkiksi seuraava koodi hakee listalta kohdassa $2$
+olevan arvon ja muuttaa kohdassa $1$ olevaa arvoa:
 
-Taulukon rajoituksena on kuitenkin, että emme voi kasvattaa
-sen kokoa myöhemmin.
-Syynä tähän on, että muistiin tallennetun taulukon ympärillä
-on muuta muistissa olevaa tietoa.
-Emme voi siis kasvattaa taulukon kokoa, koska se peittäisi
-alleen muistissa olevaa tietoa.
-Miten voisimme siis luoda taulukon avulla listan,
-johon pystyy lisäämään uusia alkioita?
+\begin{code}
+int x = lista[2];
+lista[1] = 4;
+\end{code}
 
-Ratkaisu asiaan on varata taulukkoon
-\emph{ylimääräistä} tilaa tuleville alkioille,
-jolloin taulukko pystyy laajentumaan.
+Taulukon rajoituksena on kuitenkin,
+että emme voi muuttaa sen kokoa määrittelyn jälkeen.
+Miten voimme siis tehdä listan, joka sallii alkioiden
+lisäämisen ja poistamisen myöhemmin ohjelmassa?
+
+Ratkaisu asiaan on toteuttaa lista niin,
+että osa taulukosta sisältää listan alkiot
+ja lisäksi taulukossa on \emph{ylimääräistä}
+tilaa tuleville alkioille.
 Seuraavaksi käymme läpi kaksi toteutusta,
 joista ensimmäisessä voimme lisätä ja poistaa alkioita
 listan lopussa ja toisessa sekä listan alussa että lopussa.
@@ -102,29 +93,6 @@ johon alkio sijoitetaan.
 \label{fig:listau}
 \end{figure}
 
-Tässä on kuitenkin yksi ongelma: jossain vaiheessa koko taulukko
-voi täyttyä eikä uusi listalle lisättävä alkio mahdu enää taulukkoon.
-Tällöin meidän täytyy varata uusi suurempi taulukko ja
-kopioida kaikki vanhan taulukon alkiot siihen.
-Esimerkiksi kuvassa \ref{fig:lisuus} uusi alkio 4 ei mahdu taulukkoon,
-joten joudumme varaamaan uuden taulukon.
-Käytännössä joudumme tekemään taulukon täyttyessä jotain seuraavanlaista,
-jossa $n$ on taulukon nykyinen koko ja $m$ on varattavien
-lisäpaikkojen määrä:
-
-\begin{code}
-int[] uusi = new int[n+m];
-for (int i = 0; i < n; i++) {
-    uusi[i] = lista[i];
-}
-lista = uusi;
-\end{code}
-
-Tämä on hidas operaatio, johon kuluu aikaa $O(n)$.
-Olemme saaneet siis aikaan listan, jossa lisääminen vie
-\emph{yleensä} aikaa $O(1)$ mutta välillä $O(n)$
-uuden taulukon varaamisen ja alkioiden kopioinnin takia.
-
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.7]
@@ -161,11 +129,26 @@ ja kopioida vanhan taulukon sisältö sinne.}
 \label{fig:lisuus}
 \end{figure}
 
-Jotta listarakenne olisi käyttökelpoinen, meidän täytyy varmistaa,
-että hidas $O(n)$-operaatio ei esiinny liian usein.
-Tämä on mahdollista, kun varaamme uuden taulukon aina reilusti aiempaa suuremmaksi.
-Tarkemmin ottaen yksi mahdollinen tapa on varata aina uusi taulukko niin,
-että sen koko on \emph{kaksinkertainen} vanhaan taulukkoon nähden.
+Tässä on kuitenkin yksi ongelma: jossain vaiheessa koko taulukko
+on täynnä eikä uusi listalle lisättävä alkio mahdu enää taulukkoon.
+Tällöin meidän täytyy ensin varata uusi suurempi taulukko ja
+kopioida kaikki vanhan taulukon alkiot siihen.
+Vasta tämän jälkeen voimme lisätä uuden alkion listalle.
+Tämä vie aikaa $O(n)$, koska kopioimme kaikki listan alkiot
+uuteen paikkaan muistissa.
+Esimerkiksi kuvassa \ref{fig:lisuus} uusi alkio 4 ei mahdu taulukkoon,
+joten joudumme varaamaan uuden taulukon ja kopioimaan alkiot.
+
+Olemme saaneet siis aikaan listan, jossa lisääminen
+vie aikaa \emph{joko} $O(1)$ tai $O(n)$ riippuen siitä,
+mahtuuko alkio nykyiseen taulukkoon vai täytyykö
+meidän varata uusi taulukko.
+Jotta lista olisi käyttökelpoinen, hidas $O(n)$-operaatio
+ei saisi esiintyä liian usein.
+Osoittautuu, että saavutamme tämän tavoitteen,
+kunhan varaamme uuden taulukon aina reilusti aiempaa suuremmaksi.
+Yksi helppo ratkaisu on \emph{kaksinkertaistaa} taulukon koko aina,
+kun varaamme uuden taulukon.
 Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
 
@@ -226,16 +209,14 @@ kuin listan todellinen sisältö.
 
 \subsection{Lisäykset/poistot alussa ja lopussa}
 
-Seuraavaksi haluamme luoda listan,
-jossa voimme lisätä ja poistaa alkioita
+Melko samaan tapaan voimme myös luoda taulukkolistan,
+joka sallii tehokkaat alkioiden lisäykset ja poistot
 sekä listan alussa että lopussa.
-Voimme menetellä lähes samalla tavalla kuin ennenkin,
-kunhan luovumme yhdestä periaatteesta:
-taulukon ensimmäinen alkio ei enää välttämättä
-ole listan ensimmäinen alkio.
-Sen sijaan listan ensimmäisen ja
-viimeisen alkion kohdat taulukossa vaihtelevat ja listan sisältö
-voi jatkua taulukon lopusta taulukon alkuun.
+Jotta tämä onnistuisi, muutamme listan tallennustapaa niin,
+että lista voi alkaa ja päättyä missä tahansa taulukon
+kohdassa ja listan sisältö voi jatkua taulukon lopusta alkuun.
+Tämän ansiosta pystymme tekemään lisäyksiä ja poistoja
+listan molemmissa päissä.
 
 \begin{figure}
 \center
