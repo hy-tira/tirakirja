@@ -1,36 +1,60 @@
 \chapter{Listarakenteet}
 
-Lista on tietorakenne, joka sisältää joukon alkioita tietyssä järjestyksessä.
+Lista on tietorakenne, joka pitää yllä
+peräkkäisten alkioiden kokoelmaa.
 Esimerkiksi $[3,7,2,5]$ on lista, jossa on neljä alkiota.
-Tavallisia listan operaatioita ovat seuraavat:
+Tässä luvussa tutustumme kahteen tapaan toteuttaa lista:
+\emph{taulukkolista} perustuu taulukkoon ja \emph{linkitetty lista}
+muodostuu solmuista, jotka viittaavat toisiinsa.
 
-\begin{itemize}
-\item etsi alkio listalta
-\item lisää alkio listalle
-\item poista alkio listalta
-\end{itemize}
+Haluamme toteuttaa listan niin, että pystymme \emph{lisäämään} ja
+\emph{poistamaan} alkioita.
+Tämä erottaa listan tavallisesta taulukosta:
+kun määrittelemme taulukon, meidän tulee päättää pysyvästi,
+montako alkiota siinä on,
+mutta listan alkioiden määrä voi sen sijaan vaihdella
+ohjelman suorituksen aikana.
 
-Tässä luvussa tutustumme kahteen tapaan listan toteuttamiseen.
-Toteutamme listan ensin taulukon avulla ja sen jälkeen
-linkitettynä rakenteena.
-Kuten tulemme huomaamaan, molemmissa tavoissa on omat
-hyvät ja huonot puolensa.
+Listan toteutustapa vaikuttaa siihen, kuinka nopeasti
+pääsemme käsiksi alkioihin sekä pystymme lisäämään
+ja poistamaan alkioita.
+Tulemme huomaamaan, että sekä taulukkolistassa että
+linkitetyssä listassa on omat vahvuutensa ja heikkoutensa.
 
 \section{Taulukkolista}
 
-Taulukko on tehokas tietorakenne, joka sopii hyvin listan alustaksi.
-Ainoa ongelma on, että meidän täytyy päättää taulukon koko
-samalla kun luomme sen emmekä voi muuttaa kokoa myöhemmin.
-Esimerkiksi seuraava koodi luo taulukon, jossa on pysyvästi 10 alkiota:
+Kun luomme ohjelmoinnissa taulukon,
+ilmoitamme sen alkioiden määrän.
+Sitten taulukolle varataan muistista tilaa niin,
+että kaikki sen alkiot ovat peräkkäin,
+emmekä voi enää muuttaa taulukon kokoa.
+Esimerkiksi seuraava koodi määrittelee taulukon,
+$x$, johon mahtuu $n$ alkiota:
 
 \begin{code}
-int[] taulu = new int[10];
+int[] x = new int[n];
 \end{code}
 
-Kuinka voimme luoda muuttuvan kokoisen listan taulukon avulla?
-Ratkaisuna on varata taulukkoon \emph{ylimääräistä}
-tilaa tuleville listan alkioille.
-Tällä tavalla voimme luoda listan, joka pystyy laajentumaan.
+Keskeinen taulukon ominaisuus on,
+että voimme \emph{indeksoida} sen alkioita
+kokonaisluvuin $0,1,\dots,n-1$.
+Esimerkiksi $x[0]$ viittaa ensimmäiseen alkioon,
+$x[1]$ viittaa toiseen alkioon jne.
+Koska taulukon sisältö on peräkkäin muistissa,
+pääsemme tehokkaasti käsiksi sen alkioihin:
+voimme hakea minkä tahansa arvon
+tai muuttaa sitä ajassa $O(1)$.
+
+Voimme siis luoda helposti taulukon avulla listan,
+jossa pääsemme käsiksi mihin tahansa alkioon ajassa $O(1)$.
+Jäljellä oleva ongelma on, että haluamme pystyä myös
+lisäämään ja poistamaan alkioita.
+Miten voimme luoda taulukon avulla muuttuvan kokoisen listan,
+kun taulukon koko on kiinteä?
+
+Ratkaisu asiaan on varata taulukkoon
+\emph{ylimääräistä} tilaa tuleville listan alkioille,
+jolloin taulukko pystyy laajentumaan.
 Seuraavaksi käymme läpi kaksi toteutusta,
 joista ensimmäisessä voimme lisätä ja poistaa alkioita
 listan lopussa ja toisessa sekä listan alussa että lopussa.
@@ -38,12 +62,16 @@ listan lopussa ja toisessa sekä listan alussa että lopussa.
 \subsection{Lisäykset/poistot lopussa}
 
 Säilytämme listaa taulukossa niin,
-että tietty määrä taulukon ensimmäisiä alkioita on listan käytössä
+että tietty määrä alkioita taulukon alussa on listan käytössä
 ja loput alkiot on varattu tuleville alkioille.
+Tämän ansiosta pystymme lisäämään uuden alkion listalle
+ajassa $O(1)$, koska meidän riittää ottaa käyttöön seuraava
+vapaana oleva kohta taulukosta.
+
 Kuva \ref{fig:listau} näyttää esimerkin listan $[3,7,2,5]$ tallentamisesta taulukkoon.
 Taulukossa on paikkoja kahdeksalle alkiolle, ja niistä neljä on tällä hetkellä käytössä.
-Kun listan loppuun lisätään uusi alkio 6, se mahtuu taulukkoon.
-Tällä tavalla alkion lisääminen listaan vie vain $O(1)$ aikaa.
+Kun lisäämme listan loppuun uuden alkion 6, otamme käyttöön taulukosta uuden kohdan,
+johon alkio sijoitetaan.
 
 \begin{figure}
 \center
@@ -79,12 +107,13 @@ Tällä tavalla alkion lisääminen listaan vie vain $O(1)$ aikaa.
 
 Tässä on kuitenkin yksi ongelma: jossain vaiheessa koko taulukko
 voi täyttyä eikä uusi listalle lisättävä alkio mahdu enää taulukkoon.
-Esimerkiksi kuvassa \ref{fig:lisuus} uusi alkio 4 ei mahdu taulukkoon.
 Tällöin meidän täytyy varata uusi suurempi taulukko ja
 kopioida kaikki vanhan taulukon alkiot siihen.
-Joudumme siis tekemään jotain seuraavanlaista,
+Esimerkiksi kuvassa \ref{fig:lisuus} uusi alkio 4 ei mahdu taulukkoon,
+joten joudumme varaamaan uuden taulukon.
+Käytännössä joudumme tekemään taulukon täyttyessä jotain seuraavanlaista,
 jossa $n$ on taulukon nykyinen koko ja $m$ on varattavien
-lisäpaikkojen määrä.
+lisäpaikkojen määrä:
 
 \begin{code}
 int[] uusi = new int[n+m];
@@ -135,7 +164,7 @@ ja kopioida vanhan taulukon sisältö sinne.}
 \label{fig:lisuus}
 \end{figure}
 
-Jotta rakenne olisi käyttökelpoinen, meidän täytyy varmistaa,
+Jotta listarakenne olisi käyttökelpoinen, meidän täytyy varmistaa,
 että hidas $O(n)$-operaatio ei esiinny liian usein.
 Tämä on mahdollista, kun varaamme uuden taulukon aina reilusti aiempaa suuremmaksi.
 Tarkemmin ottaen yksi mahdollinen tapa on varata aina uusi taulukko niin,
@@ -200,8 +229,8 @@ kuin listan todellinen sisältö.
 
 \subsection{Lisäykset/poistot alussa ja lopussa}
 
-Seuraava tavoitteemme on luoda lista,
-joka sallii alkioiden lisäämisen ja poistamisen
+Seuraavaksi haluamme luoda listan,
+jossa voimme lisätä ja poistaa alkioita
 sekä listan alussa että lopussa.
 Voimme menetellä lähes samalla tavalla kuin ennenkin,
 kunhan luovumme yhdestä periaatteesta:
@@ -348,6 +377,11 @@ Lisäksi tiedossamme on viittaukset listan alkuun ja loppuun.
 Voimme esimerkiksi käydä listan läpi aloittamalla alusta
 ja siirtymällä aina seuraavaan solmuun askel kerrallaan.
 
+Kaksisuuntainen linkitys on käytännössä järkevä tapa toteuttaa
+linkitetty lista, ja oletamme jatkossa, että listamme on
+kahteen suuntaan linkitetty ja meillä on tiedossa viittaukset
+listan alkuun ja loppuun.
+
 \subsection{Linkitetyn rakenteen toteuttaminen}
 
 Jokaisessa ohjelmointikielessä on omat keinonsa
@@ -488,6 +522,43 @@ Niinpä tiettyyn listan kohtaan pääseminen vie aikaa $O(n)$.
 Joudumme tekemään näin, koska listan alkiot voivat olla
 tallessa eri puolilla muistia eikä meillä ole suoraa keinoa
 päästä niihin.
+
+\subsection{Toteutusten vertailua}
+
+\begin{table}
+\center
+\begin{tabular}{lrr}
+operaatio & taulukkolista & linkitetty lista \\
+\hline
+pääsy listan alkuun & $O(1)$ & $O(1)$ \\
+pääsy listan loppuun & $O(1)$ & $O(1)$ \\ 
+pääsy listan keskelle &  $O(1)$ & $O(n)$ \\
+lisäys/poisto listan alussa & $O(1)$ & $O(1)$ \\
+lisäys/poisto listan lopussa & $O(1)$ & $O(1)$ \\ 
+lisäys/poisto listan keskellä &  $O(n)$ & $O(1)$ \\
+\end{tabular}
+\caption{Taulukkolistan ja linkitetyn listan operaatioiden
+aikavaativuuksia.}
+\label{tab:taulin}
+\end{table}
+
+Taulukko \ref{tab:taulin} esittää yhteenvedon taulukkolistan ja
+linkitetyn listan ominaisuuksista.
+Kummassakin rakenteessa on \emph{yksi} operaatio,
+joka ei ole tehokas.
+Taulukkolistassa pääsemme tehokkaasti mihin tahansa listan
+kohtaan, mutta on hidasta muokata listaa keskeltä.
+Linkitetyssä listassa voimme muokata listaa mistä tahansa,
+mutta keskelle pääseminen on hidasta.
+
+Huomaa, että keskelle pääsemisen hitaus rajoittaa melko paljon
+linkitetyn listan käyttämistä.
+Vaikka pystymme sinänsä muokkaamaan listaa mistä tahansa kohdasta
+tehokkaasti, meidän tulee ensin \emph{päästä} kyseiseen kohtaan.
+Jos meillä on jostain syystä etukäteen tiedossa viittaus listan keskelle,
+voimme muokata kyseistä kohtaa tehokkaasti,
+mutta muuten meidän tulee ensin kulkea haluttuun kohtaan,
+missä kuluu aikaa $O(n)$.
 
 \section{Javan toteutukset}
 
