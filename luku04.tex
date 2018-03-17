@@ -9,10 +9,10 @@ muodostuu solmuista, jotka viittaavat toisiinsa.
 
 Haluamme toteuttaa listan niin, että pystymme \emph{lisäämään} ja
 \emph{poistamaan} alkioita.
-Tämä erottaa listan tavallisesta taulukosta:
-kun määrittelemme taulukon, meidän tulee päättää pysyvästi,
+Tämä erottaa listan taulukosta:
+kun luomme taulukon, meidän tulee päättää pysyvästi,
 montako alkiota siinä on,
-mutta listan alkioiden määrä voi sen sijaan vaihdella
+mutta listan alkioiden määrä voi vaihdella
 ohjelman suorituksen aikana.
 
 Listan toteutustapa vaikuttaa siihen, kuinka nopeasti
@@ -25,35 +25,32 @@ linkitetyssä listassa on omat vahvuutensa ja heikkoutensa.
 
 Kun luomme ohjelmoinnissa taulukon,
 ilmoitamme sen alkioiden määrän.
-Sitten taulukolle varataan muistista tilaa niin,
-että kaikki sen alkiot ovat peräkkäin,
-emmekä voi enää muuttaa taulukon kokoa.
-Esimerkiksi seuraava koodi määrittelee taulukon,
+Esimerkiksi seuraava koodi luo taulukon
 $x$, johon mahtuu $n$ alkiota:
 
 \begin{code}
 int[] x = new int[n];
 \end{code}
 
-Keskeinen taulukon ominaisuus on,
-että voimme \emph{indeksoida} sen alkioita
-kokonaisluvuin $0,1,\dots,n-1$.
-Esimerkiksi $x[0]$ viittaa ensimmäiseen alkioon,
-$x[1]$ viittaa toiseen alkioon jne.
-Koska taulukon sisältö on peräkkäin muistissa,
-pääsemme tehokkaasti käsiksi sen alkioihin:
-voimme hakea minkä tahansa arvon
-tai muuttaa sitä ajassa $O(1)$.
+Taulukon luonnin yhteydessä sille varataan muistista
+yhtenäinen $n$ alkion alue, johon taulukon sisältö tallennetaan.
+Koska taulukon alkiot tallennetaan muistiin peräkkäin,
+pääsemme tehokkaasti käsiksi niihin:
+voimme viitata kohdassa $k$ olevaan alkioon
+merkinnällä $x[k]$ ja hakea minkä tahansa arvon tai
+muuttaa sitä ajassa $O(1)$.
 
-Voimme siis luoda helposti taulukon avulla listan,
-jossa pääsemme käsiksi mihin tahansa alkioon ajassa $O(1)$.
-Jäljellä oleva ongelma on, että haluamme pystyä myös
-lisäämään ja poistamaan alkioita.
-Miten voimme luoda taulukon avulla muuttuvan kokoisen listan,
-kun taulukon koko on kiinteä?
+Taulukon rajoituksena on kuitenkin, että emme voi kasvattaa
+sen kokoa myöhemmin.
+Syynä tähän on, että muistiin tallennetun taulukon ympärillä
+on muuta muistissa olevaa tietoa.
+Emme voi siis kasvattaa taulukon kokoa, koska se peittäisi
+alleen muistissa olevaa tietoa.
+Miten voisimme siis luoda taulukon avulla listan,
+johon pystyy lisäämään uusia alkioita?
 
 Ratkaisu asiaan on varata taulukkoon
-\emph{ylimääräistä} tilaa tuleville listan alkioille,
+\emph{ylimääräistä} tilaa tuleville alkioille,
 jolloin taulukko pystyy laajentumaan.
 Seuraavaksi käymme läpi kaksi toteutusta,
 joista ensimmäisessä voimme lisätä ja poistaa alkioita
