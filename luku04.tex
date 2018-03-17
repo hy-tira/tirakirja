@@ -315,7 +315,7 @@ jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \section{Linkitetty lista}
 
-Linkitetty lista muodostuu solmuista, joista jokainen sisältää
+\emph{Linkitetty lista} muodostuu solmuista, joista jokainen sisältää
 yhden listan alkion.
 Yhteen suuntaan linkitetyssä listassa jokaisessa
 solmussa on viittaus listan seuraavaan solmuun.
@@ -366,7 +366,7 @@ Jokaisessa ohjelmointikielessä on omat keinonsa
 linkitetyn rakenteen toteuttamiseen.
 Javassa voimme toteuttaa linkitetyn rakenteen niin,
 että jokainen solmu on oma olionsa.
-Esimerkiksi voimme toteuttaa seuraavan luokan \texttt{Node},
+Esimerkiksi voimme toteuttaa seuraavan luokan \texttt{Solmu},
 jonka oliot toimivat linkitetyn listan solmuina:
 
 \begin{code}
@@ -492,14 +492,13 @@ Lopuksi poistamme listasta alkion 2, jolloin yhdistämme
 alkiot 4 ja 5 suoraan toisiinsa.
 
 Koska meillä on muistissa viittaukset listan alkuun ja loppuun,
-pääsemme niihin tehokkaasti.
+pääsemme niihin solmuihin tehokkaasti.
 Sen sijaan jos haluamme päästä johonkin muuhun listan kohtaan,
 meidän tulee aloittaa alusta tai lopusta ja kulkea askel
 kerrallaan viittauksia seuraten.
 Niinpä tiettyyn listan kohtaan pääseminen vie aikaa $O(n)$.
-Joudumme tekemään näin, koska listan alkiot voivat olla
-tallessa eri puolilla muistia eikä meillä ole suoraa keinoa
-päästä niihin.
+Joudumme tekemään näin, koska listan alkiot ovat muistissa
+sekalaisissa kohdissa eikä meillä ole suoraa keinoa päästä niihin.
 
 \subsection{Toteutusten vertailua}
 
@@ -511,18 +510,18 @@ operaatio & taulukkolista & linkitetty lista \\
 pääsy listan alkuun & $O(1)$ & $O(1)$ \\
 pääsy listan loppuun & $O(1)$ & $O(1)$ \\ 
 pääsy listan keskelle &  $O(1)$ & $O(n)$ \\
-lisäys/poisto listan alussa & $O(1)$ & $O(1)$ \\
-lisäys/poisto listan lopussa & $O(1)$ & $O(1)$ \\ 
+lisäys/poisto listan alussa & $O(1)^*$ & $O(1)$ \\
+lisäys/poisto listan lopussa & $O(1)^*$ & $O(1)$ \\ 
 lisäys/poisto listan keskellä &  $O(n)$ & $O(1)$ \\
 \end{tabular}
 \caption{Taulukkolistan ja linkitetyn listan operaatioiden
-aikavaativuuksia.}
+aikavaativuuksia. Merkintä $^*$ tarkoittaa keskimääräistä aikavaativuutta.}
 \label{tab:taulin}
 \end{table}
 
 Taulukko \ref{tab:taulin} esittää yhteenvedon taulukkolistan ja
 linkitetyn listan ominaisuuksista.
-Kummassakin rakenteessa on \emph{yksi} operaatio,
+Kummassakin toteutuksessa on yksi operaatio,
 joka ei ole tehokas.
 Taulukkolistassa pääsemme tehokkaasti mihin tahansa listan
 kohtaan, mutta on hidasta muokata listaa keskeltä.
