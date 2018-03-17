@@ -2,26 +2,25 @@
 
 Lista on tietorakenne, joka sisältää joukon alkioita tietyssä järjestyksessä.
 Esimerkiksi $[3,7,2,5]$ on lista, jossa on neljä alkiota.
-Haluamme toteuttaa listan niin, että pystymme lisäämään ja
-poistamaan alkioita.
-
-Tämä luku käsittelee kaksi tapaa listan toteuttamiseen:
+Tavallisia listan operaatioita ovat seuraavat:
 
 \begin{itemize}
-\item \textbf{Taulukkolista}: Lista on toteutettu taulukkona,
-jossa osa tilasta on listan käytössä ja loput varalla tuleville alkioille.
-\item \textbf{Linkitetty lista}: Lista on toteutettu linkitettynä rakenteena,
-jossa vierekkäiset solmut on yhdistetty toisiinsa.
+\item etsi alkio listalta
+\item lisää alkio listalle
+\item poista alkio listalta
 \end{itemize}
 
-Molemmissa toteutuksissa on omat hyvät ja huonot puolensa,
-joihin kiinnitämme huomiota luvun aikana.
+Tässä luvussa tutustumme kahteen tapaan listan toteuttamiseen.
+Toteutamme listan ensin taulukon avulla ja sen jälkeen
+linkitettynä rakenteena.
+Kuten tulemme huomaamaan, molemmissa tavoissa on omat
+hyvät ja huonot puolensa.
 
 \section{Taulukkolista}
 
 Taulukko on tehokas tietorakenne, joka sopii hyvin listan alustaksi.
-Ainoa ongelma on, että taulukon koko on kiinteä: meidän täytyy päättää alussa,
-montako alkiota taulukossa on, emmekä voi muuttaa kokoa myöhemmin.
+Ainoa ongelma on, että meidän täytyy päättää taulukon koko
+samalla kun luomme sen emmekä voi muuttaa kokoa myöhemmin.
 Esimerkiksi seuraava koodi luo taulukon, jossa on pysyvästi 10 alkiota:
 
 \begin{code}
@@ -31,12 +30,12 @@ int[] taulu = new int[10];
 Kuinka voimme luoda muuttuvan kokoisen listan taulukon avulla?
 Ratkaisuna on varata taulukkoon \emph{ylimääräistä}
 tilaa tuleville listan alkioille.
-Tälla tavalla voimme luoda listan, joka pystyy laajentumaan.
+Tällä tavalla voimme luoda listan, joka pystyy laajentumaan.
 Seuraavaksi käymme läpi kaksi toteutusta,
-joista ensimmäisessä voimme muuttaa listaa lopusta
-ja toisessa voimme muuttaa listaa sekä alusta että lopusta.
+joista ensimmäisessä voimme lisätä ja poistaa alkioita
+listan lopussa ja toisessa sekä listan alussa että lopussa.
 
-\subsection{Muutokset lopussa}
+\subsection{Lisäykset/poistot lopussa}
 
 Säilytämme listaa taulukossa niin,
 että tietty määrä taulukon ensimmäisiä alkioita on listan käytössä
@@ -80,16 +79,15 @@ Tällä tavalla alkion lisääminen listaan vie vain $O(1)$ aikaa.
 
 Tässä on kuitenkin yksi ongelma: jossain vaiheessa koko taulukko
 voi täyttyä eikä uusi listalle lisättävä alkio mahdu enää taulukkoon.
-Kuva \ref{fig:lisuus} näyttää tällaisen tilanteen,
-jossa uusi alkio 4 ei mahdu taulukkoon.
+Esimerkiksi kuvassa \ref{fig:lisuus} uusi alkio 4 ei mahdu taulukkoon.
 Tällöin meidän täytyy varata uusi suurempi taulukko ja
 kopioida kaikki vanhan taulukon alkiot siihen.
 Joudumme siis tekemään jotain seuraavanlaista,
-jossa $n$ on taulukon nykyinen koko ja $k$ on varattavien
+jossa $n$ on taulukon nykyinen koko ja $m$ on varattavien
 lisäpaikkojen määrä.
 
 \begin{code}
-int[] uusi = new int[n+k];
+int[] uusi = new int[n+m];
 for (int i = 0; i < n; i++) {
     uusi[i] = lista[i];
 }
@@ -97,9 +95,9 @@ lista = uusi;
 \end{code}
 
 Tämä on hidas operaatio, johon kuluu aikaa $O(n)$.
-Olemme saaneet siis aikaan listan, johon on \emph{yleensä} nopeaa lisätä
-alkioita, mutta välillä lisääminen viekin aikaa $O(n)$
-uuden taulukon varaamisen ja kopioinnin takia.
+Olemme saaneet siis aikaan listan, jossa lisääminen vie
+\emph{yleensä} aikaa $O(1)$ mutta välillä $O(n)$
+uuden taulukon varaamisen ja alkioiden kopioinnin takia.
 
 \begin{figure}
 \center
@@ -140,8 +138,8 @@ ja kopioida vanhan taulukon sisältö sinne.}
 Jotta rakenne olisi käyttökelpoinen, meidän täytyy varmistaa,
 että hidas $O(n)$-operaatio ei esiinny liian usein.
 Tämä on mahdollista, kun varaamme uuden taulukon aina reilusti aiempaa suuremmaksi.
-Yksi mahdollinen tapa on varata uusi taulukko niin,
-että sen koko on kaksinkertainen vanhaan taulukkoon nähden.
+Tarkemmin ottaen yksi mahdollinen tapa on varata aina uusi taulukko niin,
+että sen koko on \emph{kaksinkertainen} vanhaan taulukkoon nähden.
 Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
 
@@ -200,16 +198,16 @@ Ohjelmassa saattaa olla samaan aikaan käytössä monia listoja,
 ja haluamme, että listan varaama taulukko on samaa kokoluokkaa
 kuin listan todellinen sisältö.
 
-\subsection{Muutokset alussa ja lopussa}
+\subsection{Lisäykset/poistot alussa ja lopussa}
 
-Seuraava tavoitteeme on luoda taulukkoon perustuva lista,
+Seuraava tavoitteemme on luoda lista,
 joka sallii alkioiden lisäämisen ja poistamisen
 sekä listan alussa että lopussa.
 Voimme menetellä lähes samalla tavalla kuin ennenkin,
 kunhan luovumme yhdestä periaatteesta:
 taulukon ensimmäinen alkio ei enää välttämättä
 ole listan ensimmäinen alkio.
-Sen sijaan toteutamme listan niin, että listan ensimmäisen ja
+Sen sijaan listan ensimmäisen ja
 viimeisen alkion kohdat taulukossa vaihtelevat ja listan sisältö
 voi jatkua taulukon lopusta taulukon alkuun.
 
@@ -304,9 +302,9 @@ listan alkuun tai loppuun.
 Kuva \ref{fig:lismol2} näyttää esimerkin tällaisesta tilanteesta.
 Tällöin meidän täytyy varata uusi suurempi taulukko,
 johon listan sisältö siirretään.
-Voimme menetellä samalla tavalla kuin lopusta muokattavan
-taulukkolistan toteutuksessa, jolloin operaatiot vievät
-keskimäärin aikaa $O(1)$.
+Voimme menetellä samalla tavalla kuin aiemmin ja
+kaksinkertaistaa taulukon koon joka vaiheessa,
+jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \section{Linkitetty lista}
 
@@ -350,7 +348,7 @@ Lisäksi tiedossamme on viittaukset listan alkuun ja loppuun.
 Voimme esimerkiksi käydä listan läpi aloittamalla alusta
 ja siirtymällä aina seuraavaan solmuun askel kerrallaan.
 
-\subsection{Linkitetyt rakenteet}
+\subsection{Linkitetyn rakenteen toteuttaminen}
 
 Jokaisessa ohjelmointikielessä on omat keinonsa
 linkitetyn rakenteen toteuttamiseen.
@@ -360,42 +358,42 @@ Esimerkiksi voimme toteuttaa seuraavan luokan \texttt{Node},
 jonka oliot toimivat linkitetyn listan solmuina:
 
 \begin{code}
-public class Node {
-    public int value;
-    public Node next;
-    public Node prev;
+public class Solmu {
+    public int arvo;
+    public Solmu seuraava;
+    public Solmu edellinen;
 
-    public Node(int value, Node next, Node prev) {
-        this.value = value;
-        this.next = next;
-        this.prev = prev;
+    public Solmu(int arvo, Solmu seuraava, Solmu edellinen) {
+        this.arvo = arvo;
+        this.seuraava = seuraava;
+        this.edellinen = edellinen;
     }
 }
 \end{code}
 
-Tässä kenttä \texttt{value} kertoo solmun arvon,
-kenttä \texttt{next} osoittaa seuraavaan solmuun
-ja kenttä \texttt{prev} osoittaa edelliseen solmuun.
+Tässä kenttä \texttt{arvo} kertoo solmun arvon,
+kenttä \texttt{seuraava} osoittaa seuraavaan solmuun
+ja kenttä \texttt{edellinen} osoittaa edelliseen solmuun.
 Jos seuraavaa tai edellistä solmua ei ole,
 viittauksen tilalla on arvo \texttt{null}.
 Tämän luokan avulla voisimme luoda linkitetyn listan $[3,7,2,5]$
 seuraavasti:
 
 \begin{code}
-Node s1, s2, s3, s4;
-s1 = new Node(3, s2, null);
-s2 = new Node(7, s3, s1);
-s3 = new Node(2, s4, s2);
-s4 = new Node(5, null, s3);
+Solmu s1, s2, s3, s4;
+s1 = new Solmu(3, s2, null);
+s2 = new Solmu(7, s3, s1);
+s3 = new Solmu(2, s4, s2);
+s4 = new Solmu(5, null, s3);
 \end{code}
 
 Tämän jälkeen voisimme käydä listan läpi näin alusta loppuun:
 
 \begin{code}
-Node s = s1;
+Solmu s = s1;
 while (s != null) {
-    System.out.println(s.value);
-    s = s.next;
+    System.out.println(s.arvo);
+    s = s.seuraava;
 }
 \end{code}
 
@@ -410,13 +408,15 @@ Koodin tulostus on seuraava:
 
 \subsection{Listan operaatiot}
 
-Linkitetyn listan hyvänä puolena on,
-että voimme lisätä tehokkaasti alkion mihin tahansa
-kohtaan listaa luomalla uuden alkiota vastaavan solmun
-ja muuttamalla paria viittausta listassa.
-Samoin voimme poistaa tehokkaasti minkä tahansa alkion
-samaan tapaan viittauksia muuttamalla.
-Sekä lisäykset että poistot toimivat $O(1)$-ajassa.
+Linkitetyn listan etuna on,
+että voimme lisätä ja poistaa
+alkioita $O(1)$-ajassa kaikissa listan kohdissa.
+Kun haluamme lisätä listalle alkion,
+luomme ensin uuden solmun ja muutamme sitten
+sen vieressä olevien solmujen viittauksia niin,
+että ne viittaavat uuteen solmuun.
+Vastaavasti kun haluamme poistaa alkion,
+muutamme viittauksia niin, että solmu ohitetaan.
 
 \begin{figure}
 \center
@@ -479,23 +479,22 @@ että alkio 4 tulee niiden väliin.
 Lopuksi poistamme listasta alkion 2, jolloin yhdistämme
 alkiot 4 ja 5 suoraan toisiinsa.
 
-Linkitetyn listan käyttämiseen liittyy kuitenkin yksi hankaluus:
-koska emme tiedä, missä päin muistia listan solmut sijaitsevat,
-ainoa keino päästä käsiksi solmuihin on lähteä liikkeelle
-listan alusta tai lopusta ja seurata viittauksia.
-Niinpä tietyssä kohdassa olevaan alkioon pääseminen
-vie aikaa $O(n)$.
-Voimme siis käytännössä käsitellä tehokkaasti vain listan alkua ja loppua
-mutta kaikki operaatiot listan keskellä ovat hitaita --
-ellei meillä ole sattumalta valmiiksi tiedossa halutun solmun
-sijainti muistissa.
+Koska meillä on muistissa viittaukset listan alkuun ja loppuun,
+pääsemme niihin tehokkaasti.
+Sen sijaan jos haluamme päästä johonkin muuhun listan kohtaan,
+meidän tulee aloittaa alusta tai lopusta ja kulkea askel
+kerrallaan viittauksia seuraten.
+Niinpä tiettyyn listan kohtaan pääseminen vie aikaa $O(n)$.
+Joudumme tekemään näin, koska listan alkiot voivat olla
+tallessa eri puolilla muistia eikä meillä ole suoraa keinoa
+päästä niihin.
 
 \section{Javan toteutukset}
 
 Javan standardikirjastossa on monia listojen toteutuksia,
 jotka pohjautuvat taulukkolistaan tai linkitettyyn listaan.
-Seuraavaksi tutustumme rakenteisiin, joista on usein hyötyä
-käytännössä.
+Seuraavaksi tutustumme käytännössä hyödyllisimpiin
+Javan toteutuksista.
 
 \subsection{\texttt{ArrayList}-rakenne}
 
@@ -518,7 +517,9 @@ System.out.println(lista); // [1, 2]
 
 Metodit \texttt{add} ja \texttt{remove}
 toimivat keskimäärin ajassa $O(1)$,
-joten voimme muuttaa tehokkaasti listaa sen lopusta.
+kun käytämme niitä listan lopussa.
+Huomaa, että metodille \texttt{remove} täytyy ilmoittaa,
+mistä kohdasta poistamme alkion.
 Lisäksi voimme käyttää listaa tehokkaasti taulukon tavoin
 ja käsitellä tietyssä kohdassa olevaa alkiota
 metodeilla \texttt{get} ja \texttt{set}.
@@ -532,8 +533,8 @@ lista.set(1,5);
 System.out.println(lista); // [1, 5, 3]
 \end{code}
 
-Luokassa \texttt{Collections} on hyödyllisiä metodeita,
-joiden avulla voi käsitellä \texttt{ArrayList}-rakennetta.
+Luokassa \texttt{Collections} on hyödyllisiä metodeita
+listan käsittelyyn.
 Seuraava koodi järjestää ensin listan,
 muuttaa sitten sen järjestyksen käänteiseksi
 ja sekoittaa lopuksi järjestyksen.
@@ -586,7 +587,7 @@ lista.removeFirst();
 System.out.println(lista); // [1,3]
 \end{code}
 
-Jos haluamme tehdä tehokkaita lisäyksiä ja poistoja muualla listassa,
+Jos haluamme tehdä lisäyksiä ja poistoja muualla listassa,
 meillä täytyy olla \emph{iteraattori}, joka osoittaa haluttuun kohtaan.
 Seuraava koodi luo iteraattorin, joka osoittaa ensin listan alkuun.
 Sitten se siirtää iteraattoria kaksi askelta eteenpäin ja
