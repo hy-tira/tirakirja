@@ -1,19 +1,34 @@
 \chapter{Johdanto}
 
-Tässä luvussa luomme ensin katsauksen siihen, mitä kurssin tavoitteena
-on opettaa ja mitä hyötyä näistä taidoista on.
-Tämän jälkeen käymme läpi esimerkkejä rekursion käyttämisestä
-ohjelmoinnissa, ja lopuksi tutustumme muutamaan matematiikan
-käsitteeseen, joista on hyötyä tietorakenteiden ja algoritmien analysoinnissa.
+Kurssin \emph{Tietorakenteet ja algoritmit} tarkoituksena
+on opettaa menetelmiä, joiden avulla voimme ratkaista
+\emph{tehokkaasti} laskennallisia ongelmia.
+Ohjelmoinnin peruskursseilla olemme keskittyneet
+ohjelmointitaidon opetteluun.
+Nyt on aika siirtyä askel eteenpäin ja alkaa kiinnittää
+huomiota myös siihen, miten tehokkaita ohjelmat ovat.
+
+Algoritmien tehokkuudella on suuri merkitys käytännössä.
+Esimerkiksi netissä toimiva reittiopas on käyttökelpoinen sen vuoksi,
+että saamme reitin kuvauksen heti sen jälkeen kun olemme
+ilmoittaneet, mistä mihin haluamme matkustaa.
+Jos meidän pitäisi odottaa reitin kuvausta vaikkapa viikko tai kuukausi,
+tämä rajoittaisi paljon palvelun käyttöä.
+
+Jotta reittiopas toimisi tehokkaasti, sen taustalla on
+hyvin suunniteltu algoritmi.
+Tällä kurssilla opimme, kuinka voimme luoda itse vastaavia algoritmeja.
+Tutustumme kurssilla sekä algoritmien suunnittelun teoriaan että
+käytäntöön -- haluamme ymmärtää syvällisesti, mistä algoritmeissa on kysymys,
+mutta myös osata toteuttaa niitä käytännössä.
 
 \section{Laskennalliset ongelmat}
 
-Tämän kurssin tarkoituksena on opettaa menetelmiä,
-joiden avulla voimme ratkaista \emph{tehokkaasti}
-laskennallisia ongelmia.
+\emph{Laskennallinen ongelma} on hyvin määritelty laskentatehtävä,
+jonka haluamme ratkaista.
 Lähtökohtana on, että meille annetaan ongelman kuvaus,
 jossa kerrotaan täsmällisesti algoritmille annettava
-syöte sekä haluttu tuloste.
+\emph{syöte} sekä haluttu \emph{tuloste}.
 Syöte tarkoittaa, mitä tietoja algoritmille annetaan,
 ja tuloste tarkoittaa, mitä algoritmin tulee tuottaa vastauksena.
 
@@ -21,57 +36,37 @@ Seuraavassa on esimerkki laskennallisesta ongelmasta:
 
 \begin{itemize}
 \item \textbf{Syöte}: Algoritmille annetaan taulukko,
-jossa on $n$ kokonaislukua, sekä kokonaisluku $x$.
+jossa on $n$ kokonaislukua.
 \item \textbf{Tuloste:} Algoritmin tulee ilmoittaa,
-monellako tavalla voimme valita taulukosta kaksi eri
-kohdissa olevaa lukua, joiden summa on $x$.
+mikä on taulukon lukujen summa.
 \end{itemize}
 
-Esimerkiksi jos $n=5$, taulukko on $[2,1,8,5,6]$ ja $x=7$,
-niin vastaus on 2, koska mahdolliset parit ovat
-$(2,5)$ ja $(1,6)$.
+Esimerkiksi jos $n=4$ ja taulukko on $[2,1,5,2]$,
+niin algoritmin tulee antaa vastaus $10$,
+koska taulukon lukujen summa on $2+1+5+2=10$.
 
-Ohjelmoinnin peruskursseilla olemme oppineet taitoja,
-joiden avulla voimme ratkaista laskennallisia ongelmia.
-Suoraviivainen tapa ratkaista yllä oleva ongelma
-on käydä läpi kaikki tavat, kuinka voimme valita taulukosta
-kaksi kohtaa, ja selvittää, monessako tavassa lukujen summa on $x$.
-
-Seuraava algoritmi ratkaisee tehtävän kahden for-silmukan avulla.
-Algoritmi olettaa, että luvut ovat taulukossa \texttt{taulu},
-ja se laskee tapojen määrän muuttujaan \texttt{tulos}.
+Voimme ratkaista tämän ongelman seuraavasti Javalla:
 
 \begin{code}
-int tulos = 0;
+int summa = 0;
 for (int i = 0; i < n; i++) {
-    for (int j = i+1; j < n; j++) {
-        if (taulu[i]+taulu[j] == x) {
-            tulos++;
-        }
-    }
+    summa += luvut[i];
 }
+System.out.println(summa);
 \end{code}
 
-Ensimmäinen vaihe algoritmiikan oppimisessa on oppia
+Ensimmäinen vaihe ohjelmoinnin oppimisessa on oppia
 ohjelmoinnin perustaidot niin, että osaamme kirjoittaa
 jonkin toimivan koodin, joka ratkaisee annetun ongelman.
+On arvokas taito sinänsä, että osaamme kirjoittaa
+toimivan koodin ongelman ratkaisemiseen.
 Toinen vaihe, johon keskitymme tällä kurssilla,
 on oppia suunnittelemaan \emph{tehokkaita} algoritmeja.
 Tämä tarkoittaa, että haluamme saada aikaan mahdollisuuksien mukaan
 jotain parempaa kuin suoraviivaisia
 raakaan voimaan perustuvia algoritmeja.
 
-Algoritmien tehokkuudella on suuri merkitys käytännössä.
-Esimerkiksi Google-haku on käyttökelpoinen sen vuoksi,
-että saamme hakutulokset heti haun lähettämisen jälkeen.
-Jos meidän tulisi odottaa tuloksia vaikkapa viikko,
-tämä rajoittaisi paljon haun käyttömahdollisuuksia.
-Toinen esimerkki on reittihaku, joka kertoo meille parhaan
-tavan matkustaa lähtöpaikasta kohdepaikkaan.
-Tässäkin palvelussa olennainen osa käyttökokemusta on,
-että saamme reitin välittömästi haun jälkeen eikä meidän tarvitse odottaa.
-
-Kiehtova piirre algoritmiikassa on, että monimutkaisetkin algoritmit
+Kiehtova seikka ohjelmoinnissa on, että monimutkaisetkin algoritmit
 syntyvät yksinkertaisista aineksista. Keskeiset käsitteet ovat
 
 \begin{itemize}
@@ -79,19 +74,20 @@ syntyvät yksinkertaisista aineksista. Keskeiset käsitteet ovat
 \item ehtolause (\texttt{if}), jonka avulla voimme haarautua ohjelmassa,
 \item silmukat (\texttt{for} ja \texttt{while}), joiden avulla voimme
 toistaa laskentaa, sekä
-\item taulukot, joissa voimme säilyttää suurta määrää tietoa.
+\item taulukot, joissa voimme säilyttää paljon tietoa.
 \end{itemize}
 
-Itse asiassa voimme toteuttaa minkä tahansa algoritmin vain näitä
-aineksia käyttäen.
+Itse asiassa voimme toteuttaa \emph{minkä tahansa} algoritmin
+vain näitä aineksia käyttäen.
 Tämä on huojentava tieto, koska meidän ei siis tarvitse opetella
 suurta määrää ohjelmointikielten ominaisuuksia,
 ennen kuin voimme alkaa suunnitella algoritmeja.
 Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
 tekniikoita eri tilanteessa.
 
-Käytämme kirjassa algoritmien esittämiseen Javan kaltaista
-ohjelmointikieltä, ja käymme myös erikseen läpi Java-kielen
+Käytämme kirjassa algoritmien esittämiseen Java-kieltä,
+joka on tuttu ohjelmoinnin peruskursseilta,
+ja käymme myös erikseen läpi Java-kielen
 standardikirjaston tietorakenteita ja algoritmeja.
 Ohjelmointikieli ei ole kuitenkaan merkittävässä osassa
 algoritmien suunnittelussa, vaan kirjassa käsitellyt asiat
@@ -123,7 +119,8 @@ ArrayDeque<Integer> osajoukko;
 \end{code}
 
 joka sisältää vuorollaan kunkin joukon $\{1,2,\dots,n\}$
-osajoukon. Rekursiivista metodia \texttt{muodosta} kutsutaan
+osajoukon.
+Haku läh\-tee käyntiin, kun kutsumme metodia \texttt{muodosta}
 parametrilla $1$.
 
 \begin{code}
@@ -135,7 +132,7 @@ void muodosta(int x) {
     muodosta(x+1); // x ei valita osajoukkoon
     osajoukko.addLast(x);
     muodosta(x+1); // x valitaan osajoukkoon
-    osajoukko.removeLast(x);
+    osajoukko.removeLast();
 }
 \end{code}
 
@@ -174,7 +171,8 @@ ArrayDeque<Integer> permutaatio;
 \end{code}
 
 joka sisältää vuorollaan kunkin joukon $\{1,2,\dots,n\}$ permutaation.
-Rekursiivista metodia \texttt{muodosta} kutsutaan ilman parametreja.
+Haku lähtee käyntiin, kun kutsumme metodia
+\texttt{muodosta} ilman parametreja.
 
 \begin{code}
 void muodosta() {
@@ -212,10 +210,20 @@ Esimerkiksi tapauksessa $n=3$ koodin tulostus on seuraava:
 
 \subsection{Peruuttava haku}
 
-Peruuttava haku on yleinen rekursiivinen menetelmä,
-joka muodostaa järjes\-telmällisesti kaikki ratkaisut tehtävään.
+\emph{Peruuttava haku} on yleinen rekursiivinen menetelmä,
+jota käyttäen voimme muodostaa järjestelmällisesti
+kaikki ratkaisut annettuun tehtävään.
 Siinä on ideana aloittaa tyhjästä ratkaisusta ja käydä
-joka askeleella läpi kaikki mahdolliset tavat laajentaa ratkaisua.
+joka askeleella läpi rekursiivisesti kaikki mahdolliset tavat laajentaa ratkaisua.
+
+Peruuttava haku on raa'an voiman menetelmä,
+ja voimme käyttää sitä vain silloin,
+kun ratkaisujen määrä on niin pieni,
+että ehdimme käydä kaikki läpi.
+Kuitenkin jos voimme käyttää peruuttavaa hakua,
+se on mainio tekniikka,
+koska voimme olla varmoja, että oikein toteutettu
+peruuttava haku löytää kaikki ratkaisut.
 
 \begin{figure}
 \center
@@ -267,9 +275,12 @@ joka askeleella läpi kaikki mahdolliset tavat laajentaa ratkaisua.
 
 Tarkastelemme esimerkkinä tehtävää, jossa haluamme laskea,
 montako $n \times n$ -kokoista latinalaista neliötä on olemassa.
-Latinalaisessa neliössä jokainen luku $1,2,\dots,n$ esiintyy
-tarkalleen kerran kullakin vaaka- ja pystyrivillä.
+\emph{Latinalainen neliö} on ruudukko, jonka
+kullakin vaaka- ja pystyrivillä esiintyy tarkalleen kerran
+jokainen luku $1,2,\dots,n$.
+Kyseessä on siis yksinkertaisempi muoto tutusta sudoku-tehtävästä.
 Esimerkiksi kuvassa \ref{fig:latnel} on kaikki 12 latinalaista neliötä kokoa $3 \times 3$.
+Kun $n$ kasvaa, niin ratkaisujen määrä kasvaa nopeasti.
 
 Hakua varten määrittelemme seuraavat taulukot:
 
@@ -285,9 +296,11 @@ on neliössä ruudussa $(y,x)$ oleva luku.
 Lisäksi $\texttt{vaaka}[y][k]$ kertoo, onko vaakarivillä $y$
 jo lukua $k$, ja vastaavasti $\texttt{pysty}[x][k]$ kertoo,
 onko pystyrivillä $x$ jo lukua $k$.
+Alussa kaikki taulukot ovat tyhjiä ja täytämme niitä
+pikkuhiljaa peruuttavan haun aikana.
 
-Seuraava rekursiivinen metodi toteuttaa haun, kun sitä
-kutsutaan parametreilla $y=x=0$.
+Seuraava rekursiivinen metodi toteuttaa haun, kun sille
+annetaan alkuparametreina $y=0$ ja $x=0$.
 Metodi laskee latinalaisten neliöiden määrän muuttujaan 
 \texttt{laskuri}.
 
@@ -340,14 +353,14 @@ jos haluaisimme laskea tuloksia suuremmille arvoille.
 
 \section{Matemaattinen tausta}
 
-Tietorakenteiden ja algoritmien analyysi perustuu matematiikkaan,
+Tietorakenteiden ja algoritmien teoria perustuu matematiikkaan,
 ja käym\-me kirjassa pikkuhiljaa läpi tarvittavia tietoja.
 Seuraavassa on joitakin merkintöjä ja käsitteitä, joista on hyötyä
 useassa kirjan kohdassa.
 
 \subsection{Summakaavat}
 
-Lukujen $1,2,\dots,n$ summaa vastaa kaava
+Voimme laskea lukujen $1,2,\dots,n$ summan kaavalla
 \[1+2+\dots+n = \frac{n(n+1)}{2}.\]
 Esimerkiksi
 \[1+2+3+4+5 = \frac{5 \cdot 6}{2}=15.\]
