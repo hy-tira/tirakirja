@@ -541,17 +541,15 @@ missä kuluu aikaa $O(n)$.
 
 Javan standardikirjastossa on monia listojen toteutuksia,
 jotka pohjautuvat taulukkolistaan tai linkitettyyn listaan.
-Seuraavaksi tutustumme käytännössä hyödyllisimpiin
-Javan toteutuksista.
+Seuraavaksi tutustumme rakenteisiin, joista on usein
+hyötyä algoritmien toteutuksessa.
 
 \subsection{\texttt{ArrayList}-rakenne}
 
-\texttt{ArrayList}-rakenne toteuttaa taulukkolistan,
+\texttt{ArrayList}-rakenne on taulukkolista,
 joka sallii tehokkaat lisäykset ja poistot listan lopussa.
-Esimerkkinä seuraava koodi luo listan, lisää siihen alkiot
+Esimerkiksi seuraava koodi luo listan, lisää siihen alkiot
 1, 2 ja 3 ja tulostaa listan sisällön.
-Sitten koodi poistaa listan viimeisen alkion ja
-tulostaa uudestaan listan sisällön.
 
 \begin{code}
 ArrayList<Integer> lista = new ArrayList<>();
@@ -559,18 +557,16 @@ lista.add(1);
 lista.add(2);
 lista.add(3);
 System.out.println(lista); // [1, 2, 3]
-lista.remove(2);
-System.out.println(lista); // [1, 2]
 \end{code}
 
-Metodit \texttt{add} ja \texttt{remove}
-toimivat keskimäärin ajassa $O(1)$,
-kun käytämme niitä listan lopussa.
-Huomaa, että metodille \texttt{remove} täytyy ilmoittaa,
-mistä kohdasta poistamme alkion.
-Lisäksi voimme käyttää listaa tehokkaasti taulukon tavoin
-ja käsitellä tietyssä kohdassa olevaa alkiota
-metodeilla \texttt{get} ja \texttt{set}.
+Metodi \texttt{add} toimii keskimäärin ajassa $O(1)$,
+joten voimme lisätä tehokkaasti alkioita listan loppuun.
+
+Koska lista on tallennettu taulukkona,
+pääsemme myös tehokkaasti käsiksi sen alkioihin
+kohdan perusteella.
+Metodi \texttt{get} hakee tietyssä kohdassa olevan arvon,
+ja metodi \texttt{set} muuttaa arvoa.
 Esimerkiksi seuraava koodi tulostaa ensin
 listan kohdassa 1 olevan alkion ja muuttaa sitten
 sen arvoksi 5.
@@ -595,10 +591,13 @@ Collections.shuffle(lista);
 
 \subsection{\texttt{ArrayDeque}-rakenne}
 
-\texttt{ArrayDeque}-rakenne toteuttaa taulukkolistan,
+\texttt{ArrayDeque}-rakenne on taulukkolista,
 joka sallii tehokkaat lisäykset ja poistot
 sekä listan alussa että lopussa.
-Seuraava koodi esittelee rakenteen käyttämistä:
+Alkioita voi lisätä
+metodeilla \texttt{addFirst} ja \texttt{addLast}
+ja poistaa
+metodeilla \texttt{removeFirst} ja \texttt{removeLast}.
 
 \begin{code}
 ArrayDeque<Integer> lista = new ArrayDeque<>();
@@ -610,13 +609,18 @@ lista.removeFirst();
 System.out.println(lista); // [1, 3]
 \end{code}
 
-Rakenteen rajoituksena on, että voimme käsitellä
-vain listan ensimmäistä ja viimeistä alkiota mutta
-emme listan muita alkioita.
-Voimme käyttää metodeita \texttt{getFirst} ja \texttt{getLast}
-hakemaan listan ensimmäisen ja viimeisen alkion,
-mutta rakenteessa ei ole yleistä metodia \texttt{get},
-jolla voisimme hakea minkä tahansa alkion listalta.
+Lisäksi voimme hakea listan ensimmäisen ja viimeisen
+alkion metodeilla \texttt{getFirst} ja \texttt{getLast}.
+
+\begin{code}
+System.out.println(lista.getFirst()); // 1
+System.out.println(lista.getLast()); // 3
+\end{code}
+
+Kaikki nämä metodit toimivat keskimäärin ajassa $O(1)$.
+Rajoituksena on kuitenkin, että emme pääse käsiksi
+listan keskellä oleviin alkioihin, vaan voimme käsitellä
+vain listan alkua ja loppua.
 
 \subsection{\texttt{LinkedList}-rakenne}
 
@@ -630,16 +634,16 @@ LinkedList<Integer> lista = new LinkedList<>();
 lista.addLast(1);
 lista.addFirst(2);
 lista.addLast(3);
-System.out.println(lista); // [2,1,3]
+System.out.println(lista); // [2, 1, 3]
 lista.removeFirst();
-System.out.println(lista); // [1,3]
+System.out.println(lista); // [1, 3]
 \end{code}
 
 Jos haluamme tehdä lisäyksiä ja poistoja muualla listassa,
-meillä täytyy olla \emph{iteraattori}, joka osoittaa haluttuun kohtaan.
+meidän täytyy ottaa käyttöön \emph{iteraattori}, joka osoittaa haluttuun kohtaan.
 Seuraava koodi luo iteraattorin, joka osoittaa ensin listan alkuun.
-Sitten se siirtää iteraattoria kaksi askelta eteenpäin ja
-lisää alkion 5 iteraattorin kohdalle eli listan
+Sitten siirrämme iteraattoria kaksi askelta eteenpäin ja
+lisäämme alkion 5 iteraattorin kohdalle eli listan
 toisen ja kolmannen alkion väliin.
 
 \begin{code}
@@ -649,9 +653,9 @@ x.next();
 x.add(5);
 \end{code}
 
-\texttt{LinkedList} tarjoaa myös metodeita,
-joiden avulla voi käsitellä tietyssä kohdassa listaa olevaa alkiota
-(esimerkiksi metodit \texttt{get} ja \texttt{set}).
+\texttt{LinkedList} tarjoaa myös metodit
+\texttt{get} ja \texttt{set}, joiden avulla
+pääsemme käsiksi tietyssä kohdassa listalla olevaan alkioon.
 Nämä metodit vievät kuitenkin aikaa $O(n)$,
 koska joudumme kulkemaan ensin oikeaan kohtaan listan
 alusta tai lopusta.
