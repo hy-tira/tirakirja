@@ -667,66 +667,76 @@ jos haluamme käsitellä alkioita kohdan perusteella.
 Tärkeä kysymys on, miten tehokkaita taulukkolista ja
 linkitetty lista ovat \emph{käytännössä} ja kumpaa meidän
 kannattaa käyttää, jos voimme valita.
-Seuraavaksi teemme testin, jossa vertailemme taulukkolistan
+Seuraavaksi vertailemme Javan taulukkolistan
 (\texttt{ArrayList}) ja linkitetyn listan (\texttt{LinkedList})
 käytännön tehokkuutta.
 
-Testi muodostuu kahdesta vaiheesta:
-lisäämme ensin tyhjälle listalle luvut $1,2,\dots,n$,
-ja tämän jälkeen laskemme listan lukujen summan
-käymällä listan läpi.
-Jotta saamme mitattua aikaa luotettavammin,
-toistamme kunkin testin kymmenen kertaa peräkkäin
-ja laskemme suoritusaikojen keskiarvon.
+Suoritamme kaksi testiä, joista ensimmäisessä mittaamme
+listan luomisen tehokkuutta ja toisessa listan läpikäynnin tehokkuutta.
+Jokaisessa testissä toistamme testin kymmenen kertaa ja laskemme
+suoritusaikojen keskiarvon, jotta saamme luotettavampia tuloksia.
+
+Sekä \texttt{ArrayList} että \texttt{LinkedList}
+toteuttavat rajapinnan \texttt{List},
+joten voimme käyttää listaa samalla tavalla kummankin
+rakenteen testaamisessa.
+Määrittelemme listan seuraavilla tavoilla testistä riippuen:
+
+\begin{code}
+List<Integer> lista = new ArrayList<>();
+\end{code}
+
+\begin{code}
+List<Integer> lista = new LinkedList<>();
+\end{code}
+
+\subsubsection{Ensimmäinen testi: listan luominen}
+
+Ensimmäisessä testissä tutkimme, kauanko vie aikaa luoda lista
+aloittamalla tyhjästä listasta ja lisäämällä alkioita yksi kerrallaan.
+Lisäämme testissä listalle alkiot $1,2,\dots,n$.
 Seuraava koodi toteuttaa testin:
 
 \begin{code}
-List<Integer> lista;
-// listan luonti tähän
 for (int i = 1; i <= n; i++) {
     lista.add(i);
 }
+\end{code}
+
+% \begin{table}
+% \center
+% \begin{tabular}{rrr}
+% parametri $n$ & \texttt{ArrayList} & \texttt{LinkedList} \\
+% \hline
+% $10^6$ & 0.03 s & 0.04 s \\
+% $2 \cdot 10^6$ & 0.11 s & 0.28 s \\
+% $4 \cdot 10^6$ & 0.14 s & 2.08 s \\
+% $8 \cdot 10^6$ & 1.76 s & 5.09 s \\
+% $16 \cdot 10^6$ & 4.02 s & 12.69 s \\
+% \end{tabular}
+% \caption{Algoritmien suoritusaikojen vertailu.}
+% \label{tab:lispoi}
+% \end{table}
+
+TODO testin tulokset
+
+\subsubsection{Toinen testi: listan läpikäynti}
+
+Toisessa testissä tutkimme, kauanko vie aikaa käydä lista läpi.
+Tässä testissä meillä on valmiina lista,
+jossa on $n$ lukua, ja laskemme lukujen summan.
+Seuraava koodi toteuttaa testin:
+
+\begin{code}
 long summa = 0;
-for (Integer x : lista) summa += x;
-System.out.println(summa);
+for (Integer x : lista) {
+    summa += x;
+}
 \end{code}
 
-Tässä \texttt{List} on rajapinta, jonka
-\texttt{ArrayList} ja \texttt{LinkedList} toteuttavat.
-Testistä riippuen luomme listan jommallakummalla
-seuraavista tavoista:
+TODO testin tulokset
 
-\begin{code}
-lista = new ArrayList<>();
-\end{code}
-
-\begin{code}
-lista = new LinkedList<>();
-\end{code}
-
-\begin{table}
-\center
-\begin{tabular}{rrr}
-parametri $n$ & \texttt{ArrayList} & \texttt{LinkedList} \\
-\hline
-$10^6$ & 0.03 s & 0.04 s \\
-$2 \cdot 10^6$ & 0.11 s & 0.28 s \\
-$4 \cdot 10^6$ & 0.14 s & 2.08 s \\
-$8 \cdot 10^6$ & 1.76 s & 5.09 s \\
-$16 \cdot 10^6$ & 4.02 s & 12.69 s \\
-\end{tabular}
-\caption{Algoritmien suoritusaikojen vertailu.}
-\label{tab:lispoi}
-\end{table}
-
-Taulukko \ref{tab:lispoi} näyttää testin tulokset.
-Useimmissa tapauksissa \texttt{ArrayList} on noin kolme
-kertaa nopeampi kuin \texttt{LinkedList}.
-Poikkeuksena on tapaus $n=4 \cdot 10^6$, jossa
-\texttt{ArrayList} toimii jostakin syystä yllättävän nopeasti.
-Mahdollinen selitys on, että 
-
-\subsection{Linkitetyn listan käyttö}
+\subsubsection{Milloin käyttää linkitettyä listaa?}
 
 Jokaisessa tietorakenteessa on omat hyvät ja huonot puolensa,
 ja kaikille on tietyt käyttötarkoituksensa.
@@ -769,10 +779,3 @@ kun tieto on tallennettu muistissa peräkkäin -- eli juuri kuten
 taulukkolistassa.
 Tämä näkyy käytännössä siinä, että taulukkolistan käsittely on selvästi
 nopeampaa kuin linkitetyn listan käsittely.
-
-Linkitetyllä listalla on silti yksi ominaisuus,
-joka puuttuu taulukkolistasta: voimme tehokkaasti
-lisätä ja poistaa alkioita listan keskellä.
-Tämä kuitenkin vaatii sen, että meillä on valmiiksi
-iteraattori haluttuun kohtaan listaa,
-mikä on käytännössä harvinaista.
