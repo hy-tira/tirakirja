@@ -196,17 +196,15 @@ paremman algoritmin.
 
 \subsection{Lomitusjärjestäminen}
 
-\emph{Lomitusjärjestäminen} on rekursiivinen järjestämisalgoritmi,
-joka järjestää taulukon seuraavasti:
-
-\begin{enumerate}
-\item Jos taulukossa on vain yksi alkio,
-älä tee mitään, koska taulukko on jo järjestyksessä.
-\item Jaa taulukko keskeltä kahdeksi osataulukoksi ja järjestä
-vasen ja oikea osataulukko rekursiivisesti.
-\item Lomita vasen ja oikea osataulukko yhteen niin, että ne muodostavat
-kokonaisen järjestetyn taulukon.
-\end{enumerate}
+\emph{Lomitusjärjestäminen} on rekursiivinen algoritmi,
+jossa on kaksi toimintatapaa.
+Jos taulukossa on vain yksi alkio,
+algoritmi ei tee mitään,
+koska taulukko on valmiiksi järjestyksessä.
+Muuten algoritmi puolittaa taulukon keskeltä kahteen osaan
+ja järjestää molemmat osat rekursiivisesti.
+Sitten algoritmi muodostaa järjestetyistä osista
+yhtenäisen järjestetyn taulukon.
 
 \begin{figure}
 \center
@@ -287,20 +285,40 @@ kokonaisen järjestetyn taulukon.
 \label{fig:lomjar}
 \end{figure}
 
+Kuva \ref{fig:lomjar} näyttää, miten lomitusjärjestäminen
+toimii, kun sille annetaan taulukko $[5,1,2,9,7,5,4,2]$.
+Algoritmi puolittaa ensin taulukon osiksi
+$[5,1,2,9]$ ja $[7,5,4,2]$ ja järjestää molemmat
+osat kutsumalla itseään.
+Kun osatehtävänä on järjestää taulukko $[5,1,2,9]$,
+algoritmi puolittaa jälleen taulukon osiksi $[5,1]$ ja $[2,9]$
+ja järjestää nämä rekursiivisesti, jne.
+Muutaman jakautumisen jälkeen kussakin taulukossa on vain yksi alkio,
+jolloin rekursio pysähtyy ja algoritmi alkaa
+koota järjestettyä taulukkoa.
 
-Esimerkiksi jos järjestettävänä on taulukko $[4,2,5,8,2,1,5,6]$,
-algoritmi jakaa sen ensin osataulukoiksi $[4,2,5,8]$ ja $[2,1,5,6]$.
-Sitten algoritmi järjestää osataulukot rekursiivisesti,
-jolloin tuloksena ovat taulukot $[2,4,5,8]$ ja $[1,2,5,6]$.
-Lopuksi algoritmi lomittaa osataulukot takaisin yhteen
-ja saa aikaan lopullisen järjestetyn taulukon $[1,2,2,4,5,5,6,8]$.
+Lomitusjärjestämisen voi esittää koodina seuraavasti:
 
-Lomitusjärjestämisen oleellisena osana on kahden järjestetyn osataulukon
-lomittaminen. Tämä on mahdollista $O(n)$-ajassa, koska
-voimme luoda uuden taulukon, johon alamme koota lopullista taulukkoa,
-ja käydä järjestettyjä osataulukkoja läpi rinnakkain
-vasemmalta oikealle ja valita aina pienimmän alkion seuraavaksi
-lopulliseen taulukkoon.
+\begin{code}
+void jarjesta(int a, int b) {
+    if (a == b) return;
+    int k = (a+b)/2;
+    jarjesta(a,k);
+    jarjesta(k+1,b);
+    lomita(a,b);
+}
+\end{code}
+
+Metodi \texttt{jarjesta} järjestää taulukon välin
+kohdasta $a$ kohtaan $b$.
+Kun haluamme järjestää koko taulukon,
+kutsumme metodia parametreilla $a=0$ ja $b=n-1$.
+Muuttujaan $k$ lasketaan välin keskikohta,
+ja metodi kutsuu itseään rekursiivisesti,
+jotta voi järjestää molemmat puoliskot.
+Tämän jälkeen metodi \texttt{lomita}
+yhdistää järjestetyt puoliskot.
+
 
 \begin{figure}
 \center
