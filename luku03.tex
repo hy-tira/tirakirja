@@ -130,8 +130,9 @@ Voimme toteuttaa lisäysjärjestämisen seuraavalla koodilla:
 for (int i = 1; i < n; i++) {
     int x = taulu[i];
     int j = i-1;
-    while (taulu[j] > x) {
+    while (j >= 0 && taulu[j] > x) {
         taulu[j+1] = taulu[j];
+        j--;
     }
     taulu[j] = x;
 }
@@ -156,137 +157,38 @@ algoritmi toimii tehokkaasti, koska siirtoja tulee vain vähän.
 
 \subsection{Inversiot}
 
-Kuplajärjestäminen ja lisäysjärjestäminen ovat esimerkkejä
-järjestämis\-algoritmeista, jotka perustuvat vierekkäisten
-alkioiden vaihtamiseen.
-Osoitamme seuraavaksi, että tällainen algoritmi ei voi \emph{koskaan}
-toimia tehokkaammin kuin ajassa $O(n^2)$.
-
 Hyödyllinen käsite järjestämisalgoritmien analysoinnissa
 on \emph{inversio}: kaksi taulukossa olevaa alkiota,
 jotka ovat väärässä järjestyksessä.
-Tässä otetaan huomioon kaikki taulukon alkioparit,
-ei vain vierekkäin olevia alkioita.
 Esimerkiksi taulukossa $[3,1,4,2]$ on kolme inversiota:
 $(3,1)$, $(3,2)$ ja $(4,2)$.
+Inversioiden määrä kertoo meille taulukon järjestyksestä:
+mitä vähemmän inversioita taulukossa on,
+sitä lähempänä se on järjestystä.
+Erityisesti taulukko on järjestyksessä tarkalleen silloin,
+kun siinä ei ole yhtään inversiota.
 
-Taulukon inversioiden määrä kertoo, miten paljon työtä
-vaaditaan sen järjestämiseen. Jos inversioiden määrä on 0,
-taulukko on järjestyksessä.
-Jos taas taulukko on käänteisessä järjestyksessä
-suurimmasta pienimpään, sen inversioiden määrä on
-\[
-1 + 2 + \dots + (n-1) = \frac{n(n-1)}{2} = O(n^2).
-\]
+Kun lisäysjärjestäminen käsittelee alkion $x$,
+se poistaa taulukosta kaikki inversiot,
+joiden oikeana alkiona on $x$.
+Jokaisen inversion poistaminen vaatii yhden
+vasemmalla olevan alkion siirtämisen askeleen oikealle.
+Niinpä algoritmin työmäärä on yhtä suuri kuin
+järjestettävänä olevan taulukon inversioiden määrä.
+Pahimmassa tapauksessa taulukko on käänteisessä
+järjestyksessä, jolloin inversioiden määrä on
+\[1+2+\dots+(n-1)=\frac{(n-1)n}{2}=O(n^2).\]
 
-Aina kun vaihdamme taulukossa kahden vierekkäin olevan
-alkion järjes\-tyksen, saamme poistettua taulukosta enintään
-yhden inversion.
-Niinpä jos taulukossa on $O(n^2)$ inversiota,
-mikä tahansa vierekkäisiä alkioita vaihtava algoritmi
-käyttää sen järjestämiseen aikaa ainakin $O(n^2)$.
-Emme siis koskaan pysty luomaan tehokasta järjestämisalgoritmia,
-jos rajoitumme vain vierekkäisten alkioiden vaihtamiseen keskenään.
+Syy lisäysjärjestämisen hitauteen onkin,
+että se ei poista taulukosta inversioita riittävän tehokkaasti.
+Jos haluamme kehittää paremman järjestämis\-algoritmin,
+meidän tulee suunnitella se niin, että se voi poistaa
+monta inversiota yhtä aikaa.
+Käytännössä algoritmin täytyy pystyä siirtämään
+väärässä paikassa oleva alkio tehokkaasti taulukon
+toiselle puolelle.
 
-\subsection{Vaihtojärjestäminen}
-
-\emph{Vaihtojärjestäminen} etsii ensin taulukon pienimmän alkion
-ja vaihtaa sen ensimmäiseksi.
-Sitten se etsii taulukon loppuosan pienimmän alkion ja
-vaihtaa sen toiseksi, jne., kunnes taulukko on järjestyksessä.
-Kuva \ref{fig:vaijar} näyttää esimerkin
-vaihtojärjestämisen toiminnasta.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.5]
-\begin{scope}
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/4,1/2,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\begin{scope}[yshift=-2cm]
-\fill[lightgray] (0,0) rectangle (1,1);
-\fill[lightgray] (5,0) rectangle (6,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/5,3/8,4/2,5/4,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\draw (1,-0.5) -- (1,1.5);
-\end{scope}
-\begin{scope}[yshift=-4cm]
-\fill[lightgray] (1,0) rectangle (2,1);
-\fill[lightgray] (1,0) rectangle (2,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/5,3/8,4/2,5/4,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\draw (2,-0.5) -- (2,1.5);
-\end{scope}
-\begin{scope}[yshift=-6cm]
-\fill[lightgray] (2,0) rectangle (3,1);
-\fill[lightgray] (4,0) rectangle (5,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/2,3/8,4/5,5/4,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\draw (3,-0.5) -- (3,1.5);
-\end{scope}
-\begin{scope}[yshift=-8cm]
-\fill[lightgray] (3,0) rectangle (4,1);
-\fill[lightgray] (5,0) rectangle (6,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/8,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\draw (4,-0.5) -- (4,1.5);
-\end{scope}
-\begin{scope}[yshift=-10cm]
-\fill[lightgray] (4,0) rectangle (5,1);
-\fill[lightgray] (4,0) rectangle (5,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/8,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\draw (5,-0.5) -- (5,1.5);
-\end{scope}
-\begin{scope}[yshift=-12cm]
-\fill[lightgray] (5,0) rectangle (6,1);
-\fill[lightgray] (6,0) rectangle (7,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/5,6/8,7/6} \node at (0.5+\x,0.5) {\v};
-\draw (6,-0.5) -- (6,1.5);
-\end{scope}
-\begin{scope}[yshift=-14cm]
-\fill[lightgray] (6,0) rectangle (7,1);
-\fill[lightgray] (7,0) rectangle (8,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/5,6/6,7/8} \node at (0.5+\x,0.5) {\v};
-\draw (7,-0.5) -- (7,1.5);
-\end{scope}
-\begin{scope}[yshift=-16cm]
-\fill[lightgray] (7,0) rectangle (8,1);
-\fill[lightgray] (7,0) rectangle (8,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/5,6/6,7/8} \node at (0.5+\x,0.5) {\v};
-\draw (8,-0.5) -- (8,1.5);
-\end{scope}
-\end{tikzpicture}
-\caption{Esimerkki vaihtojärjestämisen toiminnasta.}
-\label{fig:vaijar}
-\end{figure}
-
-Seuraava koodi toteuttaa vaihtojärjestämisen:
-
-\begin{code}
-for (int i = 0; i < n; i++) {
-    int k = i;
-    for (int j = i; j < n; j++) {
-        if (taulu[j] < taulu[k]) k = j;
-    }
-    int x = taulu[i];
-    taulu[i] = taulu[k];
-    taulu[k] = x;
-}
-\end{code}
-
-Toisin kuin kuplajärjestäminen ja lisäysjärjestäminen,
-vaihtojärjestäminen vaihtaa vain $O(n)$ alkiota keskenään
-taulukossa, koska se siirtää aina pienimmän alkion
-suoraan oikeaan kohtaan.
-Algoritmi vie kuitenkin $O(n^2)$ aikaa,
-koska jokaisen pienimmän alkion löytäminen vie $O(n)$ aikaa.
-
-\section{Tehokkaat algoritmit}
+\section{Järjestäminen ajassa $O(n \log n)$}
 
 Jos meillä on järjestettävänä suuri määrä tietoa,
 $O(n^2)$-aikainen algoritmi ei kelpaa vaan tarvitsemme
