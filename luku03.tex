@@ -1,198 +1,158 @@
 \chapter{Järjestäminen}
 
-Järjestäminen on keskeinen algoritmiikan ongelma,
-jolle on käyttöä sekä itsenäisenä algoritmina että
-laajemman algoritmin osana.
-Voimme ratkaista monia ongelmia järjestämällä
-ensin aineiston, minkä jälkeen voimme hyö\-dyntää
-järjestystä tavalla tai toisella.
+\emph{Järjestäminen} on keskeinen algoritmiikan ongelma,
+jossa meillä on $n$ alkiota sisältävä aineisto
+ja haluamme järjestää sen suuruusjärjestykseen.
+Esimerkiksi jos meillä on taulukko $[5,2,4,2,6,1]$ ja
+järjestämme alkiot pienimmästä suurimpaan,
+tuloksena on taulukko $[1,2,2,4,5,6]$.
 
-Yksinkertaiset algoritmit järjestämiseen toimivat
-ajassa $O(n^2)$, ja ne perustuvat kahteen sisäkkäiseen
-silmukkaan.
-Voimme kuitenkin järjestää taulukon myös tehokkaammin
-ajassa $O(n \log n)$, mikä mahdollistaa järjestämisen
-käyttämisen tehokkaiden algoritmien suunnittelussa.
+Tavoitteemme on toteuttaa järjestäminen
+\emph{tehokkaasti}.
+On helppoa toteuttaa järjestäminen ajassa $O(n^2)$,
+mutta tämä on liian hidasta suurella aineistolla.
+Tässä luvussa opimme kaksi tehokasta
+järjestämisalgoritmia, jotka vievät aikaa vain $O(n \log n)$.
+Toisaalta osoittautuu, että ei ole olemassa
+yleistä järjestämisalgoritmia, joka toimisi nopeammin
+kuin $O(n \log n)$.
 
-Tässä luvussa tutustumme ensin järjestämisen teoriaan
-ja erilaisiin järjes\-tämisalgoritmeihin.
-Sitten luomme katsauksen siihen, kuinka voimme
-käyttää järjestämistä Java-ohjelmoinnissa.
-Lopuksi käymme läpi esimerkkejä ongelmista,
-joiden ratkaisussa voimme käyttää järjestämistä.
+Voimme käyttää järjestämistä monella tavalla
+algoritmien suunnittelussa.
+Usein voimme helpottaa ongelman ratkaisemista
+järjestämällä ensin aineiston.
+Esimerkiksi jos haluamme tutkia,
+mikä alkio esiintyy useimmiten taulukossa,
+voimme järjestää ensin alkiot,
+jolloin yhtä suuret alkiot päätyvät vierekkäin.
+Tämän jälkeen meidän riittää käydä taulukko läpi
+ja etsiä siitä pisin samaa alkiota toistava osuus.
 
-\section{Perusalgoritmit}
+\section{Järjestäminen ajassa $O(n^2)$}
 
-Järjestämisen perusongelmana on:
-annettuna on taulukko, jossa on $n$ alkiota,
-ja haluamme järjestää alkiot pienimmästä suurimpaan.
-Esimerkiksi taulukko $[4,2,5,8,2,1,5,6]$ on
-järjestettynä $[1,2,2,4,5,5,6,8]$.
-
-Tutustumme seuraavaksi yksinkertaisiin järjestämisalgoritmeihin,
-jotka toimivat ajassa $O(n^2)$.
-
-\subsection{Kuplajärjestäminen}
-
-\emph{Kuplajärjestäminen} järjestää taulukon käymällä läpi sen
-sisällön $n$ kertaa alusta loppuun.
-Jokaisella kierroksella algoritmi tarkastaa kunkin
-vierekkäisen alkioparin taulukossa, ja aina kun alkiot ovat väärässä
-järjestyksessä, algoritmi korjaa niiden järjestyksen.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.5]
-\begin{scope}
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/4,1/2,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\begin{scope}[yshift=-2cm]
-\fill[lightgray] (0,0) rectangle (2,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\begin{scope}[yshift=-4cm]
-\fill[lightgray] (1,0) rectangle (3,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\begin{scope}[yshift=-6cm]
-\fill[lightgray] (2,0) rectangle (4,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\begin{scope}[yshift=-8cm]
-\fill[lightgray] (3,0) rectangle (5,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/2,4/8,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\begin{scope}[yshift=-10cm]
-\fill[lightgray] (4,0) rectangle (6,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/2,4/1,5/8,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\begin{scope}[yshift=-12cm]
-\fill[lightgray] (5,0) rectangle (7,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/2,4/1,5/5,6/8,7/6} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\begin{scope}[yshift=-14cm]
-\fill[lightgray] (6,0) rectangle (8,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/2,4/1,5/5,6/6,7/8} \node at (0.5+\x,0.5) {\v};
-\end{scope}
-\end{tikzpicture}
-\caption{Kuplajärjestämisen ensimmäinen kierros.}
-\label{fig:kupjar}
-\end{figure}
-
-Kuva \ref{fig:kupjar} näyttää esimerkin kuplajärjestämisen ensimmäisestä
-kierroksesta.
-Kuplajärjestämisen ominaisuutena on, että $k$ kierroksen
-jälkeen taulukon $k$ suurinta alkiota ovat oikeilla paikoillaan
-taulukon lopussa.
-Niinpä $n$ kierroksen jälkeen koko taulukko on järjestyksessä.
-
-Voimme toteuttaa kuplajärjestämisen seuraavalla koodilla:
-
-\begin{code}
-for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n-1; j++) {
-        if (taulu[j] > taulu[j+1]) {
-            int x = taulu[j];
-            taulu[j] = taulu[j+1];
-            taulu[j+1] = x;
-        }
-    }
-}
-\end{code}
-
-Kuplajärjestäminen muodostuu $n$ kierroksesta,
-joista jokainen käy läpi taulukon,
-joten algoritmi vie aikaa $O(n^2)$.
+Tutustumme aluksi yksinkertaiseen järjestämisalgoritmiin
+nimeltä lisäysjär\-jestäminen,
+joka järjestää $n$-alkioisen aineiston ajassa $O(n^2)$.
+Vaikka algoritmi ei ole nopea, se on tutustumisen arvoinen
+ja antaa hyvän lähtökohdan tehokkaampien algoritmien
+suunnittelulle.
 
 \subsection{Lisäysjärjestäminen}
 
-\emph{Lisäysjärjestäminen} käy läpi taulukon vasemmalta oikealle
-ja siirtää jokaisessa kohdassa olevaa alkiota vasemmalle
-niin kauan kuin alkio on pienempi kuin sen vasemmalla
-puolella oleva alkio.
-Algoritmia voi myös ajatella niin,
-että se varmistaa jokaisessa vaiheessa,
-että taulukon $k$ ensimmäistä alkiota ovat oikeassa järjestyksessä.
+\emph{Lisäysjärjestäminen} käy läpi taulukon
+vasemmalta oikealle.
+Kun algoritmi tulee taulukon kohtaan $k$,
+se siirtää kohdassa $k$ olevan alkion
+oikeaan paikkaan taulukon
+alkuosassa niin, että taulukon alkuosa
+kohtaan $k$ asti on tämän jälkeen järjestyksessä.
+Niinpä kun algoritmi pääsee taulukon loppuun,
+koko taulukko on järjestyksessä.
 
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.5]
 \begin{scope}
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/4,1/2,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\fill[lightgray] (1,0) rectangle (2,1);
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/5,1/2,2/4,3/2,4/6,5/1} \node at (0.5+\x,0.5) {\v};
+\draw (2,-0.5) -- (2,1.5);
+\draw[->] (7,0.5) -- (9,0.5);
 \end{scope}
-\begin{scope}[yshift=-2cm]
-\fill[lightgray] (0,0) rectangle (2,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\begin{scope}[xshift=10cm]
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/2,1/5,2/4,3/2,4/6,5/1} \node at (0.5+\x,0.5) {\v};
 \draw (2,-0.5) -- (2,1.5);
 \end{scope}
-\begin{scope}[yshift=-4cm]
-\fill[lightgray] (1,0) rectangle (3,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\begin{scope}[yshift=-3cm]
+\fill[lightgray] (2,0) rectangle (3,1);
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/2,1/5,2/4,3/2,4/6,5/1} \node at (0.5+\x,0.5) {\v};
+\draw (3,-0.5) -- (3,1.5);
+\draw[->] (7,0.5) -- (9,0.5);
+\end{scope}
+\begin{scope}[yshift=-3cm,xshift=10cm]
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/2,1/4,2/5,3/2,4/6,5/1} \node at (0.5+\x,0.5) {\v};
 \draw (3,-0.5) -- (3,1.5);
 \end{scope}
 \begin{scope}[yshift=-6cm]
-\fill[lightgray] (2,0) rectangle (4,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/8,4/2,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\fill[lightgray] (3,0) rectangle (4,1);
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/2,1/5,2/4,3/2,4/6,5/1} \node at (0.5+\x,0.5) {\v};
+\draw (4,-0.5) -- (4,1.5);
+\draw[->] (7,0.5) -- (9,0.5);
+\end{scope}
+\begin{scope}[yshift=-6cm,xshift=10cm]
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/2,1/2,2/4,3/5,4/6,5/1} \node at (0.5+\x,0.5) {\v};
 \draw (4,-0.5) -- (4,1.5);
 \end{scope}
-\begin{scope}[yshift=-8cm]
-\fill[lightgray] (3,0) rectangle (5,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/5,3/2,4/8,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\begin{scope}[yshift=-9cm]
+\fill[lightgray] (4,0) rectangle (5,1);
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/2,1/2,2/4,3/5,4/6,5/1} \node at (0.5+\x,0.5) {\v};
 \draw (5,-0.5) -- (5,1.5);
+\draw[->] (7,0.5) -- (9,0.5);
 \end{scope}
-\begin{scope}[yshift=-10cm]
-\fill[lightgray] (2,0) rectangle (4,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/4,2/2,3/5,4/8,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
+\begin{scope}[yshift=-9cm,xshift=10cm]
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/2,1/2,2/4,3/5,4/6,5/1} \node at (0.5+\x,0.5) {\v};
 \draw (5,-0.5) -- (5,1.5);
 \end{scope}
 \begin{scope}[yshift=-12cm]
-\fill[lightgray] (1,0) rectangle (3,1);
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/2,1/2,2/4,3/5,4/8,5/1,6/5,7/6} \node at (0.5+\x,0.5) {\v};
-\draw (5,-0.5) -- (5,1.5);
+\fill[lightgray] (5,0) rectangle (6,1);
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/2,1/2,2/4,3/4,4/6,5/1} \node at (0.5+\x,0.5) {\v};
+\draw (6,-0.5) -- (6,1.5);
+\draw[->] (7,0.5) -- (9,0.5);
+\end{scope}
+\begin{scope}[yshift=-12cm,xshift=10cm]
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/6} \node at (0.5+\x,0.5) {\v};
+\draw (6,-0.5) -- (6,1.5);
 \end{scope}
 \end{tikzpicture}
-\caption{Lisäysjärjestämisen ensimmäiset vaiheet.}
+\caption{Lisäysjärjestäminen taulukolle $[5,2,4,2,6,1]$.}
 \label{fig:lisjar}
 \end{figure}
 
-Kuva \ref{fig:lisjar} näyttää esimerkin,
-kuinka lisäysjärjestäminen aloittaa taulukon järjestämisen.
-Jokaisessa kohdassa pystyviiva ilmaisee kohdan,
-johon päättyy taulukon järjestyksessä oleva alkuosa.
-Toisin kuin kuplajärjestämisessä, vierekkäisten alkioiden
-vaihtamiset etenevät oikealta vasemmalle.
+Kuva \ref{fig:lisjar} näyttää esimerkin lisäysjärjestämisen
+toiminnasta, kun järjes\-tämme taulukon $[5,2,4,2,6,1]$.
+Jokaisella rivillä siirrämme harmaataustaisen alkion
+sen oikealle paikalle taulukon alkuosassa.
+Pystyviiva ilmaisee kohdan, johon asti taulukko on järjestyksessä
+siirron jälkeen.
 
-Seuraava koodi toteuttaa lisäysjärjestämisen:
+Voimme toteuttaa lisäysjärjestämisen seuraavalla koodilla:
 
 \begin{code}
 for (int i = 1; i < n; i++) {
-    for (int j = i-1; j >= 0; j--) {
-        if (taulu[j] > taulu[j+1]) {
-            int x = taulu[j];
-            taulu[j] = taulu[j+1];
-            taulu[j+1] = x;
-        } else break;
+    int x = taulu[i];
+    int j = i-1;
+    while (taulu[j] > x) {
+        taulu[j+1] = taulu[j];
     }
+    taulu[j] = x;
 }
 \end{code}
 
-Algoritmi muodostuu kahdesta sisäkkäisestä silmukasta,
-joten sen aikavaativuus on $O(n^2)$.
+Jokaisessa vaiheessa haluamme siirtää alkion $x$
+oikeaan paikkaan taulukon alkuosassa.
+Siirrämme alkion vasemmalla puolella olevia alkioita
+yksi kerrallaan askeleen oikealle, kunnes olemme löytäneet
+oikean paikan alkiolle $x$. Tämän jälkeen siirrämme
+alkion $x$ sen uuteen paikkaan.
+
+Algoritmin tehokkuus riippuu siitä, kuinka paljon
+joudumme siirtämään alkioita $\texttt{while}$-silmukalla.
+Pahin tapaus algoritmille on, että taulukko on aluksi
+\emph{käänteisessä} järjestyksessä.
+Tällöin meidän täytyy siirtää jokainen alkio $x$
+taulukon alkuun ja järjestäminen vie aikaa $O(n^2)$.
+Kannattaa silti huomata, että jos taulukko on valmiiksi
+järjestyksessä tai lähes järjestyksessä,
+algoritmi toimii tehokkaasti, koska siirtoja tulee vain vähän.
 
 \subsection{Inversiot}
 
