@@ -196,15 +196,13 @@ paremman algoritmin.
 
 \subsection{Lomitusjärjestäminen}
 
-\emph{Lomitusjärjestäminen} on rekursiivinen algoritmi,
-jossa on kaksi toimintatapaa.
-Jos taulukossa on vain yksi alkio,
-algoritmi ei tee mitään,
-koska taulukko on valmiiksi järjestyksessä.
-Muuten algoritmi puolittaa taulukon keskeltä kahteen osaan
-ja järjestää molemmat osat rekursiivisesti.
-Sitten algoritmi muodostaa järjestetyistä osista
-yhtenäisen järjestetyn taulukon.
+\emph{Lomitusjärjestäminen} on rekursiivinen
+järjestämisalgoritmi, joka perustuu nimellä
+\emph{hajota ja hallitse} tunnettuun tekniikkaan.
+Ideana on, että kun saamme järjestettäväksi taulukon,
+jaamme tehtävän rekursiivisesti pienemmiksi osa\-ongelmiksi,
+joissa meidän riittää järjestää pienempiä taulukoita.
+Tämä auttaa meitä ratkaisemaan tehtävän tehokkaasti.
 
 \begin{figure}
 \center
@@ -285,63 +283,65 @@ yhtenäisen järjestetyn taulukon.
 \label{fig:lomjar}
 \end{figure}
 
+Kun saamme järjestettäväksi $n$ alkion kokoisen taulukon,
+jaamme taulukon keskeltä kahdeksi osataulukoksi,
+joissa molemmissa on noin $n/2$ alkiota.
+Tämän jälkeen järjestämme molemmat osataulukot erikseen rekursiivisesti.
+Lopuksi \emph{lomitamme} järjestetyt osataulukot niin,
+että niistä muodostuu kokonainen järjestetty taulukko.
+Poikkeuksena jos $n=1$, taulukko on jo valmiiksi
+järjestyksessä emmekä tee mitään.
+
 Kuva \ref{fig:lomjar} näyttää, miten lomitusjärjestäminen
 toimii, kun sille annetaan taulukko $[5,1,2,9,7,5,4,2]$.
-Algoritmi puolittaa ensin taulukon osiksi
+Algoritmi puolittaa ensin taulukon kahdeksi osataulukoksi
 $[5,1,2,9]$ ja $[7,5,4,2]$ ja järjestää molemmat
-osat kutsumalla itseään.
-Kun osatehtävänä on järjestää taulukko $[5,1,2,9]$,
-algoritmi puolittaa jälleen taulukon osiksi $[5,1]$ ja $[2,9]$
-ja järjestää nämä rekursiivisesti, jne.
-Muutaman jakautumisen jälkeen kussakin taulukossa on vain yksi alkio,
-jolloin rekursio pysähtyy ja algoritmi alkaa
-koota järjestettyä taulukkoa.
+osataulukot kutsumalla itseään.
+Vastaavasti kun järjestettävänä on osataulukko $[5,1,2,9]$,
+algoritmi jakaa sen osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
+Lopulta jäljellä on vain yhden alkion kokoisia
+osataulukoita, jotka ovat valmiiksi järjestyksessä.
+Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
+alkaa koota järjestettyjä osataulukkoja pienimmästä suurimpaan.
 
-Lomitusjärjestämisen voi esittää koodina seuraavasti:
+Seuraava koodi esittää tarkemmin lomitusjärjestämisen toiminnan:
 
 \begin{code}
 void jarjesta(int a, int b) {
     if (a == b) return;
     int k = (a+b)/2;
-    jarjesta(a,k);
-    jarjesta(k+1,b);
+    jarjesta(a,k-1);
+    jarjesta(k,b);
     lomita(a,b);
 }
 \end{code}
 
-Metodi \texttt{jarjesta} järjestää taulukon välin
-kohdasta $a$ kohtaan $b$.
-Kun haluamme järjestää koko taulukon,
+Metodi \texttt{jarjesta} järjestää taulukon välin kohdasta
+$a$ kohtaan $b$, eli kun haluamme järjestää koko taulukon,
 kutsumme metodia parametreilla $a=0$ ja $b=n-1$.
-Muuttujaan $k$ lasketaan välin keskikohta,
-ja metodi kutsuu itseään rekursiivisesti,
-jotta voi järjestää molemmat puoliskot.
-Tämän jälkeen metodi \texttt{lomita}
-yhdistää järjestetyt puoliskot.
+Metodissa tarkastamme ensin, onko välillä on vain yksi alkio,
+ja jos on, poistumme metodista.
+Sitten laskemme muuttujaan $k$ taulukon keskikohdan
+ja järjestämme vasemman ja oikean puoliskon rekursiivisesti.
+Lopuksi kutsumme metodia \texttt{lomita},
+joka muodostaa kokonaisen järjestetyn taulukon osataulukoista.
 
+Oleellinen seikka algoritmin tehokkuuden kannalta on,
+miten nopeasti pystymme lomittamaan järjestetyt osataulukot.
+Tämä on mahdollista lineaarisessa ajassa käyttäen hyväksi tietoa,
+että osataulukot ovat järjestyksessä.
+Tämän ansiosta voimme käydä osataulukoita rinnakkain läpi
+vasemmalta oikealle ja valita aina seuraavaksi pienimmän alkion
+kahdesta vaihtoehdosta lopulliseen järjestettyyn taulukkoon.
 
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.5]
-\draw (0+0.25,0) rectangle (16-0.25,1);
-\foreach \x in {0,8} \draw (\x+0.25,-2.5) rectangle (\x+8-0.25,-1.5);
-\foreach \x in {0,4,8,12} \draw (\x+0.25,-5) rectangle (\x+4-0.25,-4);
-\foreach \x in {0,2,4,6,8,10,12,14} \draw (\x+0.25,-7.5) rectangle (\x+2-0.25,-6.5);
-\foreach \x in {0,2,4,6,8,10,12,14} \node at (\x+1,-9) {$\dots$};
-\end{tikzpicture}
-\caption{Lomitusjärjestämisen toiminta esitettynä kerroksittain.}
-\label{fig:lomjar}
-\end{figure}
-
-Kuinka tehokas lomitusjärjestäminen on?
-Rekursiivisen algoritmin analysoinnissa auttaa esittää
-algoritmin toiminta puuna,
-jossa näkyvät tasoittain rekursiiviset kutsut.
-Kuva \ref{fig:lomjar} näyttää tällaisen puun lomitusjärjestämisestä.
-Koska taulukoiden koko puolittuu joka vaiheessa,
-tasoja on yhteensä $O(\log n)$,
-ja jokaisella tasolla lomittamiset vievät yhteensä aikaa $O(n)$.
-Niinpä voimme todeta, että algoritmin aikavaativuus on $O(n \log n)$.
+Nyt voimme määrittää, kuinka tehokas lomitusjärjestäminen on.
+Rekursion ylimmällä tasolla taulukon koko on $n$,
+seuraavalla tasolla $n/2$, tämän jälkeen $n/4$, jne.,
+joten tasoja on yhteensä $O(\log n)$, ennen kuin pääsemme
+osataulukoihin, joissa on vain yksi alkio.
+Jokaisen tason käsitteleminen vie yhteensä aikaa $O(n)$,
+koska lomittaminen on lineaarista.
+Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
 
 \subsection{Pikajärjestäminen}
 
