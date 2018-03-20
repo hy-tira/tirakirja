@@ -512,7 +512,7 @@ kun voimme käyttää myös varmasti tehokasta lomitusjärjestämistä?
 Syynä on, että pikajärjestämisen \emph{vakiokertoimet} ovat pienet.
 Kokemus on osoittanut, että kun toteutamme lomitusjärjestämisen ja
 pikajärjestämisen ja mittaamme algoritmien todellisia suoritusaikoja,
-pikajärjestäminen toimii yleensä nopeammin.
+pikajärjestäminen toimii nopeammin.
 Näin tapahtuu siitä huolimatta, että pikajärjestämisen pahimman
 tapauksen aikavaativuus on $O(n^2)$.
 Käytännössä pahin tapaus onkin hyvin harvinainen,
@@ -520,7 +520,15 @@ jos jakoalkion valinta on toteutettu huolellisesti.
 
 Ohjelmointikielten standardikirjastoiden järjestämisalgoritmit
 perustuvat yleensä joko lomitusjärjestämiseen tai pikajärjestämiseen.
-TODO
+Yksi käytännössä hyvä ratkaisu on toteuttaa
+\emph{hybridialgoritmi}, jossa järjestämistapa vaihtelee
+taulukon koon mukaan.
+Koska $O(n^2)$-aikainen lisäysjärjestäminen on hyvin tehokas
+pienillä taulukoilla, voimme toteuttaa järjestämisen niin,
+että järjestäminen alkaa rekursiivisesti mutta
+vaihtuu lisäysjärjestämiseen, kun taulukon koko alittaa tietyn rajan.
+Näin saamme yhdistettyä algoritmiin hyviä puolia useista
+järjestämisalgoritmeista.
 
 \section{Järjestämisen alaraja}
 
