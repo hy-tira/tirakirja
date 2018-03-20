@@ -205,19 +205,27 @@ toiselle puolelle.
 
 \section{Järjestäminen ajassa $O(n \log n)$}
 
-Jos meillä on järjestettävänä suuri aineisto,
-$O(n^2)$-aikainen algoritmi ei kelpaa vaan tarvitsemme
-paremman algoritmin.
-
-\subsection{Lomitusjärjestäminen}
-
-\emph{Lomitusjärjestäminen} on rekursiivinen
-järjestämisalgoritmi, joka perustuu nimellä
-\emph{hajota ja hallitse} tunnettuun tekniikkaan.
+Seuraavaksi tutustumme kahteen tehokkaaseen
+järjestämisalgoritmiin, jotka perustuvat
+\emph{hajota ja hallitse} -tekniikkaan.
 Ideana on, että kun saamme järjestettäväksi taulukon,
 jaamme tehtävän rekursiivisesti pienemmiksi osa\-ongelmiksi,
 joissa meidän riittää järjestää pienempiä taulukoita.
 Tämä auttaa meitä ratkaisemaan tehtävän tehokkaasti.
+
+\subsection{Lomitusjärjestäminen}
+
+\emph{Lomitusjärjestäminen} on rekursiivinen järjestämisalgoritmi,
+joka perustuu taulukon puolituksiin.
+Kun saamme järjestettäväksi $n$ alkion kokoisen taulukon,
+jaamme taulukon keskeltä kahdeksi osataulukoksi,
+joissa molemmissa on noin $n/2$ alkiota.
+Tämän jälkeen järjestämme molemmat osataulukot erikseen rekursiivisesti.
+Lopuksi \emph{lomitamme} järjestetyt osataulukot niin,
+että niistä muodostuu kokonainen järjestetty taulukko.
+Poikkeuksena jos $n=1$, taulukko on jo valmiiksi
+järjestyksessä emmekä tee mitään.
+
 
 \begin{figure}
 \center
@@ -298,22 +306,13 @@ Tämä auttaa meitä ratkaisemaan tehtävän tehokkaasti.
 \label{fig:lomjar}
 \end{figure}
 
-Kun saamme järjestettäväksi $n$ alkion kokoisen taulukon,
-jaamme taulukon keskeltä kahdeksi osataulukoksi,
-joissa molemmissa on noin $n/2$ alkiota.
-Tämän jälkeen järjestämme molemmat osataulukot erikseen rekursiivisesti.
-Lopuksi \emph{lomitamme} järjestetyt osataulukot niin,
-että niistä muodostuu kokonainen järjestetty taulukko.
-Poikkeuksena jos $n=1$, taulukko on jo valmiiksi
-järjestyksessä emmekä tee mitään.
-
 Kuva \ref{fig:lomjar} näyttää, miten lomitusjärjestäminen
 toimii, kun sille annetaan taulukko $[5,1,2,9,7,5,4,2]$.
 Algoritmi puolittaa ensin taulukon kahdeksi osataulukoksi
 $[5,1,2,9]$ ja $[7,5,4,2]$ ja järjestää molemmat
 osataulukot kutsumalla itseään.
-Vastaavasti kun järjestettävänä on osataulukko $[5,1,2,9]$,
-algoritmi jakaa sen osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
+Seuraavaksi järjestettävänä on osataulukko $[5,1,2,9]$,
+jonka algoritmi jakaa osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
 Lopulta jäljellä on vain yhden alkion kokoisia
 osataulukoita, jotka ovat valmiiksi järjestyksessä.
 Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
@@ -336,7 +335,7 @@ $a$ kohtaan $b$, eli kun haluamme järjestää koko taulukon,
 kutsumme metodia parametreilla $a=0$ ja $b=n-1$.
 Metodissa tarkastamme ensin, onko välillä on vain yksi alkio,
 ja jos on, poistumme metodista.
-Sitten laskemme muuttujaan $k$ taulukon keskikohdan
+Sitten laskemme muuttujaan $k$ välin keskikohdan
 ja järjestämme vasemman ja oikean puoliskon rekursiivisesti.
 Lopuksi kutsumme metodia \texttt{lomita},
 joka muodostaa kokonaisen järjestetyn taulukon osataulukoista.
@@ -360,14 +359,14 @@ Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
 
 \subsection{Pikajärjestäminen}
 
-\emph{Pikajärjestäminen} on toinen rekursiivinen järjestämisalgoritmi,
-joka perustuu hajota ja hallitse -tekniikkaan.
-Kun saamme järjestettäväksi taulukon, valitsemme yhden sen alkioista
-\emph{jakoalkioksi}.
-Siirrämme taulukon alkioita niin,
-että jakoalkion vasemmalla puolella on kaikki sitä pienemmät alkiot
-ja oikealla puolella on kaikki muut alkiot.
-Tämän jälkeen järjestämme rekursiivisesti vasemman ja oikean puolen alkiot.
+\emph{Pikajärjestäminen} tarjoaa toisenlaisen rekursiivisen
+lähestymistavan taulukon järjestämiseen.
+Kun saamme järjestettäväksi taulukon, valitsemme ensin jonkin
+sen alkioista \emph{jakoalkioksi}.
+Tämän jälkeen siirrämme taulukon alkioita niin,
+että jakoalkion vasemmalla puolella ovat kaikki sitä pienemmät alkiot
+ja oikealla puolella ovat kaikki muut alkiot.
+Lopuksi järjestämme rekursiivisesti vasemman ja oikean puolen alkiot.
 
 \begin{figure}
 \center
@@ -415,17 +414,20 @@ Tämän jälkeen järjestämme rekursiivisesti vasemman ja oikean puolen alkiot.
 
 Kuva \ref{fig:pikjar} näyttää, miten pikajärjestäminen toimii, kun sille
 annetaan taulukko $[5,3,8,4,1,9,3,7]$.
+Meidän täytyy ensin päättää jokin tapa,
+miten valitsemme jakoalkion algoritmin aikana.
 Toimimme tässä esimerkissä niin, että jakoalkio on aina
-taulukon ensimmäinen alkio.
-Ensin jakoalkio on 5 ja siirrämme sen vasemmalle puolelle
+taulukon \emph{ensimmäinen} alkio.
+Kun aloitamme järjestämisen, koko taulukon jakoalkio on 5
+ja siirrämme sen vasemmalle puolelle
 alkiot $[3,4,1,3]$ ja oikealle puolelle alkiot $[8,9,7]$.
-Tämän jälkeen järjestämme vasemman ja oikean puolen rekursiivisesti.
+Tämän jälkeen järjestämme vasemman ja oikean puolen rekursiivisesti vastaavasti.
 
 Seuraava koodi esittää pikajärjestämisen toiminnan:
 
 \begin{code}
 void jarjesta(int a, int b) {
-    if (a > b) return;
+    if (a >= b) return;
     int k = jako(a,b);
     jarjesta(a,k-1);
     jarjesta(k+1,b);
@@ -469,7 +471,7 @@ alkiot jäävät jakoalkion toiselle puolelle.}
 \label{fig:pikpah}
 \end{figure}
 
-Pikajärjestämisen toimintaan vaikuttaa, miten valitsemme jakoalkion.
+Pikajärjestämisen tehokkuuteen vaikuttaa, miten valitsemme jakoalkion.
 Haluaisimme valita jakoalkion niin, että sen vasemmalle ja oikealle
 puolelle siirretään suunnilleen yhtä monta alkiota.
 Jos onnistumme tässä, taulukon koko puolittuu jokaisen jaon jälkeen
@@ -478,14 +480,14 @@ Koska pystymme siirtämään alkiot jakoalkion ympärille
 lineaarisessa ajassa, pikajärjestäminen vie tässä tapauksessa aikaa
 $O(n \log n)$ samaan tapaan kuin lomitusjärjestäminen.
 
-Uhkana on kuitenkin, että jakoalkio valitaan huonosti ja se jakaa
+Uhkana on kuitenkin, että valitsemme jakoalkion huonosti ja se jakaa
 taulukon osiin epätasaisesti.
 Kuva \ref{fig:pikpah} näyttää tilanteen, jossa jokaisessa jaossa
 kaikki alkiot jäävät jakoalkion oikealle puolelle.
 Tällöin pikajärjestäminen viekin aikaa $O(n^2)$, koska rekursiivisia
 tasoja on $O(n)$.
-Selvästikään \emph{ei} ole hyvä tapa valita taulukon ensimmäistä
-alkiota jakoalkioksi, koska silloin valmiiksi järjestyksessä olevan
+Selvästikään \emph{ei} ole hyvä tapa valita taulukon ensimmäinen
+alkio jakoalkioksi, koska silloin valmiiksi järjestyksessä olevan
 taulukon järjestäminen vie aikaa $O(n^2)$.
 
 Miten meidän tulisi sitten valita jakoalkio?
