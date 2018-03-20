@@ -376,10 +376,10 @@ Viittausten avulla pystymme liikkumaan listassa.
 \center
 \begin{tikzpicture}[scale=0.7]
 \begin{scope}
-\node[draw, rectangle, minimum size=8mm] (1) at (0,0) {$3$};
-\node[draw, rectangle, minimum size=8mm] (2) at (3,0) {$7$};
-\node[draw, rectangle, minimum size=8mm] (3) at (6,0) {$2$};
-\node[draw, rectangle, minimum size=8mm] (4) at (9,0) {$5$};
+\node[draw, rectangle, minimum size=7mm] (1) at (0,0) {$3$};
+\node[draw, rectangle, minimum size=7mm] (2) at (2,0) {$7$};
+\node[draw, rectangle, minimum size=7mm] (3) at (4,0) {$2$};
+\node[draw, rectangle, minimum size=7mm] (4) at (6,0) {$5$};
 \path[draw,thick,->] (1) edge [bend left] (2);
 \path[draw,thick,->] (2) edge [bend left] (3);
 \path[draw,thick,->] (3) edge [bend left] (4);
@@ -387,9 +387,9 @@ Viittausten avulla pystymme liikkumaan listassa.
 \path[draw,thick,->] (3) edge [bend left] (2);
 \path[draw,thick,->] (2) edge [bend left] (1);
 \node at (0,-2) {alku};
-\node at (9,-2) {loppu};
+\node at (6,-2) {loppu};
 \path[draw,thick,->] (0,-1.5) -- (0,-0.75);
-\path[draw,thick,->] (9,-1.5) -- (9,-0.75);
+\path[draw,thick,->] (6,-1.5) -- (6,-0.75);
 \end{scope}
 \end{tikzpicture}
 \caption{Kahteen suuntaan linkitetty lista, joka sisältää alkiot $[3,7,2,5]$.}
@@ -409,7 +409,7 @@ linkitetty lista, ja oletamme jatkossa, että listamme on
 kahteen suuntaan linkitetty ja meillä on tiedossa viittaukset
 listan alkuun ja loppuun.
 
-\subsection{Linkitetyn rakenteen toteuttaminen}
+\subsection{Linkitetyt rakenteet}
 
 Jokaisessa ohjelmointikielessä on omat keinonsa
 linkitetyn rakenteen toteuttamiseen.
@@ -484,10 +484,10 @@ muutamme viittauksia niin, että solmu ohitetaan.
 \begin{tikzpicture}[scale=0.7]
 \begin{scope}
 \node at (-3,0) {(a)};
-\node[draw, rectangle, minimum size=8mm] (1) at (0,0) {$3$};
-\node[draw, rectangle, minimum size=8mm] (2) at (3,0) {$7$};
-\node[draw, rectangle, minimum size=8mm] (3) at (6,0) {$2$};
-\node[draw, rectangle, minimum size=8mm] (4) at (9,0) {$5$};
+\node[draw, rectangle, minimum size=7mm] (1) at (0,0) {$3$};
+\node[draw, rectangle, minimum size=7mm] (2) at (2,0) {$7$};
+\node[draw, rectangle, minimum size=7mm] (3) at (4,0) {$2$};
+\node[draw, rectangle, minimum size=7mm] (4) at (6,0) {$5$};
 \path[draw,thick,->] (1) edge [bend left] (2);
 \path[draw,thick,->] (2) edge [bend left] (3);
 \path[draw,thick,->] (3) edge [bend left] (4);
@@ -495,13 +495,13 @@ muutamme viittauksia niin, että solmu ohitetaan.
 \path[draw,thick,->] (3) edge [bend left] (2);
 \path[draw,thick,->] (2) edge [bend left] (1);
 \end{scope}
-\begin{scope}[yshift=-2.5cm]
+\begin{scope}[yshift=-2cm]
 \node at (-3,0) {(b)};
-\node[draw, rectangle, minimum size=8mm] (1) at (0,0) {$3$};
-\node[draw, rectangle, minimum size=8mm] (2) at (3,0) {$7$};
-\node[draw, rectangle, minimum size=8mm] (3) at (6,0) {$2$};
-\node[draw, rectangle, minimum size=8mm] (4) at (9,0) {$5$};
-\node[draw, rectangle, minimum size=8mm] (5) at (4.5,-2) {$4$};
+\node[draw, rectangle, minimum size=7mm] (1) at (0,0) {$3$};
+\node[draw, rectangle, minimum size=7mm] (2) at (2,0) {$7$};
+\node[draw, rectangle, minimum size=7mm] (3) at (4,0) {$2$};
+\node[draw, rectangle, minimum size=7mm] (4) at (6,0) {$5$};
+\node[draw, rectangle, minimum size=7mm] (5) at (3,-1.5) {$4$};
 \path[draw,thick,->] (1) edge [bend left] (2);
 \path[draw,thick,->] (2) edge [bend left] (5);
 \path[draw,thick,->] (5) edge [bend left] (3);
@@ -511,12 +511,12 @@ muutamme viittauksia niin, että solmu ohitetaan.
 \path[draw,thick,->] (5) edge [bend left] (2);
 \path[draw,thick,->] (2) edge [bend left] (1);
 \end{scope}
-\begin{scope}[yshift=-6.5cm]
+\begin{scope}[yshift=-5.5cm]
 \node at (-3,0) {(c)};
-\node[draw, rectangle, minimum size=8mm] (1) at (0,0) {$3$};
-\node[draw, rectangle, minimum size=8mm] (2) at (3,0) {$7$};
-\node[draw, rectangle, minimum size=8mm] (4) at (9,0) {$5$};
-\node[draw, rectangle, minimum size=8mm] (5) at (4.5,-2) {$4$};
+\node[draw, rectangle, minimum size=7mm] (1) at (0,0) {$3$};
+\node[draw, rectangle, minimum size=7mm] (2) at (2,0) {$7$};
+\node[draw, rectangle, minimum size=7mm] (4) at (6,0) {$5$};
+\node[draw, rectangle, minimum size=7mm] (5) at (3,-1.5) {$4$};
 \path[draw,thick,->] (1) edge [bend left] (2);
 \path[draw,thick,->] (2) edge [bend left] (5);
 \path[draw,thick,->] (5) edge [bend left] (4);
