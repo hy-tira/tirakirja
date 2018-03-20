@@ -345,87 +345,167 @@ Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
 
 \subsection{Pikajärjestäminen}
 
-Pikajärjestäminen on toinen rekursiivinen järjestämisalgoritmi,
-joka toimii seuraavasti:
-
-\begin{enumerate}
-\item Jos taulukossa on vain yksi alkio,
-älä tee mitään, koska taulukko on jo järjestyksessä.
-\item Valitse jakoalkioksi jokin taulukossa oleva alkio $x$.
-\item Siirrä jakoalkion vasemmalle puolelle kaikki $x$:ää pienemmät alkiot
-ja oikealle puolelle kaikki $x$:ää suuremmat alkiot.
-\item Järjestä jakoalkion eri puolilla olevat osataulukot rekursiivisesti.
-\end{enumerate}
-
-Pikajärjestäminen muistuttaa siis lomitusjärjestämistä,
-mutta erona on, että taulukkoa ei jaeta kahdeksi yhtä suureksi
-osataulukoksi vaan jaon määrää jakoalkio $x$.
-Esimerkiksi jos haluamme järjestää taulukon $[4,2,5,8,2,1,5,6]$,
-voimme valita jakoalkioksi vaikkapa taulukon ensimmäisen alkion $4$.
-Kun siirrämme muut luvut jakoalkion eri puolille,
-saamme osataulukot $[2,2,1]$ ja $[5,8,5,6]$, jotka järjestämme
-sitten rekursiivisesti.
+\emph{Pikajärjestäminen} on toinen rekursiivinen järjestämisalgoritmi,
+joka perustuu hajota ja hallitse -tekniikkaan.
+Kun saamme järjestettäväksi taulukon, valitsemme yhden sen alkioista
+\emph{jakoalkioksi}.
+Siirrämme taulukon alkioita niin,
+että jakoalkion vasemmalla puolella on kaikki sitä pienemmät alkiot
+ja oikealla puolella on kaikki muut alkiot.
+Tämän jälkeen järjestämme rekursiivisesti vasemman ja oikean puolen alkiot.
 
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.5]
-\draw (0+0.25,0) rectangle (16-0.25,1);
-\draw (0+0.25,-2.5) rectangle (1-0.25,-1.5);
-\draw (1+0.25,-2.5) rectangle (16-0.25,-1.5);
-\draw (1+0.25,-5) rectangle (2-0.25,-4);
-\draw (2+0.25,-5) rectangle (16-0.25,-4);
-\draw (2+0.25,-7.5) rectangle (3-0.25,-6.5);
-\draw (3+0.25,-7.5) rectangle (16-0.25,-6.5);
-\foreach \x in {4,8,12} \node at (\x+1,-9) {$\dots$};
+\begin{scope}
+\fill[color=lightgray] (0,0) rectangle (1,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/5,1/3,2/8,3/4,4/1,5/9,6/3,7/7} \node at (0.5+\x,0.5) {\v};
+\fill[color=lightgray] (4,-2) rectangle (5,-1);
+\draw (0,-2) grid (8,-1);
+\foreach \x/\v in {0/3,1/4,2/1,3/3,4/5,5/8,6/9,7/7} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (4,-0.2) -- (4,-0.8);
+\end{scope}
+\begin{scope}[xshift=0cm,yshift=-4cm]
+\fill[color=lightgray] (0,0) rectangle (1,1);
+\draw (0,0) grid (4,1);
+\foreach \x/\v in {0/3,1/4,2/1,3/3} \node at (0.5+\x,0.5) {\v};
+\fill[color=lightgray] (1,-2) rectangle (2,-1);
+\draw (0,-2) grid (4,-1);
+\foreach \x/\v in {0/1,1/3,2/4,3/3} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (2,-0.2) -- (2,-0.8);
+\end{scope}
+\begin{scope}[xshift=5cm,yshift=-4cm]
+\fill[color=lightgray] (0,0) rectangle (1,1);
+\draw (0,0) grid (3,1);
+\foreach \x/\v in {0/8,1/9,2/7} \node at (0.5+\x,0.5) {\v};
+\fill[color=lightgray] (1,-2) rectangle (2,-1);
+\draw (0,-2) grid (3,-1);
+\foreach \x/\v in {0/7,1/8,2/9} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (1.5,-0.2) -- (1.5,-0.8);
+\end{scope}
+\begin{scope}[xshift=2cm,yshift=-8cm]
+\fill[color=lightgray] (0,0) rectangle (1,1);
+\draw (0,0) grid (2,1);
+\foreach \x/\v in {0/4,1/3} \node at (0.5+\x,0.5) {\v};
+\fill[color=lightgray] (1,-2) rectangle (2,-1);
+\draw (0,-2) grid (2,-1);
+\foreach \x/\v in {0/3,1/4} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (1,-0.2) -- (1,-0.8);
+\end{scope}
 \end{tikzpicture}
-\caption{Pikajärjestämisen huonoin tapaus: jokaisessa vaiheessa lähes kaikki
-alkiot jäävät toiseen osataulukkoon.}
+\caption{Pikajärjestäminen taulukolle $[5,3,8,4,1,9,3,7]$.}
 \label{fig:pikjar}
 \end{figure}
 
-Jakoalkion valinnan jälkeen pystymme siirtämään lineaarisessa ajassa
-alkiot jakoalkion eri puolille.
-Pikajärjestämisen tehokkuuden ratkaisee, kuinka tasaisesti
-alkiot jakautuvat osataulukoiksi.
-Parhaassa tapauksessa joka vaiheessa saamme kaksi suunnilleen
-yhtä suurta osataulukkoa, jolloin tilanne vastaa kuvaa \ref{fig:lomjar}.
-Kuitenkin on myös mahdollista, että jaot ovat epätasaisia ja
-joka vaiheessa lähes kaikki alkiot jäävät toiselle puolelle.
-Kuva \ref{fig:pikjar} näyttää esimerkin tällaisesta tilanteesta.
+Kuva \ref{fig:pikjar} näyttää, miten pikajärjestäminen toimii, kun sille
+annetaan taulukko $[5,3,8,4,1,9,3,7]$.
+Toimimme tässä esimerkissä niin, että jakoalkio on aina
+taulukon ensimmäinen alkio.
+Ensin jakoalkio on 5 ja siirrämme sen vasemmalle puolelle
+alkiot $[3,4,1,3]$ ja oikealle puolelle alkiot $[8,9,7]$.
+Tämän jälkeen järjestämme vasemman ja oikean puolen rekursiivisesti.
 
-Parhaassa tapauksessa pikajärjestäminen toimii siis yhtä nopeasti
-kuin lomitusjärjestäminen eli ajassa $O(n \log n)$.
-Pahimmassa tapauksessa aikaa kuluu kuitenkin $O(n^2)$,
-koska algoritmin suorituksessa saattaa muodostua $O(n)$ tasoa,
-joista jokainen vie aikaa $O(n)$.
-Miksi haluaisimme siis käyttää pikajärjestämistä,
-joka toimii \emph{ehkä} ajassa $O(n \log n)$,
-kun voisimme käyttää sen sijasta lomitusjärjestämistä,
-joka toimii \emph{varmasti} ajassa $O(n \log n)$?
+Seuraava koodi esittää pikajärjestämisen toiminnan:
 
-Ensinnäkin pikajärjestäminen toimii \emph{yleensä}
-ajassa $O(n \log n)$, kunhan valitsemme jakoalkion huolellisesti.
-Taulukon ensimmäinen alkio ei ole käytän\-nössä hyvä jakoalkio,
-koska silloin esimerkiksi valmiiksi järjestyksessä olevan
-taulukon käsittely vie aikaa $O(n^2)$.
-Parempi tapa on esimerkiksi ottaa tarkasteluun taulukon ensimmäinen,
-keskimmäinen ja viimeinen alkio ja valita niistä
-järjestyksessä keskimmäinen jakoalkioksi.
-Tällaisella jakoalkion valinnalla on jo vaikeaa keksiä taulukkoa,
-jossa pikajärjestäminen veisi aikaa $O(n^2)$,
-saati sitten että tällainen tilanne esiintyisi käytännössä.
+\begin{code}
+void jarjesta(int a, int b) {
+    if (a > b) return;
+    int k = jako(a,b);
+    jarjesta(a,k-1);
+    jarjesta(k+1,b);
+}
+\end{code}
 
-Pikajärjestämisen todellinen etu on kuitenkin siinä,
-että sen vakiokertoimet ovat pienet.
-Vaikka lomitusjärjestäminen ja pikajärjestäminen vievät molemmat
-aikaa $O(n \log n)$, kokemus on osoittanut, että
-pikajärjestäminen toimii yleensä käytännössä nopeammin.
-Yksi syy tähän on, että pikajärjestä\-minen siirtää vähemmän
-alkioita ympäri taulukkoa: aina kun alkiot on siirretty
-jakoalkion eri puolille, niitä ei siirretä enää koskaan
-jakoalkion yli.
+Metodille \texttt{jarjesta} annetaan parametrina järjestettävä
+taulukon väli.
+Jos väli on tyhjä tai siinä on vain yksi alkio,
+poistumme metodista.
+Muuten kutsumme metodia \texttt{jako}, joka valitsee jakoalkion
+ja siirtää muut alkiot sen vasemmalle ja oikealle puolelle.
+Metodi palauttaa taulukon kohdan, jossa jakoalkio on siirtojen jälkeen.
+Sitten kutsumme metodia \texttt{jarjesta} rekursiivisesti
+taulukon vasempaan ja oikeaan osaan.
 
-\subsection{Järjestämisen alaraja}
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\begin{scope}
+\fill[color=lightgray] (0,0) rectangle (1,1);
+\draw (0,0) grid (8,1);
+\foreach \x/\v in {0/1,1/2,2/3,3/4,4/5,5/6,6/7,7/8} \node at (0.5+\x,0.5) {\v};
+\fill[color=lightgray] (0,-2) rectangle (1,-1);
+\draw (0,-2) grid (8,-1);
+\foreach \x/\v in {0/1,1/2,2/3,3/4,4/5,5/6,6/7,7/8} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (4,-0.2) -- (4,-0.8);
+\end{scope}
+\begin{scope}[xshift=1cm,yshift=-4cm]
+\fill[color=lightgray] (0,0) rectangle (1,1);
+\draw (0,0) grid (7,1);
+\foreach \x/\v in {0/2,1/3,2/4,3/5,4/6,5/7,6/8} \node at (0.5+\x,0.5) {\v};
+\fill[color=lightgray] (0,-2) rectangle (1,-1);
+\draw (0,-2) grid (7,-1);
+\foreach \x/\v in {0/2,1/3,2/4,3/5,4/6,5/7,6/8} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (3.5,-0.2) -- (3.5,-0.8);
+\end{scope}
+\end{tikzpicture}
+\caption{Pikajärjestämisen pahin tapaus: jokaisessa jaossa kaikki
+alkiot jäävät jakoalkion toiselle puolelle.}
+\label{fig:pikpah}
+\end{figure}
+
+Pikajärjestämisen toimintaan vaikuttaa, miten valitsemme jakoalkion.
+Haluaisimme valita jakoalkion niin, että sen vasemmalle ja oikealle
+puolelle siirretään suunnilleen yhtä monta alkiota.
+Jos onnistumme tässä, taulukon koko puolittuu jokaisen jaon jälkeen
+ja pikajärjestäminen toimii tehokkaasti.
+Koska pystymme siirtämään alkiot jakoalkion ympärille
+lineaarisessa ajassa, pikajärjestäminen vie tässä tapauksessa aikaa
+$O(n \log n)$ samaan tapaan kuin lomitusjärjestäminen.
+
+Uhkana on kuitenkin, että jakoalkio valitaan huonosti ja se jakaa
+taulukon osiin epätasaisesti.
+Kuva \ref{fig:pikpah} näyttää tilanteen, jossa jokaisessa jaossa
+kaikki alkiot jäävät jakoalkion oikealle puolelle.
+Tällöin pikajärjestäminen viekin aikaa $O(n^2)$, koska rekursiivisia
+tasoja on $O(n)$.
+Selvästikään \emph{ei} ole hyvä tapa valita taulukon ensimmäistä
+alkiota jakoalkioksi, koska silloin valmiiksi järjestyksessä olevan
+taulukon järjestäminen vie aikaa $O(n^2)$.
+
+Miten meidän tulisi sitten valita jakoalkio?
+Jakoalkion tulisi jakaa taulukkoa tasaisesti mutta toisaalta
+meidän täytyy pystyä valitsemaan jakoalkio nopeasti.
+Yksi hyvä tapa valita jakoalkio on ottaa tarkasteluun
+taulukon ensimmäinen, keskimmäinen ja viimeinen alkio ja valita
+jakoalkioksi järjestyksessä keskimmäinen näistä kolmesta alkiosta.
+Tällainen valinta toimii käytännössä hyvin:
+on vaikeaa keksiä taulukkoa, jossa järjestäminen veisi aikaa $O(n^2)$,
+saati sitten, että tällainen tilanne esiintyisi käytännössä.
+
+\subsection{Algoritmien vertailua}
+
+Meillä on nyt siis saatavilla kaksi rekursiivista järjestämisalgoritmia:
+lomitusjärjestäminen toimii \emph{aina} ajassa $O(n \log n)$,
+kun taas pikajärjestäminen toimii \emph{ehkä} ajassa $O(n \log n)$,
+mutta saattaa viedä aikaa $O(n^2)$.
+Miksi haluaisimme koskaan käyttää epävarmaa pikajärjestämistä,
+kun voimme käyttää myös varmasti tehokasta lomitusjärjestämistä?
+
+Syynä on, että pikajärjestämisen \emph{vakiokertoimet} ovat pienet.
+Kokemus on osoittanut, että kun toteutamme lomitusjärjestämisen ja
+pikajärjestämisen ja mittaamme algoritmien todellisia suoritusaikoja,
+pikajärjestäminen toimii yleensä nopeammin.
+Näin tapahtuu siitä huolimatta, että pikajärjestämisen pahimman
+tapauksen aikavaativuus on $O(n^2)$.
+Käytännössä pahin tapaus onkin hyvin harvinainen,
+jos jakoalkion valinta on toteutettu huolellisesti.
+
+Ohjelmointikielten standardikirjastoiden järjestämisalgoritmit
+perustuvat yleensä joko lomitusjärjestämiseen tai pikajärjestämiseen.
+TODO
+
+\section{Järjestämisen alaraja}
 
 Onko mahdollista luoda järjestämisalgoritmi, joka toimisi
 nopeammin kuin $O(n \log n)$?
