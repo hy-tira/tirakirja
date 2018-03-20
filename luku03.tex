@@ -151,12 +151,12 @@ mikä on järjestettävän taulukon sisältö.
 Algoritmi toimii sitä paremmin, mitä lähempänä järjestystä
 taulukko on valmiiksi.
 Jos taulukko on järjestyksessä,
-aikaa kuluu vain $O(n)$, koska meidän ei tarvitse siirtää
+aikaa kuluu vain $\Theta(n)$, koska meidän ei tarvitse siirtää
 mitään alkioita.
 Pahin tapaus algoritmille on kuitenkin, että taulukko on
 \emph{käänteisessä} järjestyksessä,
 jolloin joudumme siirtämään jokaisen alkion
-taulukon alkuun ja aikaa kuluu $O(n^2)$.
+taulukon alkuun ja aikaa kuluu $\Theta(n^2)$.
 
 \subsection{Inversiot}
 
@@ -171,18 +171,30 @@ sitä lähempänä se on järjestystä.
 Erityisesti taulukko on järjestyksessä tarkalleen silloin,
 kun siinä ei ole yhtään inversiota.
 
-Kun lisäysjärjestäminen käsittelee alkion $x$,
-se poistaa taulukosta kaikki inversiot,
-joiden oikeana alkiona on $x$.
+Kun järjestämisalgoritmi järjestää taulukon,
+se \emph{poistaa} siitä inversioita.
+Lisäysjärjestämisessä jokaisen alkion $x$ kohdalla
+algoritmi poistaa kaikki inversiot,
+joiden oikeana jäsenenä on alkio $x$.
 Jokaisen inversion poistaminen vaatii yhden
 vasemmalla olevan alkion siirtämisen askeleen oikealle.
-Niinpä algoritmin työmäärä on yhtä suuri kuin
-järjestettävänä olevan taulukon inversioiden määrä.
-Pahimmassa tapauksessa taulukko on käänteisessä
-järjestyksessä, jolloin inversioiden määrä on
-\[1+2+\dots+(n-1)=\frac{(n-1)n}{2}=O(n^2).\]
+Niinpä lisäysjärjestämisen tekemä siirtojen määrä on yhtä suuri
+kuin järjestettävän taulukon inversioiden määrä.
 
-Syy lisäysjärjestämisen hitauteen onkin,
+Olemme jo todenneet, että pahin mahdollinen syöte
+lisäysjärjestämiselle on käänteisessä järjestyksessä oleva taulukko.
+Tällaisessa taulukossa jokainen alkiopari muodostaa inversion,
+joten inversioiden määrä on
+\[1+2+\dots+(n-1)=\frac{n(n-1)}{2}=\Theta(n^2).\]
+Entä kuinka hyvin algoritmi toimii \emph{keskimäärin}?
+Jos oletamme, että taulukossa on $n$ eri alkiota satunnaisessa
+järjestyksessä, alkiopari muodostaa inversion todennäköisyydellä $1/2$.
+Niinpä inversioiden määrän \emph{odotusarvo} on
+\[\frac{n(n-1)}{4}=\Theta(n^2),\]
+eli aikaa kuluu neliöllinen määrä myös keskimääräisessä
+tapauksessa.
+
+Syy lisäysjärjestämisen hitauteen on siis,
 että se ei poista taulukosta inversioita riittävän tehokkaasti.
 Jos haluamme kehittää paremman järjestämis\-algoritmin,
 meidän tulee suunnitella se niin, että se voi poistaa
