@@ -629,8 +629,15 @@ Vaikka on hyödyllistä tuntea järjestämisen teoriaa,
 käytännössä ei ole hyvä idea toteuttaa itse
 järjestämisalgoritmia, koska nykypäivän ohjelmointikielissä
 on valmiit työkalut järjestämiseen.
-Esimerkiksi Javassa voimme käyttää metodia \texttt{Arrays.sort},
-joka järjestää sille annetun taulukon:
+Valmiin algoritmin käyttämisessä on etuna,
+että se on varmasti hyvin toteutettu ja tehokas.
+Lisäksi meiltä säästyy aikaa, kun emme joudu
+toteuttamaan algoritmia itse.
+
+Javan standardikirjasto sisältää metodin \texttt{Arrays.sort},
+joka järjestää sille annetun taulukon.
+Esimerkiksi seuraava koodi järjestää kokonaislukuja
+sisältävän taulukon:
 
 \begin{code}
 int[] taulu = {4,2,5,8,2,1,5,6};
@@ -639,14 +646,17 @@ Arrays.sort(taulu);
 
 Kiinnostava kysymys on, mitä algoritmia Java käyttää
 taulukon järjes\-tämiseen.
-Yllättävää kyllä, tämä riippuu siitä, minkä tyyppistä tietoa
-taulukossa on.
+Asian voi tarkastaa Javan standardikirjaston
+dokumentaatiosta.
+Yllättävää kyllä, Javan käyttämä algoritmi riippuu siitä,
+minkä tyyppistä tietoa taulukossa on.
 Jos taulukon alkiot ovat alkeistyyppisiä
 (esimerkiksi \texttt{int}), Java käyttää 
-pikajärjestämisen muunnelmaa.
+pikajärjestämisen muunnelmaa,
+jossa on kaksi jakoalkiota.
 Jos taas alkiot ovat oliotyyppisiä
 (esimerkiksi \texttt{String}),
-algoritmina on lomitusjärjestäminen.
+algoritmina on optimoitu lomitusjärjestäminen.
 
 Jos haluamme, että Java pystyy järjestämään omia olioitamme,
 meidän täytyy toteuttaa luokkaan metodi \texttt{compareTo} ja
@@ -669,8 +679,11 @@ public class Piste implements Comparable<Piste> {
     public int x, y;
 
     public int compareTo(Piste p) {
-        if (this.x != p.x) return this.x-p.x;
-        else return this.y-p.y;
+        if (this.x != p.x) {
+            return this.x-p.x;
+        } else {
+            return this.y-p.y;
+        }
     }
 }
 \end{code}
