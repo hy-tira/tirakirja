@@ -721,22 +721,22 @@ vertailu: 2 1
 
 Annettuna on $n$ kokonaisluvun taulukko ja haluamme
 laskea sille mediaanin ja moodin.
-\emph{Mediaani} on keskimmäinen arvo, kun taulukko järjestetään
-pienimmästä suurimpaan.
-\emph{Moodi} taas on arvo, joka esiintyy useimmiten taulukossa.
+Taulukon \emph{mediaani} on keskimmäinen arvo, kun taulukko järjestetään
+pienimmästä suurimpaan
+(jos $n$ on parillinen, tulkitsemme, että mediaani on
+pienempi kahdesta keskellä olevasta luvusta).
+Taulukon \emph{moodi} on puolestaan arvo, joka esiintyy useimmiten taulukossa.
 Esimerkiksi taulukon $[2,1,3,1,5]$ mediaani on 2 ja moodi on 1.
 
 Pystymme laskemaan sekä mediaanin että moodin tehokkaasti
 $O(n \log n)$-ajassa järjestämisen avulla.
 Mediaanin laskeminen on erityisen helppoa,
 koska meidän riittää järjestää taulukko ja valita
-sieltä keskimmäinen luku. Seuraava metodi hoitaa asian:
+sieltä keskimmäinen luku. Seuraava koodi hoitaa asian:
 
 \begin{code}
-int mediaani(int[] taulu) {
-    Arrays.sort(taulu);
-    return taulu[taulu.length/2];
-}
+Arrays.sort(taulu);
+System.out.println(taulu[n/2]);
 \end{code}
 
 Tässä tulkintana on, että kun $n$ on parillinen, mediaani
@@ -746,56 +746,26 @@ Moodin laskemisessa auttaa havainto, että taulukon järjestämisen
 jälkeen kaikki yhtä suuret luvut ovat vierekkäin.
 Niinpä voimme ensin järjestää taulukon ja etsiä sitten siitä
 pisimmän samaa lukua toistavan osuuden.
-Seuraava metodi toimii näin:
+Seuraava koodi toimii näin:
 
 \begin{code}
-int moodi(int[] taulu) {
-    Arrays.sort(taulu);
-    int tulos = taulu[0];
-    int pituus = 1;
-    int paras = 1;
-    for (int i = 1; i < taulu.length; i++) {
-        if (taulu[i-1] != taulu[i]) pituus = 0;
-        pituus++;
-        if (pituus > paras) {
-            paras = pituus;
-            tulos = taulu[i];
-        }
+Arrays.sort(taulu);
+int moodi = taulu[0];
+int pituus = 1;
+int paras = 1;
+for (int i = 1; i < n; i++) {
+    if (taulu[i-1] != taulu[i]) pituus = 0;
+    pituus++;
+    if (pituus > paras) {
+        paras = pituus;
+        moodi = taulu[i];
     }
-    return tulos;
 }
 \end{code}
 
-Huomaa, että koska taulukko välitetään viittauksena metodeille,
-taulukon uusi järjestys jää voimaan metodien kutsumisen jälkeen
-eli metodeilla on \emph{sivuvaikutuksia}.
-Seuraava koodi havainnollistaa asiaa:
-
-\begin{code}
-int[] taulu = {2,1,3};
-System.out.println(mediaani(taulu)); // 2
-System.out.println(taulu[0]); // 1
-\end{code}
-
-Koodi laskee taulukon mediaanin, jolloin taulukko
-myös järjestyy. Niinpä taulukon kohdassa 0 oleva luku
-on mediaanin laskemisen jälkeen 1.
-
-Jos emme halua metodiin sivuvaikutuksia voimme metodin
-alussa tehdä kopion taulukosta ja järjestää sen alkuperäisen
-taulukon sijasta. Voimme tehdä kopion seuraavasti \texttt{clone}-metodilla:
-
-\begin{code}
-int[] kopio = taulu.clone();
-Arrays.sort(kopio);
-...
-\end{code}
-
-Tämän jälkeen mediaanin laskeminen ei
-muuta taulukon sisältöä:
-
-\begin{code}
-int[] taulu = {2,1,3};
-System.out.println(mediaani(taulu)); // 2
-System.out.println(taulu[0]); // 2
-\end{code}
+Algoritmi käy läpi järjestetyn taulukon vasemmalta oikealle
+ja laskee muuttujaan \texttt{pituus}, kuinka pitkä on tällä
+hetkellä meneillään oleva samaa lukua toistava osuus.
+Jos tämä ylittää pisimmän tähän asti havaitun toistojen
+määrän (\texttt{paras}), algoritmi merkitsee pituuden muistiin
+ja päivittää tietoa taulukon moodista (\texttt{moodi}).
