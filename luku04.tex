@@ -1,17 +1,26 @@
-\chapter{Listarakenteet}
+\chapter{Lista}
 
-Lista on tietorakenne, joka sisältää kokoelman
-peräkkäisiä alkioita.
-Esimerkiksi $[3,7,2,5]$ on lista, jossa on neljä alkiota.
-Haluamme toteuttaa listan niin, että pääsemme mukavasti
-käsiksi sen alkioihin sekä voimme
-lisätä ja poistaa alkioita ohjelman suorituksen aikana.
+Ohjelmoinnin perustietorakenne on taulukko,
+joka on mainio tietorakenne, mutta siinä on yksi puute.
+Kun luomme taulukon, meidän täytyy antaa sille
+kiinteä koko, emmekä voi muuttaa kokoa myöhemmin.
+Esimerkiksi seuraava koodi luo taulukon,
+jossa on kiinteästi kymmenen alkiota:
 
-Tässä luvussa tutustumme kahteen menetelmään listan toteuttamiseen.
-Toteutamme listan ensin taulukkona, jolloin vaikeutena on
-toteuttaa alkioiden lisäykset ja poistot tehokkaasti.
-Tämän jälkeen käsittelemme linkitettyä listaa,
-joka muodostuu toisiinsa viittaavista solmuista.
+\begin{code}
+int[] taulu = new int[10];
+\end{code}
+
+Tämä on ongelma, koska meillä ei välttämättä ole
+taulukon luontihetkellä käsitystä, montako alkiota
+haluaisimme tallentaa siihen myöhemmin.
+
+Tämän luvun tavoitteemme on luoda tietorakenne,
+joka muistuttaa taulukkoa, mutta 
+voimme lisätä ja poistaa alkioita jälkeenpäin.
+Kutsumme tietorakennetta nimellä \emph{lista}.
+Tutustumme kahteen tapaan listan toteuttamiseen,
+joissa molemmissa on omat hyvät ja huonot puolensa.
 
 \section{Taulukkolista}
 
@@ -23,43 +32,83 @@ joka vastaa listaa $[3,7,2,5]$:
 int[] lista = {3,7,2,5};
 \end{code}
 
-Koska taulukon alkiot tallennetaan muistissa peräkkäin
-yhtenäiseen alueeseen, pääsemme käsiksi mihin tahansa
-listan alkioon tehokkaasti ajassa $O(1)$ käyttäen $[]$-syntaksia.
-Esimerkiksi seuraava koodi hakee listalta kohdassa $2$
-olevan arvon ja muuttaa kohdassa $1$ olevaa arvoa:
+Ongelmana on kuitenkin, kuinka voisimme muuttaa
+taulukkoon tallennetun listan kokoa.
+Löydämme ongelmaan pian ratkaisun, mutta sitä ennen
+aiheellinen kysymys on:
+miksi Javan suunnittelijat ovat olleet niin keljuja,
+että he eivät lisänneet taulukkoon mahdollisuutta
+muuttaa sen kokoa?
+
+Tähän on hyvä selitys, ja se liittyy siihen,
+miten taulukko on tallennettu tietokoneen muistissa.
+Tarkastellaan esimerkkinä seuraavaa koodia:
 
 \begin{code}
-int x = lista[2];
-lista[1] = 4;
+int[] a = {1,4,2};
+int[] b = {5,3,2,5};
 \end{code}
 
-Taulukon rajoituksena on kuitenkin,
-että emme voi muuttaa sen kokoa määrittelyn jälkeen.
-Miten voimme siis tehdä listan, joka sallii alkioiden
-lisäämisen ja poistamisen myöhemmin ohjelmassa?
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\draw (0,0) grid (9,1);
+\node at (0.5,0.5) {$-$};
+\node at (1.5,0.5) {$1$};
+\node at (2.5,0.5) {$4$};
+\node at (3.5,0.5) {$2$};
+\node at (4.5,0.5) {$5$};
+\node at (5.5,0.5) {$3$};
+\node at (6.5,0.5) {$2$};
+\node at (7.5,0.5) {$5$};
+\node at (8.5,0.5) {$-$};
+\end{tikzpicture}
+\caption{Taulukot $[1,4,2]$ ja $[5,3,2,5]$ tietokoneen muistissa.}
+\label{fig:taumui}
+\end{figure}
 
-Ratkaisu asiaan on toteuttaa lista niin,
-että osa taulukosta sisältää listan alkiot
-ja lisäksi taulukossa on \emph{ylimääräistä}
-tilaa tuleville alkioille.
-Seuraavaksi käymme läpi kaksi toteutusta,
-joista ensimmäisessä voimme lisätä ja poistaa alkioita
-listan lopussa ja toisessa sekä listan alussa että lopussa.
+Kuva \ref{fig:taumui} näyttää mahdollisen tavan, miten taulukot
+\texttt{a} ja \texttt{b} asettuvat muistissa.
+Taulukossa \texttt{a} on kolme alkiota,
+joten sille on varattu kolme paikkaa muistista,
+ja taulukossa \texttt{b} on neljä alkiota,
+joten sille on varattu neljä paikkaa muistista.
+Taulukolle varataan aina yhtenäinen muistialue,
+minkä ansiosta pääsemme käsiksi sen alkioihin
+helposti ajassa $O(1)$.
 
-\subsection{Lisäykset/poistot lopussa}
+Tästä seuraa ilmeinen syy,
+minkä vuoksi emme voi laajentaa taulukon kokoa
+luonnin jälkeen:
+tyypillisesti muistissa on heti taulukon perässä muuta
+tarpeellista tietoa, jota ei saa poistaa.
+Jos lisäisimme taulukon \texttt{a} perään uuden alkion,
+meidän täytyisi tuhota taulukon \texttt{b} ensimmäinen alkio,
+mikä ei tule kysymykseen.
+Ainoa tapa laajentaa taulukkoa onkin varata
+jostain muualta muistista enemmän tilaa ja kopioida
+taulukon sisältö sinne.
+Juuri näin joudumme tekemään, kun toteutamme listan taulukkona.
 
-Säilytämme listaa taulukossa niin,
+\subsection{Muutokset lopussa}
+
+Toteutamme ensin taulukkolistan, jossa voimme
+lisätä ja poistaa alkioita listan lopussa.
+Tallennamme listan taulukkona niin,
 että tietty määrä alkioita taulukon alussa on listan käytössä
 ja loput alkiot on varattu tuleville alkioille.
 Tämän ansiosta pystymme lisäämään uuden alkion listalle
-ajassa $O(1)$, koska meidän riittää ottaa käyttöön seuraava
+ajassa $O(1)$, jos taulukossa on tilaa,
+koska meidän riittää ottaa käyttöön seuraava
 vapaana oleva kohta taulukosta.
 
-Kuva \ref{fig:listau} näyttää esimerkin listan $[3,7,2,5]$ tallentamisesta taulukkoon.
-Taulukossa on paikkoja kahdeksalle alkiolle, ja niistä neljä on tällä hetkellä käytössä.
-Kun lisäämme listan loppuun uuden alkion 6, otamme käyttöön taulukosta uuden kohdan,
-johon alkio sijoitetaan.
+Kuva \ref{fig:listau} näyttää esimerkin,
+jossa taulukossa on tilaa yhteenä kahdeksalle alkiolle
+ja siihen on tallennettu lista $[3,7,2,5]$.
+Taulukon neljä ensimmäistä alkiota on siis listan käytössä,
+ja muut ovat varalla tulevia alkioita varten.
+Kun lisäämme listan loppuun uuden alkion 6,
+otamme käyttöön taulukosta uuden kohdan, johon alkio sijoitetaan.
 
 \begin{figure}
 \center
@@ -129,8 +178,8 @@ ja kopioida vanhan taulukon sisältö sinne.}
 \label{fig:lisuus}
 \end{figure}
 
-Tässä on kuitenkin yksi ongelma: jossain vaiheessa koko taulukko
-on täynnä eikä uusi listalle lisättävä alkio mahdu enää taulukkoon.
+Mitä tapahtuu sitten, kun jossain vaiheessa koko taulukko
+on täynnä eikä uusi listalle lisättävä alkio mahdu enää taulukkoon?
 Tällöin meidän täytyy ensin varata uusi suurempi taulukko ja
 kopioida kaikki vanhan taulukon alkiot siihen.
 Vasta tämän jälkeen voimme lisätä uuden alkion listalle.
@@ -147,13 +196,13 @@ Jotta lista olisi käyttökelpoinen, hidas $O(n)$-operaatio
 ei saisi esiintyä liian usein.
 Osoittautuu, että saavutamme tämän tavoitteen,
 kunhan varaamme uuden taulukon aina reilusti aiempaa suuremmaksi.
-Yksi helppo ratkaisu on \emph{kaksinkertaistaa} taulukon koko aina,
+Tavanomainen ratkaisu on \emph{kaksinkertaistaa} taulukon koko aina,
 kun varaamme uuden taulukon.
 Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
 
 Voimme ajatella asian näin: jokainen listalle lisättävä alkio
-maksaa pääsy\-maksuna kolme euroa.
+maksaa \emph{pääsy\-maksuna} kolme euroa.
 Tästä yksi euro menee listalle liittymiseen ja kaksi euroa jäävät säästöön.
 Sitten kun aikanaan listalle täytyy varata suurempi taulukko,
 jokainen viime erässä lisätty alkio maksaa yhden euron omasta siirrostaan
@@ -204,10 +253,10 @@ Miksi sitten emme voisi varata heti aluksi niin suurta taulukkoa,
 että lopullinen lista mahtuisi siihen varmasti?
 Tässä olisi huonona puolena, että listamme tuhlaisi paljon muistia.
 Ohjelmassa saattaa olla samaan aikaan käytössä monia listoja,
-ja haluamme, että listan varaama taulukko on samaa kokoluokkaa
+ja haluamme, että listalle varattu taulukko on samaa kokoluokkaa
 kuin listan todellinen sisältö.
 
-\subsection{Lisäykset/poistot alussa ja lopussa}
+\subsection{Muutokset alussa ja lopussa}
 
 Melko samaan tapaan voimme myös luoda taulukkolistan,
 joka sallii tehokkaat alkioiden lisäykset ja poistot
