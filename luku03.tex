@@ -23,7 +23,7 @@ Usein voimme helpottaa ongelman ratkaisemista
 järjestämällä ensin aineiston.
 Esimerkiksi jos haluamme tutkia,
 mikä alkio esiintyy useimmiten taulukossa,
-voimme järjestää ensin alkiot,
+voimme järjestää ensin taulukon sisällön,
 jolloin yhtä suuret alkiot päätyvät vierekkäin.
 Tämän jälkeen meidän riittää käydä taulukko läpi
 ja etsiä siitä pisin samaa alkiota toistava osuus.
@@ -35,17 +35,17 @@ nimeltä lisäysjär\-jestäminen,
 joka järjestää $n$-alkioisen aineiston ajassa $O(n^2)$.
 Vaikka algoritmi ei ole nopea, se on tutustumisen arvoinen
 ja antaa hyvän lähtökohdan tehokkaampien algoritmien
-suunnittelulle.
+suunnittelemiselle.
 
 \subsection{Lisäysjärjestäminen}
 
 \emph{Lisäysjärjestäminen} käy läpi taulukon
 vasemmalta oikealle.
-Kun algoritmi tulee taulukon kohtaan $k$,
-se siirtää kohdassa $k$ olevan alkion
+Kun algoritmi tulee tiettyyn taulukon kohtaan,
+se siirtää kyseisessä kohdassa olevan alkion
 oikeaan paikkaan taulukon
 alkuosassa niin, että taulukon alkuosa
-kohtaan $k$ asti on tämän jälkeen järjestyksessä.
+on tämän jälkeen järjestyksessä.
 Niinpä kun algoritmi pääsee taulukon loppuun,
 koko taulukko on järjestyksessä.
 
@@ -103,7 +103,7 @@ koko taulukko on järjestyksessä.
 \begin{scope}[yshift=-12cm]
 \fill[lightgray] (5,0) rectangle (6,1);
 \draw (0,0) grid (6,1);
-\foreach \x/\v in {0/2,1/2,2/4,3/4,4/6,5/1} \node at (0.5+\x,0.5) {\v};
+\foreach \x/\v in {0/2,1/2,2/4,3/5,4/6,5/1} \node at (0.5+\x,0.5) {\v};
 \draw (6,-0.5) -- (6,1.5);
 \draw[->] (7,0.5) -- (9,0.5);
 \end{scope}
@@ -123,8 +123,9 @@ Jokaisella rivillä siirrämme harmaataustaisen alkion
 sen oikealle paikalle taulukon alkuosassa.
 Pystyviiva ilmaisee kohdan, johon asti taulukko on järjestyksessä
 siirron jälkeen.
+Lopulta saamme aikaan järjestetyn taulukon $[1,2,2,4,5,6]$.
 
-Voimme toteuttaa lisäysjärjestämisen seuraavalla koodilla:
+Seuraava koodi toteuttaa lisäysjärjestämisen:
 
 \begin{code}
 for (int i = 1; i < n; i++) {
@@ -138,22 +139,24 @@ for (int i = 1; i < n; i++) {
 }
 \end{code}
 
-Jokaisessa vaiheessa haluamme siirtää alkion $x$
-oikeaan paikkaan taulukon alkuosassa.
+Jokaisessa vaiheessa siirrämme alkion $x$
+oikeaan paikkaan taulukon alku\-osassa.
 Siirrämme alkion vasemmalla puolella olevia alkioita
 yksi kerrallaan askeleen oikealle, kunnes olemme löytäneet
-oikean paikan alkiolle $x$. Tämän jälkeen siirrämme
+oikean paikan alkiolle $x$. Tämän jälkeen asetamme
 alkion $x$ sen uuteen paikkaan.
 
-Algoritmin tehokkuus riippuu siitä, kuinka paljon
-joudumme siirtämään alkioita $\texttt{while}$-silmukalla.
-Pahin tapaus algoritmille on, että taulukko on aluksi
-\emph{käänteisessä} järjestyksessä.
-Tällöin meidän täytyy siirtää jokainen alkio $x$
-taulukon alkuun ja järjestäminen vie aikaa $O(n^2)$.
-Kannattaa silti huomata, että jos taulukko on valmiiksi
-järjestyksessä tai lähes järjestyksessä,
-algoritmi toimii tehokkaasti, koska siirtoja tulee vain vähän.
+Lisäysjärjestämisen tehokkuus riippuu siitä,
+mikä on järjestettävän taulukon sisältö.
+Algoritmi toimii sitä paremmin, mitä lähempänä järjestystä
+taulukko on valmiiksi.
+Jos taulukko on järjestyksessä,
+aikaa kuluu vain $O(n)$, koska meidän ei tarvitse siirtää
+mitään alkioita.
+Pahin tapaus algoritmille on kuitenkin, että taulukko on
+\emph{käänteisessä} järjestyksessä,
+jolloin joudumme siirtämään jokaisen alkion
+taulukon alkuun ja aikaa kuluu $O(n^2)$.
 
 \subsection{Inversiot}
 
