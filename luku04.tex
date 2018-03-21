@@ -16,8 +16,8 @@ taulukon luontihetkellä käsitystä, montako alkiota
 haluaisimme tallentaa siihen myöhemmin.
 
 Tämän luvun tavoitteemme on luoda tietorakenne,
-joka muistuttaa taulukkoa, mutta 
-voimme lisätä ja poistaa alkioita jälkeenpäin.
+joka muistuttaa taulukkoa, mutta voimme
+lisätä ja poistaa alkioita.
 Kutsumme tietorakennetta nimellä \emph{lista}.
 Tutustumme kahteen tapaan listan toteuttamiseen,
 joissa molemmissa on omat hyvät ja huonot puolensa.
@@ -32,13 +32,14 @@ joka vastaa listaa $[3,7,2,5]$:
 int[] lista = {3,7,2,5};
 \end{code}
 
-Ongelmana on kuitenkin, kuinka voisimme muuttaa
-taulukkoon tallennetun listan kokoa.
+Ongelmana on vain, että taulukon koko on kiinteä,
+vaikka haluaisimme pystyä lisäämään ja poistamaan
+listan alkioita.
 Löydämme ongelmaan pian ratkaisun, mutta sitä ennen
 aiheellinen kysymys on:
-miksi Javan suunnittelijat ovat olleet niin keljuja,
-että he eivät lisänneet taulukkoon mahdollisuutta
-muuttaa sen kokoa?
+miksi ohjelmointikielten suunnittelijat ovat olleet niin keljuja,
+että he eivät ole antaneet meille mahdollisuutta muuttaa
+taulukon kokoa?
 
 Tähän on hyvä selitys, ja se liittyy siihen,
 miten taulukko on tallennettu tietokoneen muistissa.
@@ -96,7 +97,7 @@ Toteutamme ensin taulukkolistan, jossa voimme
 lisätä ja poistaa alkioita listan lopussa.
 Tallennamme listan taulukkona niin,
 että tietty määrä alkioita taulukon alussa on listan käytössä
-ja loput alkiot on varattu tuleville alkioille.
+ja loput tyhjät kohdat on varattu tuleville alkioille.
 Tämän ansiosta pystymme lisäämään uuden alkion listalle
 ajassa $O(1)$, jos taulukossa on tilaa,
 koska meidän riittää ottaa käyttöön seuraava
