@@ -135,53 +135,41 @@ vievät aikaa $O(n)$, joten algoritmin kokonaisaikavaativuus on $O(n)$.
 
 \subsection{Kolikot}
 
-Meillä on $n$ kolikkoa, joiden arvot ovat $x_0,x_1,\dots,x_{n-1}$,
-ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa kolikoista.
-Jokaisen kolikon arvo on positiivinen kokonaisluku.
+Meillä on $n$ kolikkoa, jonka jokaisen arvo on positiivinen kokonaisluku,
+ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa
+valitsemalla jonkin osajoukon kolikoista.
 Esimerkiksi jos kolikot ovat $[1,2,2,9]$, voimme muodostaa summat
 $1$, $2$, $1+2=3$, $2+2=4$ ja $1+2+2=5$,
 mutta emme voi muodostaa summaa $6$.
 
-\subsubsection{Havainto 1}
+Tässä tehtävässä vaikeutena on, että mahdollisten osajoukkojen
+määrä on suuri: voimme muodostaa $n$ kolikosta $2^n$ osajoukkoa.
+Niinpä ei ole mitenkään realistinen ratkaisu,
+että alkaisimme käydä läpi osajoukkoja yksitellen,
+vaan tarvitsemme jotain selvästi parempaa.
 
-Tehtävän vastaus on aina muotoa $s+1$, missä $s$ on jokin kolikoista
-saatava summa. Esimerkissä $s=1+2+2=5$.
+Tehtävän ratkaisua helpottaa, kun lähdemme liikkeelle pienistä summista.
+Haluamme muodostaa ensin summan $1$, ja tähän tarvitsemme välttämättä
+kolikon, jonka arvo on $1$.
+Sitten haluamme muodostaa summan $2$, mihin tarvitsemme joko
+toisen kolikon $1$ tai kolikon $2$, ja sen jälkeen summan $3$,
+joka voi muodostua kolikoista $1+1+1$, $1+2$ tai $3$.
+Voisimme jatkaa eteenpäin, mutta vaihtoehtoja alkaa tulla
+paljon ja meidän on vaikeaa hallita niitä.
 
-Voimme siis ratkaista tehtävän
-muodostamalla kaikki mahdolliset $n$ kolikon summat
-ja etsimällä pienimmän puuttuvan summan.
-Algoritmi on kuitenkin hidas, koska $n$ kolikosta voi
-muodostaa summan $2^n$ tavalla ja joudumme käymään läpi kaikki tavat.
-
-\subsubsection{Havainto 2}
-
-Jos haluamme pystyä muodostamaan summan $1$,
-meillä on oltava kolikko, jonka arvo on $1$.
-
-Tämä havainto merkitsee sitä, että voimme ratkaista tehtävän
-hyvin helposti, jos minkään kolikon arvo ei ole $1$,
-koska vastaus on silloin suoraan $0$.
-Entä jos jonkin kolikon arvo on $1$?
-
-\subsubsection{Havainto 3}
-
+Meidän kannattaakin nyt alkaa miettiä ongelmaa yleisemmin.
 Oletetaan, että meillä on joukko kolikoita,
 joista voimme muodostaa kaikki summat $1,2,\dots,s$.
 Voimmeko ottaa mukaan vielä uuden kolikon niin,
-että voimme muodostaa myös summan $s+1$?
-
+että saamme muodostettua myös summan $s+1$?
 Tämä on mahdollista tarkalleen silloin, kun saatavilla on kolikko,
 jonka arvo on $s+1$ tai \emph{pienempi}.
-Jos tällaisen kolikon arvo on $u$, pystymme muodostamaan tämän jälkeen
+Jos uuden kolikon arvo on $u$, pystymme muodostamaan tämän jälkeen
 kaikki summat $1,2,\dots,s+u$.
-
-\subsubsection{Havainto 4}
-
-Jos on olemassa useita vaihtoehtoja valita kolikko,
-jonka arvo on $s+1$ tai pienempi,
-voimme valita minkä tahansa vaihtoehdon.
+Lisäksi jos meillä on monia vaihtoehtoja valita uusi kolikko,
+voimme valita minkä tahansa niistä.
 Erityisesti voimme päättää, että valitsemme aina
-\emph{pienimmän} kolikon.
+\emph{pienimmän} mahdollisen kolikon.
 
 Nyt meillä on koossa kaikki tarvittavat ainekset
 tehokasta algoritmia varten.
@@ -192,11 +180,11 @@ summa.
 Seuraava koodi toteuttaa algoritmin:
 
 \begin{code}
-Arrays.sort(x);
+Arrays.sort(kolikot);
 long summa = 0;
 for (int i = 0; i < n; i++) {
-    if (x[i] <= summa+1) {
-        summa += x[i];
+    if (kolikot[i] <= summa+1) {
+        summa += kolikot[i];
     } else {
         break;
     }
