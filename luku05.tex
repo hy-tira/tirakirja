@@ -1,11 +1,11 @@
 \chapter{Algoritmien suunnittelu}
 
-Kuinka voi suunnitella tehokkaan algoritmin?
+Kuinka voi suunnitella hyvän algoritmin?
 On selvää, ettei tähän kysymykseen ole helppoa vastausta.
 Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän romaanin
 tai säveltää hyvää musiikkia.
 
-Tällä kurssilla yleinen tavoitteemme on
+Tällä kurssilla usein esiintyvä tavoitteemme on
 saada aikaan tehokas algoritmi, joka toimisi ajassa $O(n)$ tai $O(n \log n)$.
 Kun tämä tavoite on tiedossa, voimme ottaa sen algoritmin
 suunnittelun lähtökohdaksi ja rajata sen avulla mahdollisia
@@ -14,8 +14,8 @@ lähestymistapoja, joita voimme käyttää.
 \section{Tehokkaat algoritmit}
 
 Millainen on algoritmi, joka vie aikaa $O(n)$ tai $O(n \log n)$?
-Yksi hyvä kuvaus on,
-että kun algoritmille annetaan $n$ alkion aineisto,
+Vaadimme algoritmilta,
+että kun sille annetaan syötteenä $n$ alkiota,
 se saa käyttää jokaisen alkion käsittelyyn
 vain pienen määrän aikaa.
 Tämä tarkoittaa käytännössä, että algoritmissa saa
@@ -30,19 +30,81 @@ for (int i = 0; i < n; i++) {
 Tässä ''jotain nopeaa'' tarkoittaa koodia, joka vie aikaa
 $O(1)$ tai $O(\log n)$.
 Lisäksi koska järjestäminen vie aikaa $O(n \log n)$,
-algoritmi voi halutessaan järjestää aineistoa.
-Kovin paljon muuta tehokas algoritmi ei sitten voikaan tehdä
-aineistolle.
-
-Tämä rajoittaa paljon mahdollisuuksiamme suunnitella algoritmia,
+algoritmi voi tarvittaessa järjestää aineistoa.
+Kovin paljon muuta tehokas algoritmi ei sitten voikaan tehdä.
+Tämä rajoittaa paljon, mitä aineksia voimme laittaa algoritmiin,
 mutta voimme ajatella asiaa myös myönteisesti:
 vaatimus tehokkuudesta rajaa pois suuren määrän lähestymistapoja,
 eli meidän on helpompaa löytää hyvä algoritmi,
 kun vaihtoehtojen määrä on pienempi.
 
+Algoritmien suunnittelussa keskeisiä ovat \emph{havainnot}:
+haluamme saada käsityksen,
+mitä ominaisuuksia ratkaistavaan ongelmaan liittyy,
+jotta voimme käyttää niitä algoritmissa.
+Voimme tehdä havaintoja tutkimalla ongelman pieniä tapauksia
+ja etsimällä riippuvuuksia ja säännöllisyyksiä.
+Jos käy hyvin, huomaamme asioita, jotka pätevät kaikissa ongelman
+tapauksissa, ja voimme hyödyntää niitä koko tehtävän ratkaisemisessa.
+
+Usein matka kohti tehokasta algoritmia etenee pienin askelin.
+Esimerkiksi voimme ensin keksiä algoritmin, joka toimii ajassa $O(2^n)$,
+parantaa sitten aikaan $O(n^2)$ ja lopuksi aikaan $O(n \log n)$.
+Tässä tapauksessa molemmat askeleet ovat merkittäviä:
+ensimmäinen askel muuttaa \emph{eksponentiaalisen} aikavaativuuden
+\emph{polynomiseksi} ja toinen askel parantaa vielä aikavaativuutta niin,
+että tuloksena on tehokas algoritmi.
+
 \section{Esimerkkejä}
 
-\subsection{X}
+Seuraavaksi käymme läpi joukon esimerkkitehtäviä,
+joissa haluamme saada aikaan tehokkaan algoritmin tehtävän ratkaisemiseen,
+ja saavutamme tavoitteen tekemällä havaintoja ratkaistavasta ongelmasta.
+
+\subsection{Kolikot}
+
+Meillä on $n$ kolikkoa, joiden arvot ovat $x_1,x_2,\dots,x_n$,
+ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa kolikoista.
+Jokaisen kolikon arvo on kokonaisluku väliltä $1 \dots 10^9$.
+Esimerkiksi jos kolikot ovat $[1,2,2,9]$, voimme muodostaa summat
+$1$, $2$, $1+2=3$, $2+2=4$ ja $1+2+2=5$,
+mutta emme voi muodostaa summaa $6$, joten vastaus on $6$.
+
+\subsubsection{Havainto 1}
+
+Tehtävän vastaus on aina muotoa $x+1$, missä $x$ on jokin kolikoista
+saatava summa.
+Esimerkissä $x=1+2+2=5$.
+
+Voimme siis ratkaista tehtävän
+muodostamalla kaikki mahdolliset $n$ kolikon summat
+ja etsimällä pienimmän puuttuvan summan.
+Algoritmi on kuitenkin hidas, koska $n$ kolikosta voi
+muodostaa summan $2^n$ tavalla, ja joudumme käymään läpi kaikki tavat.
+
+\subsubsection{Havainto 2}
+
+Jos haluamme pystyä muodostamaan summan $1$,
+meillä on oltava kolikko, jonka arvo on $1$.
+
+Tämä havainto merkitsee sitä, että voimme ratkaista tehtävän
+hyvin helposti, jos minkään kolikon arvo ei ole $1$,
+koska vastaus on silloin suoraan $0$.
+Entä jos jonkin kolikon arvo on $1$?
+
+\subsubsection{Havainto 3}
+
+Jos haluamme pystyä muodostamaan summat $1$ ja $2$,
+meillä on oltava kolikko $1$ ja sen lisäksi
+toinen kolikko $1$ tai kolikko $2$.
+
+\subsubsection{Havainto 4}
+
+Jos haluamme pystyä muodostamaan summat $1$, $2$ ja $3$,
+meillä on oltava kolikot $[1,2]$ tai $[1,1,1]$.
+
+\subsubsection{Havainto 5}
+
 
 \subsection{X}
 
