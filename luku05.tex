@@ -61,11 +61,13 @@ Seuraavaksi käymme läpi joukon esimerkkitehtäviä,
 joissa haluamme saada aikaan tehokkaan algoritmin tehtävän ratkaisemiseen,
 ja saavutamme tavoitteen tekemällä havaintoja ratkaistavasta ongelmasta.
 
+\subsection{X}
+
 \subsection{Kolikot}
 
 Meillä on $n$ kolikkoa, joiden arvot ovat $x_1,x_2,\dots,x_n$,
 ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa kolikoista.
-Jokaisen kolikon arvo on kokonaisluku väliltä $1 \dots 10^9$.
+Jokaisen kolikon arvo on positiivinen kokonaisluku.
 Esimerkiksi jos kolikot ovat $[1,2,2,9]$, voimme muodostaa summat
 $1$, $2$, $1+2=3$, $2+2=4$ ja $1+2+2=5$,
 mutta emme voi muodostaa summaa $6$, joten vastaus on $6$.
@@ -80,7 +82,7 @@ Voimme siis ratkaista tehtävän
 muodostamalla kaikki mahdolliset $n$ kolikon summat
 ja etsimällä pienimmän puuttuvan summan.
 Algoritmi on kuitenkin hidas, koska $n$ kolikosta voi
-muodostaa summan $2^n$ tavalla, ja joudumme käymään läpi kaikki tavat.
+muodostaa summan $2^n$ tavalla ja joudumme käymään läpi kaikki tavat.
 
 \subsubsection{Havainto 2}
 
@@ -94,18 +96,48 @@ Entä jos jonkin kolikon arvo on $1$?
 
 \subsubsection{Havainto 3}
 
-Jos haluamme pystyä muodostamaan summat $1$ ja $2$,
-meillä on oltava kolikko $1$ ja sen lisäksi
-toinen kolikko $1$ tai kolikko $2$.
+Oletetaan, että meillä on joukko kolikoita,
+joista voimme muodostaa kaikki summat $1,2,\dots,x$.
+Voimmeko ottaa mukaan vielä uuden kolikon niin,
+että voimme muodostaa myös summan $x+1$?
+
+Tämä on mahdollista tarkalleen silloin, kun saatavilla on kolikko,
+jonka arvo on $x+1$ tai \emph{pienempi}.
+Jos tällaisen kolikon arvo on $u$, pystymme muodostamaan tämän jälkeen
+kaikki summat $1,2,\dots,x+u$.
 
 \subsubsection{Havainto 4}
 
-Jos haluamme pystyä muodostamaan summat $1$, $2$ ja $3$,
-meillä on oltava kolikot $[1,2]$ tai $[1,1,1]$.
+Jos on olemassa useita vaihtoehtoja valita kolikko,
+jonka arvo on $x+1$ tai pienempi,
+voimme valita minkä tahansa vaihtoehdon.
+Erityisesti voimme päättää, että valitsemme aina
+\emph{pienimmän} kolikon.
 
-\subsubsection{Havainto 5}
+\subsubsection{Ratkaisu}
 
+Nyt meillä on koossa kaikki tarvittavat ainekset
+tehokasta algoritmia varten.
+Aloitamme tyhjästä joukosta ja lisäämme siihen kolikoita
+pienimmästä suurimpaan niin kauan kuin mahdollista.
+Lopuksi vastaus tehtävään on yhtä suurempi kuin kolikoiden
+summa.
+Seuraava koodi toteuttaa algoritmin:
 
-\subsection{X}
+\begin{code}
+Arrays.sort(kolikot);
+long summa = 0;
+for (int i = 0; i < n; i++) {
+    if (kolikot[i] <= summa+1) {
+        summa += kolikot[i];
+    } else {
+        break;
+    }
+}
+long vastaus = summa+1;
+\end{code}
+
+Algoritmin aikavaativuus on $O(n \log n)$, koska se
+järjestää ensin taulukon ja käy sitten läpi taulukon alkiot.
 
 \subsection{X}
