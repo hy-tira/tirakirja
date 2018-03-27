@@ -61,6 +61,78 @@ Seuraavaksi käymme läpi joukon esimerkkitehtäviä,
 joissa haluamme saada aikaan tehokkaan algoritmin tehtävän ratkaisemiseen,
 ja saavutamme tavoitteen tekemällä havaintoja ratkaistavasta ongelmasta.
 
+\subsection{Kierrokset}
+
+Annettuna on taulukko, joka sisältää luvut $1,2,\dots,n$
+jossakin järjestyksessä.
+Haluamme kerätä taulukosta luvut pienimmästä suurimpaan.
+Joka kierroksella käymme läpi taulukon vasemmalta
+oikealle ja keräämme mahdollisimman monta seuraavaa lukua.
+Montako kierrosta tarvitsemme yhteensä?
+
+Esimerkiksi jos taulukon sisältönä on $[4,3,1,5,2]$,
+tarvitsemme kolme kierrosta.
+Ensimmäisellä kierroksella keräämme luvut $1$ ja $2$,
+toisella luvun $3$ ja kolmannella luvut $4$ ja $5$.
+
+Suoraviivainen tapa ratkaista tehtävä on simuloida
+kuvattua prosessia.
+Seuraavassa koodissa muuttuja \texttt{luku} ilmaisee,
+minkä luvun haluamme kerätä seuraavaksi,
+ja muuttuja \texttt{laskuri} pitää kirjaa siitä, montako kertaa
+olemme käyneet taulukon läpi.
+
+\begin{code}
+int luku = 1;
+int laskuri = 0;
+while (luku <= n) {
+    laskuri++;
+    for (int i = 0; i < n; i++) {
+        if (taulu[i] == luku) luku++;
+    }
+}
+System.out.println(laskuri);
+\end{code}
+
+Kuinka nopea tämä algoritmi on?
+Tämä riippuu siitä, montako kierrosta teemme.
+Pahin tapaus on, että taulukko on käänteisessä järjestyksessä,
+jolloin teemme $n$ kierrosta.
+Niinpä algoritmi vie aikaa $O(n^2)$.
+
+Jotta voimme ratkaista tehtävän tehokkaasti,
+meidän täytyy löytää nopeammin, missä on seuraava luku,
+jonka haluamme kerätä.
+Kätevä ratkaisu tähän on luoda aputaulukko,
+joka kertoo jokaisen luvun kohdan:
+
+\begin{code}
+int[] kohta = new int[n+1];
+for (int i = 0; i < n; i++) {
+    kohta[taulu[i]] = i;
+}
+\end{code}
+
+Nyt olemme jo lähellä tehokasta algoritmia, mutta
+tarvitsemme vielä yhden havainnon.
+Milloin aloitamme uuden kierroksen taulukossa?
+Näin käy tarkalleen silloin, kun seuraavaksi kerättävä
+luku on \emph{aiemmin} taulukossa kuin viimeksi
+keräämämme luku.
+Niinpä voimme laskea kierrosten määrän näin:
+
+\begin{code}
+int laskuri = 1;
+for (int i = 2; i <= n; i++) {
+    if (kohta[i-1] < kohta[i]) {
+        laskuri++;
+    }
+}
+\end{code}
+
+Tässä algoritmissa on kaksi silmukkaa, jotka molemmat
+vievät aikaa $O(n)$, joten algoritmin kokonaisaikavaativuus on $O(n)$.
+
 \subsection{Kolikot}
 
 Meillä on $n$ kolikkoa, joiden arvot ovat $x_0,x_1,\dots,x_{n-1}$,
