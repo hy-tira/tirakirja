@@ -6,13 +6,13 @@ on opettaa menetelmiä, joiden avulla voimme ratkaista
 Ohjelmoinnin peruskursseilla olemme keskittyneet
 ohjelmointitaidon opetteluun.
 Nyt on aika siirtyä askel eteenpäin ja alkaa kiinnittää
-huomiota myös siihen, miten tehokkaita ohjelmat ovat.
+huomiota myös siihen, miten nopeasti algoritmit toimivat.
 
 Algoritmien tehokkuudella on suuri merkitys käytännössä.
 Esimerkiksi netissä toimiva reittiopas on käyttökelpoinen sen vuoksi,
-että saamme reitin kuvauksen heti sen jälkeen kun olemme
+että saamme tietoomme reitin kuvauksen heti sen jälkeen kun olemme
 ilmoittaneet, mistä mihin haluamme matkustaa.
-Jos meidän pitäisi odottaa reitin kuvausta vaikkapa viikko tai kuukausi,
+Jos meidän pitäisi odottaa reitin kuvausta vaikkapa minuutti tai tunti,
 tämä rajoittaisi paljon palvelun käyttöä.
 
 Jotta reittiopas toimisi tehokkaasti, sen taustalla on
@@ -56,7 +56,7 @@ System.out.println(summa);
 \end{code}
 
 Ensimmäinen vaihe ohjelmoinnin oppimisessa on oppia
-ohjelmoinnin perustaidot niin, että osaamme kirjoittaa
+ohjelmoinnin perustaidot niin, että osaamme laatia
 jonkin toimivan koodin, joka ratkaisee annetun ongelman.
 On arvokas taito sinänsä, että osaamme kirjoittaa
 toimivan koodin ongelman ratkaisemiseen.
@@ -81,7 +81,7 @@ Itse asiassa voimme toteuttaa \emph{minkä tahansa} algoritmin
 vain näitä aineksia käyttäen.
 Tämä on huojentava tieto, koska meidän ei siis tarvitse opetella
 suurta määrää ohjelmointikielten ominaisuuksia,
-ennen kuin voimme alkaa suunnitella algoritmeja.
+ennen kuin voimme alkaa suunnitella tehokkaita algoritmeja.
 Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
 tekniikoita eri tilanteessa.
 
@@ -91,12 +91,12 @@ ja käymme myös erikseen läpi Java-kielen
 standardikirjaston tietorakenteita ja algoritmeja.
 Ohjelmointikieli ei ole kuitenkaan merkittävässä osassa
 algoritmien suunnittelussa, vaan kirjassa käsitellyt asiat
-ovat voimassa myös muissa ohjelmointikielissä.
+ovat sovellettavissa myös muissa ohjelmointikielissä.
 
 \section{Rekursiiviset algoritmit}
 
 Ohjelmoinnin perusteiden opiskelussa rekursio jää usein sivurooliin,
-mikä on vahinko, koska se on käytännössä hyödyllinen työkalu.
+mikä on vahinko, koska se on hyvin hyödyllinen työkalu.
 Voimme toteuttaa rekursion avulla kätevästi algoritmeja,
 jotka käyvät järjestelmällisesti läpi ongelman ratkaisuja.
 Seuraavaksi käymme läpi muutamia esimerkkejä siitä,
@@ -210,7 +210,7 @@ Esimerkiksi tapauksessa $n=3$ koodin tulostus on seuraava:
 
 \subsection{Peruuttava haku}
 
-\emph{Peruuttava haku} on yleinen rekursiivinen menetelmä,
+\emph{Peruuttava haku} on yleinen menetelmä,
 jota käyttäen voimme muodostaa järjestelmällisesti
 kaikki ratkaisut annettuun tehtävään.
 Siinä on ideana aloittaa tyhjästä ratkaisusta ja käydä
@@ -274,8 +274,8 @@ peruuttava haku löytää kaikki ratkaisut.
 \end{figure}
 
 Tarkastelemme esimerkkinä tehtävää, jossa haluamme laskea,
-montako $n \times n$ -kokoista latinalaista neliötä on olemassa.
-\emph{Latinalainen neliö} on ruudukko, jonka
+montako tietyn kokoista latinalaista neliötä on olemassa.
+\emph{Latinalainen neliö} on ruudukko kokoa $n \times n$, jonka
 kullakin vaaka- ja pystyrivillä esiintyy tarkalleen kerran
 jokainen luku $1,2,\dots,n$.
 Kyseessä on siis yksinkertaisempi muoto tutusta sudoku-tehtävästä.
@@ -305,7 +305,7 @@ Metodi laskee latinalaisten neliöiden määrän muuttujaan
 \texttt{laskuri}.
 
 \begin{code}
-static void muodosta(int y, int x) {
+void muodosta(int y, int x) {
     if (y == n) laskuri++;
     else if (x == n) muodosta(y+1,0);
     else {
@@ -313,7 +313,7 @@ static void muodosta(int y, int x) {
             if (!vaaka[y][i] && !pysty[x][i]) {
                 vaaka[y][i] = pysty[x][i] = true;
                 nelio[y][x] = i;
-                muodosta(y, x+1);
+                muodosta(y,x+1);
                 vaaka[y][i] = pysty[x][i] = false;
             }
         }
@@ -349,7 +349,7 @@ määrät ensimmäisille $n$:n arvoille.
 Taulukko \ref{tab:latnel} näyttää nämä tulokset.
 Suuremmilla $n$:n arvoilla haku alkaa kestää liian kauan
 ja meidän tulisi keksiä keino tehostaa hakua,
-jos haluaisimme laskea tuloksia suuremmille arvoille.
+jos haluaisimme laskea tuloksia suuremmissa tapauksissa.
 
 \section{Matemaattinen tausta}
 
@@ -393,13 +393,13 @@ for (int i = 1; i <= n; i++) {
 
 \subsection{Logaritmit}
 
-Logaritmin määritelmän mukaan $\log_b(n)=a$
-tarkalleen silloin kun $b^a=n$.
+Logaritmin määritelmän mukaan $\log_b(n)=x$
+tarkalleen silloin kun $b^x=n$.
 Esimerkiksi $\log_2(32)=5$, koska $2^5=32$.
 
 Algoritmiikassa logaritmin kantaluku $b$ on usein 2,
 ja voimme ajatella, että logaritmi kertoo, montako kertaa
-meidän tulee puolittaa luku $n$, ennen kuin pääsemme lukuun 1.
+meidän tulee \emph{puolittaa} luku $n$, ennen kuin pääsemme lukuun 1.
 Esimerkiksi $\log_2(32)=5$, koska tarvitsemme 5 puolitusta:
 \[32 \rightarrow 16 \rightarrow 8 \rightarrow 4 \rightarrow 2 \rightarrow 1\]
 
