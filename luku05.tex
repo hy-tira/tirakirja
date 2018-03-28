@@ -189,12 +189,114 @@ for (int i = 0; i < n; i++) {
         break;
     }
 }
-long vastaus = summa+1;
+System.out.println(summa+1);
 \end{code}
 
 Algoritmin aikavaativuus on $O(n \log n)$, koska se
 järjestää ensin taulukon ja käy sitten läpi taulukon alkiot.
 
-\subsection{X}
+\subsection{Alitaulukot}
 
-\subsection{X}
+Annettuna on taulukko, jossa on $n$ kokonaislukua,
+ja haluamme laskea, monellako tavalla voimme valita
+taulukosta yhtenäisen alitaulukon, jossa lukujen summa on $0$.
+Jotta tehtävä olisi kiinnostava, taulukossa voi olla
+mitä tahansa kokonaislukuja, myös negatiivisia.
+
+Tarkastellaan esimerkkinä taulukkoa $[1,-1,2,-1,3]$.
+Tässä tapauksessa meillä on kaksi mahdollista tapaa
+valita yhtenäinen alitaulukko, jossa lukujen summa on $0$:
+$[1,-1]$ ja $[-1,2,-1]$.
+
+Voimme ratkaista tehtävän helposti käymällä läpi
+kaikki mahdolliset alitaulukot kahdella silmukalla:
+
+\begin{code}
+int laskuri = 0;
+for (int i = 0; i < n; i++) {
+    int summa = 0;
+    for (int j = i; j < n; j++) {
+        summa += taulu[j];
+        if (summa == 0) laskuri++;
+    }
+}
+System.out.println(laskuri);
+\end{code}
+
+Tämä ratkaisu ei ole kuitenkaan tyydyttävä,
+koska se vie aikaa $O(n^2)$.
+
+Ensimmäinen hyödyllinen havainto on,
+että taulukossa voi olla \emph{paljon} alitaulukoita,
+joiden summa on $0$.
+Itse asiassa jos taulukossa on vain lukua $0$,
+niin \emph{jokaisen} alitaulukon summa on $0$.
+Tämä tarkoittaa, että haluttuja alitaulukoita voi olla
+$O(n^2)$ kappaletta ja jos laskemme niitä yksitellen,
+algoritmimme on auttamatta liian hidas.
+Meidän täytyy siis keksiä keino, miten voimme laskea
+alitaulukoita ryhmissä.
+
+Merkitään $s(k)$ taulukon \emph{alkuosan} summaa
+eli taulukon lukujen summaa taulukon alusta kohtaan $k$ asti
+ja lisäksi $s(-1)=0$.
+Nyt jos meillä on alitaulukko kohdasta $a$ kohtaan $b$,
+voimme laskea sen summan kaavalla $s(b)-s(a-1)$.
+Jos haluamme, että tämä summa on $0$, täytyy päteä
+$s(a-1)=s(b)$.
+Tämän havainnon ansiosta voimme muuttaa tehtävän
+mukavampaan muotoon: meidän täytyy vain laskea,
+monellako tavalla voimme valita kaksi taulukon alkuosaa
+niin, että niiden summat ovat samat.
+
+Tarkastellaan asiaa esimerkkitaulukossamme $[1,-1,2,-1,3]$.
+Laskemme ensin alkuosien summat, jotka ovat $[0,1,0,2,1,4]$
+(mukaan lukien tyhjä alkuosa ensimmäisenä).
+Alitaulukon $[1,-1]$ tapauksessa $s(-1)=s(1)=0$ ja
+alitaulukon $[-1,2,-1]$ tapauksessa $s(0)=s(3)$.
+Nämä ovat ainoat tavat valita kaksi alkuosan summaa niin,
+että molemmat summat ovat samat.
+
+Jotta saamme aikaan tehokkaan algoritmin, tarvitsemme vielä
+yhden aineksen: järjestämisen.
+Kun olemme laskeneet kaikki alkuosien summat,
+voimme järjestää ne, minkä jälkeen yhtä suuret summat
+ovat vierekkäin. Tämän jälkeen voimme laskea tehokkaasti
+jokaisesta summasta, monellako tavalla voimme valita
+kaksi tällaista alkuosaa.
+
+Seuraava koodi rakentaa taulukon, jossa on kaikki alkuosien summat:
+
+\begin{code}
+int[] summat = new int[n+1];
+for (int i = 0; i < n; i++) {
+    summat[i+1] = summat[i]+taulu[i];
+}
+\end{code}
+
+Huomaa, että taulukko on yhden suurempi kuin alkuperäinen taulukko
+ja sen ensimmäinen alkio on aina $0$: tyhjän alkuosan summa.
+
+Tämän jälkeen voimme käydä summat läpi seuraavasti:
+
+\begin{code}
+Arrays.sort(summat);
+int toisto = 0;
+int laskuri = 0;
+for (int i = 0; i < n+1; i++) {
+    if (i == 0 || summat[i-1] != summat[i]) {
+        toisto = 0;
+    } else {
+        toisto++;
+    }
+    laskuri += toisto;
+}
+System.out.println(laskuri);
+\end{code}
+
+Tässä muuttuja \texttt{toisto} pitää kirjaa, montako kertaa
+taulukon nykyinen luku on esiintynyt aiemmin.
+Tämä kertoo, monellako tavalla voimme valita parin,
+jossa on nykyinen summa ja aiempi sama summa.
+Tuloksena oleva algoritmi vie aikaa $O(n \log n)$,
+koska sen työläin vaihe on taulukon järjestäminen.
