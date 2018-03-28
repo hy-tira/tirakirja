@@ -16,8 +16,8 @@ taulukon luontihetkellä käsitystä, montako alkiota
 haluaisimme tallentaa siihen myöhemmin.
 
 Tämän luvun tavoitteemme on luoda tietorakenne,
-joka muistuttaa taulukkoa, mutta voimme
-lisätä ja poistaa alkioita.
+joka muistuttaa taulukkoa, mutta sallii alkioiden
+lisäämisen ja poistamisen.
 Kutsumme tietorakennetta nimellä \emph{lista}.
 Tutustumme kahteen tapaan listan toteuttamiseen,
 joissa molemmissa on omat hyvät ja huonot puolensa.
@@ -34,14 +34,14 @@ int[] lista = {3,7,2,5};
 
 Ongelmana on vain, että taulukon koko on kiinteä,
 vaikka haluaisimme pystyä lisäämään ja poistamaan
-listan alkioita.
+alkioita.
 Löydämme ongelmaan pian ratkaisun, mutta sitä ennen
 aiheellinen kysymys on:
 miksi ohjelmointikielten suunnittelijat ovat olleet niin keljuja,
-että he eivät ole antaneet meille mahdollisuutta muuttaa
+että he eivät ole antaneet meille suoraan mahdollisuutta muuttaa
 taulukon kokoa?
 
-Tähän on hyvä selitys, ja se liittyy siihen,
+Tähän on hyvä selitys, joka liittyy siihen,
 miten taulukko on tallennettu tietokoneen muistissa.
 Tarkastellaan esimerkkinä seuraavaa koodia:
 
@@ -78,7 +78,7 @@ Taulukolle varataan aina yhtenäinen muistialue,
 minkä ansiosta pääsemme käsiksi sen alkioihin
 helposti ajassa $O(1)$.
 
-Tästä seuraa ilmeinen syy,
+Kuvassa näkyy ilmeinen syy,
 minkä vuoksi emme voi laajentaa taulukon kokoa
 luonnin jälkeen:
 tyypillisesti muistissa on heti taulukon perässä muuta
@@ -550,7 +550,7 @@ Niinpä tiettyyn listan kohtaan pääseminen vie aikaa $O(n)$.
 Joudumme tekemään näin, koska listan alkiot ovat muistissa
 sekalaisissa kohdissa eikä meillä ole suoraa keinoa päästä niihin.
 
-\subsection{Toteutusten vertailua}
+\subsection{Listojen vertailua}
 
 \begin{table}
 \center
@@ -624,7 +624,7 @@ sen arvoksi 5.
 \begin{code}
 System.out.println(lista.get(1)); // 2
 lista.set(1,5);
-System.out.println(lista); // [1, 5, 3]
+System.out.println(lista.get(1)); // 5
 \end{code}
 
 Luokassa \texttt{Collections} on hyödyllisiä metodeita
@@ -663,6 +663,10 @@ Lisäksi voimme hakea listan ensimmäisen ja viimeisen
 alkion metodeilla \texttt{getFirst} ja \texttt{getLast}.
 
 \begin{code}
+ArrayDeque<Integer> lista = new ArrayDeque<>();
+lista.addLast(1);
+lista.addLast(2);
+lista.addLast(3);
 System.out.println(lista.getFirst()); // 1
 System.out.println(lista.getLast()); // 3
 \end{code}
@@ -723,9 +727,6 @@ käytännön tehokkuutta.
 
 Suoritamme kaksi testiä, joista ensimmäisessä mittaamme
 listan luomisen tehokkuutta ja toisessa listan läpikäynnin tehokkuutta.
-Jokaisessa testissä toistamme testin kymmenen kertaa ja laskemme
-suoritusaikojen keskiarvon, jotta saamme luotettavampia tuloksia.
-
 Sekä \texttt{ArrayList} että \texttt{LinkedList}
 toteuttavat rajapinnan \texttt{List},
 joten voimme käyttää listaa samalla tavalla kummankin
@@ -740,8 +741,6 @@ List<Integer> lista = new ArrayList<>();
 List<Integer> lista = new LinkedList<>();
 \end{code}
 
-\subsubsection{Ensimmäinen testi: listan luominen}
-
 Ensimmäisessä testissä tutkimme, kauanko vie aikaa luoda lista
 aloittamalla tyhjästä listasta ja lisäämällä alkioita yksi kerrallaan.
 Lisäämme testissä listalle alkiot $1,2,\dots,n$.
@@ -752,25 +751,6 @@ for (int i = 1; i <= n; i++) {
     lista.add(i);
 }
 \end{code}
-
-% \begin{table}
-% \center
-% \begin{tabular}{rrr}
-% parametri $n$ & \texttt{ArrayList} & \texttt{LinkedList} \\
-% \hline
-% $10^6$ & 0.03 s & 0.04 s \\
-% $2 \cdot 10^6$ & 0.11 s & 0.28 s \\
-% $4 \cdot 10^6$ & 0.14 s & 2.08 s \\
-% $8 \cdot 10^6$ & 1.76 s & 5.09 s \\
-% $16 \cdot 10^6$ & 4.02 s & 12.69 s \\
-% \end{tabular}
-% \caption{Algoritmien suoritusaikojen vertailu.}
-% \label{tab:lispoi}
-% \end{table}
-
-TODO testin tulokset
-
-\subsubsection{Toinen testi: listan läpikäynti}
 
 Toisessa testissä tutkimme, kauanko vie aikaa käydä lista läpi.
 Tässä testissä meillä on valmiina lista,
@@ -784,15 +764,52 @@ for (Integer x : lista) {
 }
 \end{code}
 
-TODO testin tulokset
 
-\subsubsection{Milloin käyttää linkitettyä listaa?}
+\begin{table}
+\center
+\begin{tabular}{rrr}
+parametri $n$ & \texttt{ArrayList} & \texttt{LinkedList} \\
+\hline
+$10^6$ & 0.03 s & 0.03 s \\
+$2 \cdot 10^6$ & 0.04 s & 0.20 s \\
+$4 \cdot 10^6$ & 0.11 s & 0.36 s \\
+$8 \cdot 10^6$ & 0.32 s & 0.90 s \\
+$16 \cdot 10^6$ & 1.43 s & 2.40 s \\
+\end{tabular}
+\caption{Listan luomisen tehokkuusvertailu.}
+\label{tab:lisluo}
+\end{table}
+
+\begin{table}
+\center
+\begin{tabular}{rrr}
+parametri $n$ & \texttt{ArrayList} & \texttt{LinkedList} \\
+\hline
+$10^6$ & 0.01 s & 0.01 s \\
+$2 \cdot 10^6$ & 0.01 s & 0.02 s \\
+$4 \cdot 10^6$ & 0.01 s & 0.03 s \\
+$8 \cdot 10^6$ & 0.02 s & 0.05 s \\
+$16 \cdot 10^6$ & 0.03 s & 0.10 s \\
+\end{tabular}
+\caption{Listan läpikäynnin tehokkuusvertailu.}
+\label{tab:lislap}
+\end{table}
+
+Taulukot \ref{tab:lisluo} ja \ref{tab:lislap}
+näyttävät testien tulokset.
+Osoittautuu, että listan luominen on selvästi hitaampaa
+kuin läpikäynti, mikä on ymmärrettävää, koska luomisessa
+täytyy varata tilaa muistista uusille alkioille.
+Lisäksi taulukkolista toimii tehokkaammin
+molemmissa testeissä kuin linkitetty lista.
+Kysymys kuuluukin:
+
+\subsubsection{Milloin kannattaa käyttää linkitettyä listaa?}
 
 Jokaisessa tietorakenteessa on omat hyvät ja huonot puolensa,
 ja kaikille on tietyt käyttötarkoituksensa.
 Linkitetty lista muodostaa kuitenkin poikkeuksen tähän sääntöön:
-on äärimmäisen harvoja tilanteita, jolloin sitä kannattaisi
-käyttää taulukkolistan sijasta.
+sitä ei kannata käyttää yleensä koskaan.
 
 \begin{figure}
 \center
@@ -828,4 +845,4 @@ on toteutettu niin, että ne ovat parhaimmillaan silloin,
 kun tieto on tallennettu muistissa peräkkäin -- eli juuri kuten
 taulukkolistassa.
 Tämä näkyy käytännössä siinä, että taulukkolistan käsittely on selvästi
-nopeampaa kuin linkitetyn listan käsittely.
+tehokkaampaa kuin linkitetyn listan käsittely.
