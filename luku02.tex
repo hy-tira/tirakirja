@@ -34,10 +34,10 @@ joka laskee, montako kertaa luku $x$ esiintyy
 $n$ lukua sisältävässä taulukossa.
 
 \begin{code}[numbers=left]
-int maara = 0;
+int laskuri = 0;
 for (int i = 0; i < n; i++) {
     if (luvut[i] == x) {
-        maara++;
+        laskuri++;
     }
 }
 \end{code}
@@ -159,7 +159,7 @@ Seuraavaksi käymme läpi joukon tällaisia aikavaativuuksia.
 
 \subsubsection{$O(1)$ (vakioaikainen)}
 
-Vakioaikainen algoritmi suorittaa kiinteän määrän komentoja,
+\emph{Vakioaikainen} algoritmi suorittaa kiinteän määrän komentoja,
 eikä syötteen suuruus vaikuta algoritmin nopeuteen.
 Esimerkiksi seuraava algoritmi laskee summan $1+2+\dots+n$
 ajassa $O(1)$ summakaavan avulla:
@@ -170,7 +170,7 @@ summa = n*(n+1)/2;
 
 \subsubsection{$O(\log n)$ (logaritminen)}
 
-Logaritminen algoritmi puolittaa usein syötteen koon
+\emph{Logaritminen} algoritmi puolittaa usein syötteen koon
 joka askeleella. Tyypillinen esimerkki logaritmisesta algoritmista
 on binäärihaku, joka etsii alkiota järjestetystä taulukosta.
 
@@ -186,7 +186,7 @@ while (a <= b) {
 
 \subsubsection{$O(n)$ (lineaarinen)}
 
-Lineaarinen algoritmi voi käydä läpi syötteen kiinteän määrän kertoja.
+\emph{Lineaarinen} algoritmi voi käydä läpi syötteen kiinteän määrän kertoja.
 Esimerkiksi seuraava algoritmi laskee taulukon lukujen summan $O(n)$-ajassa.
 
 \begin{code}
@@ -199,7 +199,7 @@ for (int i = 0; i < n; i++) {
 \subsubsection{$O(n \log n)$ (järjestäminen)}
 
 Aikavaativuus $O(n \log n)$ viittaa usein siihen,
-että algoritmin osana on syöt\-teen järjestäminen,
+että algoritmin osana on \emph{järjes\-tämistä},
 koska tehokkaat järjestämisalgoritmit
 toimivat ajassa $O(n \log n)$.
 Esimerkiksi seuraava $O(n \log n)$-algoritmi laskee,
@@ -207,15 +207,15 @@ montako eri alkiota taulukko sisältää.
 
 \begin{code}
 Arrays.sort(taulu);
-int maara = 1;
+int laskuri = 1;
 for (int i = 1; i < n; i++) {
-    if (taulu[i] != taulu[i-1]) maara++;
+    if (taulu[i] != taulu[i-1]) laskuri++;
 }
 \end{code}
 
 \subsubsection{$O(n^2)$ (neliöllinen)}
 
-Neliöllinen algoritmi voi käydä läpi kaikki tavat valita
+\emph{Neliöllinen} algoritmi voi käydä läpi kaikki tavat valita
 kaksi alkiota syötteestä.
 Esimerkiksi seuraava $O(n^2)$-algoritmi tutkii, onko taulukossa
 kahta lukua, joiden summa on $x$.
@@ -231,7 +231,7 @@ for (int i = 0; i < n; i++) {
 
 \subsubsection{$O(n^3)$ (kuutiollinen)}
 
-Kuutiollinen algoritmi voi käydä läpi kaikki tavat valita
+\emph{Kuutiollinen} algoritmi voi käydä läpi kaikki tavat valita
 kolme alkiota syöt\-teestä.
 Esimerkiksi seuraava $O(n^3)$-algoritmi tutkii, onko taulukossa
 kolmea lukua, joiden summa on $x$.
@@ -274,9 +274,9 @@ mitä eri aikavaativuudet tarkoittavat käytännössä.
 Aikavaativuutta voi ajatella samalla tavalla kuin vaikkapa
 hotellin tähti\-luokitusta: se kertoo tiiviissä muodossa,
 mistä asiassa on kysymys, eikä mei\-dän tarvitse ottaa selvää yksityiskohdista.
-Jos meille tarjoitaan majoitusta neljän tähden hotellissa,
+Jos meille tarjotaan majoitusta neljän tähden hotellissa,
 saamme heti jonkin käsityksen huoneen tasosta,
-vaikka meillä ei olisi listausta huoneen varustelusta.
+vaikka emme saisi tarkkaa listausta huoneen varustelusta.
 Vastaavasti jos kuulemme, että jonkin algoritmin aikavaativuus on $O(n \log n)$,
 voimme heti arvioida karkeasti, miten suuria syötteitä voimme käsitellä,
 vaikka emme saisi tarkkaa kuvausta algoritmin toiminnasta.
@@ -499,9 +499,10 @@ Voimme myös sanoa, että algoritmi suorittaa pahimmassa
 tapauksessa $\Theta(n)$ askelta ja parhaassa tapauksessa
 $\Theta(1)$ askelta.
 
-Tärkeä huomio on, että $O$-merkinnän antama yläraja voi olla mikä tahansa yläraja.
-On siis oikein sanoa esimerkiksi, että taulukon lukujen summan
-laskeva algoritmi vie aikaa $O(n^2)$, vaikka on olemassa parempi yläraja $O(n)$.
+Tärkeä huomio on, että $O$-merkinnän antama yläraja voi olla
+\emph{mikä tahansa} yläraja, ei välttämättä tarkka yläraja.
+On siis oikein sanoa esimerkiksi, että äskeinen
+algoritmi vie aikaa $O(n^2)$, vaikka on olemassa parempi yläraja $O(n)$.
 Miksi sitten käytämme $O$-merkintää, vaikka voisimme usein myös ilmaista tarkan
 ajankäytön $\Theta$-merkinnällä?
 Tämä on vakiintunut ja käytännössä toimiva tapa.
@@ -509,7 +510,7 @@ Olisi hyvin harhaanjohtavaa antaa algoritmille yläraja $O(n^2)$,
 jos näemme suoraan, että aikaa kuluu vain $O(n)$.
 
 Asiaa voi ajatella niin, että $O$-merkintää käytetään algoritmin
-markkinoinnissa. Jos annamme liian suuren ylärajan, algoritmista
+\emph{markkinoinnissa}. Jos annamme liian suuren ylärajan, algoritmista
 tulee väärä käsitys yleisölle.
 Vertauksena jos myymme urheiluautoa, jonka huippunopeus on 250 km/h,
 on sinänsä paikkansa pitävä väite, että autolla pystyy ajamaan 100 km/h.
@@ -583,7 +584,7 @@ Jos haluamme todistaa rajan pätemisen,
 tämä onnistuu yleensä helposti valitsemalla vakio $c$
 tarpeeksi suureksi ja arvioimalla summan osia ylöspäin tarvittaessa.
 Esimerkiksi jos haluamme todistaa, että $3n+5 = O(n)$, meidän tulee löytää
-vakiot $c$ ja $n_0$, joille pätee, että $3n+5 \le cn$ aina kun $n>n_0$.
+vakiot $c$ ja $n_0$, joille pätee, että $3n+5 \le cn$ aina kun $n \ge n_0$.
 Tässä tapauksessa voimme valita esimerkiksi $c=8$ ja $n_0=1$,
 jolloin voimme arvioida $3n+5 \le 3n+5n=8n$, kun $n \ge 1$.
 
@@ -606,6 +607,6 @@ suuri tahansa, joten ei voi päteä $n^2 = O(n)$.
 
 Määritelmistä lähtevä todistaminen on sinänsä mukavaa ajanvietettä,
 mutta sille on äärimmäisen harvoin tarvetta käytännössä,
-kun haluamme tutkia algoritmin tehokkuutta.
+kun haluamme tutkia algoritmien tehokkuutta.
 Voimme koko kurssin ajan huoletta päätellä algoritmin aikavaativuuden
 katsomalla, mikä sen rakenne on, kuten olemme tehneet tämän luvun alkuosassa.
