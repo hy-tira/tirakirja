@@ -725,44 +725,50 @@ Seuraavaksi vertailemme Javan taulukkolistan
 (\texttt{ArrayList}) ja linkitetyn listan (\texttt{LinkedList})
 käytännön tehokkuutta.
 
-Suoritamme kaksi testiä, joista ensimmäisessä mittaamme
-listan luomisen tehokkuutta ja toisessa listan läpikäynnin tehokkuutta.
-Sekä \texttt{ArrayList} että \texttt{LinkedList}
-toteuttavat rajapinnan \texttt{List},
-joten voimme käyttää listaa samalla tavalla kummankin
-rakenteen testaamisessa.
-Määrittelemme listan seuraavilla tavoilla testistä riippuen:
+Testissä muodostamme ensin taulukon, joka sisältää luvut $1,2,\dots,n$
+satunnaisessa järjestyksessä.
+Tämän jälkeen luomme tyhjän listan ja käymme taulukon läpi
+vasemmalta oikealle niin, että lisäämme kunkin luvun listalle
+sen oikealle paikalle järjestyksessä.
+Teemme saman testin taulukkolistalle ja linkitetylle listalle.
+
+Taulukkolistan tapauksessa käymme listaa läpi alusta
+muuttujalla $k$, kunnes tulemme kohtaan, johon uusi alkio kuuluu.
+Tämän jälkeen lisäämme alkion kutsumalla metodia \texttt{add}.
 
 \begin{code}
-List<Integer> lista = new ArrayList<>();
-\end{code}
-
-\begin{code}
-List<Integer> lista = new LinkedList<>();
-\end{code}
-
-Ensimmäisessä testissä tutkimme, kauanko vie aikaa luoda lista
-aloittamalla tyhjästä listasta ja lisäämällä alkioita yksi kerrallaan.
-Lisäämme testissä listalle alkiot $1,2,\dots,n$.
-Seuraava koodi toteuttaa testin:
-
-\begin{code}
-for (int i = 1; i <= n; i++) {
-    lista.add(i);
+for (int i = 0; i < n; i++) {
+    int k = 0;
+    while (k < lista.size() && lista.get(k) < taulu[i]) {
+        k++;
+    }
+    lista.add(k,taulu[i]);
 }
 \end{code}
 
-Toisessa testissä tutkimme, kauanko vie aikaa käydä lista läpi.
-Tässä testissä meillä on valmiina lista,
-jossa on $n$ lukua, ja laskemme lukujen summan.
-Seuraava koodi toteuttaa testin:
+Linkitetyn listan tapauksessa luomme iteraattorin,
+jonka avulla etsimme uuden alkion kohdan listan alusta lähtien.
+Tämän jälkeen lisäämme alkion listalle metodilla \texttt{add}.
 
 \begin{code}
-long summa = 0;
-for (Integer x : lista) {
-    summa += x;
+for (int i = 0; i < n; i++) {
+    ListIterator<Integer> x = lista.listIterator(0);
+    while (x.hasNext()) {
+        if (x.next() > taulu[i]) {
+            x.previous();
+            break;
+        }
+    }
+    x.add(taulu[i]);
 }
 \end{code}
+
+Taulukkolistassa sekä oikean kohdan etsiminen että lisääminen
+vievät aikaa $O(n)$, kun taas linkitetyssä listassa
+oikean kohdan etsiminen vie aikaa $O(n)$, mutta lisääminen
+vie aikaa vain $O(1)$.
+Mutta kuinka nopeasti koodit toimivat käytännössä?
+
 
 
 \begin{table}
@@ -770,38 +776,22 @@ for (Integer x : lista) {
 \begin{tabular}{rrr}
 parametri $n$ & \texttt{ArrayList} & \texttt{LinkedList} \\
 \hline
-$10^6$ & 0.03 s & 0.03 s \\
-$2 \cdot 10^6$ & 0.04 s & 0.20 s \\
-$4 \cdot 10^6$ & 0.11 s & 0.36 s \\
-$8 \cdot 10^6$ & 0.32 s & 0.90 s \\
-$16 \cdot 10^6$ & 1.43 s & 2.40 s \\
+$10000$ & 0.13 s & 0.38 s \\
+$20000$ & 0.48 s & 1.20 s \\
+$30000$ & 0.99 s & 2.70 s \\
+$40000$ & 1.72 s & 5.15 s \\
+$50000$ & 3.14 s & 8.99 s \\
 \end{tabular}
-\caption{Listan luomisen tehokkuusvertailu.}
-\label{tab:lisluo}
+\caption{Listarakenteiden tehokkuusvertailu.}
+\label{tab:listes}
 \end{table}
 
-\begin{table}
-\center
-\begin{tabular}{rrr}
-parametri $n$ & \texttt{ArrayList} & \texttt{LinkedList} \\
-\hline
-$10^6$ & 0.01 s & 0.01 s \\
-$2 \cdot 10^6$ & 0.01 s & 0.02 s \\
-$4 \cdot 10^6$ & 0.01 s & 0.03 s \\
-$8 \cdot 10^6$ & 0.02 s & 0.05 s \\
-$16 \cdot 10^6$ & 0.03 s & 0.10 s \\
-\end{tabular}
-\caption{Listan läpikäynnin tehokkuusvertailu.}
-\label{tab:lislap}
-\end{table}
-
-Taulukot \ref{tab:lisluo} ja \ref{tab:lislap}
-näyttävät testien tulokset.
-Osoittautuu, että listan luominen on selvästi hitaampaa
-kuin läpikäynti, mikä on ymmärrettävää, koska luomisessa
-täytyy varata tilaa muistista uusille alkioille.
-Lisäksi taulukkolista toimii tehokkaammin
-molemmissa testeissä kuin linkitetty lista.
+Taulukko \ref{tab:listes} näyttää testin tulokset.
+Osoittautuu, että taulukkolista on selvästi
+\emph{nopeampi} kuin linkitetty lista.
+Näin käy siitä huolimatta, että taulukkolistassa
+lisääminen vie aikaa $O(n)$, mutta linkitetyssä
+listassa aikaa kuluu $O(1)$.
 Kysymys kuuluukin:
 
 \subsubsection{Milloin kannattaa käyttää linkitettyä listaa?}
