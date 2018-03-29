@@ -963,16 +963,17 @@ System.out.println(sanakirja.lowerKey("biisoni")); // banaani
 
 \subsection{Omat luokat}
 
-Jos haluamme käyttää omia olioitamme \texttt{TreeSet}-joukon alkioina
-tai \texttt{TreeMap}-rakenteen avaimina, meidän tulee toteuttaa
+Jos haluamme käyttää omia olioitamme \texttt{TreeSet}- ja
+\texttt{TreeMap}-rakenteissa, meidän tulee toteuttaa
 luokkaan kaksi metodia:
-\texttt{equals} määrittää, ovatko kaksi oliota samat,
+\texttt{equals} ilmaisee, ovatko kaksi oliota samat,
 ja \texttt{compareTo} kertoo kahden olion suuruusjärjestyksen.
 Jälkimmäisen metodin ansiosta luokka toteuttaa rajapinnan
 \texttt{Comparable}.
 
-Esimerkiksi seuraava luokkaa sisältää henkilön etu- ja sukunimen.
-Henkilöt järjestetään ensisijaisesti sukunimen mukaan ja
+Esimerkiksi seuraava luokka sisältää henkilön etu- ja sukunimen.
+Metodi \texttt{compareTo} on toteutettu niin,
+että henkilöt järjestetään ensisijaisesti sukunimen mukaan ja
 toissijaisesti etunimen mukaan.
 
 \begin{code}
@@ -993,11 +994,15 @@ class Henkilo implements Comparable<Henkilo> {
         }
     }
 
+    String toString() {
+        return etunimi + " " + sukunimi;
+    }
+
     // ...
 }
 \end{code}
 
-Tämän jälkeen voimme lisätä henkilöitä joukkoon seuraavasti:
+Voimme lisätä henkilöitä joukkoon seuraavasti:
 
 \begin{code}
 TreeSet<Henkilo> joukko = new TreeSet<>();
@@ -1006,7 +1011,7 @@ joukko.add(new Henkilo("Iines","Ankka"));
 joukko.add(new Henkilo("Pelle","Peloton));
 \end{code}
 
-Sitten voimme vaikkapa tarkastaa, onko joukossa henkilöä,
+Tämän jälkeen voimme vaikkapa tarkastaa, onko joukossa henkilöä,
 jonka sukunimi alkaa P-kirjaimella.
 Tämä onnistuu luomalla ''valehenkilö'', jonka sukunimi
 on ''P'' ja etunimi on tyhjä.
@@ -1015,6 +1020,7 @@ se on tätä henkilöä seuraava henkilö.
 
 \begin{code}
 Henkilo haettu = joukko.higher(new Henkilo("","P"));
+System.out.println(haettu); // Pelle Peloton
 \end{code}
 
 \section{Tehokkuusvertailu}
