@@ -1,7 +1,7 @@
 \chapter{Hajautustaulu}
 
 Algoritmien suunnittelussa on usein tarvetta
-tietorakenteelle, joka pitää yllä kokoelmaa alkioita.
+tietorakenteelle, joka pitää yllä alkioiden kokoelmaa.
 Kutsumme tällaista tietorakennetta nimellä \emph{joukko}.
 Esimerkiksi $\{2,4,5,7\}$ on joukko, joka sisältää
 alkiot $2$, $4$, $5$ ja $7$.
@@ -243,7 +243,7 @@ Seuraavaksi tutustumme tarkemmin näihin rakenteisiin.
 
 \subsection{\texttt{HashSet}-rakenne}
 
-Javan \texttt{HashSet}-rakenne pitää yllä joukkoa alkioista.
+\texttt{HashSet}-rakenne pitää yllä alkioiden joukkoa.
 Joukkoon voi lisätä alkion metodilla \texttt{add},
 ja siitä voi poistaa alkion metodilla \texttt{remove}.
 Esimerkiksi seuraava koodi luo joukon, jossa voi olla
@@ -261,11 +261,13 @@ System.out.println(joukko); // [3, 8]
 \end{code}
 
 Metodin \texttt{contains} avulla voimme selvittää,
-esiintyykö tietty alkio joukossa:
+esiintyykö tietty alkio $x$ joukossa:
 
 \begin{code}
-if (joukko.contains(5)) {
-    System.out.println("Luku 5 on joukossa");
+if (joukko.contains(x)) {
+    System.out.println("alkio on joukossa");
+} else {
+    System.out.println("alkiota ei ole joukossa");
 }
 \end{code}
 
@@ -282,6 +284,9 @@ joukko.add(5);
 System.out.println(joukko); // [5]
 \end{code}
 
+Koska \texttt{HashSet} on toteutettu hajautustaulun avulla,
+sen operaatiot toimivat ajassa $O(1)$.
+
 \subsection{\texttt{HashMap}-rakenne}
 
 \texttt{HashMap}-rakenne pitää yllä joukkoa avain-arvo-pareja.
@@ -289,7 +294,7 @@ Rakennetta voi ajatella taulukon yleistyksenä:
 $n$ alkion taulukossa avaimet ovat aina kokonaisluvut
 $0,1,\ldots,n-1$, mutta \texttt{HashMap} sallii
 avaimina minkä tahansa tyyppisiä alkioita eikä niiden
-tarvitse olla peräkkäisiä kokonaislukuja.
+tarvitse olla peräkkäin.
 
 \texttt{HashMap}-rakenteen määrittelyssä tulee antaa
 avaimen ja arvon tyyppi.
@@ -323,11 +328,11 @@ if (sanakirja.containsKey(sana)) {
 \end{code}
 
 Koska \texttt{HashMap} on toteutettu hajautustaulun avulla,
-sen operaatiot toimivat tehokkaasti keskimäärin $O(1)$-ajassa.
+sen operaatiot toimivat ajassa $O(1)$.
 
 \subsection{Omat luokat}
 
-Javan olioissa on metodi \texttt{hashCode},
+Javan luokissa on metodi \texttt{hashCode},
 jonka avulla olio kertoo pyydettäessä hajautusarvonsa.
 Voimme esimerkiksi selvittää merkkijonon \texttt{apina}
 hajautusarvon seuraavasti:
@@ -348,10 +353,11 @@ meidän täytyy toteuttaa luokkaan kaksi metodia:
 \texttt{hashCode}, joka antaa olion hajautusarvon,
 sekä \texttt{equals},
 joka ilmaisee, ovatko kaksi oliota samat.
-Jälkimmäinen metodi on tarpeen,
+Metodi \texttt{hashCode} riittää toteuttaa niin,
+että se palauttaa jonkin kokonaisluvun.
+Metodi \texttt{equals} on tarpeen,
 jotta Java pystyy varmistamaan, ovatko saman hajautusarvon
 antavat oliot todella samat.
-
 
 Esimerkiksi jos meillä on luokka \texttt{Piste},
 jossa on kenttinä kokonaisluvut \texttt{x} ja \texttt{y},
@@ -393,7 +399,6 @@ Annettuna on lista sanoja ja haluamme jakaa sanat ryhmiin niin,
 että kukin ryhmä sisältää sanat, jotka ovat keskenään anagrammeja.
 Kaksi sanaa ovat anagrammit, jos ne on mahdollista muuttaa toisikseen
 muuttamalla niiden kirjainten järjestystä.
-
 Esimerkiksi jos sanat ovat ''abc'', ''iines'', ''bac'', ''cba'' ja ''sieni'',
 niistä muodostuu kaksi ryhmää.
 Ensimmäisessä ryhmässä on sanat ''abc'', ''bac'' ja ''cba'',
@@ -405,7 +410,7 @@ ne muuttuvat samoiksi.
 Esimerkiksi sanoissa ''iines'' ja ''sieni'' kirjaimet
 järjestettyinä ovat ''eiins''.
 Tämän havainnon ansiosta voimme käyttää kunkin anagrammiryhmän
-tunnuksena sen sanojen järjestettyä muotoa.
+\emph{tunnuksena} sen kirjainten järjestettyä muotoa.
 
 Luomme ryhmiä varten rakenteen
 
@@ -448,7 +453,3 @@ Esimerkin tapauksessa ohjelmamme tulostus on seuraava:
 \begin{code}
 {abc=[abc, bac, cba], eiins=[iines, sieni]}
 \end{code}
-
-\section{Hajautuksen parametrit}
-
-TODO
