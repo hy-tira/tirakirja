@@ -622,6 +622,123 @@ on edelleen voimassa.
 Tämä onnistuu tekemällä sopivia \emph{kiertoja},
 jotka muuttavat puun rakennetta.
 
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$7$};
+\node[draw, circle] (5) at (1,-4) {$5$};
+\node[draw, circle] (6) at (4,-4) {$8$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\end{scope}
+\begin{scope}[xshift=9cm]
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$7$};
+\node[draw, circle] (5) at (1,-4) {$5$};
+\node[draw, circle] (6) at (4,-4) {$8$};
+\node[draw, circle] (7) at (5,-6) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (6) -- (7);
+\end{scope}
+\end{tikzpicture}
+\caption{AVL-ehto menee rikki, kun lisäämme puuhun solmun 9.}
+\label{fig:avlrik}
+\end{figure}
+
+Kun lisäämme AVL-puuhun solmun, se voi rikkoa AVL-ehdon,
+jos jossain alipuussa lasten korkeudet ovat ennen lisäämistä
+$x$ ja $x+1$ ja lisäämisen jälkeen $x$ ja $x+2$.
+Kuva \ref{fig:avlrik} näyttää esimerkin tällaisesta tilanteesta.
+Vasemmassa puussa solmun $3$ lasten korkeudet ovat 0 ja 1,
+joten AVL-ehto on kunnossa.
+Oikeassa puussa olemme lisänneet solmun $9$,
+minkä seurauksena solmun $3$ lasten korkeudet ovat 0 ja 2
+ja AVL-ehto ei enää päde.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\newcommand\alipuu[3]{
+\path[draw,thick,-] (0+#1,0+#2) -- (-1+#1,-2+#2) -- (1+#1,-2+#2) -- (0+#1,0+#2);
+\node at (0+#1,-1.25+#2) {#3};
+}
+\draw[thick,<->] (5,-2) -- (7,-2);
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$x$};
+\node[draw, circle] (2) at (2,-2) {$y$};
+\alipuu{-2}{-1.5}{$A$}
+\alipuu{0.75}{-3.5}{$B$}
+\alipuu{3.25}{-3.5}{$C$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (-2,-1.5);
+\path[draw,thick,-] (2) -- (0.75,-3.5);
+\path[draw,thick,-] (2) -- (3.25,-3.5);
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,-2) {$x$};
+\node[draw, circle] (2) at (2,0) {$y$};
+\alipuu{-1.25}{-3.5}{$A$}
+\alipuu{1.25}{-3.5}{$B$}
+\alipuu{4}{-1.5}{$C$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (-1.25,-3.5);
+\path[draw,thick,-] (1) -- (1.25,-3.5);
+\path[draw,thick,-] (2) -- (4,-1.5);
+\end{scope}
+\end{tikzpicture}
+\caption{Kierrot, joiden avulla korjaamme AVL-puuta.}
+\label{fig:avlkie}
+\end{figure}
+
+Pystymme korjaamaan AVL-ehdon solmun lisäämisen jälkeen
+kiertämällä puun solmuja sopivasti.
+Kuva \ref{fig:avlkie} näyttää kierrot, joita käytämme korjaamisessa.
+Puissa $x$ ja $y$ ovat kaksi solmua
+ja $A$, $B$ ja $C$ ovat niihin liittyvät alipuut.
+Voimme tehdä kierron joko vasemmasta puusta oikeaan puuhun
+tai päinvastoin ja vaihtaa tällä tavalla solmujen järjestystä.
+
+% \begin{figure}
+% \center
+% \begin{tikzpicture}[scale=0.6]
+% \node[draw, circle] (1) at (0,0) {$7$};
+% \node[draw, circle] (2) at (-2.5,-2) {$3$};
+% \node[draw, circle] (3) at (2.5,-2) {$8$};
+% \node[draw, circle] (5) at (-4,-4) {$2$};
+% \node[draw, circle] (6) at (-1,-4) {$5$};
+% \node[draw, circle] (7) at (4,-4) {$9$};
+% \path[draw,thick,-] (1) -- (2);
+% \path[draw,thick,-] (1) -- (3);
+% \path[draw,thick,-] (2) -- (5);
+% \path[draw,thick,-] (2) -- (6);
+% \path[draw,thick,-] (3) -- (7);
+% \end{tikzpicture}
+% \caption{Kierrämme solmun $7$ puun juureksi, jolloin AVL-ehto pätee taas.}
+% \label{fig:avlkor}
+% \end{figure}
+
+
+
+Esimerkissämme voimme kiertää solmuja niin,
+että solmu $7$ nousee ylimmäksi,
+jolloin tuloksena on kuvan \ref{fig:avlkor} puu.
+Tämän muutoksen jälkeen AVL-ehto pätee jälleen puussa,
+koska solmun $7$ kummankin alipuun korkeus on 1.
+
+Yleisessä tapauksessa voimme korjata AVL-ehdon
+solmun lisäämisen jäl\-keen kulkemalla puussa ylöspäin,
+kunnes löydämme solmun, jossa AVL-ehto ei päde.
+ 
+
 \section{Javan rakenteet}
 
 Javan tietorakenteet \texttt{TreeSet} ja \texttt{TreeMap}
