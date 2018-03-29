@@ -1,29 +1,30 @@
 \chapter{Hajautustaulu}
 
 Algoritmien suunnittelussa on usein tarvetta
-tietorakenteelle, joka pitää yllä alkioiden joukkoa
-ja toteuttaa seuraavat operaatiot:
+tietorakenteelle, joka pitää yllä kokoelmaa alkioita.
+Kutsumme tällaista tietorakennetta nimellä \emph{joukko}.
+Esimerkiksi $\{2,4,5,7\}$ on joukko, joka sisältää
+alkiot $2$, $4$, $5$ ja $7$.
+Haluamme toteuttaa rakenteen niin,
+että pystymme tarkastamaan, kuuluuko tietty alkio
+joukkoon, sekä lisäämään ja poistamaan alkioita.
+Lisäksi haluamme,
+että tietty alkio voi esiintyä joukossa vain kerran,
+mikä vastaa tavallista joukon määritelmää matematiikassa.
 
-\begin{itemize}
-\item lisää alkio $x$ joukkoon
-\item tarkista, onko alkio $x$ joukossa
-\item poista alkio $x$ joukosta
-\end{itemize}
-
-Voimme helposti toteuttaa tällaisen tietorakenteen
-tallentamalla joukon alkiot listaan.
-Kun lisäämme joukkoon uuden alkion,
-lisäämme sen listan loppuun ajassa $O(1)$.
-Kun haluamme etsiä alkiota joukosta,
-käymme läpi listan, missä kuluu aikaa $O(n)$.
-Poistaminen vie myös aikaa $O(n)$, koska meidän täytyy
-etsiä poistettava alkio listasta ja poistaa se.
-Tämä ei ole tyydyttävä ratkaisu,
-koska etsiminen ja poistaminen toimivat hitaasti.
+Helppo tapa toteuttaa joukko on tallentaa
+kaikki joukon alkiot listaan.
+Tällaisen toteutuksen heikkoutena on kuitenkin,
+että meidän täytyy käydä koko lista läpi,
+kun haluamme selvittää, kuuluuko tietty alkio joukkoon.
+Joudumme käymään listan läpi myös alkion lisäämisessä ja
+poistamisessa, koska emme halua lisätä samaa alkiota
+uudestaan ja meidän täytyy löytää poistettava alkio.
+Niinpä joukon operaatiot vievät aikaa $O(n)$.
 
 Tässä ja seuraavassa luvussa käymme läpi kaksi
-tietorakennetta, joiden avulla voimme toteuttaa kaikki
-kolme joukon operaatiota \emph{tehokkaasti}.
+tietorakennetta, joiden avulla voimme toteuttaa
+joukon operaatiot \emph{tehokkaasti}.
 Tämän luvun aiheena on hajautustaulu,
 jonka avulla pystymme toteuttamaan operaatiot
 keskimäärin ajassa $O(1)$.
@@ -41,37 +42,37 @@ meillä täytyy olla \emph{hajautusfunktio} $f$,
 joka antaa \emph{hajautusarvon}
 $f(x)$ mille tahansa joukon alkiolle $x$.
 Hajautusarvo on kokonaisluku väliltä
-$0,1,\dots,N-1$, missä $N$ vastaa hajautustaulun kokoa.
-Tallennamme kohdan $k$ listaan ne joukon alkiot,
-joiden hajautusarvo on $k$.
+$0,1,\dots,N-1$, missä $N$ on hajautustaulun koko.
+Tallennamme hajautustaulun kohdassa $k$ olevaan listaan
+ne joukon alkiot, joiden hajautusarvo on $k$.
 
 \begin{figure}
 \begin{tikzpicture}[scale=0.5]
 \draw (0,0) grid (10,1);
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
 \draw[->,thick] (2.5,0) -- (2.5,-1);
+\draw[->,thick] (5.5,0) -- (5.5,-1);
 \draw[->,thick] (7.5,0) -- (7.5,-1);
 \draw[->,thick] (2.5,-2) -- (2.5,-3);
-\node at (2.5,-1.5) {\texttt{apina}};
-\node at (7.5,-1.5) {\texttt{banaani}};
-\node at (2.5,-3.5) {\texttt{cembalo}};
+\node at (2.5,-1.5) {$12$};
+\node at (5.5,-1.5) {$15$};
+\node at (7.5,-1.5) {$7$};
+\node at (2.5,-3.5) {$32$};
 \end{tikzpicture}
-\caption{Hajautustaulu, joka vastaa joukkoa $\{\texttt{apina},\texttt{banaani},\texttt{cembalo}\}$.
-Alkioiden \texttt{apina} ja \texttt{cembalo} hajautusarvo on 2,
-ja alkion \texttt{banaani} hajautusarvo on 7.}
+\caption{Hajautustaulu, joka vastaa joukkoa $\{7,12,15,32\}$.
+Hajautusfunktiona on $f(x)=x \bmod 10$.}
 \label{fig:hajtau}
 \end{figure}
 
 Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu,
-johon on tallennettu alkiot \texttt{apina}, \texttt{banaani} ja \texttt{cembalo}.
-Tässä hajautustaulussa $N=10$, joten kunkin alkion tulee
-saada hajautusarvo väliltä $0,1,\dots,9$.
-Oletamme, että meillä on käytössämme hajautusfunktio,
-joka antaa alkioille \texttt{apina} ja \texttt{cembalo}
-hajautusarvon 2 ja alkiolle \texttt{banaani} hajautusarvon 7.
-Niinpä alkiot \texttt{apina} ja \texttt{cembalo} ovat
-samassa listassa kohdassa 2 ja alkio \texttt{banaani}
-on yksin listassa kohdassa 7.
+jonka kokona on $N=10$.
+Olemme tallentaneet hajautustauluun joukon $\{7,12,15,32\}$
+käyttäen yksinkertaista hajautusfunktiota $f(x)=x \bmod 10$.
+Tämä tarkoittaa, että alkion $x$ hajautusarvo on sen jakojäännös $10$:llä
+eli luvun viimeinen numero.
+Esimerkiksi alkiot $12$ ja $32$ ovat kohdassa $2$,
+koska niissä viimeinen numero on $2$,
+ja alkiot $15$ ja $7$ ovat vastaavasti kohdissa $5$ ja $7$.
 Kaikki muut hajautustaulun listat ovat tällä hetkellä tyhjiä.
 
 Kun haluamme tarkistaa, onko joukossa alkiota $x$,
@@ -82,8 +83,10 @@ onko jokin niistä alkio $x$.
 Vastaavasti kun haluamme lisätä alkion $x$ joukkoon
 tai poistaa alkion $x$ joukosta,
 teemme muutoksen kohdassa $f(x)$ olevaan listaan.
-Näiden operaatioiden aikavaativuus on $O(m)$,
-kun jokaisen listan pituus on enintään $m$.
+Nämä operaatiot vievät aikaa $O(m)$,
+kun $m$ on hajautustaulussa olevan listan pituus.
+Tavoitteemme on, että kaikissa listoissa $m$ on pieni,
+jolloin operaatiot toimivat tehokkaasti.
 
 \subsection{Hajautusfunktio}
 
@@ -93,7 +96,7 @@ Sen täytyy antaa jokaiselle mahdolliselle alkiolle
 hajautusarvo eli kokonaisluku väliltä $0,1,\dots,N-1$,
 missä $N$ on hajautustaulun koko.
 Lisäksi jotta hajautustaulu olisi käyttökelpoinen,
-hajautusfunktion tulisi jakaa alkiot mahdollisimman
+hajautusfunktion tulisi jakaa alkiot
 \emph{tasaisesti} eri puolille hajautustaulua.
 Tällöin hajautustaulun listat ovat lyhyitä ja
 operaatiot toimivat tehokkaasti.
