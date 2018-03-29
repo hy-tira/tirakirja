@@ -602,19 +602,25 @@ Funktiolle pätee
 eli funktion arvo ainakin kaksinkertaistuu kahden askeleen välein.
 Voimme ilmaista tämän alarajan
 \[f(h) \ge 2^{h/2},\]
-jonka voimme taas muuttaa muotoon
+jonka voimme taas muuttaa ylärajaksi
 \[ h \le 2 \log_2 f(h).\]
 
-Tarkastellaan sitten puuta, jossa on $n$ solmua.
-Puun korkeudelle $h$ täytyy päteä $f(h) \le n$,
+Tarkastellaan sitten puuta, jossa on $n$ solmua
+ja jonka korkeus on $h$.
+Korkeudelle täytyy päteä $f(h) \le n$,
 koska korkeutta $h$ olevassa puussa on vähintään $f(h)$ solmua.
-Niinpä saamme alarajan
+Niinpä saamme ylärajan
 \[h \le 2 \log_2 n,\]
 mikä tarkoittaa samaa kuin $h = O(\log n)$.
 
 \subsection{Kiertojen toteutus}
 
-TODO
+Voimme toteuttaa AVL-puun operaatiot muuten samaan tapaan
+kuin yleisessä binäärihakupuussa, mutta meidän täytyy varmistaa
+alkion lisäämisen ja poistamisen jälkeen, että AVL-ehto
+on edelleen voimassa.
+Tämä onnistuu tekemällä sopivia \emph{kiertoja},
+jotka muuttavat puun rakennetta.
 
 \section{Javan rakenteet}
 
