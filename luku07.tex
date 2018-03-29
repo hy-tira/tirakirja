@@ -756,7 +756,7 @@ Kun poistamme puusta solmun, menettelemme melko samalla tavalla
 kuin lisäämisessä.
 Tässä tapauksessa on mahdollista, että ennen poistoa
 jossakin solmussa lasten alipuiden korkeudet ovat $h$ ja $h-1$
-ja poiston jälkeen korkeudet ovat $h$ ja $h-2$.
+ja poiston jälkeen $h$ ja $h-2$.
 Poiston jälkeen nousemme puussa ylöspäin ja jos löydämme
 tällaisen solmun, korjaamme ehdon niin, että kummankin alipuun
 korkeus on $h-1$.
@@ -790,6 +790,9 @@ alkioita niiden järjestyksen perusteella.
 Seuraava koodi luo \texttt{TreeSet}-rakenteen,
 joka pitää yllä lukujen joukkoa.
 Koodi lisää joukkoon alkioita ja tulostaa sitten sen sisällön.
+Huomaa, että tulostuksessa joukon alkiot näkyvät
+järjestyksessä pienimmästä suurimpaan, koska
+binäärihakupuu pitää niitä järjestyksessä.
 
 \begin{code}
 TreeSet<Integer> joukko = new TreeSet<>();
@@ -937,8 +940,8 @@ int eriLuvut(int[] taulu) {
 
 \subsubsection{Ratkaisu 2: \texttt{HashSet}}
 
-Koska emme tarvitse ratkaisussa \texttt{TreeSet}-rakenteen
-alkioiden järjestystä, voimme käyttää
+Emme tarvitse ratkaisussa \texttt{TreeSet}-rakenteen
+alkioiden järjestystä, joten voimme käyttää
 yhtä hyvin \texttt{HashSet}-rakennetta.
 Koodi säilyy muuten täysin samanlaisena.
 Tämä ratkaisu vie aikaa $O(n)$ hajautuksen ansiosta.
@@ -977,7 +980,7 @@ int eriLuvut(int[] taulu) {
 
 Taulukko \ref{tab:eriver} esittää tehokkuusvertailun tulokset,
 kun taulukon koko $n$ vaihtelee.
-Jokaisessa testissä taulukko muodostettiin satunnaisesti niin,
+Jokaisessa testissä taulukko on muodostettu satunnaisesti niin,
 että sen luvut ovat välillä $1 \dots 10^9$.
 
 Osoittautuu, että ratkaisujen välillä on merkittäviä tehokkuuseroja.
@@ -1003,7 +1006,7 @@ käyttää turhaan.
 Joukkorakenteiden etuna on, että alkioiden lisääminen ja poistaminen
 toimivat tehokkaasti.
 Jos tällaiselle ei ole tarvetta, järjestämiseen perustuva ratkaisu
-saattaa olla parempi valinta.
+on usein parempi valinta.
 
 \begin{table}
 \center
