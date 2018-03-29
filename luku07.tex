@@ -615,55 +615,6 @@ mikä tarkoittaa samaa kuin $h = O(\log n)$.
 
 \subsection{Kiertojen toteutus}
 
-Voimme toteuttaa AVL-puun operaatiot muuten samaan tapaan
-kuin yleisessä binäärihakupuussa, mutta meidän täytyy varmistaa
-alkion lisäämisen ja poistamisen jälkeen, että AVL-ehto
-on edelleen voimassa.
-Tämä onnistuu tekemällä sopivia \emph{kiertoja},
-jotka muuttavat puun rakennetta.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.6]
-\begin{scope}
-\node[draw, circle] (1) at (0,0) {$3$};
-\node[draw, circle] (2) at (-2.5,-2) {$2$};
-\node[draw, circle] (3) at (2.5,-2) {$7$};
-\node[draw, circle] (5) at (1,-4) {$5$};
-\node[draw, circle] (6) at (4,-4) {$8$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (3) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\end{scope}
-\begin{scope}[xshift=9cm]
-\node[draw, circle] (1) at (0,0) {$3$};
-\node[draw, circle] (2) at (-2.5,-2) {$2$};
-\node[draw, circle] (3) at (2.5,-2) {$7$};
-\node[draw, circle] (5) at (1,-4) {$5$};
-\node[draw, circle] (6) at (4,-4) {$8$};
-\node[draw, circle] (7) at (5,-6) {$9$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (3) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (6) -- (7);
-\end{scope}
-\end{tikzpicture}
-\caption{AVL-ehto menee rikki, kun lisäämme puuhun solmun 9.}
-\label{fig:avlrik}
-\end{figure}
-
-Kun lisäämme AVL-puuhun solmun, se voi rikkoa AVL-ehdon,
-jos jossain alipuussa lasten korkeudet ovat ennen lisäämistä
-$x$ ja $x+1$ ja lisäämisen jälkeen $x$ ja $x+2$.
-Kuva \ref{fig:avlrik} näyttää esimerkin tällaisesta tilanteesta.
-Vasemmassa puussa solmun $3$ lasten korkeudet ovat 0 ja 1,
-joten AVL-ehto on kunnossa.
-Oikeassa puussa olemme lisänneet solmun $9$,
-minkä seurauksena solmun $3$ lasten korkeudet ovat 0 ja 2
-ja AVL-ehto ei enää päde.
-
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.6]
@@ -699,45 +650,130 @@ ja AVL-ehto ei enää päde.
 \label{fig:avlkie}
 \end{figure}
 
-Pystymme korjaamaan AVL-ehdon solmun lisäämisen jälkeen
-kiertämällä puun solmuja sopivasti.
-Kuva \ref{fig:avlkie} näyttää kierrot, joita käytämme korjaamisessa.
+Voimme toteuttaa AVL-puun operaatiot muuten samaan tapaan
+kuin yleisessä binäärihakupuussa, mutta meidän täytyy varmistaa
+alkion lisäämisen ja poistamisen jälkeen, että AVL-ehto
+on edelleen voimassa.
+Tämä onnistuu tekemällä sopivia \emph{kiertoja},
+jotka muuttavat puun rakennetta.
+
+Osoittautuu, että voimme korjata puun rakenteen kaikissa
+tilanteessa käyttäen kahta kiertotyyppiä,
+jotka on esitetty kuvassa \ref{fig:avlkie}.
 Puissa $x$ ja $y$ ovat kaksi solmua
 ja $A$, $B$ ja $C$ ovat niihin liittyvät alipuut.
 Voimme tehdä kierron joko vasemmasta puusta oikeaan puuhun
 tai päinvastoin ja vaihtaa tällä tavalla solmujen järjestystä.
 
-% \begin{figure}
-% \center
-% \begin{tikzpicture}[scale=0.6]
-% \node[draw, circle] (1) at (0,0) {$7$};
-% \node[draw, circle] (2) at (-2.5,-2) {$3$};
-% \node[draw, circle] (3) at (2.5,-2) {$8$};
-% \node[draw, circle] (5) at (-4,-4) {$2$};
-% \node[draw, circle] (6) at (-1,-4) {$5$};
-% \node[draw, circle] (7) at (4,-4) {$9$};
-% \path[draw,thick,-] (1) -- (2);
-% \path[draw,thick,-] (1) -- (3);
-% \path[draw,thick,-] (2) -- (5);
-% \path[draw,thick,-] (2) -- (6);
-% \path[draw,thick,-] (3) -- (7);
-% \end{tikzpicture}
-% \caption{Kierrämme solmun $7$ puun juureksi, jolloin AVL-ehto pätee taas.}
-% \label{fig:avlkor}
-% \end{figure}
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$7$};
+\node[draw, circle] (5) at (1,-4) {$5$};
+\node[draw, circle] (6) at (4,-4) {$8$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\end{scope}
+\begin{scope}[xshift=9cm]
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$7$};
+\node[draw, circle] (5) at (1,-4) {$5$};
+\node[draw, circle] (6) at (4,-4) {$8$};
+\node[draw, circle] (7) at (5,-6) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (6) -- (7);
+\end{scope}
+\end{tikzpicture}
+\caption{AVL-ehto menee rikki, kun lisäämme puuhun solmun 9.}
+\label{fig:avlrik}
+\end{figure}
 
+Kun lisäämme AVL-puuhun solmun, se voi rikkoa AVL-ehdon,
+jos jossain solmussa lasten alipuiden korkeudet ovat ennen lisäämistä
+$h$ ja $h+1$ ja lisäämisen jälkeen $h$ ja $h+2$.
+Kuva \ref{fig:avlrik} näyttää esimerkin tällaisesta tilanteesta.
+Vasemmassa puussa solmun $3$ lasten korkeudet ovat 0 ja 1,
+joten AVL-ehto on kunnossa.
+Oikeassa puussa olemme lisänneet solmun $9$,
+minkä seurauksena solmun $3$ lasten korkeudet ovat 0 ja 2
+eikä AVL-ehto enää päde.
 
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\node[draw, circle] (1) at (0,0) {$7$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$8$};
+\node[draw, circle] (5) at (-4,-4) {$2$};
+\node[draw, circle] (6) at (-1,-4) {$5$};
+\node[draw, circle] (7) at (4,-4) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (2) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\end{tikzpicture}
+\caption{Kierrämme solmun $7$ puun juureksi, jolloin AVL-ehto pätee taas.}
+\label{fig:avlkor}
+\end{figure}
 
-Esimerkissämme voimme kiertää solmuja niin,
-että solmu $7$ nousee ylimmäksi,
-jolloin tuloksena on kuvan \ref{fig:avlkor} puu.
-Tämän muutoksen jälkeen AVL-ehto pätee jälleen puussa,
-koska solmun $7$ kummankin alipuun korkeus on 1.
+Korjaamme AVL-ehdon solmun lisäämisen jälkeen
+kulkemalla puussa ylös\-päin lisätystä solmusta lähtien,
+kunnes tulemme ensimmäiseen solmuun, jossa ehto ei ole voimassa.
+Jos tällainen solmu löytyy, palautamme ehdon voimaan tekemällä yhden
+tai kaksi kiertoa riippuen lisätyn solmun sijainnista.
+Oletetaan, että $x$ on puun alin solmu,
+jossa AVL-ehto ei ole voimassa,
+$y$ on $x$:n lapsi, jonka alipuussa on lisätty solmu,
+ja $z$ on $y$:n lapsi, jonka alipuussa on lisätty solmu.
+Tapauksia on kaksi: jos $y$ ja $z$ ovat molemmat
+vasempia lapsia tai molemmat oikeita lapsia,
+kierrämme solmua $y$ kerran ylöspäin,
+ja muuten kierrämme solmua $z$ kahdesti ylöspäin.
+Tämän korjauksen jälkeen AVL-ehto on jälleen
+voimassa kaikissa puun solmuissa, eli meidän riittää aina
+korjata ehto alimmassa solmussa, jossa se ei ole voimassa.
 
-Yleisessä tapauksessa voimme korjata AVL-ehdon
-solmun lisäämisen jäl\-keen kulkemalla puussa ylöspäin,
-kunnes löydämme solmun, jossa AVL-ehto ei päde.
- 
+Kuvassa \ref{fig:avlrik} AVL-ehto ei ole voimassa solmussa $3$,
+joten $x=3$, $y=7$ ja $z=8$.
+Koska $y$ on $x$:n oikea lapsi ja $z$ on $y$:n oikea lapsi,
+meidän riittää tehdä yksi kierto, joka nostaa solmua $7$ ylöspäin
+puun juureksi.
+Tuloksena on kuvan \ref{fig:avlkor} mukainen puu, jossa
+AVL-ehto on jälleen voimassa,
+koska solmun $7$ kummankin alipuun korkeus on nyt 1.
+
+Kun poistamme puusta solmun, menettelemme melko samalla tavalla
+kuin lisäämisessä.
+Tässä tapauksessa on mahdollista, että ennen poistoa
+jossakin solmussa lasten alipuiden korkeudet ovat $h$ ja $h-1$
+ja poiston jälkeen korkeudet ovat $h$ ja $h-2$.
+Poiston jälkeen nousemme puussa ylöspäin ja jos löydämme
+tällaisen solmun, korjaamme ehdon niin, että kummankin alipuun
+korkeus on $h-1$.
+Toisin kuin lisäämisessä, jatkamme tämän jälkeen ylöspäin
+ja korjaamme tarvittaessa ehtoa muissa solmuissa,
+koska ehdon korjaaminen yhdessä solmussa saattaa rikkoa
+sen jossain ylemmässä solmussa.
+
+Pystymme tekemään korjaukset sekä lisäämisen että poistamisen
+jälkeen ajassa $O(\log n)$,
+koska puun korkeus on $O(\log n)$ ja jokainen yksittäinen
+kierto tapahtuu vakioajassa.
+Lisäämisen jälkeen kuljemme puuta ylöspäin $O(\log n)$ askelta
+ja teemme enintään kaksi kiertoa.
+Poistamisen jälkeen taas kuljemme puuta ylöspäin $O(\log n)$ askelta
+ja teemme enintään $O(\log n)$ kiertoa.
+
 
 \section{Javan rakenteet}
 
