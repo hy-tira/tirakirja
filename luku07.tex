@@ -1037,11 +1037,9 @@ montko eri lukua taulukossa on.
 Ratkaisemme ongelman kolmella eri tavalla ja tutkimme sitten
 ratkaisujen tehokkuutta.
 
-\subsubsection{Ratkaisu 1: \texttt{TreeSet}}
-
 Ensimmäinen tapa ratkaista tehtävä on luoda \texttt{TreeSet},
-johon lisäämme kaikki taulukon luvut.
-Koska jokainen luku voi esiintyä joukossa enintään kerran,
+johon lisäämme taulukon luvut.
+Koska jokainen luku voi esiintyä joukossa vain kerran,
 joukon koko ilmaisee meille, montako eri lukua taulukossa on.
 Tämä ratkaisu vie aikaa $O(n \log n)$, koska jokainen
 \texttt{add}-operaatio vie aikaa $O(\log n)$.
@@ -1056,11 +1054,9 @@ int eriLuvut(int[] taulu) {
 }
 \end{code}
 
-\subsubsection{Ratkaisu 2: \texttt{HashSet}}
-
-Emme tarvitse ratkaisussa \texttt{TreeSet}-rakenteen
-alkioiden järjestystä, joten voimme käyttää
-yhtä hyvin \texttt{HashSet}-rakennetta.
+Emme tarvitse oikeastaan \texttt{TreeSet}-rakenteen
+alkioiden järjestystä, joten saamme toisen ratkaisun
+käyttämällä sen sijaan \texttt{HashSet}-rakennetta.
 Koodi säilyy muuten täysin samanlaisena.
 Tämä ratkaisu vie aikaa $O(n)$ hajautuksen ansiosta.
 
@@ -1073,8 +1069,6 @@ int eriLuvut(int[] taulu) {
     return joukko.size();
 }
 \end{code}
-
-\subsubsection{Ratkaisu 3: järjestäminen}
 
 Kolmas tapa ratkaista tehtävä on käyttää järjestämistä:
 kopioimme ensin luvut uuteen taulukkoon, järjestämme tämän taulukon ja
@@ -1094,17 +1088,13 @@ int eriLuvut(int[] taulu) {
 }
 \end{code}
 
-\subsubsection{Vertailun tulokset}
-
-Taulukko \ref{tab:eriver} esittää tehokkuusvertailun tulokset,
-kun taulukon koko $n$ vaihtelee.
-Jokaisessa testissä taulukko on muodostettu satunnaisesti niin,
-että sen luvut ovat välillä $1 \dots 10^9$.
+Taulukko \ref{tab:eriver} esittää tehokkuusvertailun tulokset.
+Jokaisessa testissä taulukossa on satunnaisia lukuja väliltä $1 \dots 10^9$.
 
 Osoittautuu, että ratkaisujen välillä on merkittäviä tehokkuuseroja.
 Ensinnäkin \texttt{HashSet}-ratkaisu on noin kolme kertaa
 nopeampi kuin \texttt{TreeSet}-ratkaisu.
-Tämä on siinä mielessä odotettavaa, että hajautustaulun
+Tämä onkin odotettavaa, koska hajautustaulun
 operaatiot vievät aikaa $O(1)$, kun taas binäärihakupuun
 operaatiot vievät aikaa $O(\log n)$.
 Selvästi nopein ratkaisu on kuitenkin kolmas järjestämistä
