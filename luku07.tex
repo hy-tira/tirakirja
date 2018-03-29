@@ -1,16 +1,17 @@
 \chapter{Binäärihakupuu}
 
-Binäärihakupuu on hajautustaululle vaihtoehtoinen tapa
-toteuttaa tietorakenne, joka tarjoaa seuraavat tehokkaat operaatiot:
+Binäärihakupuu on tietorakenne, joka pitää yllä
+alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
+Binäärihakupuuta käyttäen joukon operaatiot vievät aikaa $O(\log n)$
+kaikissa tapauksissa.
+Käytännössä binäärihakupuu toimii yleensä hieman hitaammin
+kuin hajautustaulu, mutta toisaalta siinä ei ole riskinä,
+että operaatiot veisivät koskaan aikaa $O(n)$.
 
-\begin{itemize}
-\item lisää alkio $x$ joukkoon
-\item tarkista, onko alkio $x$ joukossa
-\item poista alkio $x$ joukosta
-\end{itemize}
-
-Binäärihakupuu säilyttää joukon alkioita \emph{järjestyksessä}, minkä ansiosta
-voimme toteuttaa lisäksi tehokkaasti esimerkiksi seuraavat operaatiot:
+Binäärihakupuun tärkein etu hajautustauluun verrattuna on kuitenkin,
+että se säilyttää joukon alkioita \emph{järjestyksessä}.
+Tämän ansiosta voimme toteuttaa tehokkaasti
+esimerkiksi seuraavat operaatiot:
 
 \begin{itemize}
 \item etsi joukon pienin/suurin alkio
@@ -20,13 +21,14 @@ voimme toteuttaa lisäksi tehokkaasti esimerkiksi seuraavat operaatiot:
 
 Hajautustaulu \emph{ei} pysty tarjoamaan näitä operaatioita tehokkaasti,
 koska alkiot ovat siinä sekalaisessa järjestyksessä.
-Binäärihakupuu onkin hyvä valinta, jos tarvitsemme tällaisia operaatioita.
+Jos tarvitsemme näitä operaatioita,
+meidän tuleekin käyttää binäärihakupuuta hajautustaulun sijasta.
 
 \section{Taustaa binääripuista}
 
 Binäärihakupuun taustalla on yleisempi tietorakenne \emph{binääripuu}.
 Ennen kuin tutustumme binäärihakupuuhun,
-meidän onkin hyvä tietää ensin, mikä on binääripuu ja mitä
+meidän onkin hyvä selvittää ensin, mikä on binääripuu ja mitä
 ominaisuuksia siihen liittyy.
 
 Binääripuu muodostuu $n$ solmusta, jotka on yhdistetty toisiinsa.
@@ -38,8 +40,8 @@ Puun \emph{lehtiä} ovat solmut, joilla ei ole lapsia.
 Binääripuun rakenne on rekursiivinen:
 jokainen solmu toimii juurena \emph{alipuulle},
 joka on myös binääripuu.
-Voimmekin myös ajatella, että binääripuun
-solmun vasen ja oikea lapsi on joko tyhjä
+Voimme ajatella, että jokaisessa binääripuun
+solmussa vasen ja oikea lapsi on joko tyhjä
 tai toinen binääripuu.
 
 \begin{figure}
@@ -61,7 +63,8 @@ tai toinen binääripuu.
 \path[draw,thick,-] (6) -- (7);
 \path[draw,thick,-] (6) -- (8);
 \end{tikzpicture}
-\caption{Binääripuu, jossa on 8 solmua.}
+\caption{Binääripuu, jossa on 8 solmua. Puun juuri on solmu 1,
+ja puun lehtiä ovat solmut 4, 5, 7 ja 8.}
 \label{fig:binpuu}
 \end{figure}
 
@@ -69,7 +72,7 @@ Kuvassa \ref{fig:binpuu} on esimerkki binääripuusta, jossa on 8 solmua.
 Solmu 1 on puun juuri, ja solmut 4, 5, 7 ja 8 ovat puun lehtiä.
 Solmun 3 vasen lapsi on solmu 5, oikea lapsi on solmu 6
 ja vanhempi on solmu 1.
-Solmun 3 alipuussa ovat solmut 3, 5, 6, 7 ja 8.
+Solmun 3 alipuu sisältää solmut 3, 5, 6, 7 ja 8.
 
 Binääripuun juuren \emph{syvyys} on 0 ja jokaisen muun solmun syvyys on yhtä
 suurempi kuin sen vanhemman syvyys.
@@ -118,11 +121,11 @@ jolloin kaikilla tasoilla on kaikki mahdolliset solmut.
 Kuva \ref{fig:binraj} näyttää esimerkit näistä tapauksista,
 kun puun korkeus on $2$.
 
-\subsection{Binääripuun käsittely}
+\subsection{Binääripuun toteutus}
 
 Voimme toteuttaa binääripuun linkitettynä rakenteena niin,
 että jokainen puun solmu on olio, josta on viittaus
-solmun vasempaan ja oikeaan lapseen.
+vasempaan ja oikeaan lapseen.
 Javassa voimme määritellä solmua vastaavan luokan seuraavasti:
 
 \begin{code}
@@ -159,7 +162,15 @@ s8 = new Solmu(null, null, 8);
 Voimme toteuttaa monia binääripuun käsittelyyn liittyviä
 operaatioita luontevasti rekursiolla.
 Esimerkiksi seuraava metodi laskee, montako solmua
-sille annetussa puussa on.
+sille annetussa puussa on:
+
+\begin{code}
+int laskeSolmut(Solmu puu) {
+    if (puu == null) return 0;
+    return 1 + laskeSolmut(puu.vasen) + laskeSolmut(puu.oikea);
+}
+\end{code}
+
 Metodille annetaan parametrina solmu,
 joka vastaa puun juurta.
 Jos puu on tyhjä, siinä ei ole yhtään solmua.
@@ -168,12 +179,6 @@ ja oikean alipuun solmut.
 Pystymme laskemaan alipuiden solmut rekursiivisesti
 kutsumalla samaa metodia uudestaan.
 
-\begin{code}
-int laskeSolmut(Solmu puu) {
-    if (puu == null) return 0;
-    return 1 + laskeSolmut(puu.vasen) + laskeSolmut(puu.oikea);
-}
-\end{code}
 
 Seuraava metodi puolestaan selvittää, mikä on puun korkeus.
 Huomaa, että jos puu on tyhjä, tulkitsemme,
@@ -211,11 +216,11 @@ sisäjärjestyksessä, kun sille annetaan parametrina
 puun juuri.
 
 \begin{code}
-void jarjestys(Solmu puu) {
+void tulosta(Solmu puu) {
     if (puu == null) return;
-    jarjestys(puu.vasen);
+    tulosta(puu.vasen);
     System.out.println(puu.arvo);
-    jarjestys(puu.oikea);
+    tulosta(puu.oikea);
 }
 \end{code}
 
@@ -224,10 +229,10 @@ void jarjestys(Solmu puu) {
 \emph{Binäärihakupuu} on binääripuu, jonka jokaisen solmun
 arvona on yksi joukon alkioista.
 Jokaisessa solmussa
-kaikki arvot vasemmassa alipuussa ovat pienempiä
-kuin solmun arvo ja vastaavasti kaikki arvot 
-oikeassa alipuussa ovat suurempia kuin solmun arvo.
-Tämän ominaisuuden ansiosta voimme löytää helposti
+kaikki alkiot vasemmassa alipuussa ovat pienempiä
+kuin solmun alkio ja vastaavasti kaikki alkiot
+oikeassa alipuussa ovat suurempia kuin solmun alkio.
+Tämän ominaisuuden ansiosta voimme löytää halutun
 alkion puusta aloittamalla haun puun juuresta.
 
 \begin{figure}
@@ -249,18 +254,21 @@ alkion puusta aloittamalla haun puun juuresta.
 \label{fig:bihpuu}
 \end{figure}
 
-Kuvassa \ref{fig:bihpuu} on binäärihakupuu,
-joka vastaa joukkoa $\{2,3,5,7,8,9\}$.
-Tässä tapauksessa puun juurena on alkio 5.
+Kuvassa \ref{fig:bihpuu} on esimerkkinä
+joukkoa $\{2,3,5,7,8,9\}$ vastaava binääri\-hakupuu,
+jonka juurena on alkio 5.
 Vasemmassa alipuussa on kaikki alkiota 5
 pienemmät alkiot, eli se vastaa joukkoa $\{2,3\}$.
 Oikeassa alipuussa taas on kaikki alkiota 5
 suuremmat alkiot, eli se vastaa joukkoa $\{7,8,9\}$.
+Huomaa, että tämä on yksi monista tavoista muodostaa
+binäärihakupuu joukolle ja voisimme valita myös
+minkä tahansa toisen alkion puun juureksi.
 
 \subsection{Operaatioiden toteutus}
 
 Seuraavaksi käymme läpi, kuinka voimme toteuttaa
-binäärihakupuun avulla joukon operaatioita.
+joukko-operaatioita bi\-näärihakupuun avulla.
 Osoittautuu, että voimme toteuttaa kaikki
 operaatiot ajassa $O(h)$, missä $h$ on puun korkeus.
 
@@ -268,7 +276,7 @@ operaatiot ajassa $O(h)$, missä $h$ on puun korkeus.
 
 Kun haluamme etsiä joukosta alkiota $x$, lähdemme liikkeelle
 puun juuresta ja kuljemme alaspäin puussa.
-Kun olemme solmussa, jonka arvo on $a$,
+Kun olemme solmussa, jossa on alkio $a$,
 vaihtoehtoja on kolme.
 Jos $a=x$, olemme löytäneet halutun alkion,
 jos $a>x$, jatkamme hakua solmun vasempaan lapseen,
@@ -346,29 +354,29 @@ Niinpä lisäämme solmun 4 solmun 3 oikeaksi lapseksi.
 
 \subsubsection{Pienin alkio / suurin alkio}
 
-Kun haluamme löytää pienimmän alkion,
+Kun haluamme löytää joukon pienimmän alkion,
 lähdemme liikkeelle juuresta ja etenemme joka askeleella
 solmun vasempaan lapseen.
 Kun solmulla ei ole enää vasenta lasta,
 olemme löytäneet joukon pienimmän alkion.
 
-Vastaavalla tavalla löydämme suurimman alkion
+Vastaavalla tavalla löydämme joukon suurimman alkion
 etenemällä koko ajan oikeaan lapseen juuresta.
 
 \subsubsection{Seuraava suurempi alkio / edellinen pienempi alkio}
 
-Kun haluamme löytää pienimmän alkion,
+Kun haluamme löytää joukon pienimmän alkion,
 joka on suurempi kuin $x$,
 lähdemme liikkeelle puun juuresta.
-Aina kun solmun arvona on $a$,
+Kun olemme solmussa, jossa on alkio $a$,
 etenemme vasempaan lapseen,
 jos $a>x$, ja oikeaan lapseen, jos $a \le x$.
 Jatkamme näin, kunnes emme voi edetä alemmas.
 Haluttu alkio on pienin alkiota $x$ suurempi alkio
 kaikista alkioista, joiden kautta kuljimme.
 
-Kun haluamme vastaavasti löytää pienimmän alkion,
-joka on suurempi kuin $x$,
+Kun haluamme vastaavasti löytää joukon suurimman alkion,
+joka on pienempi kuin $x$,
 menettelemme käänteisesti edelliseen nähden.
 
 \subsubsection{Alkion poistaminen}
@@ -382,9 +390,9 @@ Jos kuitenkin solmulla on kaksi lasta,
 tilanne on hankalampi.
 Tällöin etsimme alkion $y$,
 joka on pienin $x$:ää suurempi alkio,
-ja vaihdamme keskenään arvot $x$ ja $y$ puussa.
+ja vaihdamme keskenään alkiot $x$ ja $y$ puussa.
 Tämän jälkeen meidän on helppoa poistaa solmu,
-jossa on nyt arvo $x$,
+jossa on nyt alkio $x$,
 koska sillä ei voi olla kahta lasta
 (koska jos solmulla olisi vasen lapsi,
 $y$ ei olisi pienin $x$:ää suurempi alkio).
@@ -429,7 +437,7 @@ $y$ ei olisi pienin $x$:ää suurempi alkio).
 \end{figure}
 
 Kuva \ref{fig:bihpu3} näyttää, kuinka poistamme joukosta $\{2,3,5,7,8,9\}$ alkion 5.
-Alkio on puun juuressa, ja solmulla on kaksi lasta,
+Alkio on puun juuressa ja solmulla on kaksi lasta,
 joten meidän tulee etsiä ensin pienin alkiota 5 suurempi alkio,
 joka on 7.
 Vaihdamme sitten keskenään arvot 5 ja 7,
@@ -440,8 +448,8 @@ minkä jälkeen meidän on helppoa poistaa alkio 5.
 Binäärihakupuun operaatiot vievät aikaa $O(h)$,
 missä $h$ on puun korkeus, joten operaatioiden tehokkuus
 riippuu puun korkeudesta.
-Niinpä puun tehokkuuteen vaikuttaa, miten olemme
-rakentaneet sen.
+Niinpä operaatioiden tehokkuuteen vaikuttaa, miten olemme
+rakentaneet puun.
 Esimerkiksi kuvassa \ref{fig:bihkor} on kaksi mahdollista
 binäärihakupuuta joukolle $\{1,2,3,4,5\}$.
 Vasemman puun korkeus on 2, kun taas oikean puun korkeus on 4.
