@@ -1,65 +1,125 @@
-\chapter{Kekorakenteet}
+\chapter{Keko}
 
-Keko on nimitys puurakenteelle, jossa jokainen solmu toteuttaa kekoehdon.
-Minimikeossa ehtona on, että jokaisen solmun arvo on suurempi tai yhtä suuri
-kuin solmun vanhemman arvo.
-Maksimikeossa taas jokaisen solmun arvo on pienempi
-tai yhtä suuri kuin solmun vanhemman arvo.
-
-Tässä luvussa tutustumme binäärikekoon,
-joka pitää yllä alkioiden joukkoa ja tarjoaa seuraavat tehokkaat operaatiot:
+Keko on tietorakenne, joka pitää yllä alkioiden kokoelmaa
+ja tarjoaa seuraavat operaatiot:
 
 \begin{itemize}
-\item lisää alkio joukkoon
+\item lisää alkio $x$ joukkoon
 \item etsi joukon pienin/suurin alkio
 \item poista joukon pienin/suurin alkio
 \end{itemize}
 
-Minimikeossa kaksi jälkimmäistä operaatiota etsivät tai poistavat pienimmän alkion.
-Maksimikeossa taas operaatiot etsivät tai poistavat suurimman alkion.
+Keon toiminta riippuu siitä, onko kyseessä minimikeko
+vai maksimikeko.
+Minimikeossa voimme etsiä ja poistaa pienimmän alkion,
+kun taas maksimikeossa voimme etsiä ja poistaa suurimman alkion.
+Meidän täytyy päättää keon luontivaiheessa,
+onko keko minimikeko vai maksimikeko.
 
-Huomaa, että voimme toteuttaa yllä olevat operaatiot ja enemmänkin
-myös binäärihakupuun avulla.
-Keossa voimme vain etsiä ja poistaa joukon pienimmän/suurimman alkion,
-kun taas binäärihakupuussa voimme etsiä ja poistaa mitä tahansa alkioita.
-Keon etuna on kuitenkin, että sen rakenne on binäärihakupuuta
-yksinkertaisempi, minkä ansiosta sen tarjoamat operaatiot toimivat
-nopeammin kuin vastaavat binäärihakupuun operaatiot.
+Tässä luvussa tutustumme binäärikeko-rakenteeseen,
+jossa lisäykset ja poistot vievät aikaa $O(\log n)$
+ja haku vie aikaa $O(1)$.
+Binäärikeko toteutetaan binääripuun avulla,
+ja se on tavallisimmin käytetty kekorakenne.
+Javan standardikirjaston tietorakenne prioriteettijono
+perustuu binäärikekoon.
 
 \section{Binäärikeko}
 
-Oletamme tästä lähtien, että haluamme toteuttaa binäärikeon,
-joka toimii minimikekona, eli jokaisen solmun arvo on suurempi
-tai yhtä suuri kuin solmun vanhemman arvo.
-Binäärikeossa puuta ''täytetään'' ylhäältä alas ja vasemmalta oikealle,
-eli puun ensimmäiset kerrokset ovat mahdollisimman täynnä solmuja
-ja viimeisessä kerroksessa solmut ovat mahdollisimman vasemmalla.
+\emph{Binäärikeko} on binääripuu, jonka jokaisessa solmussa on
+yksi kokoelmaan kuuluva alkio.
+Puu on rakennettu niin, että sen kaikki tasot alinta
+tasoa lukuun ottamatta ovat täynnä solmuja,
+eli kaikilla solmuilla on vasen ja oikea lapsi.
+Alin taso on puolestaan täytetty niin,
+että solmut on sijoitettu mahdollisimman vasemmalle
+ylempien solmujen lapsiksi.
 
-Kuvassa \ref{fig:minkek} on esimerkkinä joukkoa $\{1,2,3,3,5,8\}$
-vastaava minimikeko.
-Tässä tapaukessa puun kaksi ensimmäistä kerrosta ovat täynnä,
-ja kolmannessa kerroksessa kolme ensimmäistä kohtaa on käytetty.
-Huomaa, että sama alkio voi esiintyä keossa monta kertaa,
-kuten tässä joukossa esiintyy kaksi kertaa alkio 3.
+Binäärikeon toiminta perustuu siihen,
+että jokainen keon solmu täyttää \emph{kekoehdon}.
+Minimikeossa kekoehto vaatii, että jokaisen
+solmun arvo on suurempi tai yhtä suuri kuin solmun vanhemman arvo.
+Maksimikeossa puolestaan jokaisen solmun arvon tulee olla
+pienempi tai yhtä suuri kuin solmun vanhemman arvon.
+Kekoehdon ansiosta minimikeon juuressa on kokoelman
+pienin alkio ja maksimikeon juuressa on kokoelman suurin alkio.
 
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.6]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-2.5,-2) {$2$};
-\node[draw, circle] (3) at (2.5,-2) {$5$};
-\node[draw, circle] (4) at (-4,-4) {$3$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
+\node[draw, circle] (1) at (0,0) {$2$};
+\node[draw, circle] (2) at (-3.5,-2) {$3$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$5$};
 \node[draw, circle] (6) at (1.5,-4) {$8$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\node[draw, circle] (10) at (-2.5,-6) {$5$};
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (2) -- (4);
 \path[draw,thick,-] (2) -- (5);
 \path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\path[draw,thick,-] (5) -- (10);
 \end{tikzpicture}
-\caption{Minimikeko, joka vastaa joukkoa $\{1,2,3,3,5,8\}$.}
+\caption{Minimikeko, joka vastaa kokoelmaa $[2,3,4,5,5,5,7,8,8,9]$.}
 \label{fig:minkek}
 \end{figure}
+
+
+Kuvassa \ref{fig:minkek} on esimerkkinä minimikeko,
+johon on tallennettu kymmenen alkiota.
+Keon kolme ensimmäistä kerrosta ovat täynnä
+ja neljännessä kerroksessa kolme ensimmäistä kohtaa on käytetty.
+Keon juurena on kokoelman pienin alkio $2$,
+ja kaikki solmut täyttävät kekoehdon.
+Huomaa, että sama alkio voi esiintyä keossa useasti,
+kuten tässä keossa alkiot $5$ ja $8$.
+
+\subsection{Keon tallentaminen}
+
+Tallennamme binäärikeon \emph{taulukkona},
+joka sisältää keon solmujen arvot jär\-jestyksessä
+ylhäältä alaspäin ja vasemmalta oikealle.
+Tämä tehokas tallennustapa on mahdollinen,
+koska keon kaikki tasot ovat täynnä solmuja.
+Tallennamme keon taulukkoon kohdasta $1$ alkaen,
+koska tämä helpottaa keon operaatioiden toteuttamista.
+
+Esimerkiksi tallennamme kuvan \ref{fig:minkek}
+keon taulukkona seuraavasti:
+
+\begin{code}
+int[] keko = {0,2,3,5,4,5,8,9,7,8,5};
+\end{code}
+
+Huomaa, että taulukon ensimmäinen alkio on $0$,
+koska emme käytä kohtaa $0$ keon tallentamiseen.
+
+Tämän tallennustavan etuna on, että voimme laskea
+helposti, missä kohdissa keon alkiot ovat taulukossa.
+Ensinnäkin keon juuri eli pienin tai suurin alkio
+on aina kohdassa $1$.
+Lisäksi jos tiedämme, että tietty solmu on kohdassa $k$,
+niin tästä seuraa, että
+
+\begin{itemize}
+\item solmun vasen lapsi on kohdassa $2k$,
+\item solmun oikea lapsi on kohdassa $2k+1$ ja
+\item solmun vanhempi on kohdassa $\lfloor k/2 \rfloor$.
+\end{itemize}
+
+Esimerkissämme solmu 4
+on taulukossa kohdassa $4$,
+joten sen lapset ovat kohdissa $8$ ja $9$
+ja sen vanhempi on kohdassa $2$.
+
+\subsection{Operaatioiden toteutus}
 
 \subsection{Operaatiot}
 
