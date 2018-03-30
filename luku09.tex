@@ -1,27 +1,17 @@
 \chapter{Dynaaminen ohjelmointi}
 
-Dynaaminen ohjelmointi on algoritmisuunnittelun tekniikka,
-jota voi käyttää kahdenlaisissa tilanteissa:
-
-\begin{itemize}
-\item \textbf{Optimiratkaisun etsiminen}: Haluamme etsiä ratkaisun,
-joka on jollakin tavalla suurin tai pienin.
-\item \textbf{Ratkaisumäärän laskeminen}: Haluamme laskea,
-montako erilaista ratkaisua on olemassa.
-\end{itemize}
-
-Ideana on muotoilla laskentatehtävä
-rekursiivisesti niin, että voimme ratkaista tehtävän
-ratkaisemalla ensin osatehtävinä saman tehtävän pienempiä tapauksia.
-Aina kun olemme ratkaisseet tietyn osatehtävän,
-kirjaamme sen ratkaisun muistiin, minkä ansiosta
-pystymme hakemaan ratkaisun tehokkaasti uudestaan,
-kun tarvitsemme sitä myöhemmin.
+Dynaaminen ohjelmointi on tekniikka,
+jonka avulla voimme ratkaista tehokkaasti monia
+algoritmiikan ongelmia.
+Ideana on muotoilla ongelma rekursiivisesti niin,
+että ratkaisu ongelmaan palautuu saman ongelman
+pienempiin osaongelmiin.
+Saamme aikaan tehokkaan ratkaisun kirjaamalla
+kunkin osaongelman ratkaisun muistiin myöhempää käyttöä varten.
 
 Tässä luvussa tutustumme ensin dynaamisen ohjelmoinnin perusteisiin
-käyttäen esimerkkinä tehtävää, jossa haluamme laskea,
-monellako tavalla voimme rakentaa tornin palikoista.
-Tämän jälkeen käymme läpi joukon muita tehtäviä, jotka esittelevät
+käyttäen esimerkkinä tehtävää, jossa rakennamme torneja palikoista.
+Tämän jälkeen käymme läpi kokoelman muita tehtäviä, jotka esittelevät
 dynaamisen ohjelmoinnin mahdollisuuksia.
 
 \section{Perustekniikat}
@@ -71,13 +61,11 @@ Jotta voimme käyttää dynaamista ohjelmointia,
 meidän täytyy esittää ongelma rekursiivisesti
 niin, että saamme laskettua ongelman ratkaisun
 käyttäen osaongelmina pienempiä vastaavia ongelmia.
-
-Tässä tehtävässä meidän on luontevaa määritellä rekursiivinen
-funktio $\texttt{tornit}(n)$: monellako tavalla voimme
+Tässä tehtävässä luonteva rekursiivinen funktio on
+$\texttt{tornit}(n)$: monellako tavalla voimme
 rakentaa tornin, jonka korkeus on $n$?
-Esimerkiksi $\texttt{tornit}(4)=7$, koska tiedämme
-esimerkkimme ansiosta,
-että voimme rakentaa korkeuden 4 tornin 7 tavalla.
+Esimerkiksi $\texttt{tornit}(4)=7$, koska
+voimme rakentaa korkeuden 4 tornin 7 tavalla.
 
 Funktion pienten arvojen laskeminen on helppoa.
 Ensinnäkin $\texttt{tornit}(0)=1$, koska voimme
@@ -121,16 +109,16 @@ Kuva \ref{fig:dynrek} havainnollistaa tämän idean.
 
 Niinpä voimme laskea tornien määrän rekursiivisesti kaavalla
 \[
-\texttt{tornit}(n) = \texttt{tornit}(n-3)+\texttt{tornit}(n-2)+\texttt{tornit}(n-1),
+\texttt{tornit}(n) = \texttt{tornit}(n-1)+\texttt{tornit}(n-2)+\texttt{tornit}(n-3),
 \]
 kun $n \ge 3$.
 Esimerkiksi voimme laskea
 \[
-\texttt{tornit}(3) = \texttt{tornit}(0)+\texttt{tornit}(1)+\texttt{tornit}(2)=4
+\texttt{tornit}(3) = \texttt{tornit}(2)+\texttt{tornit}(1)+\texttt{tornit}(0)=4
 \]
 ja
 \[
-\texttt{tornit}(4) = \texttt{tornit}(1)+\texttt{tornit}(2)+\texttt{tornit}(3)=7,
+\texttt{tornit}(4) = \texttt{tornit}(3)+\texttt{tornit}(2)+\texttt{tornit}(1)=7,
 \]
 jolloin olemme saaneet laskettua esimerkkitapaustamme vastaavasti,
 että voimme rakentaa korkeuden 4 tornin 7 tavalla.
@@ -172,7 +160,7 @@ long tornit(int n) {
     if (n == 0) return 1;
     if (n == 1) return 1;
     if (n == 2) return 2;
-    return tornit(n-3)+tornit(n-2)+tornit(n-1);
+    return tornit(n-1)+tornit(n-2)+tornit(n-3);
 }
 \end{code}
 
@@ -181,8 +169,8 @@ funktion arvon laskeminen vie kauan aikaa, jos $n$ on
 vähänkin suurempi.
 Käytännössä laskenta alkaa hidastua parametrin $n=30$ tienoilla.
 Esimerkiksi arvon $\texttt{tornit}(40)$ laskeminen vie aikaa
-jo useita minuutteja, ja voimme arvioida, että
-arvon $\texttt{tornit}(50)$ laskeminen veisi aikaa noin vuorokauden.
+noin minuutin ja arvon $\texttt{tornit}(50)$ vie aikaa niin kauan,
+että emme jaksa odottaa laskennan valmistumista.
 
 Syynä laskennan hitauteen on, että metodia $\texttt{tornit}$
 kutsutaan uudestaan ja uudestaan samoilla parametreilla
@@ -209,7 +197,7 @@ tornit[0] = 1;
 tornit[1] = 1;
 tornit[2] = 2;
 for (int i = 3; i <= n; i++) {
-    tornit[i] = tornit[i-3]+tornit[i-2]+tornit[i-1];
+    tornit[i] = tornit[i-1]+tornit[i-2]+tornit[i-3];
 }
 \end{code}
 
@@ -233,15 +221,8 @@ eli meillä on yli 10562 miljardia tapaa rakentaa korkeuden 50 torni.
 Olemme nyt tutustuneet dynaamisen ohjelmoinnin perusideaan,
 mutta tämä on vasta alkua sille, mitä kaikkea tekniikan
 avulla pystyy tekemään.
-Seuraavaksi käymme läpi joukon tehtäviä,
+Seuraavaksi käymme läpi kokoelman tehtäviä,
 jotka esittelevät lisää dynaamisen ohjelmoinnin mahdollisuuksia.
-
-Jotta voimme käyttää dynaamista ohjelmointia ongelman
-ratkaisemiseen, meidän täytyy pystyä muotoilemaan ongelma
-rekursiivisesti niin, että voimme tallentaa muistiin
-jokaisen osaongelman ratkaisun.
-Käytännössä haasteena on keksiä, mikä on hyvä rekursiivinen
-muotoilu ongelmalle.
 
 \subsection{Pisin nouseva alijono}
 
@@ -297,8 +278,7 @@ koska kohtaan $6$ päättyvä pisin nouseva alijono on pituudeltaan $4$.
 Millainen on sitten pisin kohtaan $k$ päättyvä alijono?
 Yksi mahdollisuus on, että alijonossa on vain kohdan $k$ alkio,
 jolloin $\texttt{pisin}(k)=1$.
-Muussa tapauksessa alijono muodostuu niin,
-että siinä on ensin kohtaan $x$ päättyvä
+Muussa tapauksessa alijonossa on ensin kohtaan $x$ päättyvä
 pisin nouseva alijono, missä $x<k$, ja sitten vielä kohdan $k$ alkio.
 Tämä edellyttää, että kohdan $x$ alkio on pienempi
 kuin kohdan $k$ alkio.
@@ -326,13 +306,13 @@ for (int k = 0; k < n; k++) {
 
 Koodin suorituksen jälkeen pisimmän nousevan alijonon pituus on
 siis suurin taulukon \texttt{pisin} arvoista.
-Tämä algoritmi vie aikaa $O(n^2)$, koska siinä on kaksi
-sisäkkäistä silmukkaa.
+Tämä algoritmi vie aikaa $O(n^2)$, koska käym\-me jokaisessa
+kohdassa $k$ läpi taulukon alkuosan siihen asti.
 
 Mitä jos haluaisimme selvittää pisimmän nousevan alijonon
 pituuden lisäksi, mistä alkioista se muodostuu?
 Tämä onnistuu laajentamalla hieman koodia.
-Ideana on rakentaa taulukko \texttt{aiempi},
+Rakennamme taulukon \texttt{aiempi},
 joka kertoo jokaisessa kohdassa, missä on tähän kohtaan
 päättyvän pisimmän alijonon edellinen alkio.
 Voimme muodostaa taulukon seuraavasti:
@@ -353,25 +333,25 @@ for (int k = 0; k < n; k++) {
 Tämän jälkeen jokaisessa kohdassa $k$ arvo $\texttt{aiempi}[k]$
 kertoo pisimmän alijonon edellisen alkion kohdan.
 Kuitenkin jos alijonon pituus on 1, taulukossa on arvo $-1$.
-Voimme selvittää kohtaan $k$ päättyvän alijonon alkiot
+Voimme nyt selvittää kohtaan $k$ päättyvän alijonon alkiot
 käänteisesti seuraavasti:
 
 \begin{code}
 while (k != -1) {
-    print(taulu[k]);
+    System.out.println(taulu[k]);
     k = aiempi[k];
 }
 \end{code}
 
 Voimme käyttää vastaavaa tekniikkaa
 dynaamisessa ohjelmoinnissa aina, kun haluamme
-selvittää, miten voimme muodostaa parhaan ratkaisun.
+selvittää, mistä aineksista paras ratkaisu muodostuu.
 
 \subsection{Reitti ruudukossa}
 
 Olemme $n \times n$ -ruudukon vasemmassa yläkulmassa ja haluamme
 päästä oikeaan alakulmaan.
-Jokaisella vuorolla voimme siirtyä ruudun alaspäin tai oikealle.
+Jokaisella askeleella voimme siirtyä ruudun alaspäin tai oikealle.
 Kuitenkin joissakin ruuduissa on este, emmekä voi kulkea sellaisen
 ruudun kautta.
 Montako mahdollista reittiä on olemassa?
@@ -406,7 +386,7 @@ Kuvassa \ref{fig:reiruu} on esimerkkitilanne, jossa ruudukon koko on $4 \times 4
 Tässä tapauksessa meillä on kolme mahdollisuutta, kuinka voimme liikkua
 vasemmasta yläkulmasta oikeaan alakulmaan.
 
-Tässä tehtävässä ratkaisun tila on \emph{kaksiulotteinen},
+Tässä tehtävässä osaongelmat ovat \emph{kaksiulotteisia},
 koska olemme reitin joka vaiheessa tietyn rivin tietyllä sarakkeella.
 Niinpä määritte\-lemme rekursiivisen funktion, jolla on kaksi
 parametria: $\texttt{reitit}(y,x)$ kertoo, montako reittiä on
@@ -414,7 +394,7 @@ vasemmasta yläkulmasta ruutuun $(y,x)$.
 Tätä funktiota käyttäen $\texttt{reitit}(n,n)$ antaa meille
 vastauksen tehtävään.
 
-Olennainen havainto on, että jokaisessa ruudussa meillä on kaksi
+Hyödyllinen havainto on, että jokaisessa ruudussa meillä on kaksi
 mahdollisuutta, kuinka reitti voi tulla ruutuun,
 koska voimme tulla joko ylhäältä tai vasemmalta.
 Kun haluamme laskea reittien määrää, laskemme yhteen ylhäältä
@@ -422,7 +402,7 @@ ja vasemmalta tulevat reitit.
 Rajoituksena jos ruudussa on este, siihen tulevien reittien
 määrä on aina nolla.
 
-Voimme toteuttaa dynaamisen ohjelmoinnin seuraavasti:
+Seuraava koodi toteuttaa dynaamisen ohjelmoinnin:
 
 \begin{code}
 reitit[1][1] = 1;
@@ -461,26 +441,31 @@ Haluamme selvittää kaikki mahdolliset yhteispainot,
 jotka voimme muodostaa valitsemalla jonkin osajoukon tavaroista.
 Esimerkiksi jos tavaroiden painot ovat $[1,3,3,4]$,
 niin mahdolliset yhteispainot ovat $[0,1,3,4,5,6,7,8,10,11]$.
+Esimerkiksi yhteispaino $6$ on listalla,
+koska saamme sen painoista $3+3=6$,
+ja yhteispaino $8$ on listalla,
+koska saamme sen painoista $1+3+4=8$.
 
-Merkitään kaikkien tavaroiden painojen summaa $s=p_1+p_2+\dots+p_n$.
-Tämä on suurin mahdollinen yhteispaino, joka tavaroista voidaan
-muodostaa, ja se syntyy valitsemalla osajoukkoon kaikki tavarat.
-Tavaroiden yhteispaino on siis aina jokin luku välillä $0 \dots s$.
+On helppoa laskea, mikä on suurin mahdollinen tavaroiden yhteispaino,
+koska saamme sen ottamalla mukaan kaikki tavarat.
+Merkitään kaikkien tavaroiden painojen summaa $s=p_1+p_2+\dots+p_n$,
+joka on siis suurin mahdollinen yhteispaino.
+Tämä on meille hyödyllinen yläraja, koska tiedämme nyt,
+että tavaroiden yhteispaino on aina jokin luku välillä $0 \dots s$.
 
 Voimme lähestyä tehtävää dynaamisella ohjelmoinnilla määrittelemällä
-funktion $\texttt{painot}(k)$: mitä kaikki yhteispainot voimme
+funktion $\texttt{painot}(k)$: mitkä kaikki yhteispainot voimme
 muodostaa, jos käytös\-sämme on tavarat $1,2,\dots,k$?
-Esimerkiksi $\texttt{painot}(2)$ kertoo, mitkä yhteispainot ovat
-mahdollisia, kun saamme käyttää painoja $p_1$ ja $p_2$.
-
-Saamme aikaan tehokkaan ratkaisun aloittamalla tapauksesta
-$k=0$, jolloin emme voi käyttää mitään tavaroita,
-ja ottamalla joka askeleella käyttöön uuden tavaran.
-Tapaus $k=0$ on helppo: kun meillä ei ole mitään tavaroita,
+Oletamme, että funktio palauttaa \emph{taulukon}, jossa on $s+1$ alkiota:
+jokaiselle yhteispainolle $0,1,\dots,s$ tieto siitä,
+voimmeko muodostaa sen painoista $p_1,p_2,\dots,p_k$.
+Tapaus $\texttt{painot}(0)$ on helppo,
+koska kun meillä ei ole mitään tavaroita,
 ainoa mahdollinen yhteispaino on $0$.
-Sitten aina kun meille tulee käyttöön uusi tavara painolla $p_k$,
-meidän tulee selvittää, mitä uusia yhteispainoja voimme saada
-aikaan tämän tavaran avulla.
+Tämän jälkeen pystymme laskemaan tapauksen $\texttt{painot}(k)$
+ottamalla lähtökohdaksi tapauksen $\texttt{painot}(k-1)$
+ja selvittämällä, mitä uusia yhteispainoja voimme muodostaa,
+kun saamme käyttää myös painoa $p_k$.
 
 \begin{figure}
 \center
@@ -498,38 +483,50 @@ aikaan tämän tavaran avulla.
 \label{fig:reppak}
 \end{figure}
 
-Kätevä tapa toteuttaa dynaaminen ohjelmointi on pitää yllä
-taulukkoa, jossa on $s+1$ alkiota: jokaiselle yhteispainolle
-$0,1,\dots,s$ tieto siitä, voimmeko muodostaa sen tällä hetkellä.
-Kuva \ref{fig:reppak} näyttää taulukon sisällön esimerkissämme, jossa painot ovat
-$[1,3,3,4]$. Esimerkiksi tapauksessa $k=2$ olemme ottaneet käyttöön
-kaksi ensimmäistä tavaraa ja voimme muodostaa yhteispainot $[0,1,3,4]$.
+Kuva \ref{fig:reppak} näyttää dynaamisen ohjelmoinnin
+taulukoiden sisällön esimerkissämme, jossa painot ovat $[1,3,3,4]$.
+Ensimmäisellä rivillä $k=0$, joten ainoa yhteispaino on $0$.
+Toisella rivillä $k=1$, joten saamme käyttää painoa $p_1=1$.
+Tämän ansiosta voimme muodostaa yhteispainot $0$ ja $1$.
+Kolmannella rivillä $k=2$, jolloin saamme käyttöömme painon $p_2=3$
+ja voimme muodostaa yhteispainot $0$, $1$, $3$ ja $4$.
+Viimeisellä rivillä käytössämme ovat kaikki painot,
+joten se vastaa ongelman ratkaisua.
 
-Seuraava koodi toteuttaa tässä kuvatun idean:
+Voimme toteuttaa dynaamisen ohjelmoinnin kätevästi niin,
+että koodissa on vain yksi boolean-taulukko \texttt{reppu},
+jossa on $s+1$ alkiota.
+Taulukko kertoo laskennan jokaisessa vaiheessa,
+mitkä yhteispainot ovat mahdollisia sillä hetkellä.
+Aluksi taulukossa kohdassa $0$ on arvo tosi ja
+kaikki muut arvot ovat epätosia.
+Tämän jälkeen päivitämme taulukkoa lisäämällä mukaan
+painoja yksi kerrallaan.
 
 \begin{code}
-boolean[] painot = new boolean[s+1];
-painot[0] = true;
+boolean[] reppu = new boolean[s+1];
+reppu[0] = true;
 for (int i = 1; i <= n; i++) {
     for (int j = s; j >= 0; j--) {
-        if (painot[j]) painot[j+p[i]] = true;
+        if (reppu[j]) reppu[j+p[i]] = true;
     }
 }
 \end{code}
 
-Koodi luo taulukon \texttt{painot}, jossa on indeksit $0,1,\dots,s$.
-Aluksi merkitsemme, että voimme saavuttaa yhteispainon $0$.
-Tämän jälkeen käymme läpi tavarat ja päivitämme taulukkoa
-jokaisen tavaran kohdalla.
-Algoritmin päätteeksi taulukko \texttt{painot} kertoo
-jokaiselle painolle $0,1,\dots,s$, voimmeko muodostaa kyseisen
-painon valitsemalla jonkin tavaroiden osajoukon.
-Huomaa kätevä tapa päivittää taulukkoa oikealta vasemmalle,
-minkä ansiosta tulemme toimeen yhdellä taulukolla.
+Laskennan jälkeen voimme tulostaa kaikki
+mahdolliset yhteispainot näin:
 
-Tämän algoritmin aikavaativuus on $O(ns)$.
+\begin{code}
+for (int i = 0; i <= s; i++) {
+    if (reppu[i]) {
+        System.out.println(i);
+    }
+}
+\end{code}
+
+Tuloksena olevan algoritmin aikavaativuus on $O(ns)$.
 Algoritmin tehokkuus riippuu siis paitsi tavaroiden määrästä,
-myös niiden painojen suuruuksista.
+myös niiden painoista.
 Jotta algoritmi on käyttökelpoinen, painojen summan $s$
 täytyy olla niin pieni, että voimme varata sitä
 vastaavan taulukon.
@@ -559,21 +556,19 @@ joukosta $\{1,2,3,4,5\}$ seuraavat 3 alkion osajoukot:
 Binomikerrointen laskemiseen on monia tapoja.
 Dynaamisen ohjelmoinnin kannalta kiinnostava tapa on rekursiivinen kaava
 \[\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}.\]
-
-Ideana on, että meillä on kaksi tapaa muodostaa $k$ alkion osajoukko
+Kaavassa on ideana, että meillä on kaksi tapaa muodostaa $k$ alkion osajoukko
 joukosta $\{1,2,\dots,n\}$.
 Jos otamme osajoukkoon mukaan alkion $n$, meidän tulee muodostaa
 vielä $k-1$ alkion osajoukko joukosta $\{1,2,\dots,n-1\}$.
 Jos taas emme ota osajoukkoon mukaan alkiota $n$, meidän tulee muodostaa
-$k$ alkion osajoukko samaisesta joukosta.
-
+$k$ alkion osajoukko joukosta $\{1,2,\dots,n-1\}$.
 Lisäksi pohjatapauksina
 \[ \binom{n}{0} = 1,\]
 koska voimme muodostaa tyhjän osajoukon yhdellä tavalla, ja
 \[ \binom{n}{k} = 0,\,\textrm{jos $k>n$},\]
 koska $n$ alkiosta ei voi muodostaa osajoukkoa, jossa on yli $n$ alkiota.
 
-Tämä rekursiivinen määritelmä tarjoaa meille tavan laskea tehokkaasti
+Tämä rekursiivinen kaava tarjoaa meille tavan laskea tehokkaasti
 binomikertoimia dynaamisen ohjelmoinnin avulla.
 Voimme toteuttaa laskennan seuraavasti:
 
@@ -586,7 +581,7 @@ for (int i = 1; i <= n; i++) {
 }
 \end{code}
 
-Tämän koodin suorituksen jälkeen taulukon kohdassa
+Koodin suorituksen jälkeen taulukon kohdassa
 $\texttt{binom}[n][k]$ on binomikerroin $\binom{n}{k}$.
 Algoritmi vie aikaa $O(nk)$, joten sitä voi käyttää
 melko suurten binomikerrointen laskemiseen.
