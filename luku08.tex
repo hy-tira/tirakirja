@@ -648,3 +648,22 @@ joten aikaa kuluu vain $O(n)$.
 
 \subsection{Kekojärjestäminen}
 
+\emph{Kekojärjestäminen} on järjestämisalgoritmi,
+jonka toiminta perustuu kekoon.
+Ideana on muuttaa järjestettävä taulukko ensin keoksi
+ja sen jälkeen poistaa alkiot keosta yksi kerrallaan,
+jolloin saamme alkiot järjestyk\-sessä pienimmästä suurimpaan
+tai suurimmasta pienimpään.
+Kekojärjestäminen vie aikaa $O(n \log n)$,
+koska taulukon muuttaminen keoksi vie aikaa $O(n)$
+ja $n$ alkion poistaminen keosta vie aikaa $O(n \log n)$.
+
+Kekojärjestäminen ei ole käytännössä yhtä tehokas algoritmi
+kuin lomitusjärjestäminen tai pikajärjestäminen,
+minkä vuoksi se ei ole saavuttanut samanlaista asemaa
+järjestämisalgoritmien joukossa.
+Siinä on kuitenkin yksi kiinnostava ominaisuus:
+jos haluamme selvittää vain taulukon $k$ pienintä tai suurinta
+alkiota, tämä onnistuu ajassa $O(n+k \log n)$,
+koska meidän riittää poistaa keosta $k$ kertaa
+pienin tai suurin alkio ajassa $O(\log n)$.
