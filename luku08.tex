@@ -365,8 +365,8 @@ ja jos keko on maksimikeko, siirrymme vastaavasti suurempaan alkioon.
 \path[draw,thick,<->,red,line width=1.5pt] (2) -- (4);
 \end{scope}
 \end{tikzpicture}
-\caption{Lisäämme alkion 2 kekoon ja nostamme sitä ylöspäin,
-kunnes kekoehto tulee jälleen voimaan.}
+\caption{Poistamme keon juuressa olevan alkion korvaamalla sen viimeisellä alkiolla
+ja laskettamalla sitä alaspäin puussa.}
 \label{fig:kekpoi}
 \end{figure}
 
@@ -482,7 +482,7 @@ for (int i = n/2; i < n; i++) {
 System.out.println(summa);
 \end{code}
 
-Taulukko \ref{tab:kekver} sisältää vertailun tulokset.
+Taulukko \ref{tab:kekver} näyttää vertailun tulokset.
 Tämän testin perusteella näyttää siltä,
 että keon käyttämiseestä on todellista hyötyä,
 koska \texttt{PriorityQueue} toimii 2–3
@@ -504,37 +504,144 @@ $8 \cdot 10^6$ & 3.68 s & 9.43 s \\
 
 \section{Lisää keosta}
 
-\subsection{Tehokas luonti}
+\subsection{Taulukosta keoksi}
 
-Suoraviivainen tapa luoda $n$ alkiota sisältävä keko
-on lisätä jokainen alkio erikseen kekoon $O(\log n)$-ajassa.
+Oletetaan, että meillä on $n$ alkiota sisältävä taulukko
+ja haluamme muuttaa sen keoksi.
+Suoraviivainen tapa on luoda tyhjä keko ja
+lisätä jokainen taulukon alkio siihen erikseen $O(\log n)$-ajassa.
 Tällä tavalla saamme rakennettua keon $O(n \log n)$-ajassa.
-Osoittautuu kuitenkin, että keon luominen taulukon pohjalta
-on mahdollista myös $O(n)$-ajassa.
+Osoittautuu kuitenkin, että pystymme myös muuttamaan taulukon
+suoraan keoksi tehokkaammin ajassa $O(n)$.
 
-Ideana on käydä läpi keon solmut lopusta alkuun ja
-jokaisen solmun kohdalla varmistaa,
-että siitä solmusta alkava alipuu toteuttaa kekoehdon
-laskettamalla solmun juuressa olevaa arvoa alaspäin.
-Kun olemme lopulta käsitelleet kaikki solmut juureen asti,
-koko taulukko toteuttaa kekoehdon.
+Ideana on järjestää taulukon alkioita uudestaan niin,
+että taulukon jokaisessa kohdassa on voimassa kekoehto --
+jolloin taulukko on keko.
+Käymme läpi taulukon alkiot lopusta alkuun ja varmistamme
+jokaisessa kohdassa, että kekoehto on voimassa kyseisestä
+kohdasta alkavassa alipuussa.
+Jos kekoehto ei ole voimassa, korjaamme sen laskettamalla
+juuren alkiota alaspäin keossa.
+Kun lopulta pääsemme taulukon alkuun, kekoehto on voimassa.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.4]
+\scriptsize
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$7$};
+\node[draw, circle] (2) at (-2.5,-2) {$4$};
+\node[draw, circle] (3) at (2.5,-2) {$6$};
+\node[draw, circle] (4) at (-3.5,-4) {$1$};
+\node[draw, circle] (5) at (-1.5,-4) {$3$};
+\node[draw, circle] (6) at (1.5,-4) {$5$};
+\node[draw, circle] (7) at (3.5,-4) {$2$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\node at (0,-6) {\small vaihe $1$};
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,0) {$7$};
+\node[draw, circle] (2) at (-2.5,-2) {$4$};
+\node[draw, circle] (3) at (2.5,-2) {$2$};
+\node[draw, circle] (4) at (-3.5,-4) {$1$};
+\node[draw, circle] (5) at (-1.5,-4) {$3$};
+\node[draw, circle] (6) at (1.5,-4) {$5$};
+\node[draw, circle] (7) at (3.5,-4) {$6$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\node at (0,-6) {\small vaihe $2$};
+\path[draw,thick,<->,red,line width=1.5pt] (3) -- (7);
+\end{scope}
+\begin{scope}[xshift=20cm]
+\node[draw, circle] (1) at (0,0) {$7$};
+\node[draw, circle] (2) at (-2.5,-2) {$1$};
+\node[draw, circle] (3) at (2.5,-2) {$2$};
+\node[draw, circle] (4) at (-3.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$3$};
+\node[draw, circle] (6) at (1.5,-4) {$5$};
+\node[draw, circle] (7) at (3.5,-4) {$6$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\node at (0,-6) {\small vaihe $3$};
+\path[draw,thick,<->,red,line width=1.5pt] (2) -- (4);
+\end{scope}
+\begin{scope}[yshift=-8cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-2.5,-2) {$7$};
+\node[draw, circle] (3) at (2.5,-2) {$2$};
+\node[draw, circle] (4) at (-3.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$3$};
+\node[draw, circle] (6) at (1.5,-4) {$5$};
+\node[draw, circle] (7) at (3.5,-4) {$6$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\node at (0,-6) {\small vaihe $4$};
+\path[draw,thick,<->,red,line width=1.5pt] (1) -- (2);
+\end{scope}
+\begin{scope}[yshift=-8cm,xshift=10cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$2$};
+\node[draw, circle] (4) at (-3.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$7$};
+\node[draw, circle] (6) at (1.5,-4) {$5$};
+\node[draw, circle] (7) at (3.5,-4) {$6$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\node at (0,-6) {\small vaihe $5$};
+\path[draw,thick,<->,red,line width=1.5pt] (2) -- (5);
+\end{scope}
+\end{tikzpicture}
+\caption{Muutamme taulukon keoksi korjaamalla kekoehdon alipuissa.}
+\label{fig:taukek}
+\end{figure}
+
+Kuva \ref{fig:taukek} näyttää esimerkin, jossa muutamme taulukon
+$[7,4,6,1,3,5,2]$ minimikeoksi.
+Kun tulkitsemme taulukon kekona, kekoehto on aluksi
+rikki monessa kohdassa taulukossa.
+Ensin korjaamme kekoehdon tason 2 alipuissa vaihtamalla
+keskenään alkiot 2 ja 6 ja sitten alkiot 1 ja 4.
+Tämän jälkeen korjaamme kekoehdon tason 1 alipuussa
+eli koko keossa laskettamalla alkion 7 keon huipulta pohjalle.
+Nyt kekoehto on voimassa kaikkialla taulukossa,
+joten olemme onnistuneet muuttamaan taulukon keoksi.
 
 Miksi sitten tämä vie aikaa vain $O(n)$?
-Oletetaan, että keossa on $h$ kerrosta ja kaikki
-kerrokset ovat täynnä solmuja, eli siinä on $n=2^h-1$ solmua.
-Laskemme jokaiselle kerrokselle, montako arvoa laskeutuu
-enintään jostakin tämän kerroksen solmusta alaspäin. Tästä saamme:
-
-\begin{itemize}
-\item Kerroksesta 1 kerrokseen 2 laskeutuu enintään 1 arvo.
-\item Kerroksesta 2 kerrokseen 3 laskeutuu enintään $1+2$ arvoa.
-\item Kerroksesta 3 kerrokseen 4 laskeutuu enintään $1+2+4$ arvoa.
-\item Jne.
-\end{itemize}
-
-Yleisemmin kerroksesta $k$ kerrokseen $k+1$ laskeutuu
-enintään $1+2+\dots+2^{k-1} = 2^k-1$ arvoa.
-Koska kerroksia on $h$ ja viimeisestä kerroksesta ei voi laskeutua alaspäin,
+Oletetaan, että keossa on $h$ tasoa ja kaikki
+tasot ovat täynnä solmuja, eli keossa on $n=2^h-1$ solmua.
+Laskemme jokaiselle tasolle, montako alkiota laskeutuu
+enintään jostakin tämän tason solmusta alaspäin.
+Ensinnäkin tasolta 1 tasolle 2 laskeutuu enintään 1 alkio --
+juuressa oleva alkio.
+Vastaavasti
+tasolta 2 tasolle 3 laskeutuu enintään $1+2$ alkiota
+ja
+tasolta 3 tasolle 4 laskeutuu enintään $1+2+4$ alkiota.
+Yleisemmin tasolta $k$ tasolle $k+1$ laskeutuu
+enintään $1+2+\dots+2^{k-1} = 2^k-1$ alkiota
+Koska tasoja on $h$ ja alimmalta tasolta ei voi laskeutua alaspäin,
 kokonaistyömäärä on enintään
 \[(2^1-1)+(2^2-1)+\dots+(2^{h-1}-1)=2^h-h \le n,\]
 joten aikaa kuluu vain $O(n)$.
