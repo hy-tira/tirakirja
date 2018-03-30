@@ -47,7 +47,7 @@ pienin alkio ja maksimikeon juuressa on kokoelman suurin alkio.
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.6]
-\node[draw, circle] (1) at (0,0) {$2$};
+\node[draw, circle] (1) at (0,0) {$1$};
 \node[draw, circle] (2) at (-3.5,-2) {$3$};
 \node[draw, circle] (3) at (3.5,-2) {$5$};
 \node[draw, circle] (4) at (-5.5,-4) {$4$};
@@ -67,7 +67,7 @@ pienin alkio ja maksimikeon juuressa on kokoelman suurin alkio.
 \path[draw,thick,-] (4) -- (9);
 \path[draw,thick,-] (5) -- (10);
 \end{tikzpicture}
-\caption{Minimikeko, joka vastaa kokoelmaa $[2,3,4,5,5,5,7,8,8,9]$.}
+\caption{Minimikeko, joka vastaa kokoelmaa $[1,3,4,5,5,5,7,8,8,9]$.}
 \label{fig:minkek}
 \end{figure}
 
@@ -76,7 +76,7 @@ Kuvassa \ref{fig:minkek} on esimerkkinä minimikeko,
 johon on tallennettu kymmenen alkiota.
 Keon kolme ensimmäistä kerrosta ovat täynnä
 ja neljännessä kerroksessa kolme ensimmäistä kohtaa on käytetty.
-Keon juurena on kokoelman pienin alkio $2$,
+Keon juurena on kokoelman pienin alkio $1$,
 ja kaikki solmut täyttävät kekoehdon.
 Huomaa, että sama alkio voi esiintyä keossa useasti,
 kuten tässä keossa alkiot $5$ ja $8$.
@@ -95,7 +95,7 @@ Esimerkiksi tallennamme kuvan \ref{fig:minkek}
 keon taulukkona seuraavasti:
 
 \begin{code}
-int[] keko = {0,2,3,5,4,5,8,9,7,8,5};
+int[] keko = {0,1,3,5,4,5,8,9,7,8,5};
 \end{code}
 
 Huomaa, että taulukon ensimmäinen alkio on $0$,
@@ -119,229 +119,276 @@ on taulukossa kohdassa $4$,
 joten sen lapset ovat kohdissa $8$ ja $9$
 ja sen vanhempi on kohdassa $2$.
 
+Käytännössä haluamme yleensä, että pystymme lisäämään kekoon uusia alkioita,
+jolloin varaamme suuren taulukon,
+jonka alkuosa on keon käytössä ja loppuosassa
+on tilaa myöhemmin lisättäville alkioille.
+
 \subsection{Operaatioiden toteutus}
 
-\subsection{Operaatiot}
-
-Meidän on helppoa etsiä minimikeon pienin alkio $O(1)$-ajassa,
-koska se on aina keon juuressa.
+Meidän on helppoa etsiä minimikeon pienin alkio
+tai maksimikeon suurin alkio $O(1)$-ajassa,
+koska tämä alkio on aina keon juuressa.
 Seuraavaksi näemme, kuinka voimme toteuttaa alkion lisäämisen
-sekä pienimmän alkion poistamisen $O(\log n)$-ajassa.
+sekä pienimmän tai suurimman alkion poistamisen $O(\log n)$-ajassa.
 
 \subsubsection{Alkion lisääminen}
 
 Kun lisäämme uuden alkion kekoon, lisäämme sen ensin seuraavaan
-vapaana olevaan paikkaan. Jos alimmalla kerroksella on tilaa,
+vapaana olevaan paikkaan puussa. Jos alimmalla tasolla on tilaa,
 lisäämme sen sinne mahdollisimman vasemmalle,
-ja muuten aloitamme uuden kerroksen, jossa on vain uusi solmu.
-
+ja muuten aloitamme uuden tason, jossa on toistaiseksi vain lisättävä solmu.
 Alkion lisäämisen jälkeen meidän täytyy varmistaa,
 että kekoehto säilyy edelleen voimassa.
-Tämä tapahtuu siirtämällä alkiota ylöspäin keossa
-niin kauan kuin se on vanhempaansa pienempi.
-Koska täytämme kekoa tasaisesti, sen korkeus on $O(\log n)$
-ja operaatio toimii $O(\log n)$-ajassa.
+Tämä tapahtuu siirtämällä alkiota ylöspäin keossa,
+kunnes kekoehto tulee voimaan.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.4]
+\scriptsize
 \begin{scope}
-\node at (-8,-2) {(a)};
 \node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-2.5,-2) {$2$};
-\node[draw, circle] (3) at (2.5,-2) {$5$};
-\node[draw, circle] (4) at (-4,-4) {$3$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
+\node[draw, circle] (2) at (-3.5,-2) {$3$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$5$};
 \node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle, dashed] (7) at (4,-4) {$4$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-,dashed] (3) -- (7);
-\end{scope}
-\begin{scope}[yshift=-6cm]
-\node at (-8,-2) {(b)};
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-2.5,-2) {$2$};
-\node[draw, circle] (3) at (2.5,-2) {$4$};
-\node[draw, circle] (4) at (-4,-4) {$3$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (4,-4) {$5$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\node[draw, circle] (10) at (-2.5,-6) {$5$};
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (2) -- (4);
 \path[draw,thick,-] (2) -- (5);
 \path[draw,thick,-] (3) -- (6);
 \path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\path[draw,thick,-] (5) -- (10);
+\node at (0,-8) {\small vaihe $1$};
 \end{scope}
-\end{tikzpicture}
-\caption{Alkion 4 lisääminen kekoon. (a) Lisäämme alkion ensimmäiseen
-vapaana olevaan paikkaan. (b) Koska alkio on vanhempaansa pienempi,
-vaihdamme alkiot keskenään.}
-\label{fig:keklis}
-\end{figure}
-
-Kuva \ref{fig:keklis} näyttää esimerkin alkion lisäämisestä kekoon.
-Lisäämme ensin alkion 4 keon ensimmäiseen vapaana olevaan paikkaan.
-Koska uuden solmun arvo on sen vanhemman arvoa pienempi,
-vaihdamme nämä arvot keskenään. Tämän jälkeen kekoehto on voimassa.
-
-\subsubsection{Pienimmän alkion poistaminen}
-
-Kun haluamme poistaa keon pienimmän alkion, vaihdamme ensin keskenään
-juuressa olevan pienimmän arvon sekä keon viimeisessä käytössä olevassa
-paikassa olevan arvon. Tämän jälkeen poistamme keon viimeisen solmun,
-jolloin pienin arvo katoaa keosta.
-
-Tämän jälkeen meidän täytyy jälleen huolehtia siitä, että kekoehto pätee.
-Tämä tapahtuu laskettamalla juuressa olevaa arvoa alaspäin keossa,
-kunnes kekoehto pätee. Valitsemme aina kahdesta mahdollisesta suunnasta sen,
-jossa on pienempi alkio.
-Koska alkio laskeutuu enintään $O(\log n)$ askelta,
-tämäkin operaatio toimii ajassa $O(\log n)$.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.6]
-\begin{scope}
-\node at (-8,-2) {(a)};
-\node[draw, circle] (1) at (0,0) {$8$};
-\node[draw, circle] (2) at (-2.5,-2) {$2$};
-\node[draw, circle] (3) at (2.5,-2) {$5$};
-\node[draw, circle] (4) at (-4,-4) {$3$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\node[draw, circle, dashed] (6) at (1.5,-4) {$1$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-,dashed] (3) -- (6);
-\end{scope}
-\begin{scope}[yshift=-6cm]
-\node at (-8,-2) {(b)};
-\node[draw, circle] (1) at (0,0) {$2$};
-\node[draw, circle] (2) at (-2.5,-2) {$3$};
-\node[draw, circle] (3) at (2.5,-2) {$4$};
-\node[draw, circle] (4) at (-4,-4) {$8$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\end{scope}
-\end{tikzpicture}
-\caption{Pienimmän alkion poistaminen keosta. (a) Vaihdamme keskenään
-pienimmän alkion ja viimeisen alkion. (b) Alkio 8 laskeutuu keon
-huipulta takaisin sen pohjalle.}
-\label{fig:kekpoi}
-\end{figure}
-
-Kuva \ref{fig:kekpoi} näyttää esimerkin alkion poistamisesta keosta.
-Aluksi vaihdamme keskenään keon pienimmän alkion $1$
-ja viimeisenä keossa olevan alkion $8$.
-Tämän jälkeen lasketamme alkiota $8$ juuresta alaspäin,
-kunnes kekoehto on voimassa.
-Tässä tapauksessa alkio laskeutuu keon pohjalle asti.
-
-\subsection{Toteutus taulukkona}
-
-Kätevä tapa toteuttaa keko on tallentaa sen solmujen
-sisältö taulukkoon järjestyksessä ylhäältä alas ja vasemmalta oikealle.
-Jotta voimme toteuttaa mukavasti keon operaatiot,
-käytämme 1-indeksoitua taulukkoa.
-Kuva \ref{fig:kektau} näyttää esimerkin keon tallentamisesta taulukkoon.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.6]
-\begin{scope}
-\node[draw, circle] (1) at (0,0) {$8$};
-\node[draw, circle] (2) at (-2.5,-2) {$2$};
-\node[draw, circle] (3) at (2.5,-2) {$5$};
-\node[draw, circle] (4) at (-4,-4) {$3$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\node[draw, circle] (6) at (1.5,-4) {$1$};
+\begin{scope}[xshift=15cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-3.5,-2) {$3$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$5$};
+\node[draw, circle] (6) at (1.5,-4) {$8$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\node[draw, circle] (10) at (-2.5,-6) {$5$};
+\node[draw, circle] (11) at (-0.5,-6) {$2$};
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (2) -- (4);
 \path[draw,thick,-] (2) -- (5);
 \path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\path[draw,thick,-] (5) -- (10);
+\path[draw,thick,-] (5) -- (11);
+\node at (0,-8) {\small vaihe $2$};
 \end{scope}
-\begin{scope}[yshift=-7cm,xshift=-4cm]
-\draw (0,0) grid (7,1);
-\node at (0.5,0.5) {$-$};
-\node at (1.5,0.5) {$8$};
-\node at (2.5,0.5) {$2$};
-\node at (3.5,0.5) {$5$};
-\node at (4.5,0.5) {$3$};
-\node at (5.5,0.5) {$3$};
-\node at (6.5,0.5) {$1$};
-\footnotesize
-\node at (0.5,1.4) {$0$};
-\node at (1.5,1.4) {$1$};
-\node at (2.5,1.4) {$2$};
-\node at (3.5,1.4) {$3$};
-\node at (4.5,1.4) {$4$};
-\node at (5.5,1.4) {$5$};
-\node at (6.5,1.4) {$6$};
+\begin{scope}[yshift=-11cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-3.5,-2) {$3$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$2$};
+\node[draw, circle] (6) at (1.5,-4) {$8$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\node[draw, circle] (10) at (-2.5,-6) {$5$};
+\node[draw, circle] (11) at (-0.5,-6) {$5$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\path[draw,thick,-] (5) -- (10);
+\path[draw,thick,-] (5) -- (11);
+\node at (0,-8) {\small vaihe $3$};
+\path[draw,thick,<->,red,line width=1.5pt] (5) -- (11);
+\end{scope}
+\begin{scope}[yshift=-11cm,xshift=15cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-3.5,-2) {$2$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$3$};
+\node[draw, circle] (6) at (1.5,-4) {$8$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\node[draw, circle] (10) at (-2.5,-6) {$5$};
+\node[draw, circle] (11) at (-0.5,-6) {$5$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\path[draw,thick,-] (5) -- (10);
+\path[draw,thick,-] (5) -- (11);
+\node at (0,-8) {\small vaihe $4$};
+\path[draw,thick,<->,red,line width=1.5pt] (2) -- (5);
 \end{scope}
 \end{tikzpicture}
-\caption{Keko ja sen taulukkoesitys.}
-\label{fig:kektau}
+\caption{Lisäämme alkion 2 kekoon ja nostamme sitä ylöspäin,
+kunnes kekoehto tulee jälleen voimaan.}
+\label{fig:keklis}
 \end{figure}
 
-Kun meillä on tiedossa solmun kohta taulukossa,
-voimme helposti selvittää sen lasten ja vanhemman kohdat.
-Kohdassa $k$ olevan solmun vasen lapsi on kohdassa $2k$
-ja oikea lapsi on kohdassa $2k+1$.
-Lisäksi solmun vanhempi on kohdassa $\lfloor k/2 \rfloor$.
-Tämän ansiosta voimme toteuttaa keon operaatiot niin,
-että niiden vakiokertoimet ovat pienet.
+Kuva \ref{fig:keklis} näyttää, mitä tapahtuu, kun lisäämme
+alkion  $2$ esimerkkikekoomme.
+Lisäämme alkion ensin seuraavaan vapaaseen kohtaan
+keon alimmalla tasolla.
+Koska alkio 2 on pienempi kuin sen vanhempi 5,
+vaihdamme nämä alkiot keskenään.
+Tämän jälkeen alkio 2 on pienempi kuin sen vanhempi 3,
+joten vaihdamme myös nämä alkiot keskenään.
+Nyt kekoehto on voimassa eikä meidän tarvitse enää
+tehdä muutoksia kekoon.
 
-\subsection{Tehokas luonti}
+Alkion lisääminen kekoon vie aikaa $O(\log n)$,
+koska keossa on $O(\log n)$ tasoa ja kuljemme aina polkua
+ylöspäin keon pohjalta huippua kohden,
+kunnes olemme löytäneet alkiolle sopivan paikan keosta.
 
-Suoraviivainen tapa luoda $n$ alkiota sisältävä keko
-on lisätä jokainen alkio erikseen kekoon $O(\log n)$-ajassa.
-Tällä tavalla saamme rakennettua keon $O(n \log n)$-ajassa.
-Osoittautuu kuitenkin, että keon luominen taulukon pohjalta
-on mahdollista myös $O(n)$-ajassa.
+\subsubsection{Alkion poistaminen}
 
-Ideana on käydä läpi keon solmut lopusta alkuun ja
-jokaisen solmun kohdalla varmistaa,
-että siitä solmusta alkava alipuu toteuttaa kekoehdon
-laskettamalla solmun juuressa olevaa arvoa alaspäin.
-Kun olemme lopulta käsitelleet kaikki solmut juureen asti,
-koko taulukko toteuttaa kekoehdon.
+Kun haluamme poistaa keon juuressa olevan alkion,
+siirrämme ensin keon viimeisen alkion keon juureksi
+ja poistamme sille kuuluneen solmun.
+Tämän jälkeen lasketamme juureen nostettua alkiota
+alaspäin keossa, kunnes kekoehto tulee jälleen voimaan.
+Jos keko on minimikeko, siirrymme alaspäin lapseen,
+jossa on pienempi alkio,
+ja jos keko on maksimikeko, siirrymme vastaavasti suurempaan alkioon.
 
-Miksi sitten tämä vie aikaa vain $O(n)$?
-Oletetaan, että keossa on $h$ kerrosta ja kaikki
-kerrokset ovat täynnä solmuja, eli siinä on $n=2^h-1$ solmua.
-Laskemme jokaiselle kerrokselle, montako arvoa laskeutuu
-enintään jostakin tämän kerroksen solmusta alaspäin. Tästä saamme:
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.4]
+\scriptsize
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-3.5,-2) {$3$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$5$};
+\node[draw, circle] (6) at (1.5,-4) {$8$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\node[draw, circle] (10) at (-2.5,-6) {$5$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\path[draw,thick,-] (5) -- (10);
+\node at (0,-8) {\small vaihe $1$};
+\end{scope}
+\begin{scope}[xshift=15cm]
+\node[draw, circle] (1) at (0,0) {$5$};
+\node[draw, circle] (2) at (-3.5,-2) {$3$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$5$};
+\node[draw, circle] (6) at (1.5,-4) {$8$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\node at (0,-8) {\small vaihe $2$};
+\end{scope}
+\begin{scope}[yshift=-11cm]
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-3.5,-2) {$5$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$4$};
+\node[draw, circle] (5) at (-1.5,-4) {$5$};
+\node[draw, circle] (6) at (1.5,-4) {$8$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\node at (0,-8) {\small vaihe $3$};
+\path[draw,thick,<->,red,line width=1.5pt] (1) -- (2);
+\end{scope}
+\begin{scope}[yshift=-11cm,xshift=15cm]
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-3.5,-2) {$4$};
+\node[draw, circle] (3) at (3.5,-2) {$5$};
+\node[draw, circle] (4) at (-5.5,-4) {$5$};
+\node[draw, circle] (5) at (-1.5,-4) {$5$};
+\node[draw, circle] (6) at (1.5,-4) {$8$};
+\node[draw, circle] (7) at (5.5,-4) {$9$};
+\node[draw, circle] (8) at (-6.5,-6) {$7$};
+\node[draw, circle] (9) at (-4.5,-6) {$8$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (8);
+\path[draw,thick,-] (4) -- (9);
+\node at (0,-8) {\small vaihe $4$};
+\path[draw,thick,<->,red,line width=1.5pt] (2) -- (4);
+\end{scope}
+\end{tikzpicture}
+\caption{Lisäämme alkion 2 kekoon ja nostamme sitä ylöspäin,
+kunnes kekoehto tulee jälleen voimaan.}
+\label{fig:kekpoi}
+\end{figure}
 
-\begin{itemize}
-\item Kerroksesta 1 kerrokseen 2 laskeutuu enintään 1 arvo.
-\item Kerroksesta 2 kerrokseen 3 laskeutuu enintään $1+2$ arvoa.
-\item Kerroksesta 3 kerrokseen 4 laskeutuu enintään $1+2+4$ arvoa.
-\item Jne.
-\end{itemize}
+Kuva \ref{fig:kekpoi} näyttää, kuinka poistamme
+esimerkkikeostamme pienimmän alkion eli juuressa
+olevan alkion 1.
+Aluksi korvaamme alkion 1
+keon viimeisellä alkiolla 5.
+Tämän jälkeen vaihdamme keskenään alkion 5
+ja sen vasemman lapsen alkion 3,
+ja sitten vielä alkion 5 ja sen vasemman lapsen alkion 4.
+Tämän jälkeen kekoehto on voimassa ja olemme onnistuneet
+poistamaan pienimmän alkion keosta.
 
-Yleisemmin kerroksesta $k$ kerrokseen $k+1$ laskeutuu
-enintään $1+2+\dots+2^{k-1} = 2^k-1$ arvoa.
-Koska kerroksia on $h$ ja viimeisestä kerroksesta ei voi laskeutua alaspäin,
-kokonaistyömäärä on enintään
-\[(2^1-1)+(2^2-1)+\dots+(2^{h-1}-1)=2^h-h \le n,\]
-joten aikaa kuluu vain $O(n)$.
-
-\subsection{Kekojärjestäminen}
+Alkion poistaminen keosta vie aikaa $O(\log n)$,
+koska keossa on $O(\log n)$ tasoa ja kuljemme polkua
+alaspäin keon huipulta pohjaa kohden.
 
 \section{Prioriteettijono}
 
 Monissa ohjelmointikielissä kekoa vastaava tietorakenne
-tunnetaan nimellä prioriteettijono.
+tunnetaan nimellä \emph{prioriteettijono}.
 Näin on myös Javassa, jonka standardikirjastoon 
 kuuluu tietorakenne \texttt{PriorityQueue}.
 Se on binäärikekoon perustuva tietorakenne,
@@ -363,8 +410,8 @@ System.out.println(jono.poll()); // 3
 System.out.println(jono.poll()); // 5
 \end{code}
 
-Jos haluamme luoda prioriteettijonon, joka toimiikin
-maksimikekona, voimme tehdä sen seuraavaan tapaan:
+Jos haluamme luoda prioriteettijonon, joka onkin
+maksimikeko, voimme tehdä sen seuraavaan tapaan:
 
 \begin{code}
 PriorityQueue<Integer> jono =
@@ -372,8 +419,14 @@ PriorityQueue<Integer> jono =
 \end{code}
 
 Tässä tilanteessa meidän täytyy antaa konstruktorille kaksi tietoa:
-rakenteelle alussa varattava tila (tässä 10)
+keolle alussa muistista varattava tila (tässä 10)
 sekä alkioiden järjestämistapa (tässä käänteinen järjestys).
+Java varaa keolle tarvittaessa myöhemmin uuden suuremman muistialueen,
+joten tämä määrittely ei tarkoita, että keossa voisi olla enintään 10 alkiota.
+
+Jos haluamme tallentaa prioriteettijonoon omia olioitamme,
+meidän tulee toteuttaa luokkaan metodi \texttt{compareTo} ja
+merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
 
 \section{Tehokkuusvertailu}
 
@@ -441,3 +494,43 @@ $8 \cdot 10^6$ & 3.68 s & 9.43 s \\
 \caption{Algoritmien suoritusaikojen vertailu.}
 \label{tab:kekver}
 \end{table}
+
+\section{Lisää keosta}
+
+\subsection{Tehokas luonti}
+
+Suoraviivainen tapa luoda $n$ alkiota sisältävä keko
+on lisätä jokainen alkio erikseen kekoon $O(\log n)$-ajassa.
+Tällä tavalla saamme rakennettua keon $O(n \log n)$-ajassa.
+Osoittautuu kuitenkin, että keon luominen taulukon pohjalta
+on mahdollista myös $O(n)$-ajassa.
+
+Ideana on käydä läpi keon solmut lopusta alkuun ja
+jokaisen solmun kohdalla varmistaa,
+että siitä solmusta alkava alipuu toteuttaa kekoehdon
+laskettamalla solmun juuressa olevaa arvoa alaspäin.
+Kun olemme lopulta käsitelleet kaikki solmut juureen asti,
+koko taulukko toteuttaa kekoehdon.
+
+Miksi sitten tämä vie aikaa vain $O(n)$?
+Oletetaan, että keossa on $h$ kerrosta ja kaikki
+kerrokset ovat täynnä solmuja, eli siinä on $n=2^h-1$ solmua.
+Laskemme jokaiselle kerrokselle, montako arvoa laskeutuu
+enintään jostakin tämän kerroksen solmusta alaspäin. Tästä saamme:
+
+\begin{itemize}
+\item Kerroksesta 1 kerrokseen 2 laskeutuu enintään 1 arvo.
+\item Kerroksesta 2 kerrokseen 3 laskeutuu enintään $1+2$ arvoa.
+\item Kerroksesta 3 kerrokseen 4 laskeutuu enintään $1+2+4$ arvoa.
+\item Jne.
+\end{itemize}
+
+Yleisemmin kerroksesta $k$ kerrokseen $k+1$ laskeutuu
+enintään $1+2+\dots+2^{k-1} = 2^k-1$ arvoa.
+Koska kerroksia on $h$ ja viimeisestä kerroksesta ei voi laskeutua alaspäin,
+kokonaistyömäärä on enintään
+\[(2^1-1)+(2^2-1)+\dots+(2^{h-1}-1)=2^h-h \le n,\]
+joten aikaa kuluu vain $O(n)$.
+
+\subsection{Kekojärjestäminen}
+
