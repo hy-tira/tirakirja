@@ -430,56 +430,63 @@ merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
 
 \section{Tehokkuusvertailu}
 
-Keon käyttämisestä voi olla hyötyä binäärihakupuuhun verrattuna,
-jos meille riittää, että voimme etsiä ja poistaa pienimmän/suurimman alkion
-joukosta.
-Seuraavaksi selvitämme, millainen Javan rakenteilla
-\texttt{PriorityQueue} ja \texttt{TreeSet} on käytännössä.
+Mitä hyötyä keosta oikeastaan on?
+Meillähän on olemassa jo binäärihakupuu,
+jonka avulla voimme toteuttaa kaikki keon operaatiot
+ja \emph{enemmänkin}.
+Keossa voimme hakea ja poistaa vain pienimmän tai suurimman alkion,
+mutta binäärihakupuussa voimme käsitellä myös muita alkioita.
 
-Testissämme järjestämme luvut $1,2,\dots,n$ ensin satunnaiseen järjestykseen.
-Tämän jälkeen lisäämme puolet luvuista joukkoon
-ja sitten toistuvasti lisäämme uuden luvun joukkoon
-ja poistamme joukosta pienimmän alkion.
-Samalla laskemme joukosta poistettujen alkioiden summan.
+Keon etuna on, että siinä on tehokkaan taulukkototeutuksen
+ansiosta pienemmät \emph{vakiokertoimet} kuin binäärihakupuussa.
+Jos meille riittää, että voimme hakea ja poistaa
+vain pienimmän tai suurimman alkion, voi siis olla hyvä
+ratkaisu käyttää kekoa binäärihakupuun sijasta.
+Mutta kuinka suuria erot ovat käytännössä?
 
-Käytämme seuraavaa koodia mittaamaan \texttt{PriorityQueue}-rakenteen tehokkuutta:
+Teemme seuraavaksi testin, jossa vertailemme keskenään
+Javan rakenteita
+\texttt{PriorityQueue} ja \texttt{TreeSet}.
+Testissä meillä on taulukko,
+jossa on satunnaisessa järjestyksessä luvut $1,2,\dots,n$.
+Lisäämme ensin taulukon $n/2$ ensimmäistä lukua kokoelmaan.
+Tämän jälkeen käymme läpi loput $n/2$ lukua,
+ja jokaisen luvun kohdalla lisäämme sen kokoelmaan ja
+poistamme kokoelman pienimmän luvun.
+Laskemme lisäksi samalla summaa poistetuista luvuista.
+Käytämme testissä seuraavia koodeja:
 
 \begin{code}
-long summa(int[] luvut) {
-    PriorityQueue<Integer> jono = new PriorityQueue<>();
-    for (int i = 0; i < n/2; i++) {
-        jono.add(luvut[i]);
-    }
-    long summa = 0;
-    for (int i = n/2; i < n; i++) {
-        jono.add(luvut[i]);
-        summa += jono.poll();
-    }
-    return summa;
+PriorityQueue<Integer> jono = new PriorityQueue<>();
+for (int i = 0; i < n/2; i++) {
+    jono.add(luvut[i]);
 }
+long summa = 0;
+for (int i = n/2; i < n; i++) {
+    jono.add(luvut[i]);
+    summa += jono.poll();
+}
+System.out.println(summa);
 \end{code}
 
-Vastaavasti käytämme seuraavaa koodia mittaamaan \texttt{TreeSet}-rakenteen tehokkuutta:
-
 \begin{code}
-long summa(int[] luvut) {
-    TreeSet<Integer> joukko = new TreeSet<>();
-    for (int i = 0; i < n/2; i++) {
-        joukko.add(luvut[i]);
-    }
-    long summa = 0;
-    for (int i = n/2; i < n; i++) {
-        joukko.add(luvut[i]);
-        summa += jono.pollFirst();
-    }
-    return summa;
+TreeSet<Integer> joukko = new TreeSet<>();
+for (int i = 0; i < n/2; i++) {
+    joukko.add(luvut[i]);
 }
+long summa = 0;
+for (int i = n/2; i < n; i++) {
+    joukko.add(luvut[i]);
+    summa += jono.pollFirst();
+}
+System.out.println(summa);
 \end{code}
 
 Taulukko \ref{tab:kekver} sisältää vertailun tulokset.
-Tässä testissä \texttt{PriorityQueue} toimii 2–3
-kertaa nopeammin kuin \texttt{TreeSet},
-eli sen käyttämisestä on perusteltua hyötyä.
+Tämän testin perusteella näyttää siltä,
+että keon käyttämiseestä on todellista hyötyä,
+koska \texttt{PriorityQueue} toimii 2–3
+kertaa nopeammin kuin \texttt{TreeSet}.
 
 \begin{table}
 \center
