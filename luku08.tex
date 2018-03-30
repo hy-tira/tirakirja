@@ -1,6 +1,6 @@
 \chapter{Keko}
 
-Keko on tietorakenne, joka pitää yllä alkioiden kokoelmaa
+\emph{Keko} on tietorakenne, joka pitää yllä alkioiden kokoelmaa
 ja tarjoaa seuraavat operaatiot:
 
 \begin{itemize}
@@ -9,8 +9,8 @@ ja tarjoaa seuraavat operaatiot:
 \item poista joukon pienin/suurin alkio
 \end{itemize}
 
-Keon toiminta riippuu siitä, onko kyseessä minimikeko
-vai maksimikeko.
+Keon operaatioiden toiminta riippuu siitä,
+onko keko \emph{minimikeko} vai \emph{maksimikeko}.
 Minimikeossa voimme etsiä ja poistaa pienimmän alkion,
 kun taas maksimikeossa voimme etsiä ja poistaa suurimman alkion.
 Meidän täytyy päättää keon luontivaiheessa,
@@ -27,7 +27,7 @@ perustuu binäärikekoon.
 \section{Binäärikeko}
 
 \emph{Binäärikeko} on binääripuu, jonka jokaisessa solmussa on
-yksi kokoelmaan kuuluva alkio.
+yksi keossa oleva alkio.
 Puu on rakennettu niin, että sen kaikki tasot alinta
 tasoa lukuun ottamatta ovat täynnä solmuja,
 eli kaikilla solmuilla on vasen ja oikea lapsi.
@@ -35,14 +35,14 @@ Alin taso on puolestaan täytetty niin,
 että solmut on sijoitettu mahdollisimman vasemmalle
 ylempien solmujen lapsiksi.
 
-Binäärikeon toiminta perustuu siihen,
+Keon toiminta perustuu siihen,
 että jokainen keon solmu täyttää \emph{kekoehdon}.
 Minimikeossa kekoehto vaatii, että jokaisen
 solmun arvo on suurempi tai yhtä suuri kuin solmun vanhemman arvo.
 Maksimikeossa puolestaan jokaisen solmun arvon tulee olla
 pienempi tai yhtä suuri kuin solmun vanhemman arvon.
-Kekoehdon ansiosta minimikeon juuressa on kokoelman
-pienin alkio ja maksimikeon juuressa on kokoelman suurin alkio.
+Kekoehdon ansiosta minimikeon juuressa on keon
+pienin alkio ja maksimikeon juuressa on keon suurin alkio.
 
 \begin{figure}
 \center
@@ -67,15 +67,15 @@ pienin alkio ja maksimikeon juuressa on kokoelman suurin alkio.
 \path[draw,thick,-] (4) -- (9);
 \path[draw,thick,-] (5) -- (10);
 \end{tikzpicture}
-\caption{Minimikeko, joka vastaa kokoelmaa $[1,3,4,5,5,5,7,8,8,9]$.}
+\caption{Minimikeko, joka sisältää alkiot $[1,3,4,5,5,5,7,8,8,9]$.}
 \label{fig:minkek}
 \end{figure}
 
 
-Kuvassa \ref{fig:minkek} on esimerkkinä minimikeko,
+Kuvassa \ref{fig:minkek} on minimikeko,
 johon on tallennettu kymmenen alkiota.
-Keon kolme ensimmäistä kerrosta ovat täynnä
-ja neljännessä kerroksessa kolme ensimmäistä kohtaa on käytetty.
+Keon kolme ensimmäistä tasoa ovat täynnä
+ja neljännellä tasolla kolme ensimmäistä kohtaa on käytetty.
 Keon juurena on kokoelman pienin alkio $1$,
 ja kaikki solmut täyttävät kekoehdon.
 Huomaa, että sama alkio voi esiintyä keossa useasti,
@@ -101,23 +101,19 @@ int[] keko = {0,1,3,5,4,5,8,9,7,8,5};
 Huomaa, että taulukon ensimmäinen alkio on $0$,
 koska emme käytä kohtaa $0$ keon tallentamiseen.
 
-Tämän tallennustavan etuna on, että voimme laskea
+Taulukkototeutuksen etuna on, että voimme laskea
 helposti, missä kohdissa keon alkiot ovat taulukossa.
 Ensinnäkin keon juuri eli pienin tai suurin alkio
 on aina kohdassa $1$.
 Lisäksi jos tiedämme, että tietty solmu on kohdassa $k$,
-niin tästä seuraa, että
-
-\begin{itemize}
-\item solmun vasen lapsi on kohdassa $2k$,
-\item solmun oikea lapsi on kohdassa $2k+1$ ja
-\item solmun vanhempi on kohdassa $\lfloor k/2 \rfloor$.
-\end{itemize}
-
+niin solmun vasen lapsi on kohdassa $2k$,
+solmun oikea lapsi on kohdassa $2k+1$ ja
+solmun vanhempi on kohdassa $\lfloor k/2 \rfloor$.
 Esimerkissämme solmu 4
 on taulukossa kohdassa $4$,
-joten sen lapset ovat kohdissa $8$ ja $9$
-ja sen vanhempi on kohdassa $2$.
+joten sen vasen lapsi on kohdassa $8$,
+oikea lapsi on kohdassa $9$ ja
+vanhempi on kohdassa $2$.
 
 Käytännössä haluamme yleensä, että pystymme lisäämään kekoon uusia alkioita,
 jolloin varaamme suuren taulukon,
@@ -126,7 +122,7 @@ on tilaa myöhemmin lisättäville alkioille.
 
 \subsection{Operaatioiden toteutus}
 
-Meidän on helppoa etsiä minimikeon pienin alkio
+On helppoa etsiä minimikeon pienin alkio
 tai maksimikeon suurin alkio $O(1)$-ajassa,
 koska tämä alkio on aina keon juuressa.
 Seuraavaksi näemme, kuinka voimme toteuttaa alkion lisäämisen
@@ -251,7 +247,7 @@ kunnes kekoehto tulee jälleen voimaan.}
 
 Kuva \ref{fig:keklis} näyttää, mitä tapahtuu, kun lisäämme
 alkion  $2$ esimerkkikekoomme.
-Lisäämme alkion ensin seuraavaan vapaaseen kohtaan
+Lisäämme alkion ensimmäiseen vapaaseen kohtaan
 keon alimmalla tasolla.
 Koska alkio 2 on pienempi kuin sen vanhempi 5,
 vaihdamme nämä alkiot keskenään.
@@ -272,9 +268,13 @@ siirrämme ensin keon viimeisen alkion keon juureksi
 ja poistamme sille kuuluneen solmun.
 Tämän jälkeen lasketamme juureen nostettua alkiota
 alaspäin keossa, kunnes kekoehto tulee jälleen voimaan.
-Jos keko on minimikeko, siirrymme alaspäin lapseen,
-jossa on pienempi alkio,
-ja jos keko on maksimikeko, siirrymme vastaavasti suurempaan alkioon.
+Koska solmulla voi olla kaksi lasta,
+meillä voi olla kaksi vaihtoehtoa,
+kumman lapsista nostamme ylemmäs.
+Jos keko on minimikeko, valitsemme lapsen,
+jossa on pienempi arvo,
+ja jos keko on maksimikeko, valitsemme vastaavasti
+lapsen, jossa on suurempi arvo.
 
 \begin{figure}
 \center
@@ -374,7 +374,8 @@ Kuva \ref{fig:kekpoi} näyttää, kuinka poistamme
 esimerkkikeostamme pienimmän alkion eli juuressa
 olevan alkion 1.
 Aluksi korvaamme alkion 1
-keon viimeisellä alkiolla 5.
+keon viimeisellä alkiolla 5 ja poistamme keosta
+alkiolle 5 kuuluneen solmun.
 Tämän jälkeen vaihdamme keskenään alkion 5
 ja sen vasemman lapsen alkion 3,
 ja sitten vielä alkion 5 ja sen vasemman lapsen alkion 4.
@@ -394,7 +395,7 @@ kuuluu tietorakenne \texttt{PriorityQueue}.
 Se on binäärikekoon perustuva tietorakenne,
 joka toteuttaa oletuksena minimikeon.
 
-Seuraava koodi esittelee Javan prioriteettijonon toimintaa.
+Seuraava koodi esittelee Javan prioriteettijonon käyttämistä.
 Metodi \texttt{add} lisää alkion jonoon,
 metodi \texttt{peek} hakee pienimmän alkion
 ja metodi \texttt{poll} hakee ja poistaa pienimmän alkion.
@@ -424,7 +425,7 @@ sekä alkioiden järjestämistapa (tässä käänteinen järjestys).
 Java varaa keolle tarvittaessa myöhemmin uuden suuremman muistialueen,
 joten tämä määrittely ei tarkoita, että keossa voisi olla enintään 10 alkiota.
 
-Jos haluamme tallentaa prioriteettijonoon omia olioitamme,
+Jos haluamme tallentaa \texttt{PriorityQueue}-rakenteeseen omia olioitamme,
 meidän tulee toteuttaa luokkaan metodi \texttt{compareTo} ja
 merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
 
@@ -515,14 +516,15 @@ Osoittautuu kuitenkin, että pystymme myös muuttamaan taulukon
 suoraan keoksi tehokkaammin ajassa $O(n)$.
 
 Ideana on järjestää taulukon alkioita uudestaan niin,
-että taulukon jokaisessa kohdassa on voimassa kekoehto --
+että kekoehto tulee voimaan taulukon jokaiseen kohtaan --
 jolloin taulukko on keko.
 Käymme läpi taulukon alkiot lopusta alkuun ja varmistamme
 jokaisessa kohdassa, että kekoehto on voimassa kyseisestä
 kohdasta alkavassa alipuussa.
 Jos kekoehto ei ole voimassa, korjaamme sen laskettamalla
-juuren alkiota alaspäin keossa.
-Kun lopulta pääsemme taulukon alkuun, kekoehto on voimassa.
+kyseisen kohdan alkiota alaspäin keossa.
+Kun lopulta pääsemme taulukon alkuun, kekoehto on voimassa
+koko taulukossa.
 
 \begin{figure}
 \center
