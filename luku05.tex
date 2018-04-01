@@ -443,13 +443,13 @@ anna oikeaa kuvaa tehokkuudesta.
 Seuraavaksi tutustumme tekniikkaan nimeltä
 \emph{tasoitettu analyysi}, jossa koetamme arvioida tarkemmin,
 montako kertaa silmukassa olevaa koodia suoritetaan
-\emph{yhteensä} algoritmin suorituksen aikana.
-Tämän avulla pystymme joskus määrittämään algoritmin
-aikavaativuuden tarkemmin.
+\emph{yhteensä} algoritmin aikana.
+Tämän avulla pystymme joskus huomaamaan, että algoritmi
+toimii tehokkaammin kuin vaikuttaa ensin.
 
 \subsection{Alitaulukot, osa 2}
 
-Tarkastelemme uudestaan tehtävää, jossa meille on annettu
+Palaamme aluksi tehtävään, jossa meille on annettu
 $n$ positiivisen kokonaisluvun taulukko ja haluamme laskea,
 monenko yhtenäisen alitaulukon summa on $x$.
 Olemme jo ratkaisseet tehtävän ajassa $O(n \log n)$
@@ -485,17 +485,29 @@ System.out.println(laskuri);
 Tästä koodista on ensin näkemältä vaikeaa määrittää algoritmin
 aikavaativuutta, koska ei ole varmaa, montako kierrosta
 \texttt{while}-silmukkaa suoritetaan milloinkin.
-Voimme kuitenkin huomata, että muuttujan $j$ arvo on aluksi $-1$,
-jokaisella silmukan kierroksella $j$ kasvaa yhdellä
-ja silmukkaan mennään vain jos $j$ on enintään $n-1$.
+Saattaa olla, että jollakin kertaa silmukkaa ei suoriteta lainkaan
+mutta toisella kertaa $O(n)$ kierrosta.
+Koska silmukkaa suoritetaan aina enintään $O(n)$ kierrosta,
+saamme algoritmille aikavaativuuden $O(n^2)$,
+mutta antaako tämä hyvän kuvan algoritmista?
+
+Voimme analysoida algoritmia tarkemmin kiinnittämällä huomiota
+siihen, miten muuttujan $j$ arvo muuttuu algoritmissa.
+Muuttujan arvo on aluksi $-1$,
+se kasvaa yhdellä jokaisella \texttt{while}-silmukan kierroksella
+ja silmukkaan mennään vain, jos arvo on enintään $n-1$.
 Niinpä voimme päätellä, että silmukassa oleva koodi suoritetaan \emph{yhteensä}
-vain $O(n)$ kertaa, mikä tarkoittaa sitä,
-että koko algoritmin aikavaativuus on $O(n)$.
+$O(n)$ kertaa, mikä tarkoittaa sitä,
+että koko algoritmin aikavaativuus on vain $O(n)$.
 
 \subsection{Lähin pienempi edeltäjä}
 
+Tasoitettuun analyysiin liittyy usein jokin tietorakenne,
+jonka operaatioiden määrää haluamme arvioida.
+Näin on myös seuraavassa tehtävässä:
+
 Annettuna on taulukko, jossa on $n$ kokonaislukua,
-ja haluamme muodostaa sen pohjalta taulukon,
+ja haluamme muodostaa toisen taulukon,
 jossa on jokaisen luvun \emph{lähin pienempi edeltäjä}.
 Tämä tarkoittaa, että haluamme löytää jokaiselle taulukon luvulle
 sitä pienemmän luvun, joka on mahdollisimman lähellä aiemmin taulukossa.
@@ -522,7 +534,7 @@ Ratkaisemme tehtävän tehokkaasti pitämällä yllä \emph{pinoa},
 jossa on kasvava lista taulukon lukuja.
 Pino on tietorakenne, jossa voimme lisätä alkion pinon päälle
 ja hakea tai poistaa pinon ylimmän alkion.
-Voisimme toteuttaa pinon tavallisena listana,
+Voisimme toteuttaa pinon listana,
 mutta Javassa on myös erikoistunut tietorakenne \texttt{Stack},
 jota käytämme seuraavassa koodissa:
 
@@ -542,7 +554,9 @@ for (int i = 0; i < n; i++) {
 Metodi \texttt{push} lisää alkion pinoon,
 \texttt{peek} hakee ylimmän alkion ja \texttt{pop}
 poistaa ylimmän alkion.
-Ideana on, että jokaisen taulukon luvun kohdalla poistamme
+Ideana on, että säilytämme pinossa kasvavassa järjestyk\-sessä
+ehdokkaita tulevien lukujen lähimmiksi pienimmiksi edeltäjiksi.
+Jokaisessa taulukon kohdassa poistamme
 pinosta lukuja, kunnes pinon ylin luku on pienempi kuin nykyinen luku
 tai pino on tyhjä.
 Jos pino ei ole tämän jälkeen tyhjä, sen ylin luku on nykyisen luvun
@@ -552,7 +566,8 @@ Lopuksi lisäämme nykyisen luvun pinoon päälle.
 Algoritmin tehokkuus riippuu siitä, montako kertaa suoritamme
 \texttt{while}-silmukassa olevan koodin.
 Oleellinen havainto on, että voimme poistaa pinosta
-korkeintaan niin monta alkiota kuin olemme lisänneet siihen.
+korkeintaan niin monta alkiota kuin olemme lisänneet siihen,
+eli emme voi kutsua \texttt{pop}-metodia useammin kuin \texttt{push}-metodia.
 Koska lisäämme pinoon $n$ alkiota, suoritamme \texttt{while}-silmukkaa
 siis enintään $n$ kierrosta.
 Tämän ansiosta algoritmin aikavaativuus on $O(n)$.
