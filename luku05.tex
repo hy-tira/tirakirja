@@ -224,6 +224,121 @@ Tuloksena on algoritmi, jonka aikavaativuus on $O(n \log n)$.
 
 \section{Binäärihaku}
 
+\emph{Binäärihaku} on tekniikka, joka pelastaa meidät monesta
+kiipelistä algoritmien suunnittelussa.
+Parhaiten tunnettu binäärihaun käyttötarkoitus on alkion
+etsiminen järjestetystä taulukosta ajassa $O(\log n)$,
+mutta tämä on vain alkusoittoa sille kaikelle,
+mitä binäärihaun avulla pystyy tekemään.
+
+Binäärihaun yleinen käyttötarkoitus on seuraava:
+tiedämme, että jokin asia ei päde koskaan ennen kohtaa $k$
+mutta pätee aina kohdasta $k$ alkaen,
+ja haluamme löytää tehokkaasti kohdan $k$.
+Binäärihaun avulla pystymme löytämään kohdan $k$
+tarkistamalla vain $O(\log N)$ kohtaa,
+kun mahdollisia kohtia on yhteensä $N$ kappaletta.
+
+Ennen kuin voimme käyttää binäärihakua algoritmeissa,
+meidän täytyy osata toteuttaa se toimivasti.
+Seuraava koodi etsii kohdan $k$,
+kun tiedämme etukäteen, että $k$ on välillä $1 \dots N$,
+ja metodi $\texttt{ok}(u)$ kertoo, päteekö haluttu asia
+kohdassa $u$.
+
+\begin{code}
+int a = 1;
+int b = N;
+while (a < b) {
+    int u = (a+b)/2;
+    if (ok(u)) b = u;
+    else a = u+1;
+}
+int k = a;
+\end{code}
+
+Binäärihaku kutsuu $O(\log N)$ kertaa metodia \texttt{ok},
+koska välin $a \dots b$ koko puolittuu jokaisella askeleella.
+
+\subsection{Koneiden aikataulu}
+
+Tarkastellaan esimerkkinä tehtävää, jossa käytössämme on $n$ konetta
+ja haluamme valmistaa niiden avulla $m$ tavaraa.
+Tiedossamme on myös arvot $[x_1,x_2,\dots,x_n]$:
+jokaisesta koneesta tieto, montako minuuttia vie aikaa valmistaa
+yksi tavara konetta käyttäen.
+Haluamme löytää suunnitelman, jota seuraamalla pystymme valmistamaan
+$m$ tavaraa mahdollisimman nopeasti.
+Esimerkiksi jos $n=3$, $m=7$ ja koneiden nopeudet ovat $[2,3,7]$,
+tavaroiden muodostaminen vie aikaa $8$ minuuttia.
+Kuva \ref{fig:optkon} näyttää, miten voimme käyttää koneita optimaalisesti.
+Käynnistämme koneen 1 neljästi hetkinä 0, 2, 4 ja 6,
+koneen 2 kahdesti hetkinä 0 ja 3
+ja koneen 3 kerran hetkenä 0.
+Aikaa kuluu $8$ minuuttia, koska viimeisenä pysähtyy kone 1 hetkenä 8.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\draw[->] (-1,1.5) -- (10,1.5);
+\foreach \x in {0,2,4,6,8} \draw (\x,1.40) -- (\x,1.60);
+\foreach \x in {0,2,4,6,8} \node at (\x,2) {\scriptsize $\x$};
+\node at (-2,0) {kone $1$};
+\draw[|-|] (0.05,0) -- (1.95,0);
+\draw[|-|] (2.05,0) -- (3.95,0);
+\draw[|-|] (4.05,0) -- (5.95,0);
+\draw[|-|] (6.05,0) -- (7.95,0);
+\node at (-2,-1.5) {kone $2$};
+\draw[|-|] (0.05,-1.5) -- (2.95,-1.5);
+\draw[|-|] (3.05,-1.5) -- (5.95,-1.5);
+\node at (-2,-3) {kone $3$};
+\draw[|-|] (0.05,-3) -- (6.95,-3);
+\end{tikzpicture}
+\caption{Optimaalinen tapa valmistaa 7 tavaraa vie 8 sekuntia,
+kun koneiden nopeudet ovat $[2,3,7]$.}
+\label{fig:optkon}
+\end{figure}
+
+Voimme pukea tämän tehtävän binäärihaulle sopivaan muotoon niin,
+että haluamme löytää aikajanalta kohdan $k$, jossa ensimmäistä
+kertaa pystymme muodostamaan $m$ tavaraa ajassa $k$.
+Äskeisessä esimerkissä $k=8$, koska tarvitsemme ainakin 8
+minuuttia aikaa 7 tavaran muodostamiseen.
+Jotta voimme käyttää binäärihakua, meillä täytyy olla keino
+tarkastaa mistä tahansa kohdasta $u$, voimmeko muodostaa
+ainakin $m$ tavaraa, jos meillä on aikaa $u$ minuuttia.
+Seuraava metodi hoitaa asian:
+
+\begin{code}
+boolean ok(int u) {
+    int tavarat = 0;
+    for (int i = 1; i <= n; i++) {
+        tavarat += u/x[i];
+    }
+    return tavarat >= m;
+}
+\end{code}
+
+Metodissa on ideana, että jos meillä on $u$ minuuttia aikaa
+ja koneella kestää $x_i$ minuuttia valmistaa yksi tavara,
+pystymme valistamaan $\lfloor u/x_i \rfloor$ tavaraa.
+Tämän ansiosta voimme laskea ylärajan sille,
+montako tavaraa pystymme muodostamaan.
+Jos pystymme muodostamaan ainakin $m$ tavaraa,
+tiedämme, että $u$ minuuttia riittää tavaroiden muodostamiseen
+eli $k \le u$.
+
+Voimme kytkeä tämän metodin suoraan binäärihakuun,
+jolloin tuloksena on tehokas algoritmi tehtävän ratkaisemiseen.
+Meidän täytyy kuitenkin vielä valita arvo $N$,
+joka on jokin yläraja kohdalle $k$.
+Tässä tehtävässä helppo valinta on
+\[N = x_0 \cdot m,\]
+mikä vastaa ratkaisua, jossa käytämme vain ensimmäistä konetta.
+On varmaa, että oikea $k$:n arvo on korkeintaan $N$,
+joten binäärihaku kutsuu $O(\log N)$ kertaa metodia $\texttt{ok}$.
+Koska jokainen metodin kutsu vie aikaa $O(n)$,
+tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
 
 
 \section{Tasoitettu vaativuus}
