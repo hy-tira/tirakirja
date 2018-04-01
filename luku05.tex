@@ -49,10 +49,10 @@ tapauksissa, ja voimme hyödyntää niitä koko tehtävän ratkaisemisessa.
 \subsection{Algoritmin tehostaminen}
 
 Tavallinen tilanne algoritmien suunnittelussa on,
-että meillä annetaan ongelma ja pystymme ratkaisemaan sen
-helposti $O(n^2)$-ajassa ensimmäisellä mieleen tulevalla algoritmilla.
-Haasteena on kuitenkin keksiä tehokkaampi algoritmi,
-joka toimii ajassa $O(n)$ tai $O(n \log n)$.
+että pystymme ratkaisemaan annetun ongelman
+helposti $O(n^2)$-ajassa ensimmäisellä mieleen tulevalla algoritmilla,
+mutta haasteena on keksiä tehokkaampi algoritmi,
+joka toimisi ajassa $O(n)$ tai $O(n \log n)$.
 Kokemus on osoittanut, että tämä on hyvä tilanne:
 yleensä \emph{pystymme} tehostamaan
 tavalla tai toisella algoritmia,
@@ -61,17 +61,17 @@ kunhan mietimme huolellisesti asiaa.
 Tarkastellaan esimerkkinä seuraavaa tehtävää:
 Annettuna on taulukko, joka sisältää luvut $1,2,\dots,n$
 jossakin järjestyksessä,
-ja haluamme kerätä luvut pienimmästä suurimpaan.
-Joka kierroksella käymme läpi taulukon vasemmalta
+ja haluamme kerätä taulukon luvut järjestyksessä pienimmästä suurimpaan.
+Joka kierroksella käym\-me läpi taulukon vasemmalta
 oikealle ja keräämme mahdollisimman monta seuraavaa lukua.
 Montako kierrosta tarvitsemme yhteensä?
 Esimerkiksi taulukossa $[4,3,1,5,2]$
 tarvitsemme kolme kierrosta:
-ensin keräämme luvut $1$ ja $2$,
-sitten luvun $3$ ja lopuksi luvut $4$ ja $5$.
+ensimmäisellä kierroksella keräämme luvut $1$ ja $2$,
+toisella luvun $3$ ja kolmannella luvut $4$ ja $5$.
 
-Voimme ratkaista tehtävän helposti suoraviivaisesti $O(n^2)$-ajassa
-simuloimalla tehtävänannon kuvaamaa prosessia:
+Voimme ratkaista tehtävän suoraviivaisesti $O(n^2)$-ajassa
+simuloimalla lukujen keräämistä tehtävänannon kuvaamalla tavalla:
 
 \begin{code}
 int luku = 1;
@@ -96,12 +96,12 @@ joten algoritmi toimii ajassa $O(n^2)$.
 
 Kuinka voisimme sitten tehostaa algoritmia niin,
 että se veisi aikaa vain $O(n)$ tai $O(n \log n)$?
-Algoritmin hitaus johtuu tällä hetkellä pohjimmiltaan siitä,
-että sillä menee kauan aikaa löytää,
-missä kohdassa taulukossa on seuraava luku,
+Yllä olevan algoritmin hitaus johtuu pohjimmiltaan siitä,
+että algoritmilla menee kauan aikaa löytää,
+missä kohtaa taulukossa on seuraava luku,
 jonka haluamme kerätä.
 Niinpä jotta voimme ratkaista tehtävän tehokkaasti,
-meidän täytyy jollakin tavalla löytää seuraava kerättävä luku nopeammin.
+meidän täytyy jollakin tavalla löytää seuraava kerät\-tävä luku nopeammin.
 Kätevä ratkaisu tähän on luoda aputaulukko,
 joka kertoo jokaisen luvun kohdan:
 
@@ -140,9 +140,9 @@ eli olemme saavuttaneet tavoitteemme.
 Tehokkaan algoritmin saaminen aikaan vaatii usein,
 että pystymme tekemään algoritmissa jotain \emph{ahneesti}.
 Tämä tarkoittaa, että meidän ei tarvitse käydä läpi
-kaikkia mahdollisia ratkaisuja vaan riittää muodostaa
-yksi ratkaisu, jonka pystymme rakentamaan askel askeleelta
-käsittelemällä syötteenä annetun aineiston jossain sopivassa järjestyksessä.
+kaikkia mahdollisia ratkaisuja vaan pystymme rakentamaan
+ratkaisun suoraan askel askeleelta käsittelemällä
+syötteen sopivassa järjestyksessä.
 
 Tarkastellaan esimerkkinä seuraavaa tehtävää:
 Meillä on $n$ kolikkoa, jonka jokaisen arvo on positiivinen kokonaisluku,
@@ -156,10 +156,11 @@ koska mahdollisia tapoja summien muodostamiseen on niin paljon.
 Kun meillä on $n$ kolikkoa, voimme valita $2^n$ tavalla
 kolikoiden osajoukon, joista syntyy jokin summa.
 On selvää, että algoritmista tulee liian hidas,
-jos se käy läpi kaikki tavat summan muodostamiseen.
+jos se käy läpi kaikki tällaiset osajoukot.
 Jotta saisimme aikaan tehokkaan algoritmin,
 meidän tulisi huomata ongelmasta jotain,
-jonka ansiosta pystymme välttämään kolikoiden osajoukkojen läpikäymisen.
+jonka ansiosta pystymme välttämään osajoukkojen läpikäynnin
+ja löydämme ratkaisun suoremmin.
 
 Yksi hyvä tapa lähestyä tehtävää ja saada jotain tietoa ongelman luonteesta
 on lähteä ensin liikkeelle pienistä summista.
@@ -173,7 +174,7 @@ paljon ja meidän on vaikeaa hallita niitä.
 Kuitenkin näyttää siltä, että meidän kannattaa aloittaa
 summien muodostaminen pienistä kolikoista.
 
-Seuraavaksi meidän kannattaa alkaa miettiä ongelmaa yleisemmin.
+Seuraavaksi voimme yrittää alkaa miettiä ongelmaa yleisemmin.
 Oletetaan, että meillä on joukko kolikoita,
 joista voimme muodostaa kaikki summat $1,2,\dots,s$.
 Voisimmeko ottaa mukaan vielä jonkin uuden kolikon arvoltaan $u$ niin,
@@ -213,13 +214,14 @@ for (int i = 0; i < n; i++) {
 System.out.println(summa+1);
 \end{code}
 
-Kuten koodista näkyy, meidän ei tarvitse oikeastaan pitää yllä
+Kuten koodista näkyy, meidän ei tarvitse pitää yllä
 kolikoiden joukkoa, vaan riittää säilyttää tietoa
 joukossa olevien kolikoiden summasta muuttujassa \texttt{summa}.
 Käymme läpi kolikot järjestyksessä pienimmästä suurimpaan
-kasvatamme summaa, jos se on mahdollista.
+ja kasvatamme summaa, jos se on mahdollista.
 Kun vastaan tulee ensimmäinen kolikko, jota emme voi ottaa mukaan,
-silmukka päättyy.
+silmukka päättyy, koska tämä tarkoittaa,
+että emme voi valita enää mitään muutakaan kolikkoa.
 Tuloksena on algoritmi, jonka aikavaativuus on $O(n \log n)$.
 
 \section{Binäärihaku}
@@ -227,50 +229,52 @@ Tuloksena on algoritmi, jonka aikavaativuus on $O(n \log n)$.
 \emph{Binäärihaku} on tekniikka, joka pelastaa meidät monesta
 kiipelistä algoritmien suunnittelussa.
 Parhaiten tunnettu binäärihaun käyttötarkoitus on alkion
-etsiminen järjestetystä taulukosta ajassa $O(\log n)$,
-mutta tämä on vain alkusoittoa sille kaikelle,
-mitä binäärihaun avulla pystyy tekemään.
+etsiminen järjestetystä taulukosta ajassa $O(\log n)$.
+Tämä on kuitenkin vain alkusoittoa sille,
+mitä binäärihaun avulla pystyy tekemään ja mikä on sen
+todellinen merkitys algoritmien suunnittelussa.
 
-Binäärihaun yleinen käyttötarkoitus on seuraava:
-tiedämme, että jokin asia ei päde koskaan ennen kohtaa $k$
-mutta pätee aina kohdasta $k$ alkaen,
-ja haluamme löytää tehokkaasti kohdan $k$.
-Binäärihaun avulla pystymme löytämään kohdan $k$
-tarkistamalla vain $O(\log N)$ kohtaa,
-kun mahdollisia kohtia on yhteensä $N$ kappaletta.
+\subsection{Muutoskohdan etsiminen}
 
-Ennen kuin voimme käyttää binäärihakua algoritmeissa,
-meidän täytyy osata toteuttaa se toimivasti.
-Seuraava koodi etsii kohdan $k$,
-kun tiedämme etukäteen, että $k$ on välillä $1 \dots N$,
-ja metodi $\texttt{ok}(u)$ kertoo, päteekö haluttu asia
-kohdassa $u$.
+Oletetaan, että meillä on funktio $f$,
+jolle pätee, että $f(x)=0$, kun $x<k$,
+ja $f(x)=1$, kun $x \ge k$.
+Binäärihaun avulla voimme etsiä tehokkaasti,
+mikä on funktion \emph{muutoskohta} $k$
+eli ensimmäinen kohta, jossa funktio saa arvon $1$.
+Seuraava koodi toteuttaa haun olettaen,
+että $k$ on välillä $1 \dots N$:
+
 
 \begin{code}
 int a = 1, b = N;
 while (a < b) {
     int u = (a+b)/2;
-    if (ok(u)) b = u;
-    else a = u+1;
+    if (f(u) == 0) a = u+1;
+    if (f(u) == 1) b = u;
 }
 int k = a;
 \end{code}
 
-Binäärihaku kutsuu $O(\log N)$ kertaa metodia \texttt{ok},
-koska välin $a \dots b$ koko puolittuu jokaisella askeleella.
+Haun joka vaiheessa tiedämme, että muutoskohta on välillä $[a,b]$.
+Laskemme keskikohdan $u=(a+b)/2$ ja tutkimme funktion arvoa kohdassa $u$.
+Jos $f(u)=0$, niin tiedämme, että muutoskohta on välillä $[u+1,b]$.
+Jos taas $f(u)=1$, niin muutoskohdan on oltava välillä $[a,u]$.
+Lopulta välillä on vain yksi alkio, jolloin olemme löytäneet muutoskohdan.
+Koska välin koko puolittuu joka askeleella,
+kutsumme $O(\log N)$ kertaa funktiota $f$.
 
-\subsection{Koneiden aikataulu}
-
+Mitä hyötyä on siitä, että löydämme tehokkaasti muutoskohdan?
 Tarkastellaan esimerkkinä tehtävää, jossa käytössämme on $n$ konetta
 ja haluamme valmistaa niiden avulla $m$ tavaraa.
 Tiedossamme on myös arvot $[x_1,x_2,\dots,x_n]$:
 jokaisesta koneesta tieto, montako minuuttia vie aikaa valmistaa
 yksi tavara konetta käyttäen.
-Haluamme löytää suunnitelman, jota seuraamalla pystymme valmistamaan
+Haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
 $m$ tavaraa mahdollisimman nopeasti.
 Esimerkiksi jos $n=3$, $m=7$ ja koneiden nopeudet ovat $[2,3,7]$,
-tavaroiden muodostaminen vie aikaa $8$ minuuttia.
-Kuva \ref{fig:optkon} näyttää, miten voimme käyttää koneita optimaalisesti.
+paras aikataulu on kuvassa \ref{fig:optkon}.
+Sitä käyttäen tavaroiden muodostaminen vie aikaa $8$ minuuttia.
 Käynnistämme koneen 1 neljästi hetkinä 0, 2, 4 ja 6,
 koneen 2 kahdesti hetkinä 0 ja 3
 ja koneen 3 kerran hetkenä 0.
@@ -280,8 +284,8 @@ Aikaa kuluu $8$ minuuttia, koska viimeisenä pysähtyy kone 1 hetkenä 8.
 \center
 \begin{tikzpicture}[scale=0.7]
 \draw[->] (-1,1.5) -- (10,1.5);
-\foreach \x in {0,2,4,6,8} \draw (\x,1.40) -- (\x,1.60);
-\foreach \x in {0,2,4,6,8} \node at (\x,2) {\scriptsize $\x$};
+\foreach \x in {0,...,8} \draw (\x,1.40) -- (\x,1.60);
+\foreach \x in {0,...,8} \node at (\x,2) {\scriptsize $\x$};
 \node at (-2,0) {kone $1$};
 \draw[|-|] (0.05,0) -- (1.95,0);
 \draw[|-|] (2.05,0) -- (3.95,0);
@@ -298,34 +302,27 @@ kun koneiden nopeudet ovat $[2,3,7]$.}
 \label{fig:optkon}
 \end{figure}
 
-Voimme pukea tämän tehtävän binäärihaulle sopivaan muotoon niin,
-että haluamme löytää aikajanalta kohdan $k$, jossa ensimmäistä
-kertaa pystymme muodostamaan $m$ tavaraa ajassa $k$.
-Äskeisessä esimerkissä $k=8$, koska tarvitsemme ainakin 8
-minuuttia aikaa 7 tavaran muodostamiseen.
-Jotta voimme käyttää binäärihakua, meillä täytyy olla keino
-tarkastaa mistä tahansa kohdasta $u$, voimmeko muodostaa
-ainakin $m$ tavaraa, jos meillä on aikaa $u$ minuuttia.
-Seuraava metodi hoitaa asian:
+Voimme pukea tehtävän binäärihaulle sopivaan muotoon niin,
+että $f(x)=1$ tarkalleen silloin, kun voimme muodostaa
+\emph{ainakin} $m$ tavaraa ajassa $x$.
+Tällöin funktion muutoskohta $k$ vastaa tehtävän ratkaisua.
+Entä miten voimme laskea funktion $f$ arvon?
+Jos meillä on $u$ minuuttia aikaa ja jollakin koneella kestää $x_i$
+minuuttia valmistaa yksi tavara, pystymme valmistamaan
+$\lfloor u/x_i \rfloor$ tavaraa kyseistä konetta käyttäen.
+Kun sitten käytössämme on kaikki koneet,
+pystymme valmistamaan yhteensä
+\[ s = \sum_{i=1}^n \lfloor u/x_i \rfloor \]
+tavaraa. Niinpä $f(u)=0$, jos $s<m$,
+ja $f(u)=1$, jos $s \ge m$. Voimme toteuttaa tämän seuraavasti:
 
 \begin{code}
-boolean ok(int u) {
-    int tavarat = 0;
-    for (int i = 1; i <= n; i++) {
-        tavarat += u/x[i];
-    }
-    return tavarat >= m;
+int f(int u) {
+    int s = 0;
+    for (int i = 1; i <= n; i++) s += u/x[i];
+    return (s < m) ? 0 : 1;
 }
 \end{code}
-
-Metodissa on ideana, että jos meillä on $u$ minuuttia aikaa
-ja koneella kestää $x_i$ minuuttia valmistaa yksi tavara,
-pystymme valistamaan $\lfloor u/x_i \rfloor$ tavaraa.
-Tämän ansiosta voimme laskea ylärajan sille,
-montako tavaraa pystymme muodostamaan.
-Jos pystymme muodostamaan ainakin $m$ tavaraa,
-tiedämme, että $u$ minuuttia riittää tavaroiden muodostamiseen
-eli $k \le u$.
 
 Voimme kytkeä tämän metodin suoraan binäärihakuun,
 jolloin tuloksena on tehokas algoritmi tehtävän ratkaisemiseen.
@@ -335,17 +332,17 @@ Tässä tehtävässä helppo valinta on
 \[N = x_1 \cdot m,\]
 mikä vastaa ratkaisua, jossa käytämme vain ensimmäistä konetta.
 On varmaa, että oikea $k$:n arvo on korkeintaan $N$,
-joten binäärihaku kutsuu $O(\log N)$ kertaa metodia $\texttt{ok}$.
+joten binäärihaku kutsuu $O(\log N)$ kertaa metodia $\texttt{f}$.
 Koska jokainen metodin kutsu vie aikaa $O(n)$,
 tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
 
 Huomaa, että $\log N$ on käytännössä pieni luku riippumatta
 siitä, kuinka suuri luku $N$ on.
 Niinpä meidän ei tarvitse murehtia siitä,
-kuinka suuria arvot $x_1$ ja $m$ ovat,
+kuinka suuria $x_1$ ja $m$ ovat,
 vaan voimme luottaa siihen, että algoritmi on tehokas.
 
-\subsection{Alitaulukot}
+\subsection{Alitaulukot, osa 1}
 
 Tarkastellaan sitten tehtävää, jossa annettuna on $n$
 positiivista kokonaislukua sisältävä taulukko ja lisäksi kokonaisluku $x$.
@@ -372,42 +369,40 @@ System.out.println(laskuri);
 
 Binäärihaun avulla voimme kuitenkin parantaa algoritmia niin,
 että aikaa kuluu vain $O(n \log n)$.
-Ideana on korvata yllä olevan koodin sisempi silmukka
-binäärihaulla, joka etsii tehokkaasti kohdasta $i$
+Ideana on korvata koodin sisempi silmukka
+binääri\-haulla, joka etsii tehokkaasti kohdasta $i$
 alkavan alitaulukon, jonka summa on $x$, jos tällainen alitaulukko on olemassa.
 Voimme käyttää binäärihakua, koska tiedämme, että taulukon kaikki
-luvut ovat positiivisia.
+luvut ovat positiivisia, jolloin mitä enemmän lukuja laitamme alitaulukkoon,
+sitä suurempi sen summa on.
 Niinpä voimme etsiä ensimmäisen kohdan $j$,
-jossa alitaulukon summa on ainakin $x$.
+jossa välin $[i,j]$ lukujen summa on ainakin $x$.
 Jos summa on tasan $x$, olemme löytäneet halutun alitaulukon,
 ja muuten tällaista alitaulukkoa ei ole olemassa.
 
 Jotta voimme toteuttaa tehokkaan ratkaisun,
 tarvitsemme kuitenkin vielä yhden aineksen:
-meidän täytyy pystyä laskemaan tehokkaasti,
-mikä on alitaulukon summa,
-kun tiedämme alitaulukon alku- ja loppukohdan.
-Tällainen rakenne on \emph{summataulukko},
-johon on laskettu etukäteen summa jokaisesta taulukon alkuosasta.
-Toisin sanoen summataulukon kohdassa $k$ on taulukon
+meidän täytyy pystyä laskemaan algoritmin aikana tehokkaasti,
+mikä on lukujen summa taulukon välillä $[a,b]$.
+Tarvittava tietorakenne on \emph{summataulukko},
+jossa kohdassa $k$ on taulukon
 lukujen summa taulukon alusta kohtaan $k$ asti.
-
-Voimme muodostaa summataulukon ajassa $O(n)$ seuraavasti:
+Seuraava koodi muodostaa taulukosta summataulukon ajassa $O(n)$:
 
 \begin{code}
-summa[0] = taulu[0];
+st[0] = taulu[0];
 for (int i = 1; i < n; i++) {
-    summa[i] = summa[i-1]+taulu[i];
+    st[i] = st[i-1]+taulu[i];
 }
 \end{code}
 
-Tämän jälkeen pystymme laskemaan $O(1)$-ajassa minkä tahansa
-alitaulukon summan kohdasta $a$ kohtaan $b$ seuraavasti:
+Tämän jälkeen pystymme laskemaan $O(1)$-ajassa,
+mikä on taulukon lukujen summa välillä $[a,b]$:
 
 \begin{code}
 int summa(int a, int b) {
-    if (a == 0) return summa[b];
-    else return summa[b]-summa[a-1];
+    if (a == 0) return st[b];
+    else return st[b]-st[a-1];
 }
 \end{code}
 
@@ -419,9 +414,8 @@ for (int i = 0; i < n; i++) {
     int a = i, b = n-1;
     while (a < b) {
         int u = (a+b)/2;
-        int s = summa(i,u);
-        if (s >= x) b = u;
-        else a = u+1;
+        if (summa(i,u) < x) a = u+1;
+        else b = u;
     }
     if (summa(i,a) == x) laskuri++;
 }
@@ -453,7 +447,7 @@ montako kertaa silmukassa olevaa koodia suoritetaan
 Tämän avulla pystymme joskus määrittämään algoritmin
 aikavaativuuden tarkemmin.
 
-\subsection{Alitaulukot}
+\subsection{Alitaulukot, osa 2}
 
 Tarkastelemme uudestaan tehtävää, jossa meille on annettu
 $n$ positiivisen kokonaisluvun taulukko ja haluamme laskea,
