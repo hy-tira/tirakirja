@@ -247,8 +247,7 @@ ja metodi $\texttt{ok}(u)$ kertoo, päteekö haluttu asia
 kohdassa $u$.
 
 \begin{code}
-int a = 1;
-int b = N;
+int a = 1, b = N;
 while (a < b) {
     int u = (a+b)/2;
     if (ok(u)) b = u;
@@ -333,12 +332,109 @@ jolloin tuloksena on tehokas algoritmi tehtävän ratkaisemiseen.
 Meidän täytyy kuitenkin vielä valita arvo $N$,
 joka on jokin yläraja kohdalle $k$.
 Tässä tehtävässä helppo valinta on
-\[N = x_0 \cdot m,\]
+\[N = x_1 \cdot m,\]
 mikä vastaa ratkaisua, jossa käytämme vain ensimmäistä konetta.
 On varmaa, että oikea $k$:n arvo on korkeintaan $N$,
 joten binäärihaku kutsuu $O(\log N)$ kertaa metodia $\texttt{ok}$.
 Koska jokainen metodin kutsu vie aikaa $O(n)$,
 tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
+
+Huomaa, että $\log N$ on käytännössä pieni luku riippumatta
+siitä, kuinka suuri luku $N$ on.
+Niinpä meidän ei tarvitse murehtia siitä,
+kuinka suuria arvot $x_1$ ja $m$ ovat,
+vaan voimme luottaa siihen, että algoritmi on tehokas.
+
+\subsection{Alitaulukot}
+
+Tarkastellaan sitten tehtävää, jossa annettuna on $n$
+positiivista kokonaislukua sisältävä taulukko ja lisäksi kokonaisluku $x$.
+Haluamme selvittää, monessako yhtenäisessä alitaulukossa
+lukujen summa on $x$.
+Esimerkiksi jos taulukko on $[3,2,1,1,3,1]$ ja $x=4$,
+niin halutut alitaulukot ovat $[2,1,1]$, $[1,3]$ ja $[3,1]$,
+eli vastaus on tässä tapauksessa $3$.
+
+Voimme ratkaista tehtävän helposti ajassa $O(n^2)$
+käymällä läpi kaikki yhtenäiset alitaulukot seuraavasti:
+
+\begin{code}
+int laskuri = 0;
+for (int i = 0; i < n; i++) {
+    int summa = 0;
+    for (int j = i; j < n; j++) {
+        summa += taulu[j];
+        if (summa == x) laskuri++;
+    }
+}
+System.out.println(laskuri);
+\end{code}
+
+Binäärihaun avulla voimme kuitenkin parantaa algoritmia niin,
+että aikaa kuluu vain $O(n \log n)$.
+Ideana on korvata yllä olevan koodin sisempi silmukka
+binäärihaulla, joka etsii tehokkaasti kohdasta $i$
+alkavan alitaulukon, jonka summa on $x$, jos tällainen alitaulukko on olemassa.
+Voimme käyttää binäärihakua, koska tiedämme, että taulukon kaikki
+luvut ovat positiivisia.
+Niinpä voimme etsiä ensimmäisen kohdan $j$,
+jossa alitaulukon summa on ainakin $x$.
+Jos summa on tasan $x$, olemme löytäneet halutun alitaulukon,
+ja muuten tällaista alitaulukkoa ei ole olemassa.
+
+Jotta voimme toteuttaa tehokkaan ratkaisun,
+tarvitsemme kuitenkin vielä yhden aineksen:
+meidän täytyy pystyä laskemaan tehokkaasti,
+mikä on alitaulukon summa,
+kun tiedämme alitaulukon alku- ja loppukohdan.
+Tällainen rakenne on \emph{summataulukko},
+johon on laskettu etukäteen summa jokaisesta taulukon alkuosasta.
+Toisin sanoen summataulukon kohdassa $k$ on taulukon
+lukujen summa taulukon alusta kohtaan $k$ asti.
+
+Voimme muodostaa summataulukon ajassa $O(n)$ seuraavasti:
+
+\begin{code}
+summa[0] = taulu[0];
+for (int i = 1; i < n; i++) {
+    summa[i] = summa[i-1]+taulu[i];
+}
+\end{code}
+
+Tämän jälkeen pystymme laskemaan $O(1)$-ajassa minkä tahansa
+alitaulukon summan kohdasta $a$ kohtaan $b$ seuraavasti:
+
+\begin{code}
+int summa(int a, int b) {
+    if (a == 0) return summa[b];
+    else return summa[b]-summa[a-1];
+}
+\end{code}
+
+Nyt voimme toteuttaa binäärihaun seuraavasti:
+
+\begin{code}
+int laskuri = 0;
+for (int i = 0; i < n; i++) {
+    int a = i, b = n-1;
+    while (a < b) {
+        int u = (a+b)/2;
+        int s = summa(i,u);
+        if (s >= x) b = u;
+        else a = u+1;
+    }
+    if (summa(i,a) == x) laskuri++;
+}
+System.out.println(laskuri);
+\end{code}
+
+Jokaisessa kohdassa $i$ etsimme binäärihaulla väliltä $[i,n-1]$
+ensimmäisen kohdan, jossa alitaulukon summa on ainakin $x$.
+Sitten tarkastamme, onko summa tasan $x$,
+ja jos on, kasvatamme laskuria yhdellä.
+Tuloksena olevan algoritmin aikavaativuus on $O(n \log n)$,
+koska jokainen binäärihaku vie summataulukon ansiosta
+aikaa vain $O(\log n)$.
 
 
 \section{Tasoitettu vaativuus}
