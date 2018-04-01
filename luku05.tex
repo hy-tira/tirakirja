@@ -5,21 +5,20 @@ On selvää, ettei tähän kysymykseen ole helppoa vastausta.
 Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
 tai säveltää hyvää musiikkia.
 
-Tällä kurssilla usein esiintyvä tavoitteemme on
-saada aikaan tehokas algoritmi, joka toimisi ajassa $O(n)$ tai $O(n \log n)$.
-Kun tämä tavoite on tiedossa, voimme ottaa sen algoritmin
-suunnittelun lähtökohdaksi ja rajata sen avulla mahdollisia
+Tämän kurssin keskeinen tavoitteemme on saada aikaan tehokkaita algoritmeja,
+jotka toimivat ajassa $O(n)$ tai $O(n \log n)$.
+Kun tämä tavoite on tiedossa, voimme ottaa sen algoritmien
+suunnittelun lähtökohdaksi ja kartoittaa sen avulla mahdollisia
 lähestymistapoja, joita voimme käyttää.
 
-\section{Tehokkaat algoritmit}
+\section{Perustekniikoita}
 
 Millainen on algoritmi, joka vie aikaa $O(n)$ tai $O(n \log n)$?
-Vaadimme algoritmilta,
-että kun sille annetaan syötteenä $n$ alkiota,
+Tämä tarkoittaa,
+että kun algoritmille annetaan syötteenä $n$ alkiota,
 se saa käyttää jokaisen alkion käsittelyyn
 vain pienen määrän aikaa.
-Tämä tarkoittaa käytännössä, että algoritmissa saa
-esiintyä seuraavan kaltaisia silmukoita:
+Niinpä algoritmissa tulisi esiintyä seuraavan kaltaisia silmukoita:
 
 \begin{code}
 for (int i = 0; i < n; i++) {
@@ -29,8 +28,8 @@ for (int i = 0; i < n; i++) {
 
 Tässä ''jotain nopeaa'' tarkoittaa koodia, joka vie aikaa
 $O(1)$ tai $O(\log n)$.
-Lisäksi koska järjestäminen vie aikaa $O(n \log n)$,
-algoritmi voi tarvittaessa järjestää aineistoa.
+Algoritmi voi myös järjestää aineistoa,
+koska tehokkaat järjestämisalgoritmit vievät aikaa $O(n \log n)$.
 Kovin paljon muuta tehokas algoritmi ei sitten voikaan tehdä.
 Tämä rajoittaa paljon, mitä aineksia voimme laittaa algoritmiin,
 mutta voimme ajatella asiaa myös myönteisesti:
@@ -47,40 +46,32 @@ ja etsimällä riippuvuuksia ja säännöllisyyksiä.
 Jos käy hyvin, huomaamme asioita, jotka pätevät kaikissa ongelman
 tapauksissa, ja voimme hyödyntää niitä koko tehtävän ratkaisemisessa.
 
-Usein matka kohti tehokasta algoritmia etenee pienin askelin.
-Esimerkiksi voimme ensin keksiä algoritmin, joka toimii ajassa $O(2^n)$,
-parantaa sitten aikaan $O(n^2)$ ja lopuksi aikaan $O(n \log n)$.
-Tässä tapauksessa molemmat askeleet ovat merkittäviä:
-ensimmäinen askel muuttaa \emph{eksponentiaalisen} aikavaativuuden
-\emph{polynomiseksi} ja toinen askel parantaa vielä aikavaativuutta niin,
-että tuloksena on tehokas algoritmi.
+\subsection{Algoritmin tehostaminen}
 
-\section{Esimerkkejä}
+Tavallinen tilanne algoritmien suunnittelussa on,
+että meillä annetaan ongelma ja pystymme ratkaisemaan sen
+helposti $O(n^2)$-ajassa ensimmäisellä mieleen tulevalla algoritmilla.
+Haasteena on kuitenkin keksiä tehokkaampi algoritmi,
+joka toimii ajassa $O(n)$ tai $O(n \log n)$.
+Kokemus on osoittanut, että tämä on hyvä tilanne:
+yleensä \emph{pystymme} tehostamaan
+tavalla tai toisella algoritmia,
+kunhan mietimme huolellisesti asiaa.
 
-Seuraavaksi käymme läpi muutamia esimerkkejä,
-joissa saamme aikaan tehokkaan algoritmin tehtävään
-tekemällä havaintoja ja hyödyntämällä niitä algoritmin suunnittelussa.
-
-\subsection{Kierrokset}
-
+Tarkastellaan esimerkkinä seuraavaa tehtävää:
 Annettuna on taulukko, joka sisältää luvut $1,2,\dots,n$
-jossakin järjestyksessä.
-Haluamme kerätä taulukosta luvut pienimmästä suurimpaan.
+jossakin järjestyksessä,
+ja haluamme kerätä luvut pienimmästä suurimpaan.
 Joka kierroksella käymme läpi taulukon vasemmalta
 oikealle ja keräämme mahdollisimman monta seuraavaa lukua.
 Montako kierrosta tarvitsemme yhteensä?
+Esimerkiksi taulukossa $[4,3,1,5,2]$
+tarvitsemme kolme kierrosta:
+ensin keräämme luvut $1$ ja $2$,
+sitten luvun $3$ ja lopuksi luvut $4$ ja $5$.
 
-Esimerkiksi jos taulukon sisältönä on $[4,3,1,5,2]$,
-tarvitsemme kolme kierrosta.
-Ensimmäisellä kierroksella keräämme luvut $1$ ja $2$,
-toisella luvun $3$ ja kolmannella luvut $4$ ja $5$.
-
-Suoraviivainen tapa ratkaista tehtävä on simuloida
-kuvattua prosessia.
-Seuraavassa koodissa muuttuja \texttt{luku} ilmaisee,
-minkä luvun haluamme kerätä seuraavaksi,
-ja muuttuja \texttt{laskuri} pitää kirjaa siitä, montako kertaa
-olemme käyneet taulukon läpi.
+Voimme ratkaista tehtävän helposti suoraviivaisesti $O(n^2)$-ajassa
+simuloimalla tehtävänannon kuvaamaa prosessia:
 
 \begin{code}
 int luku = 1;
@@ -94,15 +85,23 @@ while (luku <= n) {
 System.out.println(laskuri);
 \end{code}
 
-Kuinka nopea tämä algoritmi on?
-Tämä riippuu siitä, montako kierrosta teemme.
-Pahin tapaus on, että taulukko on käänteisessä järjestyksessä,
-jolloin teemme $n$ kierrosta.
-Niinpä algoritmi vie aikaa $O(n^2)$.
+Tässä muuttuja \texttt{luku} kertoo,
+minkä luvun haluamme kerätä seuraavaksi,
+ja muuttuja \texttt{laskuri} laskee,
+montako kierrosta tarvitaan.
+Kierroksia tarvitaan aina korkeintaan $n$,
+koska saamme kerättyä joka kierroksella
+ainakin yhden luvun,
+joten algoritmi toimii ajassa $O(n^2)$.
 
-Jotta voimme ratkaista tehtävän tehokkaasti,
-meidän täytyy löytää nopeammin, missä on seuraava luku,
+Kuinka voisimme sitten tehostaa algoritmia niin,
+että se veisi aikaa vain $O(n)$ tai $O(n \log n)$?
+Algoritmin hitaus johtuu tällä hetkellä pohjimmiltaan siitä,
+että sillä menee kauan aikaa löytää,
+missä kohdassa taulukossa on seuraava luku,
 jonka haluamme kerätä.
+Niinpä jotta voimme ratkaista tehtävän tehokkaasti,
+meidän täytyy jollakin tavalla löytää seuraava kerättävä luku nopeammin.
 Kätevä ratkaisu tähän on luoda aputaulukko,
 joka kertoo jokaisen luvun kohdan:
 
@@ -113,42 +112,57 @@ for (int i = 0; i < n; i++) {
 }
 \end{code}
 
-Nyt olemme jo lähellä tehokasta algoritmia, mutta
-tarvitsemme vielä yhden havainnon.
-Milloin aloitamme uuden kierroksen taulukossa?
-Näin käy tarkalleen silloin, kun seuraavaksi kerättävä
-luku on \emph{aiemmin} taulukossa kuin viimeksi
-keräämämme luku.
+Tämän taulukon avulla saamme selville $O(1)$-ajassa,
+missä kohdassa taulukossa on seuraava kerättävä luku.
+Entä mistä tiedämme, montako kierrosta tarvitsemme?
+Meidän täytyy aloittaa uusi kierros aina silloin,
+kun viimeksi keräämämme luku on myöhemmin taulukossa
+kuin seuraava kerättävä luku.
 Niinpä voimme laskea kierrosten määrän näin:
 
 \begin{code}
 int laskuri = 1;
 for (int i = 2; i <= n; i++) {
-    if (kohta[i-1] < kohta[i]) {
+    if (kohta[i-1] > kohta[i]) {
         laskuri++;
     }
 }
+System.out.println(laskuri);
 \end{code}
 
-Tässä algoritmissa on kaksi silmukkaa, jotka molemmat
-vievät aikaa $O(n)$, joten algoritmin kokonaisaikavaativuus on $O(n)$.
+Tuloksena on algoritmi, jossa on kaksi silmukkaa,
+joista molemmat vievät aikaa vain $O(n)$.
+Niinpä algoritmin aikavaativuus on $O(n)$,
+eli olemme saavuttaneet tavoitteemme.
 
-\subsection{Kolikot}
+\subsection{Ahneet algoritmit}
 
+Tehokkaan algoritmin saaminen aikaan vaatii usein,
+että pystymme tekemään algoritmissa jotain \emph{ahneesti}.
+Tämä tarkoittaa, että meidän ei tarvitse käydä läpi
+kaikkia mahdollisia ratkaisuja vaan riittää muodostaa
+yksi ratkaisu, jonka pystymme rakentamaan askel askeleelta
+käsittelemällä syötteenä annetun aineiston jossain sopivassa järjestyksessä.
+
+Tarkastellaan esimerkkinä seuraavaa tehtävää:
 Meillä on $n$ kolikkoa, jonka jokaisen arvo on positiivinen kokonaisluku,
-ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa
-valitsemalla jonkin osajoukon kolikoista.
+ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa kolikoista.
 Esimerkiksi jos kolikot ovat $[1,2,2,9]$, voimme muodostaa summat
 $1$, $2$, $1+2=3$, $2+2=4$ ja $1+2+2=5$,
 mutta emme voi muodostaa summaa $6$.
 
-Tässä tehtävässä vaikeutena on, että mahdollisten osajoukkojen
-määrä on suuri: voimme muodostaa $n$ kolikosta $2^n$ osajoukkoa.
-Niinpä ei ole mitenkään realistinen ratkaisu,
-että alkaisimme käydä läpi osajoukkoja yksitellen,
-vaan tarvitsemme jotain selvästi parempaa.
+Tämä tehtävä vaikuttaa ensi silmäykseltä vaikealta,
+koska mahdollisia tapoja summien muodostamiseen on niin paljon.
+Kun meillä on $n$ kolikkoa, voimme valita $2^n$ tavalla
+kolikoiden osajoukon, joista syntyy jokin summa.
+On selvää, että algoritmista tulee liian hidas,
+jos se käy läpi kaikki tavat summan muodostamiseen.
+Jotta saisimme aikaan tehokkaan algoritmin,
+meidän tulisi huomata ongelmasta jotain,
+jonka ansiosta pystymme välttämään kolikoiden osajoukkojen läpikäymisen.
 
-Tehtävän ratkaisua helpottaa, kun lähdemme liikkeelle pienistä summista.
+Yksi hyvä tapa lähestyä tehtävää ja saada jotain tietoa ongelman luonteesta
+on lähteä ensin liikkeelle pienistä summista.
 Haluamme muodostaa ensin summan $1$, ja tähän tarvitsemme välttämättä
 kolikon, jonka arvo on $1$.
 Sitten haluamme muodostaa summan $2$, mihin tarvitsemme joko
@@ -156,21 +170,28 @@ toisen kolikon $1$ tai kolikon $2$, ja sen jälkeen summan $3$,
 joka voi muodostua kolikoista $1+1+1$, $1+2$ tai $3$.
 Voisimme jatkaa eteenpäin, mutta vaihtoehtoja alkaa tulla
 paljon ja meidän on vaikeaa hallita niitä.
+Kuitenkin näyttää siltä, että meidän kannattaa aloittaa
+summien muodostaminen pienistä kolikoista.
 
-Meidän kannattaakin nyt alkaa miettiä ongelmaa yleisemmin.
+Seuraavaksi meidän kannattaa alkaa miettiä ongelmaa yleisemmin.
 Oletetaan, että meillä on joukko kolikoita,
 joista voimme muodostaa kaikki summat $1,2,\dots,s$.
-Voimmeko ottaa mukaan vielä uuden kolikon niin,
+Voisimmeko ottaa mukaan vielä jonkin uuden kolikon arvoltaan $u$ niin,
 että saamme muodostettua myös summan $s+1$?
-Tämä on mahdollista tarkalleen silloin, kun saatavilla on kolikko,
-jonka arvo on $s+1$ tai \emph{pienempi}.
-Jos uuden kolikon arvo on $u$, pystymme muodostamaan tämän jälkeen
-kaikki summat $1,2,\dots,s+u$.
-Lisäksi jos meillä on monia vaihtoehtoja valita uusi kolikko,
-voimme valita minkä tahansa niistä.
-Erityisesti voimme päättää, että valitsemme aina
-\emph{pienimmän} mahdollisen kolikon.
+Tämä on mahdollista tarkalleen silloin, kun $u \le s+1$,
+eli uuden kolikon arvo saa olla enintään $s+1$.
+Jos tämä ehto pätee, voimme ottaa kolikon mukaan ja
+pystymme muodostamaan tämän jälkeen kaikki summat $1,2,\dots,s+u$.
+Esimerkiksi jos meillä on kolikot $[1,1,3]$, voimme muodostaa
+niistä summat $1,2,\dots,5$ ja uuden kolikon arvon tulee olla enintään $6$.
+Jos uuden kolikon arvo on vaikkapa $4$, voimme ottaa sen mukaan ja
+pystymme muodostamaan sen jälkeen kolikoista $[1,1,3,4]$ summat $1,2,\dots,9$.
 
+Lisäksi jos meillä on monia vaihtoehtoja valita uusi kolikko,
+ei ole väliä, missä järjestyksessä otamme ne mukaan vaan
+voimme valita seuraavaksi minkä tahansa niistä.
+Erityisesti voimme päättää, että valitsemme aina
+seuraavaksi ahneesti \emph{pienimmän} mahdollisen kolikon.
 Nyt meillä on koossa kaikki tarvittavat ainekset
 tehokasta algoritmia varten.
 Aloitamme tyhjästä joukosta ja lisäämme siihen kolikoita
@@ -180,8 +201,8 @@ summa.
 Seuraava koodi toteuttaa algoritmin:
 
 \begin{code}
-Arrays.sort(kolikot);
 long summa = 0;
+Arrays.sort(kolikot);
 for (int i = 0; i < n; i++) {
     if (kolikot[i] <= summa+1) {
         summa += kolikot[i];
@@ -192,111 +213,123 @@ for (int i = 0; i < n; i++) {
 System.out.println(summa+1);
 \end{code}
 
-Algoritmin aikavaativuus on $O(n \log n)$, koska se
-järjestää ensin taulukon ja käy sitten läpi taulukon alkiot.
+Kuten koodista näkyy, meidän ei tarvitse oikeastaan pitää yllä
+kolikoiden joukkoa, vaan riittää säilyttää tietoa
+joukossa olevien kolikoiden summasta muuttujassa \texttt{summa}.
+Käymme läpi kolikot järjestyksessä pienimmästä suurimpaan
+kasvatamme summaa, jos se on mahdollista.
+Kun vastaan tulee ensimmäinen kolikko, jota emme voi ottaa mukaan,
+silmukka päättyy.
+Tuloksena on algoritmi, jonka aikavaativuus on $O(n \log n)$.
 
-\subsection{Alitaulukot}
+\section{Binäärihaku}
 
-Annettuna on taulukko, jossa on $n$ kokonaislukua,
-ja haluamme laskea, monellako tavalla voimme valita
-taulukosta yhtenäisen alitaulukon, jossa lukujen summa on $0$.
-Jotta tehtävä olisi kiinnostava, taulukossa voi olla
-mitä tahansa kokonaislukuja, myös negatiivisia.
 
-Tarkastellaan esimerkkinä taulukkoa $[1,-1,2,-1,3]$.
-Tässä tapauksessa meillä on kaksi mahdollista tapaa
-valita yhtenäinen alitaulukko, jossa lukujen summa on $0$:
-$[1,-1]$ ja $[-1,2,-1]$.
 
-Voimme ratkaista tehtävän helposti käymällä läpi
-kaikki mahdolliset alitaulukot kahdella silmukalla:
+\section{Tasoitettu vaativuus}
 
-\begin{code}
-int laskuri = 0;
-for (int i = 0; i < n; i++) {
-    int summa = 0;
-    for (int j = i; j < n; j++) {
-        summa += taulu[j];
-        if (summa == 0) laskuri++;
-    }
-}
-System.out.println(laskuri);
-\end{code}
-
-Tämä ratkaisu ei ole kuitenkaan tyydyttävä,
-koska se vie aikaa $O(n^2)$.
-
-Ensimmäinen hyödyllinen havainto on,
-että taulukossa voi olla \emph{paljon} alitaulukoita,
-joiden summa on $0$.
-Itse asiassa jos taulukossa on vain lukua $0$,
-niin \emph{jokaisen} alitaulukon summa on $0$.
-Tämä tarkoittaa, että haluttuja alitaulukoita voi olla
-$O(n^2)$ kappaletta ja jos laskemme niitä yksitellen,
-algoritmimme on auttamatta liian hidas.
-Meidän täytyy siis keksiä keino, miten voimme laskea
-alitaulukoita ryhmissä.
-
-Merkitään $s(k)$ taulukon \emph{alkuosan} summaa
-eli taulukon lukujen summaa taulukon alusta kohtaan $k$ asti
-ja lisäksi $s(-1)=0$.
-Nyt jos meillä on alitaulukko kohdasta $a$ kohtaan $b$,
-voimme laskea sen summan kaavalla $s(b)-s(a-1)$.
-Jos haluamme, että tämä summa on $0$, täytyy päteä
-$s(a-1)=s(b)$.
-Tämän havainnon ansiosta voimme muuttaa tehtävän
-mukavampaan muotoon: meidän täytyy vain laskea,
-monellako tavalla voimme valita kaksi taulukon alkuosaa
-niin, että niiden summat ovat samat.
-
-Tarkastellaan asiaa esimerkkitaulukossamme $[1,-1,2,-1,3]$.
-Laskemme ensin alkuosien summat, jotka ovat $[0,1,0,2,1,4]$
-(mukaan lukien tyhjä alkuosa ensimmäisenä).
-Alitaulukon $[1,-1]$ tapauksessa $s(-1)=s(1)=0$ ja
-alitaulukon $[-1,2,-1]$ tapauksessa $s(0)=s(3)$.
-Nämä ovat ainoat tavat valita kaksi alkuosan summaa niin,
-että molemmat summat ovat samat.
-
-Jotta saamme aikaan tehokkaan algoritmin, tarvitsemme vielä
-yhden aineksen: järjestämisen.
-Kun olemme laskeneet kaikki alkuosien summat,
-voimme järjestää ne, minkä jälkeen yhtä suuret summat
-ovat vierekkäin. Tämän jälkeen voimme laskea tehokkaasti
-jokaisesta summasta, monellako tavalla voimme valita
-kaksi tällaista alkuosaa.
-
-Seuraava koodi rakentaa taulukon, jossa on kaikki alkuosien summat:
-
-\begin{code}
-int[] summat = new int[n+1];
-for (int i = 0; i < n; i++) {
-    summat[i+1] = summat[i]+taulu[i];
-}
-\end{code}
-
-Huomaa, että taulukko on yhden suurempi kuin alkuperäinen taulukko
-ja sen ensimmäinen alkio on aina $0$: tyhjän alkuosan summa.
-
-Tämän jälkeen voimme käydä summat läpi seuraavasti:
-
-\begin{code}
-Arrays.sort(summat);
-int toisto = 0;
-int laskuri = 0;
-for (int i = 0; i < n+1; i++) {
-    if (i == 0 || summat[i-1] != summat[i]) {
-        toisto = 0;
-    } else {
-        toisto++;
-    }
-    laskuri += toisto;
-}
-System.out.println(laskuri);
-\end{code}
-
-Tässä muuttuja \texttt{toisto} pitää kirjaa, montako kertaa
-taulukon nykyinen luku on esiintynyt aiemmin.
-Tämä kertoo, monellako tavalla voimme valita parin,
-jossa on nykyinen summa ja aiempi sama summa.
-Tuloksena oleva algoritmi vie aikaa $O(n \log n)$,
-koska sen työläin vaihe on taulukon järjestäminen.
+% \subsection{Alitaulukot}
+% 
+% Annettuna on taulukko, jossa on $n$ kokonaislukua,
+% ja haluamme laskea, monellako tavalla voimme valita
+% taulukosta yhtenäisen alitaulukon, jossa lukujen summa on $0$.
+% Jotta tehtävä olisi kiinnostava, taulukossa voi olla
+% mitä tahansa kokonaislukuja, myös negatiivisia.
+% 
+% Tarkastellaan esimerkkinä taulukkoa $[1,-1,2,-1,3]$.
+% Tässä tapauksessa meillä on kaksi mahdollista tapaa
+% valita yhtenäinen alitaulukko, jossa lukujen summa on $0$:
+% $[1,-1]$ ja $[-1,2,-1]$.
+% 
+% Voimme ratkaista tehtävän helposti käymällä läpi
+% kaikki mahdolliset alitaulukot kahdella silmukalla:
+% 
+% \begin{code}
+% int laskuri = 0;
+% for (int i = 0; i < n; i++) {
+%     int summa = 0;
+%     for (int j = i; j < n; j++) {
+%         summa += taulu[j];
+%         if (summa == 0) laskuri++;
+%     }
+% }
+% System.out.println(laskuri);
+% \end{code}
+% 
+% Tämä ratkaisu ei ole kuitenkaan tyydyttävä,
+% koska se vie aikaa $O(n^2)$.
+% 
+% Ensimmäinen hyödyllinen havainto on,
+% että taulukossa voi olla \emph{paljon} alitaulukoita,
+% joiden summa on $0$.
+% Itse asiassa jos taulukossa on vain lukua $0$,
+% niin \emph{jokaisen} alitaulukon summa on $0$.
+% Tämä tarkoittaa, että haluttuja alitaulukoita voi olla
+% $O(n^2)$ kappaletta ja jos laskemme niitä yksitellen,
+% algoritmimme on auttamatta liian hidas.
+% Meidän täytyy siis keksiä keino, miten voimme laskea
+% alitaulukoita ryhmissä.
+% 
+% Merkitään $s(k)$ taulukon \emph{alkuosan} summaa
+% eli taulukon lukujen summaa taulukon alusta kohtaan $k$ asti
+% ja lisäksi $s(-1)=0$.
+% Nyt jos meillä on alitaulukko kohdasta $a$ kohtaan $b$,
+% voimme laskea sen summan kaavalla $s(b)-s(a-1)$.
+% Jos haluamme, että tämä summa on $0$, täytyy päteä
+% $s(a-1)=s(b)$.
+% Tämän havainnon ansiosta voimme muuttaa tehtävän
+% mukavampaan muotoon: meidän täytyy vain laskea,
+% monellako tavalla voimme valita kaksi taulukon alkuosaa
+% niin, että niiden summat ovat samat.
+% 
+% Tarkastellaan asiaa esimerkkitaulukossamme $[1,-1,2,-1,3]$.
+% Laskemme ensin alkuosien summat, jotka ovat $[0,1,0,2,1,4]$
+% (mukaan lukien tyhjä alkuosa ensimmäisenä).
+% Alitaulukon $[1,-1]$ tapauksessa $s(-1)=s(1)=0$ ja
+% alitaulukon $[-1,2,-1]$ tapauksessa $s(0)=s(3)$.
+% Nämä ovat ainoat tavat valita kaksi alkuosan summaa niin,
+% että molemmat summat ovat samat.
+% 
+% Jotta saamme aikaan tehokkaan algoritmin, tarvitsemme vielä
+% yhden aineksen: järjestämisen.
+% Kun olemme laskeneet kaikki alkuosien summat,
+% voimme järjestää ne, minkä jälkeen yhtä suuret summat
+% ovat vierekkäin. Tämän jälkeen voimme laskea tehokkaasti
+% jokaisesta summasta, monellako tavalla voimme valita
+% kaksi tällaista alkuosaa.
+% 
+% Seuraava koodi rakentaa taulukon, jossa on kaikki alkuosien summat:
+% 
+% \begin{code}
+% int[] summat = new int[n+1];
+% for (int i = 0; i < n; i++) {
+%     summat[i+1] = summat[i]+taulu[i];
+% }
+% \end{code}
+% 
+% Huomaa, että taulukko on yhden suurempi kuin alkuperäinen taulukko
+% ja sen ensimmäinen alkio on aina $0$: tyhjän alkuosan summa.
+% 
+% Tämän jälkeen voimme käydä summat läpi seuraavasti:
+% 
+% \begin{code}
+% Arrays.sort(summat);
+% int toisto = 0;
+% int laskuri = 0;
+% for (int i = 0; i < n+1; i++) {
+%     if (i == 0 || summat[i-1] != summat[i]) {
+%         toisto = 0;
+%     } else {
+%         toisto++;
+%     }
+%     laskuri += toisto;
+% }
+% System.out.println(laskuri);
+% \end{code}
+% 
+% Tässä muuttuja \texttt{toisto} pitää kirjaa, montako kertaa
+% taulukon nykyinen luku on esiintynyt aiemmin.
+% Tämä kertoo, monellako tavalla voimme valita parin,
+% jossa on nykyinen summa ja aiempi sama summa.
+% Tuloksena oleva algoritmi vie aikaa $O(n \log n)$,
+% koska sen työläin vaihe on taulukon järjestäminen.
