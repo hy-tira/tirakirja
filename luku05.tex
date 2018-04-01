@@ -436,8 +436,70 @@ Tuloksena olevan algoritmin aikavaativuus on $O(n \log n)$,
 koska jokainen binäärihaku vie summataulukon ansiosta
 aikaa vain $O(\log n)$.
 
+\section{Tasoitettu analyysi}
 
-\section{Tasoitettu vaativuus}
+Tähän mennessä olemme arvioineet algoritmien tehokkuutta
+lähinnä määrit\-tämällä jokaiselle silmukalle ylärajan,
+montako kertaa siinä olevaa koodia suoritetaan.
+Tämä onkin yleensä hyvä tapa laskea aikavaativuus,
+mutta joskus ongelmaksi voi tulla, että silmukan kierrosten
+määrä vaihtelee algoritmin eri vaiheissa eikä yläraja
+anna oikeaa kuvaa tehokkuudesta.
+
+Seuraavaksi tutustumme tekniikkaan nimeltä
+\emph{tasoitettu analyysi}, jossa koetamme arvioida tarkemmin,
+montako kertaa silmukassa olevaa koodia suoritetaan
+\emph{yhteensä} algoritmin suorituksen aikana.
+Tämän avulla pystymme joskus määrittämään algoritmin
+aikavaativuuden tarkemmin.
+
+\subsection{Alitaulukot}
+
+Tarkastelemme uudestaan tehtävää, jossa meille on annettu
+$n$ positiivisen kokonaisluvun taulukko ja haluamme laskea,
+monenko yhtenäisen alitaulukon summa on $x$.
+Olemme jo ratkaisseet tehtävän ajassa $O(n \log n)$
+binäärihaun ja summataulukon avulla,
+mutta nyt ratkaisemme tehtävän vielä tehokkaammin
+ajassa $O(n)$ esimerkkinä tasoitetusta analyysista.
+
+Ideana on, että meillä on kaksi muuttujaa $i$ ja $j$,
+jotka osoittavat taulukkoon.
+Muuttujat aloittavat taulukon alusta,
+ja jokaisella vuorolla $i$ siirtyy askeleen oikealle
+ja $j$ siirtyy oikealle niin kauan, kunnes välin $[i,j]$
+lukujen summa on ainakin $x$.
+Jos lukujen summa on tasan $x$, olemme löytäneet yhden
+alitaulukon, jonka summa on $x$.
+Seuraava koodi toteuttaa algoritmin:
+
+\begin{code}
+int j = -1;
+int summa = 0;
+int laskuri = 0;
+for (int i = 0; i < n; i++) {
+    while (j+1 < n && summa < x) {
+        j++;
+        summa += taulu[j];
+    }
+    if (summa == x) laskuri++;
+    summa -= taulu[i];
+}
+System.out.println(laskuri);
+\end{code}
+
+Tästä koodista on ensin näkemältä vaikeaa määrittää algoritmin
+aikavaativuutta, koska ei ole varmaa, montako kierrosta
+\texttt{while}-silmukkaa suoritetaan milloinkin.
+Voimme kuitenkin huomata, että muuttujan $j$ arvo on aluksi $-1$,
+jokaisella silmukan kierroksella $j$ kasvaa yhdellä
+ja silmukkaan mennään vain jos $j$ on enintään $n-1$.
+Niinpä voimme päätellä, että silmukassa oleva koodi suoritetaan \emph{yhteensä}
+vain $O(n)$ kertaa, mikä tarkoittaa sitä,
+että koko algoritmin aikavaativuus on $O(n)$.
+
+\subsection{X}
+
 
 % \subsection{Alitaulukot}
 % 
@@ -499,6 +561,7 @@ aikaa vain $O(\log n)$.
 % Alitaulukon $[1,-1]$ tapauksessa $s(-1)=s(1)=0$ ja
 % alitaulukon $[-1,2,-1]$ tapauksessa $s(0)=s(3)$.
 % Nämä ovat ainoat tavat valita kaksi alkuosan summaa niin,
+
 % että molemmat summat ovat samat.
 % 
 % Jotta saamme aikaan tehokkaan algoritmin, tarvitsemme vielä
