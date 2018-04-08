@@ -401,8 +401,9 @@ esitietovaatimusten mukaisesti.
 
 Kun tiedämme, että suunnattu verkko on syklitön,
 voimme ratkaista monia verkko-ongelmia tehokkaasti
-dynaamisen ohjelmoinnin avulla.
-Esimerkkejä tällaisista ongelmista ovat:
+dynaamisen ohjelmoinnin avulla,
+koska voimme käsitellä solmut topologisen
+järjestyksen mukaisesti.
 
 \begin{itemize}
 \item Kuinka pitkä on lyhin polku solmusta $a$ solmuun $b$?
@@ -652,7 +653,7 @@ Mikä neuvoksi, jos kuitenkin haluaisimme tehdä näin?
 
 Joskus voimme selvityä tilanteesta etsimällä
 verkon vahvasti yhtenäiset komponentit.
-Vahvasti yhtenäinen komponentti on joukko verkon solmuja,
+\emph{Vahvasti yhtenäinen komponentti} on joukko verkon solmuja,
 jossa pätee, että mistä tahansa solmusta on polku
 mihin tahansa solmuun emmekä voi lisätä enempää solmuja joukkoon.
 Kun esitämme jokaisen vahvasti yhtenäisen komponentin
@@ -927,18 +928,15 @@ tämä ei haittaa, koska olemme jo muodostaneet
 komponentin $B$ eikä komponenttiin $A$ tule ylimääräisiä solmuja
 komponentista $B$.
 
-\section{Esimerkki: Luolapeli}
+\subsection{Esimerkki: Luolapeli}
 
 Olemme pelissä luolastossa, joka muodostuu luolista ja niitä yhdistävistä
 käytävistä. Jokainen käytävä on yksisuuntainen.
 Jokaisessa luolassa on yksi aarre, jonka voimme ottaa mukaamme,
 jos kuljemme luolan kautta.
-
 Peli alkaa luolasta $a$ ja päättyy luolaan $b$.
 Montako aarretta voimme saada, jos valitsemme parhaan
 mahdollisen reitin?
-
-\subsubsection{Ratkaisu}
 
 Voimme mallintaa tilanteen verkkona, jonka solmut ovat luolia ja
 kaaret ovat käytäviä. Haluamme löytää reitin solmusta $a$ solmuun $b$
