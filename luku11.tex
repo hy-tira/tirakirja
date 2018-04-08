@@ -533,29 +533,28 @@ vie aikaa $O(n+m)$.
 
 \subsection{Ongelmat verkkoina}
 
-Itse asiassa \emph{minkä tahansa} dynaamisen ohjelmoinnin ratkaisun voi
-esittää suunnattuna syklittömänä verkkona.
-Tällöin jokainen verkon solmu vastaa yhtä laskettavaa funktion arvoa,
-ja kaaret näyttävät, miten funktion arvot riippuvat toisistaan.
+Itse asiassa voimme esittää dynaamisen ohjelmoinnin toiminnan
+\emph{aina} suunnattuna syklittömänä verkkona.
+Ideana on, että muodostamme verkon, jossa jokainen solmu on
+yksi osaongelma ja kaaret ilmaisevat,
+miten osaongelmat liittyvät toisiinsa.
 
-Tarkastellaan esimerkkinä tuttua tehtävää,
-jossa haluamme muodostaa rahasumman annetuista kolikoista.
-Esimerkiksi jos kolikot ovat $\{1,3,4\}$ ja rahasumma on 6,
-ratkaisut ovat seuraavat:
+Tarkastellaan esimerkkinä luvusta 9.1 tuttua tehtävää,
+jossa haluamme laskea, monellako tavalla voimme muodostaa
+korkeuden $n$ tornin, kun voimme käyttää palikoita,
+joiden korkeudet ovat $1$, $2$ ja $3$.
+Voimme esittää tämän tehtävän verkkona niin,
+että solmut ovat tornien korkeuksia ja kaaret kertovat,
+kuinka voimme rakentaa tornia palikoista.
+Jokaisesta solmusta $x$ on kaari solmuihin
+$x+1$, $x+2$ ja $x+3$,
+ja polkujen määrä solmusta $0$ solmuun $n$
+on yhtä suuri kuin tornin rakentamistapojen määrä.
 
-\begin{multicols}{2}
-\begin{itemize}
-\item $4+1+1$
-\item $1+4+1$
-\item $1+1+4$
-\item $3+3$
-\item $3+1+1+1$
-\item $1+3+1+1$
-\item $1+1+3+1$
-\item $1+1+1+3$
-\item $1+1+1+1+1+1$
-\end{itemize}
-\end{multicols}
+Esimerkiksi kuva \ref{fig:verkol} näyttää verkon,
+joka vastaa tapausta $n=6$.
+Tässä verkossa solmusta $0$ solmuun $6$ on $24$ polkua,
+eli voimme rakentaa korkeuden $6$ tornin $24$ tavalla.
 
 \begin{figure}
 \center
@@ -585,20 +584,9 @@ ratkaisut ovat seuraavat:
 \path[draw,thick,->] (3) edge [bend right] (6);
 \end{tikzpicture}
 \end{center}
-\caption{Kolikkotehtävä esitettynä verkkona.}
+\caption{Tornitehtävä esitettynä verkkona.}
 \label{fig:verkol}
 \end{figure}
-
-Voimme esittää tämän tehtävän verkkona niin,
-että solmut ovat rahasummia ja kaaret kertovat,
-kuinka voimme valita kolikkoja.
-Esimerkiksi kuva \ref{fig:verkol} näyttää verkon,
-joka vastaa yllä olevaa tapausta.
-Tässä verkossa lyhin polku solmusta 0 solmuun 6
-on $0 \rightarrow 3 \rightarrow 6$, joka
-vastaa pienimmän kolikkomäärän ratkaisua $3+3$,
-ja polkujen yhteismäärä solmusta 0 solmuun 6 on 9,
-joka on sama kuin kaikkien ratkaisuiden määrä.
 
 Olemme saaneet siis uuden tavan luonnehtia dynaamista ohjelmointia:
 voimme käyttää dynaamista ohjelmointia,
