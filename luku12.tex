@@ -1,954 +1,691 @@
-\chapter{Syklittömät verkot}
+\chapter{Reitinhaku}
 
-Verkkoalgoritmien suunnittelussa haasteena ovat verkossa olevat syklit,
-koska syklien takia meidän on usein hankalaa päättää,
-missä järjestyksessä kävisimme läpi verkon solmuja.
-Jos voimme olettaa, että verkossa ei ole syklejä,
-voimmekin ratkaista monia verkko-ongelmia helpommin kuin yleisissä verkoissa,
-joissa saattaa olla syklejä.
+Reitinhaku on keskeinen algoritmiikan ongelma, jossa haluamme
+löytää parhaan reitin paikasta $a$ paikkaan $b$.
+Esimerkiksi voimme haluta etsiä nopeimman tavan
+matkustaa kotoa yliopistolle
+tai halvimman lentoyhteyden kaupungista $a$
+kaupunkiin $b$.
+Verkkojen kielellä sanomme, että tavoitteemme on löytää \emph{lyhin polku}
+solmusta $a$ solmuun $b$.
 
-Tässä luvussa keskitymme verkkoihin, jotka ovat suunnattuja
-ja syklit\-tömiä.
-Englanniksi tällaisia verkkoja kutsutaan usein nimellä \emph{dag},
-joka tulee sanoista \emph{directed acyclic graph}.
-Voimme muodostaa tällaisille verkoille topologisen
-järjestyksen, joka antaa solmuille luontevan käsittelyjärjestyksen,
-ja käyttää dynaamista ohjelmointia verkko-ongelmien ratkaisemiseen.
+Jos verkon kaarilla ei ole painoja,
+voimme löytää lyhimmät polut helposti leveyshaun avulla,
+kuten olemme tehneet edellisessä luvussa.
+Tässä luvussa kuitenkin keskitymme tilanteeseen,
+jossa verkon kaarilla on painot.
+Tässä tilanteessa tarvitsemme kehittyneempiä algoritmeja
+lyhimpien polkujen löytämiseen.
 
-\section{Topologinen järjestys}
+Tutustumme kolmeen keskeiseen reitinhakumenetelmään:
 
-Suunnatun verkon \emph{topologinen järjestys} on solmujen järjestys,
-jossa pätee, että jos solmusta $a$ on kaari solmuun $b$,
-niin solmu $a$ on ennen solmua $b$ järjestyksessä.
-Topologinen järjestys voidaan esittää listana,
-joka ilmaisee solmujen järjestyksen.
+\begin{itemize}
+\item \textbf{Bellman–Fordin algoritmi} etsii lyhimmät polut
+lähtösolmusta kaikkiin muihin solmuihin ajassa $O(nm)$.
+\item \textbf{Dijkstran algoritmi} etsii lyhimmät polut
+lähtösolmusta kaikkiin muihin solmuihin \emph{tehokkaammin} ajassa $O((n+m) \log n)$
+olettaen, että verkossa ei ole negatiivisen painoisia kaaria.
+\item \textbf{Floyd–Warshallin algoritmi} etsii lyhimmät polut
+\emph{kaikkien} verkon solmuparien välillä ajassa $O(n^3)$.
+\end{itemize}
+
+\section{Bellman–Fordin algoritmi}
+
+Bellman–Fordin algoritmi laskee jokaiselle verkon solmulle,
+kuinka pitkä on lyhin polku lähtösolmusta $x$ solmuun.
+Algoritmi pitää yllä verkon solmuille arvioita,
+mikä on etäisyys solmusta $x$ kyseiseen solmuun.
+Aluksi etäisyys lähtösolmuun on 0 ja etäisyys kaikkiin muihin
+solmuihin on $\infty$ (ääretön).
+Sitten algoritmi alkaa parantaa etäisyyksiä
+hyödyntämällä verkon kaaria.
+
+Algoritmi muodostuu $n-1$ kierroksesta, joista jokainen käy läpi
+kaikki verkon kaaret.
+Jokaisen kaaren $a \rightarrow b$ kohdalla algoritmi tarkastaa,
+voiko kaaren avulla parantaa etäisyyttä solmusta $x$ solmuun $b$
+kulkemalla solmun $a$ kautta.
+Jos näin on, algoritmi merkitsee uuden etäisyyden muistiin.
+Algoritmin päätteeksi jokaisen solmun etäisyys on sama kuin
+lyhimmän polun pituus solmusta $x$ kyseiseen solmuun.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
-\begin{scope}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\small
+\newcommand\verkko[6]{
 \node[draw, circle] (1) at (0,-1) {$1$};
 \node[draw, circle] (2) at (2,0) {$2$};
 \node[draw, circle] (3) at (2,-2) {$3$};
 \node[draw, circle] (4) at (4,0) {$4$};
 \node[draw, circle] (5) at (4,-2) {$5$};
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (2);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (5) -- (4);
-\end{scope}
-\begin{scope}[xshift=7cm]
-\node[draw, circle] (1) at (0,-1) {$1$};
-\node[draw, circle] (3) at (2,-1) {$3$};
-\node[draw, circle] (5) at (4,-1) {$5$};
-\node[draw, circle] (2) at (6,-1) {$2$};
-\node[draw, circle] (4) at (8,-1) {$4$};
-\path[draw,thick,->] (1) edge [bend right] (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) edge [bend left] (2);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (3) edge [bend left] (4);
-\path[draw,thick,->] (5) edge [bend right] (4);
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{Verkko ja yksi sen topologinen järjestys $[1,3,5,2,4]$.}
-\label{fig:topjar}
-\end{figure}
-
-Kuvassa \ref{fig:topjar} on esimerkkinä verkko ja yksi sen topologinen
-järjestys $[1,3,5,2,4]$.
-Huomaa, että verkolla on usein monta mahdollista
-topologista järjestystä.
-Esimerkiksi tässä verkossa myös $[5,1,3,2,4]$,
-$[1,5,3,2,4]$ ja $[1,3,2,5,4]$
-ovat topologisia järjestyksiä, koska voimme valita monella tavalla,
-missä vaiheessa solmu $5$ on järjestyksessä.
-
-Jos suunnattu verkko on syklitön, voimme muodostaa sille
-aina topologisen järjestyksen.
-Toisaalta jos verkossa on sykli,
-topologista järjestystä ei voi olla olemassa,
-koska emme voi valita mitään syklissä olevaa solmua
-järjestykseen ennen toista.
-Seuraavaksi tutustumme algoritmiin,
-jonka avulla voimme muodostaa topologisen järjestyksen
-tai todeta, että verkossa on sykli eikä järjestys ole mahdollinen.
-
-\subsection{Järjestyksen muodostaminen}
-
-Voimme muodostaa topologisen järjestyksen suorittamalla
-joukon syvyyshakuja, joissa jokaisella solmulla on kolme mahdollista tilaa:
-
-\begin{itemize}
-\item tila 0 (valkoinen): solmussa ei ole käyty
-\item tila 1 (harmaa): solmun käsittely on kesken
-\item tila 2 (musta): solmun käsittely on valmis
-\end{itemize}
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.6]
-\scriptsize
-\newcommand\verkko[6]{
-\node[draw, circle, fill=#2] (1) at (0,-1) {$1$};
-\node[draw, circle, fill=#3] (2) at (2,0) {$2$};
-\node[draw, circle, fill=#4] (3) at (2,-2) {$3$};
-\node[draw, circle, fill=#5] (4) at (4,0) {$4$};
-\node[draw, circle, fill=#6] (5) at (4,-2) {$5$};
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (2);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (5) -- (4);
-\node at (2,-3) {vaihe #1};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:8] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:2] {} (3);
+\path[draw,thick,->] (3) -- node[font=\small,label=right:4] {} (2);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:5] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:7] {} (5);
+\path[draw,thick,->] (5) -- node[font=\small,label=right:3] {} (4);
+\node[color=red] at (0,-0.25) {$#2$};
+\node[color=red] at (2,0.75) {$#3$};
+\node[color=red] at (2,-2.75) {$#4$};
+\node[color=red] at (4,0.75) {$#5$};
+\node[color=red] at (4,-2.75) {$#6$};
+\node at (2,-3.5) {vaihe #1};
 }
 \begin{scope}
-\verkko{1}{lightgray}{lightgray}{white}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\end{scope}
-\begin{scope}[xshift=6cm]
-\verkko{2}{lightgray}{lightgray}{white}{lightgray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
-\end{scope}
-\begin{scope}[xshift=12cm]
-\verkko{3}{lightgray}{lightgray}{white}{gray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\end{scope}
-\begin{scope}[xshift=18cm]
-\verkko{4}{lightgray}{gray}{white}{gray}{white}
-\end{scope}
-\begin{scope}[yshift=-5cm]
-\verkko{5}{lightgray}{gray}{lightgray}{gray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\end{scope}
-\begin{scope}[yshift=-5cm,xshift=6cm]
-\verkko{6}{lightgray}{gray}{lightgray}{gray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (2);
-\end{scope}
-\begin{scope}[yshift=-5cm,xshift=12cm]
-\verkko{7}{lightgray}{gray}{lightgray}{gray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (4);
-\end{scope}
-\begin{scope}[yshift=-5cm,xshift=18cm]
-\verkko{8}{lightgray}{gray}{gray}{gray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\end{scope}
-\begin{scope}[yshift=-10cm]
-\verkko{9}{gray}{gray}{gray}{gray}{white}
-\end{scope}
-\begin{scope}[yshift=-10cm,xshift=6cm]
-\verkko{10}{gray}{gray}{gray}{gray}{lightgray}
-\path[draw=red,thick,->,line width=2pt] (5) -- (4);
-\end{scope}
-\begin{scope}[yshift=-10cm,xshift=12cm]
-\verkko{11}{gray}{gray}{gray}{gray}{gray}
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{Esimerkki topologisen järjestyksen muodostamisesta.}
-\label{fig:topesi}
-\end{figure}
-
-Algoritmin alussa jokainen solmu on valkoinen.
-Käymme läpi kaikki verkon solmut ja aloitamme aina syvyyshaun
-solmusta, jos se on valkoinen.
-Aina kun saavumme uuteen solmuun, sen väri muuttuu
-valkoisesta harmaaksi.
-Sitten kun olemme käsitelleet kaikki solmusta lähtevät
-kaaret, solmun väri muuttuu harmaasta mustaksi.
-
-Algoritmin aikana luomme listan, johon lisäämme solmun
-aina silloin, kun sen väri muuttuu mustaksi.
-Tämä lista käänteisessä järjestyksessä on verkon
-topologinen järjestys.
-Kuitenkin jos saavumme jossain vaiheessa uudestaan harmaaseen solmuun,
-verkossa on sykli eikä topologista järjestystä voi muodostaa.
-
-Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
-järjestyksen esimerkkiverkossamme.
-Tässä tapauksessa suoritamme kaksi syvyyshakua,
-joista ensimmäinen alkaa solmusta 1 ja toinen alkaa solmusta 5.
-Algoritmin tuloksena on lista $[4,2,3,1,5]$,
-joten käänteinen lista $[5,1,3,2,4]$ on verkon topologinen järjestys.
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.6]
-\scriptsize
-\newcommand\verkko[6]{
-\node[draw, circle, fill=#2] (1) at (0,-1) {$1$};
-\node[draw, circle, fill=#3] (2) at (2,0) {$2$};
-\node[draw, circle, fill=#4] (3) at (2,-2) {$3$};
-\node[draw, circle, fill=#5] (4) at (4,0) {$4$};
-\node[draw, circle, fill=#6] (5) at (4,-2) {$5$};
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (2);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (4) -- (3);
-\path[draw,thick,->] (5) -- (4);
-\node at (2,-3) {vaihe #1};
-}
-\begin{scope}
-\verkko{1}{lightgray}{lightgray}{white}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\end{scope}
-\begin{scope}[xshift=6cm]
-\verkko{2}{lightgray}{lightgray}{white}{lightgray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
-\end{scope}
-\begin{scope}[xshift=12cm]
-\verkko{3}{lightgray}{lightgray}{lightgray}{lightgray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
-\path[draw=red,thick,->,line width=2pt] (4) -- (3);
-\end{scope}
-\begin{scope}[xshift=18cm]
-\verkko{4}{lightgray}{lightgray}{lightgray}{lightgray}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
-\path[draw=red,thick,->,line width=2pt] (4) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (2);
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{Topologista järjestystä ei voi muodostaa syklin takia.}
-\label{fig:topsyk}
-\end{figure}
-
-Kuva \ref{fig:topsyk} näyttää puolestaan esimerkin tilanteesta,
-jossa topologista järjestystä ei voi muodostaa verkossa
-olevan syklin takia.
-Tässä verkossa on sykli $2 \rightarrow 4 \rightarrow 3 \rightarrow 2$,
-jonka olemassaolon huomaamme siitä, että tulemme uudestaan
-harmaaseen solmuun 2.
-
-Algoritmi käy läpi verkon solmut ja kaaret syvyyshaun avulla,
-joten sen aikavaativuus on $O(n+m)$.
-
-\subsection{Miksi algoritmi toimii?}
-
-Miten voimme tietää, että tässä kuvattu algoritmi toimii
-oikein kaikissa mahdollisissa tilanteissa?
-
-Tarkastellaan ensin tilannetta, jossa verkossa on sykli.
-Jos algoritmi saapuu uudestaan harmaaseen solmuun $x$,
-on selvää, että verkossa on sykli,
-koska algoritmi on onnistunut pääsemään solmusta $x$
-takaisin itseensä kulkemalla jotain polkua verkossa.
-
-Toisaalta jos verkossa on sykli, algoritmi saapuu
-jossain vaiheessa ensimmäistä kertaa johonkin sykliin
-kuuluvaan solmuun $x$. Sen jälkeen se käy läpi solmusta
-lähtevät kaaret ja aikanaan saapuu varmasti uudestaan
-solmuun $x$. Niinpä algoritmi onnistuu tunnistamaan,
-jos verkossa on sykli.
-
-Jos sitten verkossa ei ole sykliä, algoritmi lisää jokaisen
-solmun listalle sen jälkeen, kun se on käsitellyt
-kaikki solmusta lähtevät kaaret.
-Jos siis verkossa on kaari $a \rightarrow b$,
-solmu $b$ lisätään listalle ennen solmua $a$.
-Lopuksi lista käännetään, jolloin solmu $a$
-tulee ennen solmua $b$.
-Tämän ansiosta jokaiselle kaarelle $a \rightarrow b$ pätee,
-että solmu $a$ on järjestyksessä ennen solmua $b$.
-
-\section{Esimerkki: Kurssivalinnat}
-
-Yliopiston kurssit ja niiden esitietovaatimukset voidaan esittää 
-suunnattuna verkkona, jonka solmut ovat kursseja ja kaaret kuvaavat,
-missä järjestyksessä kurssit tulisi suorittaa.
-Kuvassa \ref{fig:kuresi} on esimerkkinä joitakin
-tietojenkäsittely\-tieteen kandiohjelman kursseja.
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7]
-\node[draw, rectangle] (1) at (0,0) {OHPE};
-\node[draw, rectangle] (2) at (-4,-2) {OHJA};
-\node[draw, rectangle] (3) at (4,-2) {TITO};
-\node[draw, rectangle] (4) at (0,-2) {TIPE};
-\node[draw, rectangle] (5) at (-8,-2) {JYM};
-\node[draw, rectangle] (6) at (-4,-4) {TIRA};
-\node[draw, rectangle] (7) at (-4,-6) {LAMA};
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (1) -- (4);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (2) -- (6);
-\path[draw,thick,->] (5) -- (6);
-\path[draw,thick,->] (5) -- (7);
-\path[draw,thick,->] (6) -- (7);
-\end{tikzpicture}
-\end{center}
-\caption{Kurssien esitietovaatimukset verkkona.}
-\label{fig:kuresi}
-\end{figure}
-
-Tällaisen verkon topologinen järjestys kertoo meille
-yhden tavan suorittaa kurssit esitietovaatimusten mukaisesti.
-Kuva \ref{fig:kurjar} näyttää, kuinka voimme suorittaa
-kurssit esimerkkitilanteessamme.
-Mahdollinen suoritusjärjestys on siis
-OHPE, OHJA, TIPE, TITO, JYM, TIRA, LAMA.
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7]
-\node[draw, rectangle] (1) at (0,0) {OHPE};
-\node[draw, rectangle] (2) at (2.5,0) {OHJA};
-\node[draw, rectangle] (4) at (5,0) {TIPE};
-\node[draw, rectangle] (3) at (7.5,0) {TITO};
-\node[draw, rectangle] (5) at (10,0) {JYM};
-\node[draw, rectangle] (6) at (12.5,0) {TIRA};
-\node[draw, rectangle] (7) at (15,0) {LAMA};
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) edge [bend left] (3);
-\path[draw,thick,->] (1) edge [bend right] (4);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (2) edge [bend left] (6);
-\path[draw,thick,->] (5) -- (6);
-\path[draw,thick,->] (5) edge [bend right] (7);
-\path[draw,thick,->] (6) -- (7);
-\end{tikzpicture}
-\end{center}
-\caption{Topologinen järjestys antaa kurssien suoritusjärjestyksen.}
-\label{fig:kurjar}
-\end{figure}
-
-On selvää, että kurssien ja esitietovaatimusten muodostaman
-verkon tulee olla syklitön, jotta kurssit voi suorittaa halutulla tavalla.
-Jos verkossa on sykli, topologista järjestystä ei ole olemassa
-eikä meillä ole mitään mahdollisuutta suorittaa kursseja
-esitietovaatimusten mukaisesti.
-
-\section{Dynaaminen ohjelmointi}
-
-Kun tiedämme, että suunnattu verkko on syklitön,
-voimme ratkaista monia verkko-ongelmia tehokkaasti
-dynaamisen ohjelmoinnin avulla.
-Esimerkkejä tällaisista ongelmista ovat:
-
-\begin{itemize}
-\item Kuinka pitkä on lyhin polku solmusta $a$ solmuun $b$?
-\item Kuinka pitkä on pisin polku solmusta $a$ solmuun $b$?
-\item Montako erilaista polkua on solmusta $a$ solmuun $b$?
-\end{itemize}
-
-Esimerkiksi kuvan \ref{fig:verpol} verkossa on yhteensä
-kolme polkua solmusta 1 solmuun 4:
-$1 \rightarrow 2 \rightarrow 4$,
-$1 \rightarrow 3 \rightarrow 2 \rightarrow 4$ ja
-$1 \rightarrow 3 \rightarrow 4$.
-Lyhin polun pituus on 2 ja pisin polun pituus on 3.
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7]
-\begin{scope}
-\node[draw, circle] (1) at (0,-1) {$1$};
-\node[draw, circle] (2) at (2,0) {$2$};
-\node[draw, circle] (3) at (2,-2) {$3$};
-\node[draw, circle] (4) at (4,0) {$4$};
-\node[draw, circle] (5) at (4,-2) {$5$};
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (2);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (5) -- (4);
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\verkko{1}{0}{\infty}{\infty}{\infty}{\infty}
+%\path[draw=red,thick,->,line width=2pt] (1) -- (2);
 \end{scope}
 \begin{scope}[xshift=6.5cm]
-\node[draw, circle] (1) at (0,-1) {$1$};
-\node[draw, circle] (2) at (2,0) {$2$};
-\node[draw, circle] (3) at (2,-2) {$3$};
-\node[draw, circle] (4) at (4,0) {$4$};
-\node[draw, circle] (5) at (4,-2) {$5$};
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (2);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (5) -- (4);
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\verkko{2}{0}{8}{\infty}{\infty}{\infty}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
 \end{scope}
 \begin{scope}[xshift=13cm]
+\verkko{3}{0}{8}{2}{\infty}{\infty}
+\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\end{scope}
+\begin{scope}[yshift=-5.5cm]
+\verkko{4}{0}{8}{2}{13}{\infty}
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=6.5cm]
+\verkko{5}{0}{6}{2}{13}{\infty}
+\path[draw=red,thick,->,line width=2pt] (3) -- (2);
+\end{scope}
+\begin{scope}[yshift=-5.5cm,xshift=13cm]
+\verkko{6}{0}{6}{2}{13}{9}
+\path[draw=red,thick,->,line width=2pt] (3) -- (5);
+\end{scope}
+\begin{scope}[yshift=-11cm]
+\verkko{7}{0}{6}{2}{12}{9}
+\path[draw=red,thick,->,line width=2pt] (5) -- (4);
+\end{scope}
+\begin{scope}[yshift=-11cm,xshift=6.5cm]
+\verkko{8}{0}{6}{2}{11}{9}
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Esimerkki Bellman–Fordin algoritmin toiminnasta.}
+\label{fig:belfor}
+\end{figure}
+
+Kuva \ref{fig:belfor} näyttää esimerkin Bellman–Fordin algoritmin toiminnasta.
+Tässä lähtösolmuna on solmu 1, ja haluamme selvittää siitä
+lyhimmät polut muihin solmuihin.
+Jokaisen solmun vieressä on ilmoitettu sen etäisyysarvio:
+alussa etäisyys solmuun 1 on 0 ja etäisyys kaikkiin muihin solmuihin on ääretön.
+
+Jokainen etäisyyden muutos näkyy kuvassa omana vaiheenaan.
+Esimerkiksi ensimmäinen muutos on,
+että saamme parannettua etäisyyttä solmuun 2,
+koska voimme kulkea kaarta $1 \rightarrow 2$.
+Tässä tapauksessa vanha etäisyys on $\infty$ ja uudeksi
+etäisyydeksi tulee $8$.
+Tässä esimerkissä vaiheiden 2--7 muutokset tapahtuvat
+kierroksella 1 ja vaiheen 8 muutos tapahtuu kierroksella 2.
+Tämän jälkeen kaikki etäisyydet ovat lopullisia,
+eikä niihin tule enää muutoksia myöhemmillä kierroksilla.
+
+Kuvasta voimme nähdä esimerkiksi,
+että lyhin polku solmusta 1 solmuun 4 on painoltaan 11.
+Tämä vastaa polkua $1 \rightarrow 3 \rightarrow 2 \rightarrow 4$.
+
+\subsection{Analyysi}
+
+Bellman–Fordin algoritmi muodostuu $n-1$ kierroksesta,
+joista jokainen käy läpi verkon $m$ kaarta,
+joten on helppoa nähdä, että algoritmi toimii ajassa $O(nm)$.
+Mutta miksi on varmaa, että $n-1$ kierroksen jälkeen olemme
+määrittäneet kaikki lyhimmät polut?
+
+Ensimmäinen havainto on,
+että $n$ solmun verkossa jokainen lyhin polku voi
+sisältää enintään $n-1$ kaarta.
+Jos polkuun kuuluisi $n$ tai enemmän kaaria,
+jokin solmu esiintyisi polulla monta kertaa.
+Tämä ei ole kuitenkaan mahdollista,
+koska ei olisi järkeä kulkea monta kertaa saman solmun kautta,
+kun haluamme saada aikaan lyhimmän polun.
+
+Toinen havainto on, että jos lyhin polku solmusta $s_1$ solmuun $s_k$ on
+$s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k$,
+niin myös lyhin polku solmusta $s_1$ solmuun $s_2$ on $s_1 \rightarrow s_2$,
+lyhin polku solmusta $s_1$ solmuun $s_3$ on $s_1 \rightarrow s_2 \rightarrow s_3$, jne.,
+eli jokainen polun alkuosa on myös lyhin polku vastaavaan solmuun.
+Jos näin ei olisi, voisimme parantaa lyhintä polkua solmusta $s_1$ solmuun $s_k$
+parantamalla jotain polun alkuosaa.
+
+Tarkastellaan nyt, mitä tapahtuu algoritmin kierroksissa.
+Ensimmäisen kierroksen jälkeen olemme löytäneet lyhimmät polut,
+joissa on yksi kaari.
+Toisen kierroksen jälkeen olemme löytäneet lyhimmät polut,
+joissa on kaksi kaarta.
+Sama jatkuu, kunnes $n-1$ kierroksen jälkeen olemme löytäneet
+lyhimmät polut, joissa on $n-1$ kaarta.
+Koska missään lyhimmässä polussa ei voi olla enempää kaaria,
+olemme löytäneet kaikki lyhimmät polut.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,->] (1) -- node[font=\small,label=above:1] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=left:3] {} (3);
+\path[draw,thick,<-] (3) -- node[font=\small,label=below:4] {} (4);
+\path[draw,thick,->] (2) -- node[font=\small,label=left:$-7$] {} (4);
+\path[draw,thick,<-] (2) -- node[font=\small,label=above:2] {} (5);
+\path[draw,thick,->] (4) -- node[font=\small,label=below:3] {} (5);
+\end{tikzpicture}
+\end{center}
+\caption{Negatiivinen sykli $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$,
+jonka avulla voimme lyhentää polkuja loputtomasti.}
+\label{fig:belsyk}
+\end{figure}
+
+Huomaa, että Bellman–Fordin algoritmi ei toimi järkevästi,
+jos verkossa on \emph{negatiivinen sykli}
+eli sykli, jonka kokonaispituus on negatiivinen.
+Esimerkki tästä on kuvan \ref{fig:belsyk} verkossa oleva sykli
+$2 \rightarrow 4 \rightarrow 5 \rightarrow 2$, jonka paino on $-2$.
+Negatiivisen syklin avulla voimme lyhentää polkuja loputtomasti kulkemalla
+sykliä uudestaan ja uudestaan, eikä lyhimmän polun pituudella ole alarajaa.
+Voimme havaita negatiivisen syklin olemassaolon suorittamalla
+algoritmia $n$ kierrosta tavallisen $n-1$ sijaan.
+Jos viimeisellä kierroksella jokin etäisyys pienenee,
+verkossa on negatiivien sykli.
+
+\subsection{Toteutus}
+
+Bellman–Fordin algoritmi on kätevää toteuttaa käyttäen verkon
+kaarilista\-esitystä. Meillä on siis lista
+
+\begin{code}
+ArrayList<Kaari> kaaret = new ArrayList<>();
+\end{code}
+
+jonka jokainen alkio vastaa yhtä kaarta.
+Lisäksi määrittelemme taulukon
+
+\begin{code}
+int[] etaisyys = new int[n+1];
+\end{code}
+
+joka pitää kirjaa solmujen etäisyyksistä.
+Alustamme taulukon näin:
+
+\begin{code}
+for (int i = 1; i <= n; i++) {
+    etaisyys[i] = 1e9;
+}
+etaisyys[x] = 0;
+\end{code}
+
+Koska Javassa ei ole käsitettä ''ääretön'', käytämme sen sijasta
+suurta lukua $10^9$, eli oletamme, että kaikki etäisyydet
+ovat pienempiä kuin $10^9$.
+Jos etäisyydet voivat olla suurempia, tätä lukua täytyy muuttaa.
+
+Tämän jälkeen voimme toteuttaa algoritmin näin:
+
+\begin{code}
+for (int i = 1; i <= n-1; i++) {
+    for (Kaari kaari : kaaret) {
+        int vanha = etaisyys[kaari.loppu];
+        int uusi = etaisyys[kaari.alku]+kaari.paino;
+        etaisyys[kaari.loppu] = Math.min(vanha, uusi);
+    }
+}
+\end{code}
+
+Entä jos haluamme myös saada selville,
+mitä kaaria on lyhimmällä polulla solmusta $x$ solmuun $y$?
+Tällöin voimme laajentaa algoritmia niin,
+että se pitää yllä myös taulukkoa
+
+\begin{code}
+int[] edellinen = new int[n+1];
+\end{code}
+
+joka kertoo jokaiselle solmulle, mikä on sitä edeltävä
+solmu lyhimmällä polulla.
+Päivitämme tätä taulukkoa aina silloin,
+kun jokin etäisyys pienenee.
+Taulukon avulla voimme muodostaa käänteisesti
+lyhimmän polun mihin tahansa solmuun.
+
+\section{Dijkstran algoritmi}
+
+Dijkstran algoritmi on Bellman–Fordin algoritmin tehostettu versio,
+jonka toiminta perustuu oletukseen, että verkossa ei ole
+negatiivisen painoisia kaaria.
+Bellman–Fordin algoritmin tapaan Dijkstran algoritmi pitää
+yllä arvioita etäisyyksistä lähtösolmusta $x$ muihin solmuihin.
+Erona on kuitenkin tapa, miten Dijkstran algoritmi parantaa etäisyyksiä.
+
+Algoritmi etsii jokaisessa vaiheessa solmun, jota ei ole vielä
+käsitelty ja jonka etäisyys on pienin.
+Sitten algoritmi käy läpi kaikki solmusta lähtevät kaaret ja
+koettaa parantaa etäisyyksiä niiden avulla.
+Tämän jälkeen solmu on käsitelty eikä sen etäisyys enää
+muutu algoritmin aikana.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\small
+\newcommand\verkko[6]{
 \node[draw, circle] (1) at (0,-1) {$1$};
 \node[draw, circle] (2) at (2,0) {$2$};
 \node[draw, circle] (3) at (2,-2) {$3$};
 \node[draw, circle] (4) at (4,0) {$4$};
 \node[draw, circle] (5) at (4,-2) {$5$};
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (2);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (5) -- (4);
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (4);
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{Mahdolliset polut solmusta 1 solmuun 4.}
-\label{fig:verpol}
-\end{figure}
-
-Osoittautuu, että voimme ratkaista
-kaikki yllä mainitut ongelmat
-ajassa $O(n+m)$ dynaamisella ohjelmoinnilla,
-kun oletamme, että verkko on suunnattu ja syklitön.
-Yleisessä verkossa tilanne on toinen:
-voimme etsiä lyhimmän polun Dijkstran algoritmilla
-ajassa $O(m \log n)$, mutta pisimmän polun etsimiseen
-tai polkujen yhteismäärän laskemiseen ei tunneta
-mitään tehokasta menetelmää\footnote{Oletamme, että sama solmu
-ei saa esiintyä polulla monta kertaa. Ilman tätä oletusta
-pisin polku voi olla äärettömän pituinen ja erilaisia
-polkuja voi olla ääretön määrä.}.
-
-\subsection{Polkujen käsittely}
-
-Jotta voimme käyttää dynaamista ohjelmointia,
-meidän täytyy määritellä ongelmat rekursiivisesti.
-Sopivat funktiot ovat seuraavat:
-
-\begin{itemize}
-\item $\texttt{lyhin}(x)$: lyhimmän polun pituus solmusta $a$ solmuun $x$
-\item $\texttt{pisin}(x)$: pisimmän polun pituus solmusta $a$ solmuun $x$
-\item $\texttt{maara}(x)$: polkujen yhteismäärä solmusta $a$ solmuun $x$
-\end{itemize}
-
-Esimerkiksi kuvan \ref{fig:verpol} tilanteessa lähtösolmu on $a=1$
-ja funktiot saavat arvot $\texttt{lyhin}(4)=2$,
-$\texttt{pisin}(4)=3$ ja $\texttt{maara}(4)=3$.
-
-Funktioiden pohjatapaukset ovat seuraavat:
-
-\begin{align*}
-\texttt{lyhin}(a)&=0 \\
-\texttt{pisin}(a)&=0 \\
-\texttt{maara}(a)&=1
-\end{align*}
-
-Tämä tarkoittaa tilannetta, jossa haluamme kulkea solmusta $a$
-solmuun $a$. Koska polulla ei voi olla kaaria,
-sekä lyhimmän että pisimmän polun pituus on 0.
-Polkujen määrä on 1, koska ainoa polku on tyhjä polku.
-
-Seuraavaksi määrittelemme yleisen tapauksen solmulle $x$.
-Oletamme, että solmuun $x$ pääsee kaarella solmuista,
-joiden tunnukset ovat $u_1,u_2,\dots,u_k$.
-Tällöin saamme seuraavat rekursiiviset kaavat:
-
-\begin{align*}
-\texttt{lyhin}(x)&=\min(\texttt{lyhin}(u_1),\texttt{lyhin}(u_2),\dots,\texttt{lyhin}(u_k))+1 \\
-\texttt{pisin}(x)&=\max(\texttt{pisin}(u_1),\texttt{pisin}(u_2),\dots,\texttt{pisin}(u_k))+1 \\
-\texttt{maara}(x)&=\texttt{maara}(u_1)+\texttt{maara}(u_2)+\dots+\texttt{maara}(u_k)
-\end{align*}
-
-Voimme perustella kaavat seuraavasti:
-Kun haluamme muodostaa lyhimmän polun solmusta $a$ solmuun $x$,
-meidän tulee valita polun edellinen solmu niin,
-että siihen on lyhin matka solmusta $a$.
-Niinpä valitsemme minimin edellisistä arvoista
-ja lisäämme siihen yhden.
-Vastaavasti kun haluamme muodostaa pisimmän polun,
-valitsemme maksimin edellisistä arvoista ja lisäämme siihen yhden.
-Kun taas haluamme laskea polkujen yhteismäärän,
-laskemme yhteen kaikki solmuun johtavat polut.
-
-Tarkastellaan esimerkkinä kuvan \ref{fig:verpol} verkkoa,
-jossa olemme kiinnostuneita poluista solmusta 1 solmuun 4.
-Kun haluamme laskea funktioiden arvot solmulle 4,
-otamme huomioon kaaret
-$2 \rightarrow 4$, $3 \rightarrow 4$ ja $5 \rightarrow 4$,
-joita kulkemalla pääsee muista solmuista solmuun 4.
-Oletamme, että olemme laskeneet aiemmin funktioiden
-arvot solmuille 2, 3 ja 5.
-
-Nyt esimerkiksi lyhin polku solmusta 1 solmuun 4 on pituudeltaan
-\[ \texttt{lyhin}(4)=\min(\texttt{lyhin}(2),\texttt{lyhin}(3),\texttt{lyhin}(5))+1.\]
-Aiemmat arvot ovat $\texttt{lyhin}(2)=1$, $\texttt{lyhin}(3)=2$ ja $\texttt{lyhin}(5)=\infty$.
-Valitsemme näistä pienimmän, eli tulemme solmuun 4 solmusta 2.
-Tämä tuottaa polun, jonka pituus on $\texttt{lyhin}(2)+1=2$.
-Vastaavalla tavalla voimme laskea arvot $\texttt{pisin}(4)$ ja $\texttt{maara}(4)$.
-
-Huomaa, että jos solmuun $x$ ei tule kaarta mistään solmusta,
-oletamme, että $\texttt{lyhin}(x)=\infty$ ja $\texttt{pisin}(x)=-\infty$.
-Tämä on luonteva tulkinta, kun laskemme minimin tai maksimin
-tyhjälle joukolle.
-Tämän ansiosta emme koskaan muodosta polkua,
-joka ei ala solmusta $a$.
-
-Koska tiedämme, että verkko on syklitön,
-voimme laskea rekursiivisten funktioiden arvot
-tehokkaasti dynaamisella ohjelmoinnilla.
-Oleellista on, että emme voi joutua koskaan silmukkaan
-laskiessamme arvoja.
-Käytännössä voimme laskea arvot solmujen
-topologisessa järjestyksessä.
-Tällä tavalla saamme kuhunkin ongelmaan ratkaisun, joka
-vie aikaa $O(n+m)$.
-
-\subsection{Ongelmat verkkoina}
-
-Itse asiassa \emph{minkä tahansa} dynaamisen ohjelmoinnin ratkaisun voi
-esittää suunnattuna syklittömänä verkkona.
-Tällöin jokainen verkon solmu vastaa yhtä laskettavaa funktion arvoa,
-ja kaaret näyttävät, miten funktion arvot riippuvat toisistaan.
-
-Tarkastellaan esimerkkinä tuttua tehtävää,
-jossa haluamme muodostaa rahasumman annetuista kolikoista.
-Esimerkiksi jos kolikot ovat $\{1,3,4\}$ ja rahasumma on 6,
-ratkaisut ovat seuraavat:
-
-\begin{multicols}{2}
-\begin{itemize}
-\item $4+1+1$
-\item $1+4+1$
-\item $1+1+4$
-\item $3+3$
-\item $3+1+1+1$
-\item $1+3+1+1$
-\item $1+1+3+1$
-\item $1+1+1+3$
-\item $1+1+1+1+1+1$
-\end{itemize}
-\end{multicols}
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7]
-\node[draw, circle] (0) at (0,0) {$0$};
-\node[draw, circle] (1) at (2,0) {$1$};
-\node[draw, circle] (2) at (4,0) {$2$};
-\node[draw, circle] (3) at (6,0) {$3$};
-\node[draw, circle] (4) at (8,0) {$4$};
-\node[draw, circle] (5) at (10,0) {$5$};
-\node[draw, circle] (6) at (12,0) {$6$};
-\path[draw,thick,->] (0) -- (1);
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (2) -- (3);
-\path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (4) -- (5);
-\path[draw,thick,->] (5) -- (6);
-\path[draw,thick,->] (0) edge [bend left] (2);
-\path[draw,thick,->] (1) edge [bend left] (3);
-\path[draw,thick,->] (2) edge [bend left] (4);
-\path[draw,thick,->] (3) edge [bend left] (5);
-\path[draw,thick,->] (4) edge [bend left] (6);
-\path[draw,thick,->] (0) edge [bend right] (3);
-\path[draw,thick,->] (1) edge [bend right] (4);
-\path[draw,thick,->] (2) edge [bend right] (5);
-\path[draw,thick,->] (3) edge [bend right] (6);
-\end{tikzpicture}
-\end{center}
-\caption{Kolikkotehtävä esitettynä verkkona.}
-\label{fig:verkol}
-\end{figure}
-
-Voimme esittää tämän tehtävän verkkona niin,
-että solmut ovat rahasummia ja kaaret kertovat,
-kuinka voimme valita kolikkoja.
-Esimerkiksi kuva \ref{fig:verkol} näyttää verkon,
-joka vastaa yllä olevaa tapausta.
-Tässä verkossa lyhin polku solmusta 0 solmuun 6
-on $0 \rightarrow 3 \rightarrow 6$, joka
-vastaa pienimmän kolikkomäärän ratkaisua $3+3$,
-ja polkujen yhteismäärä solmusta 0 solmuun 6 on 9,
-joka on sama kuin kaikkien ratkaisuiden määrä.
-
-Olemme saaneet siis uuden tavan luonnehtia dynaamista ohjelmointia:
-voimme käyttää dynaamista ohjelmointia,
-jos pystymme esittämään ongelman suunnattuna syklittömänä verkkona.
-
-\section{Vahvasti yhtenäisyys}
-
-Jos suunnatussa verkossa on sykli,
-emme voi muodostaa sille topologista järjestystä
-emmekä käyttää dynaamista ohjelmointia.
-Mikä neuvoksi, jos kuitenkin haluaisimme tehdä näin?
-
-Joskus voimme selvityä tilanteesta etsimällä
-verkon vahvasti yhtenäiset komponentit.
-Vahvasti yhtenäinen komponentti on joukko verkon solmuja,
-jossa pätee, että mistä tahansa solmusta on polku
-mihin tahansa solmuun emmekä voi lisätä enempää solmuja joukkoon.
-Kun esitämme jokaisen vahvasti yhtenäisen komponentin
-yhtenä solmuna, saamme selville verkon syvärakenteen,
-joka on aina syklitön verkko.
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7]
-\begin{scope}
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (0,-2) {$2$};
-\node[draw, circle] (3) at (2,0) {$3$};
-\node[draw, circle] (4) at (2,-2) {$4$};
-\node[draw, circle] (5) at (4,0) {$5$};
-\node[draw, circle] (6) at (4,-2) {$6$};
-
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (4) -- (2);
-\path[draw,thick,->] (2) -- (1);
-\path[draw,thick,->] (3) -- (2);
-
-\path[draw,thick,->] (5) edge [bend left] (6);
-\path[draw,thick,->] (6) edge [bend left] (5);
-
-\path[draw,thick,->] (3) -- (5);
-\path[draw,thick,->] (4) -- (6);
-
-\draw[red,dashed,thick,line width=2pt] (-0.75,0.75) rectangle (2.75,-2.75);
-\draw[red,dashed,thick,line width=2pt] (3.25,0.75) rectangle (4.75,-2.75);
-
-\node at (2,-3.5) {(a)};
-\end{scope}
-\begin{scope}[xshift=8cm,yshift=-1cm]
-\node[draw,rectangle] (1) at (0,0) {$\{1,2,3,4\}$};
-\node[draw,rectangle] (2) at (4,0) {$\{5,6\}$};
-\path[draw,thick,->] (1) -- (2);
-\node at (2,-2.5) {(b)};
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{(a) Verkon vahvasti yhtenäiset komponentit.
-(b) Komponenttiverkko, joka kuvaa verkon syvärakenteen.}
-\label{fig:vahkom}
-\end{figure}
-
-Kuvassa \ref{fig:vahkom} on esimerkkinä verkko, joka muodostuu
-kahdesta vahvasti yhtenäisestä komponentista.
-Ensimmäinen komponentti on $\{1,2,3,4\}$
-ja toinen komponentti on $\{5,6\}$.
-Komponenteista muodostuu syklitön komponenttiverkko,
-jossa on kaari solmusta $\{1,2,3,4\}$ solmuun $\{5,6\}$.
-
-Seuraavaksi tutustumme Kosarajun algoritmiin,
-jonka avulla pystymme muodostamaan tehokkaasti suunnatun
-verkon vahvasti yhtenäiset komponentit ja niitä
-vastaavan komponenttiverkon.
-
-\subsection{Kosarajun algoritmi}
-
-Kosarajun algoritmi muodostuu kahdesta verkon läpikäynnistä.
-Ensimmäinen läpikäynti muistuttaa topologisen järjestyksen
-etsimistä ja tuottaa listan solmuista.
-Toinen läpikäynti muodostaa vahvasti yhtenäiset komponentit
-ensimmäisen läpikäynnin tuottaman listan avulla.
-
-Algoritmin ensimmäinen läpikäynti aloittaa vuorollaan
-syvyyshaun jokaisesta solmusta, jota ei ole vielä käsitelty.
-Kun saavumme solmuun, käymme ensin läpi kaikki
-solmusta lähtevät kaaret ja lisäämme tämän jälkeen solmun listalle.
-Toimimme siis kuten topologisen järjestyksen muodostamisessa,
-mutta emme välitä, jos tulemme uudestaan samaan solmuun.
-
-Algoritmin toisen läpikäynnin alussa
-käännämme jokaisen verkon kaaren suunnan.
-Tämän jälkeen käsittelemme ensimmäisen läpikäynnin tuottaman
-solmujen listan kääntei\-sessä järjestyksessä.
-Jokaisen solmun kohdalla muodostamme uuden vahvasti yhtenäisen
-komponentin, jossa on kaikki vielä käsittelemät\-tömät solmut,
-joihin pääsemme solmusta.
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.6]
-\scriptsize
-\newcommand\verkko[7]{
-\node[draw, circle, fill=#2] (1) at (0,0) {$1$};
-\node[draw, circle, fill=#3] (2) at (0,-2) {$2$};
-\node[draw, circle, fill=#4] (3) at (2,0) {$3$};
-\node[draw, circle, fill=#5] (4) at (2,-2) {$4$};
-\node[draw, circle, fill=#6] (5) at (4,0) {$5$};
-\node[draw, circle, fill=#7] (6) at (4,-2) {$6$};
-
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (4) -- (2);
-\path[draw,thick,->] (2) -- (1);
-\path[draw,thick,->] (3) -- (2);
-\path[draw,thick,->] (5) edge [bend left] (6);
-\path[draw,thick,->] (6) edge [bend left] (5);
-\path[draw,thick,->] (3) -- (5);
-\path[draw,thick,->] (4) -- (6);
-
-\node at (2,-3) {vaihe #1};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:8] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:2] {} (3);
+\path[draw,thick,->] (3) -- node[font=\small,label=right:4] {} (2);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:5] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:7] {} (5);
+\path[draw,thick,->] (5) -- node[font=\small,label=right:3] {} (4);
+\node[color=red] at (0,-0.25) {$#2$};
+\node[color=red] at (2,0.75) {$#3$};
+\node[color=red] at (2,-2.75) {$#4$};
+\node[color=red] at (4,0.75) {$#5$};
+\node[color=red] at (4,-2.75) {$#6$};
+\node at (2,-3.5) {vaihe #1};
 }
 \begin{scope}
-\verkko{1}{lightgray}{white}{white}{white}{white}{white}
+\verkko{1}{0}{\infty}{\infty}{\infty}{\infty}
 \end{scope}
-\begin{scope}[xshift=6cm]
-\verkko{2}{lightgray}{white}{lightgray}{white}{white}{white}
+\begin{scope}[xshift=6.5cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\verkko{2}{0}{8}{2}{\infty}{\infty}
+\path[draw=red,thick,->,line width=2pt] (1) -- (2);
 \path[draw=red,thick,->,line width=2pt] (1) -- (3);
 \end{scope}
-\begin{scope}[xshift=12cm]
-\verkko{3}{lightgray}{gray}{lightgray}{white}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\begin{scope}[xshift=13cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\verkko{3}{0}{6}{2}{\infty}{9}
 \path[draw=red,thick,->,line width=2pt] (3) -- (2);
+\path[draw=red,thick,->,line width=2pt] (3) -- (5);
 \end{scope}
-\begin{scope}[xshift=18cm]
-\verkko{4}{lightgray}{gray}{lightgray}{white}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\begin{scope}[yshift=-5.5cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\node[draw, circle, fill=lightgray] (2) at (2,0) {$2$};
+\verkko{4}{0}{6}{2}{11}{9}
+\path[draw=red,thick,->,line width=2pt] (2) -- (4);
 \end{scope}
-\begin{scope}[yshift=-5cm]
-\verkko{5}{lightgray}{gray}{lightgray}{lightgray}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (4);
+\begin{scope}[yshift=-5.5cm,xshift=6.5cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\node[draw, circle, fill=lightgray] (2) at (2,0) {$2$};
+\node[draw, circle, fill=lightgray] (5) at (4,-2) {$5$};
+\verkko{5}{0}{6}{2}{11}{9}
 \end{scope}
-\begin{scope}[yshift=-5cm,xshift=6cm]
-\verkko{6}{lightgray}{gray}{lightgray}{lightgray}{white}{lightgray}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (4);
-\path[draw=red,thick,->,line width=2pt] (4) -- (6);
-\end{scope}
-\begin{scope}[yshift=-5cm,xshift=12cm]
-\verkko{7}{lightgray}{gray}{lightgray}{lightgray}{gray}{lightgray}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (4);
-\path[draw=red,thick,->,line width=2pt] (4) -- (6);
-\path[draw=red,thick,->,line width=2pt] (6) edge [bend left] (5);
-\end{scope}
-\begin{scope}[yshift=-5cm,xshift=18cm]
-\verkko{8}{lightgray}{gray}{lightgray}{lightgray}{gray}{gray}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (4);
-\path[draw=red,thick,->,line width=2pt] (4) -- (6);
-\end{scope}
-\begin{scope}[yshift=-10cm]
-\verkko{9}{lightgray}{gray}{lightgray}{gray}{gray}{gray}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\path[draw=red,thick,->,line width=2pt] (3) -- (4);
-\end{scope}
-\begin{scope}[yshift=-10cm,xshift=6cm]
-\verkko{10}{lightgray}{gray}{gray}{gray}{gray}{gray}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
-\end{scope}
-\begin{scope}[yshift=-10cm,xshift=12cm]
-\verkko{11}{gray}{gray}{gray}{gray}{gray}{gray}
+\begin{scope}[yshift=-5.5cm,xshift=13cm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\node[draw, circle, fill=lightgray] (2) at (2,0) {$2$};
+\node[draw, circle, fill=lightgray] (5) at (4,-2) {$5$};
+\node[draw, circle, fill=lightgray] (4) at (4,0) {$4$};
+\verkko{6}{0}{6}{2}{11}{9}
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Kosarajun algoritmin ensimmäinen läpikäynti.}
-\label{fig:koseka}
+\caption{Esimerkki Dijkstran algoritmin toiminnasta.}
+\label{fig:dijalg}
 \end{figure}
 
-Tarkastelemme seuraavaksi, kuinka Kosarajun algoritmi
-toimii esimerkkiverkossamme.
-Kuva \ref{fig:koseka} näyttää ensimmäisen läpikäynnin,
-joka muodostaa solmuista listan $[2,5,6,4,3,1]$.
-Tämän jälkeen käännämme kaikki verkon kaaret ja
-käsittelemme solmut järjestyksessä $[1,3,4,6,5,2]$.
-Kuva \ref{fig:kostok} näyttää toisen läpikäynnin.
-Vahvasti yhtenäiset komponentit syntyvät
-solmuista 1 ja 6 alkaen.
-Kaarten kääntämisen ansiosta
-solmusta 1 alkava
-vahvasti yhtenäinen komponentti ei ''vuoda''
-solmujen 5 ja 6 alueelle.
+Kuva \ref{fig:dijalg} näyttää esimerkin Dijkstran algoritmin
+toiminnasta.
+Solmun harmaa väri tarkoittaa, että se on käsitelty.
+Alussa valitsemme solmun 1, koska sen etäisyys 0 on pienin.
+Sitten valittavana ovat solmut 2, 3, 4 ja 5,
+joista valitsemme solmun 3, jonka etäisyys 2 on pienin.
+Sama jatkuu, kunnes olemme käsitelleet kaikki verkon solmut.
+
+Huomaa, että aina kun olemme käsitelleet solmun,
+olemme saaneet selville sen lopullisen etäisyyden.
+Esimerkiksi vaiheen 3 jälkeen tiedämme,
+että lyhin polku solmuun 3 on pituudeltaan 2,
+vaikka emme ole vielä käsitelleet kaikkia verkon solmuja.
+
+\subsection{Analyysi}
+
+Dijkstran algoritmiin liittyy kaksi tärkeää kysymystä:
+miksi algoritmi toimii ja kuinka voimme toteuttaa sen tehokkaasti?
+
+Algoritmin toiminnassa on keskeisessä osassa oletuksemme,
+että minkään kaaren paino ei voi olla negatiivinen.
+Tämän oletuksen ansiosta voimme aina käsitellä seuraavaksi solmun,
+jonka etäisyys on pienin, ja olla varmoja siitä, että sen nykyinen
+etäisyys on pienin mahdollinen.
+
+Asiaa voi ajatella käänteisesti: jos pienimmän etäisyyden solmun
+etäisyys ei olisi lopullinen, meidän tulisi pystyä parantamaan
+sitä kulkemalla solmuun jotain toista kautta.
+Kuitenkin kaikkialla muualla on vain solmuja, joiden etäisyydet
+ovat suurempia tai yhtä suuria eivätkä etäisyydet voi lyhentyä,
+koska verkossa ei ole negatiivisia kaaria.
+Tästä syystä voimme turvallisesti valita pienimmän etäisyyden
+solmun ja käsitellä sen.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.6]
-\scriptsize
-\newcommand\verkko[7]{
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\node[draw, circle] (1) at (0,1) {$1$};
+\node[draw, circle] (2) at (2.5,2) {$2$};
+\node[draw, circle] (3) at (2.5,0) {$3$};
+\node[draw, circle] (4) at (5,1) {$4$};
+
+\path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:7] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:3] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:$-4$] {} (4);
+\end{tikzpicture}
+\end{center}
+\caption{Dijkstran algoritmi ei toimi oikein tässä verkossa
+negatiivisen kaaren takia.}
+\label{fig:dijneg}
+\end{figure}
+
+Jos verkossa on negatiivinen kaari,
+Dijkstran algoritmi ei toimi välttä\-mättä oikein.
+Kuva \ref{fig:dijneg} näyttää esimerkin tällaisesta verkosta.
+Dijkstran algoritmi seuraa ahneesti ylempää polkua ja toteaa,
+että pienin etäisyys solmusta 1 solmuun 4 on 8.
+Kuitenkin parempi tapa olisi kulkea alempaa polkua,
+jolloin negatiivisen kaaren asiosta pienin etäisyys on vain 3.
+
+Jotta voimme toteuttaa Dijkstran algoritmin tehokkaasti,
+meidän täytyy pystyä löytämään nopeasti seuraavaksi käsiteltävä
+solmu kussakin vaiheessa.
+Tarvitsemme siis tietorakenteen, jossa voimme säilyttää
+solmuja järjestykses\-sä niiden etäisyyden mukaan.
+Sopivia tietorakenteita tähän ovat binääri\-hakupuu ja keko,
+joita käyttäen pystymme päivittämään etäisyyttä ja löytämään
+pienimmän etäisyyden $O(\log n)$-ajassa.
+
+Algoritmin ajankäyttö muodostuu kahdesta osasta:
+meidän tulee löytää $n$ kertaa pienimmän etäisyyden solmu,
+ja lisäksi etäisyydet saattavat muuttua $m$ kertaa
+kunkin kaaren käsittelyn yhteydessä.
+Niinpä algoritmin aikavaativuudeksi tulee $O((n+m) \log n)$.
+
+\subsection{Toteutus}
+
+Dijkstran algoritmi on mukavaa toteuttaa niin, että
+se käyttää verkon vieruslistaesitystä
+
+\begin{code}
+ArrayList<Kaari>[] verkko = new ArrayList<>();
+\end{code}
+
+Luomme seuraavat taulukot, jotka pitävät kirjaa solmujen etäisyyksistä
+sekä käsitellyistä solmuista:
+
+\begin{code}
+int[] etaisyys = new int[n+1];
+boolean[] kasitelty = new boolean[n+1];
+\end{code}
+
+Lisäksi jotta voimme löytää nopeasti pienimmän etäisyyden solmun,
+otamme käyttöön prioriteettijonon
+
+\begin{code}
+PriorityQueue<Solmu> solmut = new PriorityQueue<>();
+\end{code}
+
+Etäisyyksiä varten tarvitsemme uuden luokan,
+jonka oliot järjestyvät etäisyyden mukaan pienimmästä suurimpaan:
+
+\begin{code}
+class Solmu implements Comparable<Solmu> {
+    public int id, etaisyys;
+
+    public int compareTo(Solmu s) {
+        if (etaisyys != s.etaisyys) return etaisyys-s.etaisyys;
+        else return id-s.id;
+    }
+
+    public boolean equals(Object o) {
+        Solmu s = (Solmu)o;
+        return etaisyys == s.etaisyys && id == s.id;
+    }
+
+    public Solmu(int id, int etaisyys) {
+        this.id = id;
+        this.etaisyys = etaisyys;
+    }
+}
+\end{code}
+
+Haluamme selvittää lyhimmät polut solmusta $x$ alkaen,
+joten alustamme rakenteet seuraavasti:
+
+\begin{code}
+for (int i = 1; i <= n; i++) {
+    etaisyys[i] = 1e9;
+}
+etaisyys[x] = 0;
+solmut.add(new Solmu(x,0));
+\end{code}
+
+Tämän jälkeen voimme toteuttaa algoritmin näin:
+
+\begin{code}
+while (!solmut.isEmpty()) {
+    Solmu solmu = solmut.poll();
+    if (kasitelty[solmu.id]) continue;
+    kasitelty[solmu.id] = true;
+    for (Kaari kaari : verkko[solmu]) {
+        int vanha = etaisyys[kaari.kohde];
+        int uusi = solmu.etaisyys+kaari.paino;
+        if (uusi < vanha) {
+            etaisyys[kaari.kohde] = uusi;
+            solmut.add(new Solmu(kaari.kohde,uusi))
+        }
+    }
+}
+\end{code}
+
+Huomaa, että koska voimme poistaa prioriteettijonosta
+vain pienimmän etäisyyden solmun,
+lisäämme solmun etäisyyden muuttuessa uuden solmun jonoon.
+Jos olemme käsitelleet jonosta tulevan solmun,
+emme käsittele sitä uudestaan.
+
+Vaikka jonossa on ''ylimääräisiä'' solmuja, ratkaisu säilyy
+tehokkaana ja toimii ajassa $O((n+m) \log n)$.
+Jonossa voi olla enintään $m$ solmua, ja koska $m=O(n^2)$,
+jokainen operaatio jonoon vie aikaa $O(\log (n^2))=O(2 \log n)=O(\log n)$.
+
+\section{Floyd–Warshallin algoritmi}
+
+Floyd-Warshallin algoritmi on idealtaan erilainen kuin
+Bellman–Fordin ja Dijkstran algoritmit:
+se laskee samalla kertaa kaikki mahdolliset
+solmujen välimatkat verkossa.
+Algoritmin lopputuloksena on etäisyysmatriisi,
+josta voimme lukea lyhimmän polun pituuden mistä tahansa solmusta $a$
+mihin tahansa solmuun $b$.
+
+Algoritmin alussa etäisyysmatriisi sisältää vain polut,
+jotka vastaavat yksittäistä verkon kaarta.
+Sitten algoritmi suorittaa $n$ kierrosta,
+jotka on numeroitu $1,2,\dots,n$.
+Kierroksella $k$ algoritmi etsii polkuja, joissa on välisolmuna
+solmu $k$ sekä mahdollisesti solmuja $1,2,\dots,k-1$.
+Viimeisen kierroksen jälkeen jokainen solmu voi olla
+välisolmuna poluilla, jolloin algoritmi on saanut selville
+kaikki lyhimmät polut.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\small
+\newcommand\verkko[5]{
+\begin{scope}[xshift=0.75cm,yshift=2cm]
 \node[draw, circle, fill=#2] (1) at (0,0) {$1$};
-\node[draw, circle, fill=#3] (2) at (0,-2) {$2$};
-\node[draw, circle, fill=#4] (3) at (2,0) {$3$};
-\node[draw, circle, fill=#5] (4) at (2,-2) {$4$};
-\node[draw, circle, fill=#6] (5) at (4,0) {$5$};
-\node[draw, circle, fill=#7] (6) at (4,-2) {$6$};
+\node[draw, circle, fill=#3] (2) at (2.5,0) {$2$};
+\node[draw, circle, fill=#4] (3) at (0,-2.5) {$3$};
+\node[draw, circle, fill=#5] (4) at (2.5,-2.5) {$4$};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=left:1] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=right:3] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,->] (4) -- node[font=\small,label=below:4] {} (3);
+\end{scope}
 
-\path[draw,thick,<-] (1) -- (3);
-\path[draw,thick,<-] (3) -- (4);
-\path[draw,thick,<-] (4) -- (2);
-\path[draw,thick,<-] (2) -- (1);
-\path[draw,thick,<-] (3) -- (2);
-\path[draw,thick,<-] (5) edge [bend left] (6);
-\path[draw,thick,<-] (6) edge [bend left] (5);
-\path[draw,thick,<-] (3) -- (5);
-\path[draw,thick,<-] (4) -- (6);
+\foreach \x in {1,2,3,4} \node at (-0.5,-2.5-\x) {\x};
+\foreach \x in {1,2,3,4} \node at (-0.5+\x,-2.5) {\x};
+\draw (0,-3) grid (4,-7);
 
-\node at (2,-3) {vaihe #1};
+\node at (2,-8) {vaihe #1};
 }
 \begin{scope}
-\verkko{1}{lightgray}{white}{white}{white}{white}{white}
+\verkko{1}{lightgray}{white}{white}{white}
+\foreach \x/\v in {1/\infty,2/5,3/1,4/\infty} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/\infty,4/\infty} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/4,4/\infty} \node at (-0.5+\x,-6.5) {$\v$};
 \end{scope}
-\begin{scope}[xshift=6cm]
-\verkko{2}{lightgray}{lightgray}{white}{white}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\begin{scope}[xshift=5.5cm]
+\verkko{2}{white}{lightgray}{white}{white}
+\foreach \x/\v in {1/\infty,2/5,3/1,4/} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/\infty,4/} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/4,4/\infty} \node at (-0.5+\x,-6.5) {$\v$};
+\node[color=red] at (3.5,-3.5) {$8$};
+\node[color=red] at (3.5,-5.5) {$5$};
 \end{scope}
-\begin{scope}[xshift=12cm]
-\verkko{3}{lightgray}{lightgray}{lightgray}{white}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (3);
+\begin{scope}[xshift=11cm]
+\verkko{3}{white}{white}{lightgray}{white}
+\foreach \x/\v in {1/\infty,2/,3/1,4/8} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/\infty,4/5} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/,3/4,4/} \node at (-0.5+\x,-6.5) {$\v$};
+\node[color=red] at (1.5,-3.5) {$3$};
+\node[color=red] at (1.5,-6.5) {$6$};
+\node[color=red] at (3.5,-6.5) {$9$};
 \end{scope}
-\begin{scope}[xshift=18cm]
-\verkko{4}{lightgray}{lightgray}{lightgray}{white}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\end{scope}
-\begin{scope}[yshift=-5cm]
-\verkko{5}{lightgray}{lightgray}{lightgray}{lightgray}{white}{white}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
-\draw[red,dashed,thick,line width=1.5pt] (-0.75,0.75) rectangle (2.75,-2.75);
-\end{scope}
-\begin{scope}[yshift=-5cm,xshift=6cm]
-\verkko{6}{lightgray}{lightgray}{lightgray}{lightgray}{white}{lightgray}
-\end{scope}
-\begin{scope}[yshift=-5cm,xshift=12cm]
-\verkko{7}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}{lightgray}
-\path[draw=red,thick,<-,line width=2pt] (5) edge [bend left] (6);
-\draw[red,dashed,thick,line width=1.5pt] (3.25,0.75) rectangle (4.75,-2.75);
+\begin{scope}[xshift=16.5cm]
+\verkko{4}{white}{white}{white}{lightgray}
+\foreach \x/\v in {1/\infty,2/3,3/1,4/8} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/,3/,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/,4/5} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/6,3/4,4/9} \node at (-0.5+\x,-6.5) {$\v$};
+\node[color=red] at (1.5,-4.5) {$9$};
+\node[color=red] at (2.5,-4.5) {$7$};
+\node[color=red] at (2.5,-5.5) {$9$};
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Kosarajun algoritmin toinen läpikäynti.}
-\label{fig:kostok}
+\caption{Esimerkki Floyd–Warshallin algoritmin toiminnasta.}
+\label{fig:flowar}
 \end{figure}
 
-Koska algoritmi muodostuu kahdesta verkon läpikäynnistä,
-sen aikavaativuus on $O(n+m)$.
+Kuva \ref{fig:flowar} näyttää esimerkin Floyd–Warshallin algoritmin toiminnasta.
+Etäisyysmatriisin rivillä $a$ sarakkeessa $b$ on lyhin tunnettu etäisyys
+solmusta $a$ solmuun $b$.
+Alussa matriisin sisältö on muodostettu suoraan verkon vierusmatriisista,
+ja vaiheessa $k$ parannamme etäisyyksiä poluilla, jotka kulkevat solmun $k$
+(ja mahdollisesti solmujen $1,2,\dots,k-1$) kautta.
 
-\subsection{Miksi algoritmi toimii?}
+Vaiheessa 1 emme voi muodostaa mitään uusia polkuja,
+koska mistään solmusta ei pääse solmuun 1.
+Vaiheessa 2 pääsemme solmun 2 kautta solmusta 1 solmuun 4 ja
+solmusta 3 solmuun 4; vastaavat polkujen pituudet ovat 8 ja 5.
+Sitten muodostamme vastaavalla tavalla solmujen 3 ja 4
+kautta kulkevat polut.
 
-Keskeinen kysymys Kosarajun algoritmiin liittyen on,
-miten voimme olla varmoja, että saamme verkon toisessa läpikäynnissä
-muodostettua vahvasti yhtenäisiä komponentteja,
-joihin ei tule ylimääräisiä solmuja?
+\subsection{Analyysi}
 
-Voimme tarkastella asiaa muodostettavana olevan syklittömän
-komponenttiverkon näkökulmasta.
-Jos meillä on komponentti $A$, josta pääsee kaarella
-komponenttiin $B$, 
-algoritmin ensimmäinen läpikäynti takaa, että
-jokin $A$:n solmu lisätään listalle kaikkien $B$:n
-solmujen jälkeen.
-Kun sitten käymme läpi listan käänteisessä järjestyksessä,
-jokin $A$:n solmu tulee vastaan ennen kaikkia $B$:n
-solmuja.
-Niinpä alamme rakentaa ensin komponenttia $A$
-emmekä mene komponentin $B$ puolelle,
-koska verkon kaaret on käännetty.
+Yksi tapa ymmärtää Floyd–Warshallin algoritmia on
+ajatella algoritmin toimintaa ''käänteisesti'' rekursiivisesti:
+kun verkossa on lyhin polku solmusta $a$ solmuun $b$,
+millainen tämä polku voi olla?
 
-Vastaavasti jos meillä on komponentti $A$,
-johon pääsee komponentista $B$,
-muodostamme komponentin $B$ ennen komponenttia $A$.
-Niinpä kun käänteisessä verkossa
-komponentista $A$ on kaari komponenttiin $B$,
-tämä ei haittaa, koska olemme jo muodostaneet
-komponentin $B$ eikä komponenttiin $A$ tule ylimääräisiä solmuja
-komponentista $B$.
+Jos solmu $x$ kuuluu polkuun, meille syntyy kaksi osaongelmaa:
+meidän tulee etsiä ensin lyhin polku solmusta $a$ solmuun $x$
+ja sitten lyhin polku solmusta $x$ solmuun $b$.
+Näiden polkujen muodostamisessa voimme jälleen käy läpi tapauksia,
+mitkä solmut kuuluvat polkuihin.
+Esimerkiksi lyhin polku solmusta $a$ solmuun $x$
+voi kulkea vuorostaan solmun $y$ kautta,
+jolloin haluamme etsiä lyhimmät polut solmusta $a$ solmuun $y$
+ja solmusta $y$ solmuun $x$.
 
-\section{Esimerkki: Luolapeli}
+Floyd–Warshallin algoritmissa muodostamme joka vaiheessa
+polkuja, joissa voi olla välisolmuina solmuja $1,2,\dots,i$.
+Kun haluamme muodostaa lyhimmän polun solmusta $a$ solmuun $b$,
+meillä on kaksi vaihtoehtoa:
+Jos solmu $i$ on välisolmuna, yhdistämme lyhimmät polut
+solmusta $a$ solmuun $i$ ja solmusta $i$ solmuun $b$.
+Jos taas solmu $i$ ei ole välisolmuna, olemme käsitelleet
+polun jo aiemmin. 
 
-Olemme pelissä luolastossa, joka muodostuu luolista ja niitä yhdistävistä
-käytävistä. Jokainen käytävä on yksisuuntainen.
-Jokaisessa luolassa on yksi aarre, jonka voimme ottaa mukaamme,
-jos kuljemme luolan kautta.
+Seuraavaksi näemme, kuinka voimme toteuttaa algoritmin
+tehokkaasti ajassa $O(n^3)$ kolmen sisäkkäisen for-silmukan avulla.
 
-Peli alkaa luolasta $a$ ja päättyy luolaan $b$.
-Montako aarretta voimme saada, jos valitsemme parhaan
-mahdollisen reitin?
+\subsection{Toteutus}
 
-\subsubsection{Ratkaisu}
+Toteutuksemme lähtökohtana on verkon vierusmatriisiesitys:
 
-Voimme mallintaa tilanteen verkkona, jonka solmut ovat luolia ja
-kaaret ovat käytäviä. Haluamme löytää reitin solmusta $a$ solmuun $b$
-niin, että kuljemme mahdollisimman monen solmun kautta.
+\begin{code}
+int[][] verkko = new int[n+1][n+1];
+\end{code}
 
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (2,-1) {$2$};
-\node[draw, circle] (3) at (-2,0) {$3$};
-\node[draw, circle] (4) at (0,-2) {$4$};
-\node[draw, circle] (5) at (0,-4) {$5$};
-\node[draw, circle] (6) at (-2,-2) {$6$};
-\node[draw, circle] (7) at (-2,-4) {$7$};
+Tämän esityksen rinnalle luomme etäisyysmatriisin,
+joka tulee sisältämään solmujen etäisyydet:
 
-\path[draw,thick,->] (1) -- (4);
-\path[draw,thick,->] (4) -- (2);
-\path[draw,thick,->] (2) -- (1);
-\path[draw,thick,->] (4) -- (6);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (3) -- (6);
-\path[draw,thick,->] (6) edge [bend left] (7);
-\path[draw,thick,->] (7) edge [bend left] (6);
-\path[draw,thick,->] (4) -- (5);
-\path[draw,thick,->] (5) -- (7);
-\end{tikzpicture}
-\end{center}
-\caption{Luolasto, jossa on 7 luolaa ja 10 käytävää.
-Haluamme kulkea luolasta 1 luolaan 7 keräten mahdollisimman paljon aarteita.}
-\label{fig:luopel}
-\end{figure}
+\begin{code}
+int[][] etaisyys = new int[n+1][n+1];
+\end{code}
 
-Esimerkiksi kuva \ref{fig:luopel} näyttää verkkona luolaston, joka muodostuu
-7 luolasta ja 10 käytävästä.
-Oletetaan, että haluamme liikkua luolasta 1 luolaan 7
-keräten mahdollisimman paljon aarteita.
-Tällöin yksi mahdollinen reitti on
-$1 \rightarrow 4 \rightarrow 2 \rightarrow 1 \rightarrow 3 \rightarrow 6 \rightarrow 7$,
-jonka avulla saamme kaikki aarteet paitsi luolassa 5 olevan aarteen.
-Ei ole olemassa reittiä, jota seuraamalla saisimme kaikki luolaston aarteet.
+Ensin alustamme etäisyysmatriisin niin,
+että jos solmusta $a$ solmuun $b$ on kaari,
+etäisyys on kaaren paino, ja muuten etäisyys on ääretön.
+Voimme tehdä tämän seuraavasti:
 
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7]
-\node[draw, rectangle] (1) at (0,0) {$\{1,2,4\}$};
-\node[draw, rectangle] (2) at (-4,-2) {$\{3\}$};
-\node[draw, rectangle] (3) at (4,-2) {$\{5\}$};
-\node[draw, rectangle] (4) at (0,-4) {$\{6,7\}$};
+\begin{code}
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= n; j++) {
+        if (verkko[i][j] == 0) {
+            etaisyys[i][j] = 1e9;
+        } else {
+            etaisyys[i][j] = verkko[i][j];
+        }
+    }
+}
+\end{code}
 
-\path[draw,thick,->] (1) -- (2);
-\path[draw,thick,->] (1) -- (3);
-\path[draw,thick,->] (1) -- (4);
-\path[draw,thick,->] (2) -- (4);
-\path[draw,thick,->] (3) -- (4);
-\end{tikzpicture}
-\end{center}
-\caption{Luolaston vahvasti yhtenäiset komponentit.}
-\label{fig:luovah}
-\end{figure}
+Tämän jälkeen voimme laskea etäisyydet seuraavasti:
 
-Voimme ratkaista ongelman tehokkaasti määrittämällä ensin verkon
-vahvasti yhtenäiset komponentit.
-Tämän jälkeen meidän riittää löytää polku alkusolmun komponentista
-loppusolmun komponenttiin niin, että komponenttien kokojen summa
-on suurin mahdollinen.
-Koska verkko on syklitön, tämä onnistuu dynaamisella ohjelmoinnilla.
+\begin{code}
+for (int k = 1; k <= n; k++) {
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            int vanha = etaisyys[i][j];
+            int uusi = etaisyys[i][k]+etaisyys[k][j];
+            etaisyys[i][j] = Math.min(vanha,uusi);
+        }
+    }
+}
+\end{code}
 
-Kuva \ref{fig:luovah} näyttää vahvasti yhtenäiset komponentit
-esimerkkiverkossamme.
-Tästä esityksestä näemme suoraan, että optimaalisia reittejä on kaksi:
-voimme kulkea joko luolan 3 tai luolan 5 kautta.
+Tässä muuttuja $k$ on kierroslaskuri, joka ilmaisee, mikä solmu toimii
+välisolmuna uusilla poluilla.
+
+\section{Esimerkki: X}
