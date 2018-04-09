@@ -38,18 +38,20 @@
 \label{fig:versuu}
 \end{figure}
 
-Tähän mennessä olemme olettaneet,
-että voimme kulkea verkon kaaria kumpaankin suuntaan,
-mikä tarkoittaa, että verkko on \emph{suuntaamaton}.
-Tässä luvussa kuitenkin keskitymme tilanteeseen,
-jossa verkko on \emph{suunnattu}, eli jokaista kaarta
-voi kulkea vain merkittyyn suuntaan.
+Tähän mennessä olemme käsitelleet verkkoja,
+joissa voimme kulkea kaaria kumpaankin suuntaan.
+Tässä luvussa keskitymme sen sijaan verkkoihin,
+joissa jokaisella kaarella on merkitty suunta,
+jonka mukaisesti meidän täytyy kulkea sitä.
+Sanomme, että verkko on \emph{suuntaamaton},
+jos voimme kulkea kaaria molempiin suuntiin,
+ja \emph{suunnattu}, jos kaarilla on merkityt suunnat.
 
 Kuvassa \ref{fig:versuu} on esimerkkinä kaksi verkkoa,
 joilla on sama rakenne, mutta vasen verkko on
 suuntaamaton ja oikea verkko on suunnattu.
 Oikeassa verkossa esimerkiksi solmujen $1$ ja $2$
-välinen kaari on suunnattu niin, että voimme kulkea
+välinen kaari on suunnattu niin, että pystymme kulkemaan
 sitä pitkin solmusta $1$ solmuun $2$,
 mutta emme voi kulkea solmusta $2$ solmuun $1$.
 
@@ -128,15 +130,10 @@ olevaa solmua järjestykseen ennen muita.
 Jos taas verkossa ei ole sykliä,
 voimme aina muodostaa topologisen järjestyksen.
 
-Suunnatut syklittömät verkot ovat tärkeässä asemassa
-algoritmiikassa, ja englannin kielessä niille on jopa
-oma nimitys \emph{dag}, joka tulee sanoista
-\emph{directed acyclic graph}.
-
 Seuraavaksi tutustumme algoritmiin,
 jonka avulla voimme muodostaa topologisen järjestyksen
-tai todeta, että verkossa on sykli eikä järjestyksen
-muodostaminen ole mahdollista.
+tai todeta, että verkossa on sykli eikä mitään
+topologista järjestystä ole olemassa.
 
 \subsection{Järjestyksen muodostaminen}
 
@@ -303,16 +300,16 @@ joten sen aikavaativuus on $O(n+m)$.
 
 Miten voimme tietää, että algoritmimme topologisen
 järjestyksen muodostamiseen toimii
-oikein kaikissa mahdollisissa tilanteissa?
+oikein kaikissa tilanteissa?
 
 Tarkastellaan ensin tilannetta, jossa verkossa on sykli.
 Jos algoritmi saapuu uudestaan harmaaseen solmuun $x$,
 on selvää, että verkossa on sykli,
 koska algoritmi on onnistunut pääsemään solmusta $x$
 takaisin itseensä kulkemalla jotain polkua verkossa.
-Toisaalta jos verkossa on sykli, algoritmi saapuu
+Toisaalta jos verkossa on sykli, algoritmi tulee
 jossain vaiheessa ensimmäistä kertaa johonkin sykliin
-kuuluvaan solmuun $x$. Sen jälkeen se käy läpi solmusta
+kuuluvaan solmuun $x$. Tämän jälkeen se käy läpi solmusta
 lähtevät kaaret ja aikanaan saapuu varmasti uudestaan
 solmuun $x$. Niinpä algoritmi onnistuu kaikissa tilanteissa tunnistamaan,
 jos verkossa on sykli.
@@ -325,7 +322,7 @@ solmu $b$ lisätään listalle ennen solmua $a$.
 Lopuksi lista käännetään, jolloin solmu $a$
 tulee ennen solmua $b$.
 Tämän ansiosta jokaiselle kaarelle $a \rightarrow b$ pätee,
-että solmu $a$ on järjestyksessä ennen solmua $b$.
+että solmu $a$ tulee järjestykseen ennen solmua $b$.
 
 \subsection{Esimerkki: Kurssivalinnat}
 
@@ -476,13 +473,13 @@ $1 \rightarrow 3 \rightarrow 4$.
 
 Polkujen määrän laskeminen on vaikea ongelma yleisessä
 verkossa, jossa voi olla syklejä.
-Itse asiassa tehtävä ei ole edes mielekäs:
+Itse asiassa tehtävä ei ole edes mielekäs sellaisenaan:
 jos verkossa on sykli, voimme kulkea sitä miten
 monta kertaa tahansa ja tuottaa aina vain uusia polkuja,
 joten polkuja tulee äärettömästi.
 Nyt kuitenkin oletamme, että verkko on syklitön,
-jolloin voimme laskea polkujen määrän tehokkaasti
-dynaamisen ohjelmoinnin avulla.
+jolloin polkujen määrä on rajoitettu ja voimme laskea
+sen tehokkaasti dynaamisella ohjelmoinnilla.
 
 Jotta voimme käyttää dynaamista ohjelmointia,
 meidän täytyy määritellä ongelma rekursiivisesti.
@@ -504,7 +501,7 @@ ja funktion arvot ovat seuraavat:
 Nyt meidän täytyy enää löytää kaava funktion
 arvojen laskemiseen.
 Pohjatapauksessa olemme solmussa $a$,
-jolloin polkuja on aina yksi:
+jolloin on aina yksi tyhjä polku:
 
 \[ \texttt{polut}(a)=1 \]
 
@@ -512,12 +509,12 @@ Entä sitten, kun olemme jossain muussa solmussa $x$?
 Tällöin käymme läpi kaikki solmut, joista pääsemme
 solmuun $x$ kaarella, ja laskemme yhteen näihin
 solmuihin tulevien polkujen määrät.
-Kun oletamme, että solmuun $x$ pääsee solmuista $u_1,u_2,\dots,u_k$,
+Kun oletamme, että solmuun $x$ on kaari solmuista $u_1,u_2,\dots,u_k$,
 saamme seuraavan rekursiivisen kaavan:
 \[ \texttt{polut}(x)=\texttt{polut}(u_1)+\texttt{polut}(u_2)+\dots+\texttt{polut}(u_k) \]
 
 Esimerkiksi kuvan \ref{fig:verpol} verkossa
-solmuun $4$ pääsee solmuista $2$, $3$ ja $5$.
+solmuun $4$ on kaari solmuista $2$, $3$ ja $5$.
 Tämän seurauksena
 \[ \texttt{polut}(4)=\texttt{polut}(2)+\texttt{polut}(3)+\texttt{polut}(5) = 2+1+0 = 3.\]
 
@@ -553,8 +550,8 @@ on yhtä suuri kuin tornin rakentamistapojen määrä.
 
 Esimerkiksi kuva \ref{fig:verkol} näyttää verkon,
 joka vastaa tapausta $n=6$.
-Tässä verkossa solmusta $0$ solmuun $6$ on $24$ polkua,
-eli voimme rakentaa korkeuden $6$ tornin $24$ tavalla.
+Tässä verkossa solmusta $0$ solmuun $6$ on yhteensä $24$ polkua,
+eli voimme rakentaa korkeuden $6$ tornin kaikkiaan $24$ tavalla.
 
 \begin{figure}
 \center
@@ -656,6 +653,10 @@ Ensimmäinen komponentti on $\{1,2,3,4\}$
 ja toinen komponentti on $\{5,6\}$.
 Komponenteista muodostuu syklitön komponenttiverkko,
 jossa on kaari solmusta $\{1,2,3,4\}$ solmuun $\{5,6\}$.
+Tämä tarkoittaa, että voimme liikkua miten tahansa
+joukon $\{1,2,3,4\}$ solmuissa sekä joukon $\{5,6\}$ solmuissa.
+Lisäksi pääsemme joukosta $\{1,2,3,4\}$ joukkoon $\{5,6\}$,
+mutta emme pääse takaisin joukosta $\{5,6\}$ joukkoon $\{1,2,3,4\}$.
 
 Seuraavaksi tutustumme Kosarajun algoritmiin,
 jonka avulla pystymme muodostamaan tehokkaasti suunnatun
@@ -664,7 +665,7 @@ vastaavan komponenttiverkon.
 
 \subsection{Kosarajun algoritmi}
 
-Kosarajun algoritmi muodostuu kahdesta vaiheesta,
+\emph{Kosarajun algoritmi} muodostuu kahdesta vaiheesta,
 joista kumpikin käy läpi verkon solmut syvyyshaun avulla.
 Ensimmäinen vaihe muistuttaa topologisen järjestyksen
 etsimistä ja tuottaa listan solmuista.
@@ -673,21 +674,23 @@ tämän listan perusteella.
 
 Algoritmin ensimmäisessä vaiheessa käymme läpi verkon
 solmut ja aloitamme uuden syvyyshaun aina,
-kun tulemme solmuun, jossa emme ole vielä käyneet.
-Jokaisen solmun kohdalla etenemme ensin kaaria pitkin
-solmuihin, joissa emme ole vielä käyneet.
-Tämän jälkeen lisäämme solmun listalle.
+jos emme ole vielä käyneet solmussa.
+Syvyyshaun aikana lisäämme aina solmun listalle
+kun olemme käyneet läpi kaikki solmusta lähtevät kaaret.
 Toimimme siis kuten topologisen järjestyksen muodostamisessa,
-mutta emme välitä, jos tulemme toista reittiä
-käsittelyssä olevaan solmuun.
+mutta emme välitä, jos tulemme toista reittiä solmuun,
+jota ei ole vielä käsitelty loppuun.
 
 Algoritmin toisen vaiheen alussa
 käännämme jokaisen verkon kaaren suunnan.
-Tämän jälkeen käsittelemme käänteisessä järjestyksessä
-ensimmäisen vaiheen listalle keräämät solmut.
-Jokaisen solmun kohdalla muodostamme uuden vahvasti yhtenäisen
-komponentin, jossa on kaikki vielä käsittelemät\-tömät solmut,
-joihin pääsemme solmusta.
+Tämän jälkeen käymme läpi käänteisessä järjestyksessä
+listalla olevat solmut.
+Aina kun vuoroon tulee solmu, jossa emme ole vielä käyneet,
+aloitamme siitä solmusta syvyyshaun,
+joka muodostaa uuden vahvasti yhtenäisen komponentin.
+Lisäämme komponenttiin kaikki solmut,
+joihin pääsemme syvyyshaun aikana ja jotka eivät
+vielä kuulu mihinkään komponenttiin.
 
 \begin{figure}
 \center
@@ -768,17 +771,17 @@ joihin pääsemme solmusta.
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Kosarajun algoritmin ensimmäinen läpikäynti.}
+\caption{Kosarajun algoritmin ensimmäinen vaihe.}
 \label{fig:koseka}
 \end{figure}
 
 Tarkastelemme seuraavaksi, kuinka Kosarajun algoritmi
 toimii esimerkkiverkossamme.
-Kuva \ref{fig:koseka} näyttää ensimmäisen läpikäynnin,
+Kuva \ref{fig:koseka} näyttää algoritmin ensimmäisen vaiheen,
 joka muodostaa solmuista listan $[2,5,6,4,3,1]$.
-Tämän jälkeen käännämme kaikki verkon kaaret ja
-käsittelemme solmut järjestyksessä $[1,3,4,6,5,2]$.
-Kuva \ref{fig:kostok} näyttää toisen läpikäynnin.
+Kuva \ref{fig:kostok} näyttää algoritmin toisen vaiheen,
+jossa käännämme ensin verkon kaaret ja
+käymme sitten läpi solmut järjestyksessä $[1,3,4,6,5,2]$.
 Vahvasti yhtenäiset komponentit syntyvät
 solmuista 1 ja 6 alkaen.
 Kaarten kääntämisen ansiosta
@@ -853,7 +856,7 @@ solmujen 5 ja 6 alueelle.
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Kosarajun algoritmin toinen läpikäynti.}
+\caption{Kosarajun algoritmin toinen vaihe.}
 \label{fig:kostok}
 \end{figure}
 
@@ -928,7 +931,7 @@ Voimme mallintaa tilanteen verkkona, jonka solmut ovat luolia ja
 kaaret ovat käytäviä. Haluamme löytää reitin solmusta $a$ solmuun $b$
 niin, että kuljemme mahdollisimman monen solmun kautta.
 Esimerkiksi kuva \ref{fig:luopel} näyttää verkkona luolaston, joka muodostuu
-7 luolasta ja 10 käytävästä.
+seitsemästä luolasta ja kymmenestä käytävästä.
 Oletetaan, että haluamme liikkua luolasta 1 luolaan 7
 keräten mahdollisimman paljon aarteita.
 Tällöin yksi mahdollinen reitti on
