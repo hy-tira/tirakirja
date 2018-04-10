@@ -402,125 +402,89 @@ Sama jatkuu, kunnes olemme käsitelleet kaikki verkon solmut.
 
 \subsection{Algoritmin toteutus}
 
-Dijkstran algoritmi on mukavaa toteuttaa
-vieruslistoja käyttäen.
-Koska kaarilla on painot, meidän kannattaa tallentaa ne olioina:
+Dijkstran algoritmi muodostuu $n$ vaiheesta,
+jossa jokaisessa etsimme verkosta seuraavaksi käsiteltävän
+solmun ja käymme läpi siitä lähtevät kaaret.
+Koska haluamme saada aikaan tehokkaan toteutuksen,
+meidän täytyy pystyä löytämään joka vaiheessa
+seuraavaksi käsiteltävä solmu tehokkaasti.
+Tämä onnistuu sopivan tietorakenteen avulla.
+
+Tarvitsemme käytännössä tietorakenteen,
+joka pitää yllä joukkoa jäljellä olevista
+käsittelemättömistä solmuista ja josta voimme
+etsiä tehokkaasti solmun, jonka etäisyys on pienin.
+Tähän tarkoitukseen sopivia tietorakenteita ovat
+binäärihakupuu ja keko.
+Yleensä Dijkstran algoritmi toteutetaan käyttäen kekoa,
+koska keon ominaisuudet riittävät ja sen vakiokertoimet
+ovat binäärihakupuuta pienemmät.
+
+Oletamme seuraavaksi, että haluamme muodostaa lyhimmät
+polut lähtö\-solmusta $1$ alkaen.
+Tallennamme kekoon solmuja, joista on tiedossa
+etäisyys ja solmun tunnus,
+järjestettynä etäisyyden mukaan pienimmästä suurimpaan.
+Merkitsemme aluksi taulukkoon, että solmun $1$ etäisyys on $0$
+ja lisäämme sitä vastaavan solmun kekoon.
+Lisäksi merkitsemme taulukkoon, että kaikkien muiden
+solmujen etäisyys on ääretön.
 
 \begin{code}
-ArrayList<Kaari>[] verkko = new ArrayList<>();
-\end{code}
-
-Tallennamme jokaisesta kaaresta kohdesolmun ja painon:
-
-\begin{code}
-public class Kaari {
-    int kohde, paino;
-    
-    public Kaari(int kohde, int paino) {
-        this.kohde = kohde;
-        this.paino = paino;
-    }
-}
-\end{code}
-
-Määrittelemme seuraavat taulukot, jotka pitävät kirjaa
-solmujen etäisyyk\-sistä sekä käsitellyistä solmuista:
-
-\begin{code}
-int[] etaisyys = new int[n+1];
-boolean[] kasitelty = new boolean[n+1];
-\end{code}
-
-Tärkeä seikka algoritmin tehokkuuden kannalta on,
-että löydämme joka vaiheessa nopeasti seuraavaksi
-käsiteltävän solmun.
-Hyvä tietorakenne tähän on prioriteettijono,
-joka pitää yllä solmujen etäisyysarvioita:
-
-\begin{code}
-PriorityQueue<Solmu> solmut = new PriorityQueue<>();
-\end{code}
-
-Etäisyyksiä varten tarvitsemme uuden luokan,
-jonka oliot järjestyvät etäisyyden mukaan pienimmästä suurimpaan:
-
-\begin{code}
-class Solmu implements Comparable<Solmu> {
-    public int id, etaisyys;
-
-    public int compareTo(Solmu s) {
-        if (etaisyys != s.etaisyys) {
-            return etaisyys-s.etaisyys;
-        } else {
-            return id-s.id;
-        }
-    }
-
-    public Solmu(int id, int etaisyys) {
-        this.id = id;
-        this.etaisyys = etaisyys;
-    }
-}
-\end{code}
-
-Haluamme selvittää lyhimmät polut solmusta $x$ alkaen,
-joten alustamme rakenteet seuraavasti:
-
-\begin{code}
-for (int i = 1; i <= n; i++) {
+etaisyys[1] = 0;
+keko.push(new Solmu(0,1));
+for (int i = 2; i <= n; i++) {
     etaisyys[i] = INF;
 }
-etaisyys[x] = 0;
-solmut.push(new Solmu(x,0));
 \end{code}
 
-Tämän jälkeen voimme toteuttaa algoritmin näin:
+Tämän jälkeen haemme joka askeleella keosta solmun,
+jonka etäisyys on pienin.
+Jos solmu on jo käsitelty, emme tee mitään.
+Muuten käymme läpi kaikki solmusta lähtevät kaaret
+ja tarkastamme, voimmeko parantaa etäisyyksiä
+niiden avulla.
+Aina kun voimme parantaa etäisyyttä,
+lisäämme uuden etäisyyden kekoon.
 
 \begin{code}
-while (!solmut.isEmpty()) {
-    Solmu solmu = solmut.poll();
+while (!keko.empty()) {
+    Solmu solmu = keko.pop();
     if (kasitelty[solmu.id]) continue;
     kasitelty[solmu.id] = true;
     for (Kaari kaari : verkko[solmu]) {
         int vanha = etaisyys[kaari.kohde];
-        int uusi = solmu.etaisyys+kaari.paino;
-        if (uusi < vanha) {
+        int uusi = etaisyys[solmu]+kaari.paino;
+        if (vanha < uusi) {
             etaisyys[kaari.kohde] = uusi;
-            solmut.add(new Solmu(kaari.kohde,uusi))
+            keko.push(new Solmu(uusi,kaari.kohde));
         }
     }
 }
 \end{code}
 
-Huomaa, että koska voimme poistaa prioriteettijonosta
-vain pienimmän etäisyyden solmun,
-lisäämme solmun etäisyyden muuttuessa uuden solmun jonoon.
-Jos olemme käsitelleet jonosta tulevan solmun,
-emme käsittele sitä uudestaan.
+Huomaa, että keossa voi olla \emph{useita} etäisyyksiä
+samalle solmulle, koska lisäämme kekoon uuden solmun
+aina etäisyyden parantuessa.
+Käsittelemme näistä kuitenkin vain pienimmän etäisyyden solmun.
 
-Vaikka jonossa on ''ylimääräisiä'' solmuja, ratkaisu säilyy
-tehokkaana ja toimii ajassa $O((n+m) \log n)$.
-Jonossa voi olla enintään $m$ solmua, ja koska $m=O(n^2)$,
-jokainen operaatio jonoon vie aikaa $O(\log (n^2))=O(2 \log n)=O(\log n)$.
+\subsection{Algoritmin analyysi}
 
+Dijkstran algoritmi on ahne algoritmi,
+koska se valitsee joka vaiheessa käsitte\-lyyn solmun,
+jonka etäisyys on pienin.
+Miten voimme olla varmoja, että algoritmi löytää lyhimmät
+polut kaikissa tilanteissa?
 
-\subsection{Analyysi}
-
-Dijkstran algoritmiin liittyy kaksi tärkeää kysymystä:
-miksi algoritmi toimii ja kuinka voimme toteuttaa sen tehokkaasti?
-
-Algoritmin toiminnassa on keskeisessä osassa oletuksemme,
-että minkään kaaren paino ei voi olla negatiivinen.
-Tämän oletuksen ansiosta voimme aina käsitellä seuraavaksi solmun,
-jonka etäisyys on pienin, ja olla varmoja siitä, että sen nykyinen
-etäisyys on pienin mahdollinen.
-
-Asiaa voi ajatella käänteisesti: jos pienimmän etäisyyden solmun
-etäisyys ei olisi lopullinen, meidän tulisi pystyä parantamaan
-sitä kulkemalla solmuun jotain toista kautta.
-Kuitenkin kaikkialla muualla on vain solmuja, joiden etäisyydet
+Algoritmin toiminta perustuu oletukseemme,
+että verkossa ei ole negatiivisen painoisia kaaria.
+Voimme ajatella asiaa käänteisesti: jos pienimmän etäisyyden
+käsittelemättömän solmun
+etäisyys ei olisi lopullinen, pystyisimme parantamaan
+sitä kulkemalla solmuun jonkin toisen käsittelemättömän solmun kautta.
+Kuitenkin kaikkien muiden tarjolla olevien solmujen etäisyy\-det
 ovat suurempia tai yhtä suuria eivätkä etäisyydet voi lyhentyä,
-koska verkossa ei ole negatiivisia kaaria.
+koska verkossa ei ole negatiivisen painoisia kaaria.
 Tästä syystä voimme turvallisesti valita pienimmän etäisyyden
 solmun ja käsitellä sen.
 
@@ -552,21 +516,15 @@ että pienin etäisyys solmusta 1 solmuun 4 on 8.
 Kuitenkin parempi tapa olisi kulkea alempaa polkua,
 jolloin negatiivisen kaaren asiosta pienin etäisyys on vain 3.
 
-Jotta voimme toteuttaa Dijkstran algoritmin tehokkaasti,
-meidän täytyy pystyä löytämään nopeasti seuraavaksi käsiteltävä
-solmu kussakin vaiheessa.
-Tarvitsemme siis tietorakenteen, jossa voimme säilyttää
-solmuja järjestykses\-sä niiden etäisyyden mukaan.
-Sopivia tietorakenteita tähän ovat binääri\-hakupuu ja keko,
-joita käyttäen pystymme päivittämään etäisyyttä ja löytämään
-pienimmän etäisyyden $O(\log n)$-ajassa.
-
-Algoritmin ajankäyttö muodostuu kahdesta osasta:
-meidän tulee löytää $n$ kertaa pienimmän etäisyyden solmu,
-ja lisäksi etäisyydet saattavat muuttua $m$ kertaa
-kunkin kaaren käsittelyn yhteydessä.
-Niinpä algoritmin aikavaativuudeksi tulee $O((n+m) \log n)$.
-
+Seuraava kysymys on, kuinka nopeasti algoritmi toimii.
+Algoritmin aikana käsittelemme vuorollaan kunkin verkon solmun
+ja käymme läpi siitä lähtevät kaaret, missä kuluu aikaa $O(n+m)$.
+Pahimmassa tapauksessa lisäämme jokaisen kaaren kohdalla
+kekoon uuden alkion, eli lisäykset kekoon vievät aikaa $O(m \log m)$.
+Toisaalta poistamme kaikki alkiot aikanaan keosta,
+mihin menee myös aikaa $O(m \log m)$.
+Kun yhdistämme nämä tiedot, saamme algoritmin
+kokonaisaikavaativuudeksi $O(n + m \log m)$.
 
 \section{Floyd–Warshallin algoritmi}
 
