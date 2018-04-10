@@ -20,13 +20,13 @@ opimme lisää verkkoalgoritmeja.
 
 Verkko muodostuu \emph{solmuista} ja
 niitä yhdistävistä \emph{kaarista}.
+Esimerkiksi kuvassa \ref{fig:veresi} on verkko,
+jossa on viisi solmua ja seitsemän kaarta.
 Merkitsemme verkon solmujen
 määrää kirjaimella $n$ ja kaarten määrää
 kirjaimella $m$.
 Lisäksi numeroimme verkon solmut kokonaisluvuin
 $1,2,\dots,n$.
-Esimerkiksi kuvassa \ref{fig:veresi} on verkko,
-jossa on 5 solmua ja 7 kaarta.
 
 \begin{figure}
 \center
@@ -48,7 +48,7 @@ jossa on 5 solmua ja 7 kaarta.
 \path[draw,thick,-] (4) -- (5);
 \end{tikzpicture}
 \end{center}
-\caption{Verkko, jossa on 5 solmua ja 7 kaarta.}
+\caption{Verkko, jossa on viisi solmua ja seitsemän kaarta.}
 \label{fig:veresi}
 \end{figure}
 
@@ -57,21 +57,40 @@ jos niiden välillä on kaari.
 Solmun \emph{naapureja} ovat kaikki solmut,
 joihin se on yhteydessä kaarella,
 ja solmun \emph{aste} on sen naapureiden määrä.
-Verkossa oleva \emph{polku} tarkoittaa reittiä
-tietystä solmusta toiseen kulkemalla kaaria pitkin.
 Kuvassa \ref{fig:veresi} solmun 2 naapurit ovat 1, 4 ja 5,
 joten solmun aste on 3.
 Voimme kulkea solmusta 1 solmuun 5
 esimerkiksi polkua $1 \rightarrow 2 \rightarrow 5$
 tai $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 
-Sanomme, että verkko on \emph{yhtenäinen},
+\subsubsection{Polku ja sykli}
+
+Verkossa oleva \emph{polku} solmusta $a$ solmuun $b$
+on reitti solmusta $a$ solmuun $b$ kaaria pitkin.
+Kuvassa \ref{fig:veresi}
+voimme kulkea solmusta $1$ solmuun $5$
+vaikkapa polkua $1 \rightarrow 2 \rightarrow 5$
+tai polkua
+$1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
+
+Polku on \emph{sykli},
+jos se alkaa ja päättyy samassa solmussa,
+kulkee ainakin yhden toisen solmun kautta
+eikä kulje kahta kertaa saman solmun tai kaaren kautta.
+Kuvassa \ref{fig:veresi} on esimerkiksi sykli
+$2 \rightarrow 4 \rightarrow 5 \rightarrow 2$.
+Jos verkossa ei ole yhtään sykliä, verkko on \emph{syklitön}.
+
+\subsubsection{Yhtenäisyys ja komponentit}
+
+Verkko on \emph{yhtenäinen},
 jos minkä tahansa kahden solmun välillä on polku.
 Kuvan \ref{fig:veresi} verkko on yhtenäinen,
 mutta kuvan \ref{fig:veryht} verkko ei ole yhtenäinen,
 koska esimerkiksi solmujen $1$ ja $2$ välillä ei ole polkua.
+
 Voimme esittää verkon aina kokoelmana yhtenäisiä \emph{komponentteja}.
-Esimerkiksi kuvassa \ref{fig:veryht} yhtenäiset komponentit
+Kuvassa \ref{fig:veryht} yhtenäiset komponentit
 ovat $\{1,3\}$ ja $\{2,4,5\}$.
 
 \begin{figure}
@@ -95,14 +114,15 @@ ovat $\{1,3\}$ ja $\{2,4,5\}$.
 \label{fig:veryht}
 \end{figure}
 
-Verkossa oleva \emph{sykli} on polku,
-jonka alku- ja loppusolmu on sama,
-mutta jokainen muu solmu esiintyy polulla vain kerran.
-Kuvan \ref{fig:veresi} verkossa on esimerkiksi
-syklit $1 \rightarrow 3 \rightarrow 4 \rightarrow 2 \rightarrow 1$
-ja $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$.
-Jos verkossa ei ole syklejä, sanomme,
-että se on \emph{syklitön}.
+\subsubsection{Puu}
+
+Verkko on \emph{puu}, jos se on sekä yhtenäinen
+että syklitön.
+Puussa kaarten määrä on aina yhden pienempi
+kuin solmujen määrä, ja jokaisen kahden solmun
+välillä on yksikäsitteinen polku.
+Kuvassa \ref{fig:verpuu} on esimerkkinä puu,
+jossa on viisi solmua ja neljä kaarta.
 
 \begin{figure}
 \center
@@ -122,19 +142,21 @@ että se on \emph{syklitön}.
 \end{tikzpicture}
 \end{center}
 \caption{Yhtenäinen, syklitön verkko eli puu.}
-\label{fig:veresi}
+\label{fig:verpuu}
 \end{figure}
 
-Jos verkko on sekä yhtenäinen että syklitön,
-kutsumme sitä nimellä \emph{puu}.
-Tällaisessa verkossa jokaisen kahden solmun
-välillä on yksikäsitteinen polku.
-Jos poistamme minkä tahansa kaaren puusta,
-se ei ole enää yhtenäinen,
-ja jos lisäämme minkä tahansa kaaren,
-puuhun tulee sykli.
+\subsubsection{Suunnattu verkko}
 
-\subsection{Suunnatut verkot}
+Kun verkko on \emph{suunnattu},
+jokaisella kaarella on tietty suunta,
+jonka mukaisesti meidän täytyy kulkea kaarta pitkin.
+Suunnat rajoittavat siis liikkumistamme verkossa.
+
+Kuvassa \ref{fig:versuu} on esimerkkinä
+suunnattu verkko.
+Tässä verkossa voimme kulkea solmusta $1$ solmuun $5$
+polkua $1 \rightarrow 2 \rightarrow 5$,
+mutta verkossa ei ole mitään polkua solmusta $5$ solmuun $1$.
 
 \begin{figure}
 \center
@@ -157,10 +179,47 @@ puuhun tulee sykli.
 \end{tikzpicture}
 \end{center}
 \caption{Suunnattu verkko.}
-\label{fig:veresi}
+\label{fig:versuu}
 \end{figure}
 
-\subsection{Painotetut verkot}
+\subsubsection{Painotettu verkko}
+
+Kun verkko on \emph{painotettu},
+jokaiseen kaareen liittyy jokin paino,
+joka kuvaa usein kaaren pituutta.
+Kun kuljemme polkua painotetussa verkossa,
+polun pituus on kaarten painojen summa.
+
+Kuvassa \ref{fig:verpai} on esimerkkinä painotettu verkko.
+Tässä verkossa polun $1 \rightarrow 2 \rightarrow 5$
+paino on $5+8=13$ ja polun
+$1 \rightarrow 3 \rightarrow 4 \rightarrow 5$
+paino on $2+4+3=9$.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\small
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,-] (1) -- node[font=\small,label=above:5] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=left:2] {} (3);
+\path[draw,thick,-] (1) -- node[font=\small,label=above:9] {} (4);
+\path[draw,thick,-] (3) -- node[font=\small,label=below:4] {} (4);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:8] {} (5);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:2] {} (2);
+\path[draw,thick,-] (4) -- node[font=\small,label=below:3] {} (5);
+\end{tikzpicture}
+\end{center}
+\caption{Painotettu verkko.}
+\label{fig:verpai}
+\end{figure}
+
 
 \section{Verkot ohjelmoinnissa}
 
@@ -171,19 +230,6 @@ puuhun tulee sykli.
 \subsection{Vierusmatriisiesitys}
 
 \section{Verkon esittäminen}
-
-
-
-Matematiikassa verkko esitetään usein joukkoina $V$ ja $E$,
-jotka ilmaisevat verkon solmut ja kaaret.
-Nämä tulevat englannin kielen sanoista \emph{vertex} (solmu)
-ja \emph{edge} (kaari).
-Esimerkkiverkossamme
-\[ V = \{1,2,3,4,5\} \]
-ja
-\[ E = \{\{1,2\},\{1,3\},\{1,4\},\{2,4\},\{2,5\},\{3,4\},\{4,5\} \}.\]
-Huomaa, että tässä esityksessä kunkin kahden solmun välillä
-voi olla enintään yksi kaari, mikä on yleensä luonteva rajoitus.
 
 Ohjelmoinnissa tavallinen tapa esittää verkko on
 luoda kullekin verkon solmulle \emph{vieruslista},
