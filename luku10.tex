@@ -333,7 +333,7 @@ verkko[3][4] = 1;
 verkko[4][5] = 1;
 \end{code}
 
-Vierusmatriisin etuna on, että voimme tarkastaa nopeasti,
+Vierusmatriisin etuna on, että voimme tarkastaa helposti,
 onko tietty kaari verkossa.
 Esitystapa kuluttaa kuitenkin paljon muistia,
 eikä sitä voi käyttää, jos verkon solmujen määrä on suuri.
@@ -346,11 +346,16 @@ annetusta lähtösolmusta.
 Voimme selvittää syvyyshaun avulla monia asioita
 verkon rakenteesta.
 
-Syvyyshaku lähtee liikkeelle tietystä verkon solmusta ja siirtyy
-joka askeleella johonkin vielä tutkimattomaan solmuun,
-johon nykyisestä solmusta pääsee kaarta pitkin.
-Kuitenkin jos mitään tällaista solmua ei ole olemassa,
-haku palaa takaisin kulkemallaan reitillä.
+Syvyyshaku lähtee liikkeelle tietystä verkon solmusta
+ja alkaa tutkia verkkoa siitä käsin.
+Algoritmi pitää yllä jokaisesta solmusta tietoa,
+onko se vielä vieraillut solmussa.
+Kun haku saapuu solmuun, jossa se ei ole käynyt aiemmin,
+se merkitsee solmun vierailluksi ja
+etenee syvemmälle verkossa jatkamalla hakua
+yksi kerrallaan solmusta lähteviä kaaria pitkin.
+Tämän jälkeen algoritmi perääntyy taaksepäin
+samaa polkua kuin tuli solmuun.
 
 \begin{figure}
 \center
@@ -429,10 +434,15 @@ haku palaa takaisin kulkemallaan reitillä.
 Kuvassa \ref{fig:syvhak} on esimerkki syvyyshaun toiminnasta.
 Jokaisessa vaiheessa harmaat solmut ovat solmuja,
 joissa haku on jo vieraillut.
-Haku lähtee liikkeelle solmusta 1 ja etenee ensin
-solmuihin 2, 4 ja 5.
-Tämän jälkeen haku palaa takaisin solmuun 1
-ja käy vielä solmussa 3.
+Haku lähtee liikkeelle solmusta 1,
+josta pääsee solmuihin 2 ja 3.
+Haku etenee ensin solmuun 2, josta pääsee edelleen
+solmuihin 4 ja 5.
+Koska haku ei enää pysty etenemään solmusta 5,
+se perääntyy takaisin solmuun 1.
+Tämän jälkeen haku käy vielä solmussa 3,
+minkä jälkeen se on käynyt läpi kaikki solmut,
+joihin pääsee solmusta 1.
 
 \subsection{Algoritmin toteutus}
 
@@ -444,7 +454,8 @@ missä solmuissa olemme käyneet:
 boolean[] vierailtu = new boolean[n+1];
 \end{code}
 
-Tämän jälkeen voimme toteuttaa syvyyshaun näin:
+Tämän jälkeen voimme toteuttaa syvyyshaun näin
+käyttäen verkon vieruslistaesitystä:
 
 \begin{code}
 void syvyyshaku(int solmu) {
