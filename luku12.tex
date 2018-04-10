@@ -24,13 +24,13 @@ jonka pituus on $2+4+3=9$.
 
 Tutustumme tässä luvussa ensin Bellman–Fordin algoritmiin,
 joka etsii lyhimmät polut annetusta lähtösolmusta
-kaikkiin verkon solmuihin.
-Tämän jälkeen siirrymme Dijkstran algoritmiin,
-joka tekee saman tehokkaammin olettaen, että verkossa
-ei ole negatiivisen painoisia kaaria.
+kaikkiin verkon solmuihin ajassa $O(nm)$.
+Tämän jälkeen vuoroon tulee Dijkstran algoritmi,
+joka tekee saman tehokkaammin ajassa $O(n+m \log n)$
+olettaen, että verkossa ei ole negatiivisen painoisia kaaria.
 Lopuksi käsitte\-lemme Floyd–Warshallin algoritmin,
-joka etsii samanaikaisesti lyhimmät polut kaikkien
-verkon solmujen välillä.
+joka etsii samanaikaisesti lyhimmät polut \emph{kaikkien}
+verkon solmujen välillä ajassa $O(n^3)$.
 
 \begin{figure}
 \center
@@ -162,48 +162,21 @@ jonka pituus on $2+4+5=11$.
 
 \subsection{Algoritmin toteutus}
 
-Bellman–Fordin algoritmi on kätevää toteuttaa niin,
-että säilytämme verkon kaaria \emph{kaarilistassa}.
-Jokainen listalla oleva olio sisältää tiedon
-yhdestä verkon kaaresta.
-Voimme määritellä kaarilistan näin:
+Oletamme, että haluamme selvittää lyhimmät
+polut lähtösolmusta $1$ alkaen.
+Alustamme etäisyydet seuraavasti:
 
 \begin{code}
-ArrayList<Kaari> kaaret = new ArrayList<>();
-\end{code}
-
-Oletamme, että listan oliot ovat seuraavanlaisia:
-
-\begin{code}
-public class Kaari {
-    public int alku, loppu, paino;
-
-    public Kaari(int alku, int loppu, int paino) {
-        this.alku = alku;
-        this.loppu = loppu;
-        this.paino = paino;
-    }
+etaisyys[1] = 0;
+for (int i = 2; i <= n; i++) {
+    etaisyys[i] = INF;
 }
 \end{code}
 
-Lisäksi määrittelemme taulukon,
-jossa on solmujen etäisyyksiä:
-
-\begin{code}
-int[] etaisyys = new int[n+1];
-\end{code}
-
-Seuraava koodi alustaa taulukon, kun $x$ kuvaa lähtösolmua.
 Tässä \texttt{INF} on vakio, joka edustaa ääretöntä.
 Käytännössä tämä on jokin suuri luku,
 joka on suurempi, kuin mikä tahansa todellinen etäisyys.
 
-\begin{code}
-for (int i = 1; i <= n; i++) {
-    etaisyys[i] = INF;
-}
-etaisyys[x] = 0;
-\end{code}
 
 Nyt olemme valmiita toteuttamaan itse algoritmin.
 Toteutamme algoritmin niin, että se käy joka kierroksella
@@ -233,10 +206,9 @@ while (true) {
 
 \subsection{Algoritmin analyysi}
 
-Tärkeitä kysymyksiä Bellman–Fordin algoritmiin liittyen ovat,
-miksi algoritmi toimii ja miten tehokas se on.
+Miksi Bellman–Fordin algoritmi toimii ja miten tehokas se on?
 Jotta voimme vastata näihin kysymyksiin,
-tarvitsemme kaksi havaintoa verkon lyhimmistä poluista.
+tarvitsemme kaksi havaintoa koskien verkon lyhimpiä polkuja.
 
 Ensimmäinen havainto on, että jos lyhin polku solmusta $s_1$ solmuun $s_k$ on
 $s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k$,
@@ -503,7 +475,7 @@ solmun ja käsitellä sen.
 \path[draw,thick,->] (3) -- node[font=\small,label=below:$-4$] {} (4);
 \end{tikzpicture}
 \end{center}
-\caption{Dijkstran algoritmi ei toimi oikein tässä verkossa
+\caption{Dijkstran algoritmi ei toimi oikein verkossa
 negatiivisen kaaren takia.}
 \label{fig:dijneg}
 \end{figure}
