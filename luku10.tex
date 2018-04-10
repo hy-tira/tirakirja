@@ -67,7 +67,7 @@ tai $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 
 Sanomme, että verkko on \emph{yhtenäinen},
 jos minkä tahansa kahden solmun välillä on polku.
-Esimerkiksi kuvan \ref{fig:veresi} verkko on yhtenäinen,
+Kuvan \ref{fig:veresi} verkko on yhtenäinen,
 mutta kuvan \ref{fig:veryht} verkko ei ole yhtenäinen,
 koska esimerkiksi solmujen $1$ ja $2$ välillä ei ole polkua.
 Voimme esittää verkon aina kokoelmana yhtenäisiä \emph{komponentteja}.
@@ -96,8 +96,8 @@ ovat $\{1,3\}$ ja $\{2,4,5\}$.
 \end{figure}
 
 Verkossa oleva \emph{sykli} on polku,
-jonka ensimmäinen ja viimeinen solmu ovat samat
-ja jokainen muu solmu esiintyy polulla vain kerran.
+jonka alku- ja loppusolmu on sama,
+mutta jokainen muu solmu esiintyy polulla vain kerran.
 Kuvan \ref{fig:veresi} verkossa on esimerkiksi
 syklit $1 \rightarrow 3 \rightarrow 4 \rightarrow 2 \rightarrow 1$
 ja $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$.
@@ -135,6 +135,30 @@ ja jos lisäämme minkä tahansa kaaren,
 puuhun tulee sykli.
 
 \subsection{Suunnatut verkot}
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\small
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (1) -- (4);
+\path[draw,thick,->] (3) -- (4);
+\path[draw,thick,->] (2) -- (4);
+\path[draw,thick,->] (2) -- (5);
+\path[draw,thick,->] (4) -- (5);
+\end{tikzpicture}
+\end{center}
+\caption{Suunnattu verkko.}
+\label{fig:veresi}
+\end{figure}
 
 \subsection{Painotetut verkot}
 
