@@ -5,6 +5,8 @@ jolle on helppoa löytää käytännön sovelluksia.
 Esimerkiksi voimme haluta selvittää,
 mikä on nopein reitti kahden katuosoitteen välillä
 tai mikä on halvin tapa lentää kaupungista toiseen.
+Näissä ja muissa sovelluksissa on tärkeää,
+että algoritmit toimivat mahdollisimman nopeasti.
 
 Olemme käyttäneet aiemmin leveyshakua lyhimmän
 polun etsimiseen.
@@ -14,18 +16,27 @@ Tässä luvussa keskitymme kuitenkin vaikeampaan
 tilanteeseen, jossa verkko on \emph{painotettu}
 eli jokaiseen kaareen liittyy paino, ja haluamme löytää polun,
 jossa painojen summa on pienin.
-
-Kuvassa \ref{fig:verpai} on esimerkkinä painotettu verkko.
+Kuvassa \ref{fig:verpai} on esimerkkinä painotettu verkko,
+jossa jokaisen kaaren vieressä on ilmoitettu sen paino.
 Tässä verkossa lyhin polku solmusta $1$ solmuun $5$ on
 $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$,
 jonka pituus on $2+4+3=9$.
-Huomaa, että solmusta $1$ solmuun $5$ on myös polkuja,
-joissa on vain kaksi kaarta, mutta niiden pituus on suurempi.
+
+Tutustumme tässä luvussa ensin Bellman–Fordin algoritmiin,
+joka etsii lyhimmät polut annetusta lähtösolmusta
+kaikkiin verkon solmuihin.
+Tämän jälkeen siirrymme Dijkstran algoritmiin,
+joka tekee saman tehokkaammin olettaen, että verkossa
+ei ole negatiivisen painoisia kaaria.
+Lopuksi käsitte\-lemme Floyd–Warshallin algoritmin,
+joka etsii samanaikaisesti lyhimmät polut kaikkien
+verkon solmujen välillä.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\small
 \node[draw, circle] (1) at (1,3) {$1$};
 \node[draw, circle] (2) at (4,3) {$2$};
 \node[draw, circle] (3) at (1,1) {$3$};
@@ -47,12 +58,18 @@ joissa on vain kaksi kaarta, mutta niiden pituus on suurempi.
 
 \section{Bellman–Fordin algoritmi}
 
-Bellman–Fordin algoritmi määrittää etäisyyden
-(eli lyhimmän polun pituuden) valitusta lähtösolmusta
-kaikkiin verkon solmuihin.
-Algoritmi pitää yllä \emph{arvioita} etäisyyksistä niin,
-että aluksi etäisyys lähtösol\-muun on 0 ja etäisyys
-kaikkiin muihin solmuihin on $\infty$ (ääretön).
+Bellman–Fordin algoritmi etsii lyhimmät polut
+annetusta lähtösolmusta kaikkiin verkon solmuihin.
+Algoritmi muodostaa taulukon, joka kertoo jokaiselle
+solmulle sen \emph{etäisyyden} eli lyhimmän polun pituuden lähtösolmusta.
+Algoritmi toimii missä tahansa verkossa,
+kunhan verkossa ei ole negatiivista sykliä eli sykliä,
+jonka painojen summa on negatiivinen.
+
+Bellman–Fordin algoritmi pitää yllä \emph{arvioita}
+solmujen etäisyyksistä niin,
+että aluksi etäisyys lähtösolmuun on 0 ja etäisyys
+kaikkiin muihin solmuihin on ääretön.
 Tämän jälkeen algoritmi alkaa parantaa etäisyyksiä
 etsimällä verkosta kaaria, joiden kautta kulkeminen
 lyhentää polkuja.
@@ -61,13 +78,13 @@ jolle pätee, että pääsemme solmuun $b$ lyhempää polkua
 kulkemalla kaarella solmusta $a$.
 Kun mitään etäisyyttä ei voi enää parantaa,
 algoritmi päättyy ja kaikki etäisyydet vastaavat
-todellisia lyhimmän polun pituuksia.
+todellisia lyhimpien polkujen pituuksia.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
-\small
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\scriptsize
 \newcommand\verkko[6]{
 \node[draw, circle] (1) at (0,-1) {$1$};
 \node[draw, circle] (2) at (2,0) {$2$};
@@ -89,35 +106,34 @@ todellisia lyhimmän polun pituuksia.
 }
 \begin{scope}
 \verkko{1}{0}{\infty}{\infty}{\infty}{\infty}
-%\path[draw=red,thick,->,line width=2pt] (1) -- (2);
 \end{scope}
 \begin{scope}[xshift=6.5cm]
 \verkko{2}{0}{8}{\infty}{\infty}{\infty}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
+\path[draw=red,thick,->,line width=1.5pt] (1) -- (2);
 \end{scope}
 \begin{scope}[xshift=13cm]
 \verkko{3}{0}{8}{2}{\infty}{\infty}
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=1.5pt] (1) -- (3);
 \end{scope}
 \begin{scope}[yshift=-5.5cm]
 \verkko{4}{0}{8}{2}{13}{\infty}
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=1.5pt] (2) -- (4);
 \end{scope}
 \begin{scope}[yshift=-5.5cm,xshift=6.5cm]
 \verkko{5}{0}{6}{2}{13}{\infty}
-\path[draw=red,thick,->,line width=2pt] (3) -- (2);
+\path[draw=red,thick,->,line width=1.5pt] (3) -- (2);
 \end{scope}
 \begin{scope}[yshift=-5.5cm,xshift=13cm]
 \verkko{6}{0}{6}{2}{13}{9}
-\path[draw=red,thick,->,line width=2pt] (3) -- (5);
+\path[draw=red,thick,->,line width=1.5pt] (3) -- (5);
 \end{scope}
 \begin{scope}[yshift=-11cm]
 \verkko{7}{0}{6}{2}{12}{9}
-\path[draw=red,thick,->,line width=2pt] (5) -- (4);
+\path[draw=red,thick,->,line width=1.5pt] (5) -- (4);
 \end{scope}
 \begin{scope}[yshift=-11cm,xshift=6.5cm]
 \verkko{8}{0}{6}{2}{11}{9}
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=1.5pt] (2) -- (4);
 \end{scope}
 \end{tikzpicture}
 \end{center}
@@ -130,18 +146,16 @@ kun lähtösolmuna on solmu $1$.
 Jokaisen solmun vieressä on ilmoitettu sen etäisyysarvio:
 aluksi etäisyys solmuun 1 on 0 ja etäisyys kaikkiin muihin solmuihin on ääretön.
 Jokainen etäisyyden muutos näkyy kuvassa omana vaiheenaan.
-Esimerkiksi ensimmäinen muutos on,
-että saamme parannettua etäisyyttä solmuun 2,
-koska voimme kulkea kaarta $1 \rightarrow 2$.
-Tässä tapauksessa vanha etäisyys on $\infty$ ja uudeksi
-etäisyydeksi tulee $8$.
-Tämän jälkeen parannamme etäisyyttä solmuun $3$
+Ensin parannamme etäisyyttä solmuun 2
+kulkemalla kaarta $1 \rightarrow 2$,
+jolloin etäisyydeksi tulee $8$.
+Sitten parannamme etäisyyttä solmuun $3$
 kulkemalla kaarta $1 \rightarrow 3$,
 jolloin solmun uudeksi etäisyydeksi tulee $2$.
 Jatkamme samalla tavalla, kunnes emme voi enää parantaa
 mitään etäisyyttä, ja vaiheen $8$ jälkeen kaikki etäisyydet
-vastaavat lyhimmän polun pituuksia.
-Esimerkiksi solmun 4 kohdalla on lopuksi etäisyys 11,
+vastaavat lyhimpien polkujen pituuksia.
+Esimerkiksi solmun 4 etäisyys on lopuksi 11,
 koska lyhin polku solmusta $1$ solmuun $4$ on
 $1 \rightarrow 3 \rightarrow 2 \rightarrow 4$,
 jonka pituus on $2+4+5=11$.
@@ -179,7 +193,10 @@ jossa on solmujen etäisyyksiä:
 int[] etaisyys = new int[n+1];
 \end{code}
 
-Alustamme taulukon näin, kun $x$ kuvaa lähtösolmua:
+Seuraava koodi alustaa taulukon, kun $x$ kuvaa lähtösolmua.
+Tässä \texttt{INF} on vakio, joka edustaa ääretöntä.
+Käytännössä tämä on jokin suuri luku,
+joka on suurempi, kuin mikä tahansa todellinen etäisyys.
 
 \begin{code}
 for (int i = 1; i <= n; i++) {
@@ -187,11 +204,6 @@ for (int i = 1; i <= n; i++) {
 }
 etaisyys[x] = 0;
 \end{code}
-
-Tässä \texttt{INF} on vakio, joka edustaa ääretöntä.
-Käytännössä tämä on jokin sopivan suuri luku,
-joka on suurempi, kuin mikä tahansa todellisuudessa
-esiintyvä etäisyys.
 
 Nyt olemme valmiita toteuttamaan itse algoritmin.
 Toteutamme algoritmin niin, että se käy joka kierroksella
@@ -219,40 +231,43 @@ while (true) {
 \end{code}
 
 
-\subsection{Analyysi}
+\subsection{Algoritmin analyysi}
 
-Bellman–Fordin algoritmi muodostuu $n-1$ kierroksesta,
-joista jokainen käy läpi verkon $m$ kaarta,
-joten on helppoa nähdä, että algoritmi toimii ajassa $O(nm)$.
-Mutta miksi on varmaa, että $n-1$ kierroksen jälkeen olemme
-määrittäneet kaikki lyhimmät polut?
+Tärkeitä kysymyksiä Bellman–Fordin algoritmiin liittyen ovat,
+miksi algoritmi toimii ja miten tehokas se on.
+Jotta voimme vastata näihin kysymyksiin,
+tarvitsemme kaksi havaintoa verkon lyhimmistä poluista.
 
-Ensimmäinen havainto on,
+Ensimmäinen havainto on, että jos lyhin polku solmusta $s_1$ solmuun $s_k$ on
+$s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k$,
+niin myös lyhin polku solmusta $s_1$ solmuun $s_2$ on $s_1 \rightarrow s_2$,
+lyhin polku solmusta $s_1$ solmuun $s_3$ on $s_1 \rightarrow s_2 \rightarrow s_3$, jne.,
+eli jokainen polun alkuosa on myös lyhin polku vastaavaan solmuun.
+Jos näin ei olisi, voisimme parantaa lyhintä polkua solmusta $s_1$ solmuun $s_k$
+parantamalla jotain polun alkuosaa, mikä aiheuttaisi ristiriidan.
+
+Toinen havainto on,
 että $n$ solmun verkossa jokainen lyhin polku voi
-sisältää enintään $n-1$ kaarta.
+sisältää enintään $n-1$ kaarta,
+kun oletamme, että verkossa ei ole negatiivista sykliä.
 Jos polkuun kuuluisi $n$ tai enemmän kaaria,
 jokin solmu esiintyisi polulla monta kertaa.
 Tämä ei ole kuitenkaan mahdollista,
 koska ei olisi järkeä kulkea monta kertaa saman solmun kautta,
 kun haluamme saada aikaan lyhimmän polun.
 
-Toinen havainto on, että jos lyhin polku solmusta $s_1$ solmuun $s_k$ on
-$s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k$,
-niin myös lyhin polku solmusta $s_1$ solmuun $s_2$ on $s_1 \rightarrow s_2$,
-lyhin polku solmusta $s_1$ solmuun $s_3$ on $s_1 \rightarrow s_2 \rightarrow s_3$, jne.,
-eli jokainen polun alkuosa on myös lyhin polku vastaavaan solmuun.
-Jos näin ei olisi, voisimme parantaa lyhintä polkua solmusta $s_1$ solmuun $s_k$
-parantamalla jotain polun alkuosaa.
-
 Tarkastellaan nyt, mitä tapahtuu algoritmin kierroksissa.
 Ensimmäisen kierroksen jälkeen olemme löytäneet lyhimmät polut,
-joissa on yksi kaari.
+joissa on enintään yksi kaari.
 Toisen kierroksen jälkeen olemme löytäneet lyhimmät polut,
-joissa on kaksi kaarta.
+joissa on enintään kaksi kaarta.
 Sama jatkuu, kunnes $n-1$ kierroksen jälkeen olemme löytäneet
-lyhimmät polut, joissa on $n-1$ kaarta.
+lyhimmät polut, joissa on enintään $n-1$ kaarta.
 Koska missään lyhimmässä polussa ei voi olla enempää kaaria,
 olemme löytäneet kaikki lyhimmät polut.
+Algoritmi suorittaa siis enintään $n-1$ kierrosta,
+joista jokainen käy läpi kaikki verkon kaaret ajassa $O(m)$.
+Niinpä algoritmi löytää lyhimmät polut ajassa $O(nm)$.
 
 \begin{figure}
 \center
@@ -277,17 +292,15 @@ jonka avulla voimme lyhentää polkuja loputtomasti.}
 \label{fig:belsyk}
 \end{figure}
 
-Huomaa, että Bellman–Fordin algoritmi ei toimi järkevästi,
-jos verkossa on \emph{negatiivinen sykli}
-eli sykli, jonka kokonaispituus on negatiivinen.
-Esimerkki tästä on kuvan \ref{fig:belsyk} verkossa oleva sykli
+Mitä tapahtuu sitten, jos verkossa on negatiivinen sykli?
+Esimerkiksi kuvan \ref{fig:belsyk} verkossa on negatiivinen sykli
 $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$, jonka paino on $-2$.
-Negatiivisen syklin avulla voimme lyhentää polkuja loputtomasti kulkemalla
-sykliä uudestaan ja uudestaan, eikä lyhimmän polun pituudella ole alarajaa.
-Voimme havaita negatiivisen syklin olemassaolon suorittamalla
-algoritmia $n$ kierrosta tavallisen $n-1$ sijaan.
-Jos viimeisellä kierroksella jokin etäisyys pienenee,
-verkossa on negatiivien sykli.
+Tässä tilanteessa Bellman–Fordin algoritmi jää jumiin, koska se pystyy parantamaan
+loputtomasti syklin kautta kulkevia polkuja.
+Oikeastaan ongelma on siinä, että lyhin polku ei ole mielekäs käsite,
+jos polun osana on negatiivinen sykli.
+Voimme kuitenkin havaita negatiivisen syklin siitä,
+että jokin etäisyys paranee vielä $n-1$ kierroksen jälkeen.
 
 \section{Dijkstran algoritmi}
 
