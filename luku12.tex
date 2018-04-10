@@ -308,21 +308,25 @@ Dijkstran algoritmi on Bellman–Fordin algoritmin tehostettu versio,
 jonka toiminta perustuu oletukseen, että verkossa ei ole
 negatiivisen painoisia kaaria.
 Bellman–Fordin algoritmin tapaan Dijkstran algoritmi pitää
-yllä arvioita etäisyyksistä lähtösolmusta $x$ muihin solmuihin.
+yllä arvioita etäisyyksistä lähtösolmusta muihin solmuihin.
 Erona on kuitenkin tapa, miten Dijkstran algoritmi parantaa etäisyyksiä.
 
+Dijkstran algoritmissa verkon solmut kuuluvat kahteen luokkaan:
+käsitte\-lemättömiin ja käsiteltyihin.
+Aluksi kaikki solmut ovat käsittelemättömiä.
 Algoritmi etsii jokaisessa vaiheessa solmun, jota ei ole vielä
-käsitelty ja jonka etäisyys on pienin.
+käsitelty ja jonka etäisyysarvio on pienin.
 Sitten algoritmi käy läpi kaikki solmusta lähtevät kaaret ja
 koettaa parantaa etäisyyksiä niiden avulla.
-Tämän jälkeen solmu on käsitelty eikä sen etäisyys enää
-muutu algoritmin aikana.
+Tämän jälkeen solmu on käsitelty eikä sen etäisyys enää muutu,
+eli aina kun olemme käsitelleet solmun,
+olemme saaneet selville sen lopullisen etäisyyden.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
-\small
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\scriptsize
 \newcommand\verkko[6]{
 \node[draw, circle] (1) at (0,-1) {$1$};
 \node[draw, circle] (2) at (2,0) {$2$};
@@ -348,22 +352,22 @@ muutu algoritmin aikana.
 \begin{scope}[xshift=6.5cm]
 \node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
 \verkko{2}{0}{8}{2}{\infty}{\infty}
-\path[draw=red,thick,->,line width=2pt] (1) -- (2);
-\path[draw=red,thick,->,line width=2pt] (1) -- (3);
+\path[draw=red,thick,->,line width=1.5pt] (1) -- (2);
+\path[draw=red,thick,->,line width=1.5pt] (1) -- (3);
 \end{scope}
 \begin{scope}[xshift=13cm]
 \node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
 \node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
 \verkko{3}{0}{6}{2}{\infty}{9}
-\path[draw=red,thick,->,line width=2pt] (3) -- (2);
-\path[draw=red,thick,->,line width=2pt] (3) -- (5);
+\path[draw=red,thick,->,line width=1.5pt] (3) -- (2);
+\path[draw=red,thick,->,line width=1.5pt] (3) -- (5);
 \end{scope}
 \begin{scope}[yshift=-5.5cm]
 \node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
 \node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
 \node[draw, circle, fill=lightgray] (2) at (2,0) {$2$};
 \verkko{4}{0}{6}{2}{11}{9}
-\path[draw=red,thick,->,line width=2pt] (2) -- (4);
+\path[draw=red,thick,->,line width=1.5pt] (2) -- (4);
 \end{scope}
 \begin{scope}[yshift=-5.5cm,xshift=6.5cm]
 \node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
@@ -389,16 +393,116 @@ muutu algoritmin aikana.
 Kuva \ref{fig:dijalg} näyttää esimerkin Dijkstran algoritmin
 toiminnasta.
 Solmun harmaa väri tarkoittaa, että se on käsitelty.
-Alussa valitsemme solmun 1, koska sen etäisyys 0 on pienin.
-Sitten valittavana ovat solmut 2, 3, 4 ja 5,
-joista valitsemme solmun 3, jonka etäisyys 2 on pienin.
+Alussa valitsemme käsittelyyn solmun 1, koska sen etäisyys 0 on pienin.
+Sitten jäljellä ovat solmut 2, 3, 4 ja 5,
+joista valitsemme käsittelyyn solmun 3, jonka etäisyys 2 on pienin.
+Tämän jälkeen valitsemme käsittelyyn solmun 2,
+jonka etäisyys on 6.
 Sama jatkuu, kunnes olemme käsitelleet kaikki verkon solmut.
 
-Huomaa, että aina kun olemme käsitelleet solmun,
-olemme saaneet selville sen lopullisen etäisyyden.
-Esimerkiksi vaiheen 3 jälkeen tiedämme,
-että lyhin polku solmuun 3 on pituudeltaan 2,
-vaikka emme ole vielä käsitelleet kaikkia verkon solmuja.
+\subsection{Algoritmin toteutus}
+
+Dijkstran algoritmi on mukavaa toteuttaa
+vieruslistoja käyttäen.
+Koska kaarilla on painot, meidän kannattaa tallentaa ne olioina:
+
+\begin{code}
+ArrayList<Kaari>[] verkko = new ArrayList<>();
+\end{code}
+
+Tallennamme jokaisesta kaaresta kohdesolmun ja painon:
+
+\begin{code}
+public class Kaari {
+    int kohde, paino;
+    
+    public Kaari(int kohde, int paino) {
+        this.kohde = kohde;
+        this.paino = paino;
+    }
+}
+\end{code}
+
+Määrittelemme seuraavat taulukot, jotka pitävät kirjaa
+solmujen etäisyyk\-sistä sekä käsitellyistä solmuista:
+
+\begin{code}
+int[] etaisyys = new int[n+1];
+boolean[] kasitelty = new boolean[n+1];
+\end{code}
+
+Tärkeä seikka algoritmin tehokkuuden kannalta on,
+että löydämme joka vaiheessa nopeasti seuraavaksi
+käsiteltävän solmun.
+Hyvä tietorakenne tähän on prioriteettijono,
+joka pitää yllä solmujen etäisyysarvioita:
+
+\begin{code}
+PriorityQueue<Solmu> solmut = new PriorityQueue<>();
+\end{code}
+
+Etäisyyksiä varten tarvitsemme uuden luokan,
+jonka oliot järjestyvät etäisyyden mukaan pienimmästä suurimpaan:
+
+\begin{code}
+class Solmu implements Comparable<Solmu> {
+    public int id, etaisyys;
+
+    public int compareTo(Solmu s) {
+        if (etaisyys != s.etaisyys) {
+            return etaisyys-s.etaisyys;
+        } else {
+            return id-s.id;
+        }
+    }
+
+    public Solmu(int id, int etaisyys) {
+        this.id = id;
+        this.etaisyys = etaisyys;
+    }
+}
+\end{code}
+
+Haluamme selvittää lyhimmät polut solmusta $x$ alkaen,
+joten alustamme rakenteet seuraavasti:
+
+\begin{code}
+for (int i = 1; i <= n; i++) {
+    etaisyys[i] = INF;
+}
+etaisyys[x] = 0;
+solmut.push(new Solmu(x,0));
+\end{code}
+
+Tämän jälkeen voimme toteuttaa algoritmin näin:
+
+\begin{code}
+while (!solmut.isEmpty()) {
+    Solmu solmu = solmut.poll();
+    if (kasitelty[solmu.id]) continue;
+    kasitelty[solmu.id] = true;
+    for (Kaari kaari : verkko[solmu]) {
+        int vanha = etaisyys[kaari.kohde];
+        int uusi = solmu.etaisyys+kaari.paino;
+        if (uusi < vanha) {
+            etaisyys[kaari.kohde] = uusi;
+            solmut.add(new Solmu(kaari.kohde,uusi))
+        }
+    }
+}
+\end{code}
+
+Huomaa, että koska voimme poistaa prioriteettijonosta
+vain pienimmän etäisyyden solmun,
+lisäämme solmun etäisyyden muuttuessa uuden solmun jonoon.
+Jos olemme käsitelleet jonosta tulevan solmun,
+emme käsittele sitä uudestaan.
+
+Vaikka jonossa on ''ylimääräisiä'' solmuja, ratkaisu säilyy
+tehokkaana ja toimii ajassa $O((n+m) \log n)$.
+Jonossa voi olla enintään $m$ solmua, ja koska $m=O(n^2)$,
+jokainen operaatio jonoon vie aikaa $O(\log (n^2))=O(2 \log n)=O(\log n)$.
+
 
 \subsection{Analyysi}
 
@@ -463,93 +567,6 @@ ja lisäksi etäisyydet saattavat muuttua $m$ kertaa
 kunkin kaaren käsittelyn yhteydessä.
 Niinpä algoritmin aikavaativuudeksi tulee $O((n+m) \log n)$.
 
-\subsection{Toteutus}
-
-Dijkstran algoritmi on mukavaa toteuttaa niin, että
-se käyttää verkon vieruslistaesitystä
-
-\begin{code}
-ArrayList<Kaari>[] verkko = new ArrayList<>();
-\end{code}
-
-Luomme seuraavat taulukot, jotka pitävät kirjaa solmujen etäisyyksistä
-sekä käsitellyistä solmuista:
-
-\begin{code}
-int[] etaisyys = new int[n+1];
-boolean[] kasitelty = new boolean[n+1];
-\end{code}
-
-Lisäksi jotta voimme löytää nopeasti pienimmän etäisyyden solmun,
-otamme käyttöön prioriteettijonon
-
-\begin{code}
-PriorityQueue<Solmu> solmut = new PriorityQueue<>();
-\end{code}
-
-Etäisyyksiä varten tarvitsemme uuden luokan,
-jonka oliot järjestyvät etäisyyden mukaan pienimmästä suurimpaan:
-
-\begin{code}
-class Solmu implements Comparable<Solmu> {
-    public int id, etaisyys;
-
-    public int compareTo(Solmu s) {
-        if (etaisyys != s.etaisyys) return etaisyys-s.etaisyys;
-        else return id-s.id;
-    }
-
-    public boolean equals(Object o) {
-        Solmu s = (Solmu)o;
-        return etaisyys == s.etaisyys && id == s.id;
-    }
-
-    public Solmu(int id, int etaisyys) {
-        this.id = id;
-        this.etaisyys = etaisyys;
-    }
-}
-\end{code}
-
-Haluamme selvittää lyhimmät polut solmusta $x$ alkaen,
-joten alustamme rakenteet seuraavasti:
-
-\begin{code}
-for (int i = 1; i <= n; i++) {
-    etaisyys[i] = 1e9;
-}
-etaisyys[x] = 0;
-solmut.add(new Solmu(x,0));
-\end{code}
-
-Tämän jälkeen voimme toteuttaa algoritmin näin:
-
-\begin{code}
-while (!solmut.isEmpty()) {
-    Solmu solmu = solmut.poll();
-    if (kasitelty[solmu.id]) continue;
-    kasitelty[solmu.id] = true;
-    for (Kaari kaari : verkko[solmu]) {
-        int vanha = etaisyys[kaari.kohde];
-        int uusi = solmu.etaisyys+kaari.paino;
-        if (uusi < vanha) {
-            etaisyys[kaari.kohde] = uusi;
-            solmut.add(new Solmu(kaari.kohde,uusi))
-        }
-    }
-}
-\end{code}
-
-Huomaa, että koska voimme poistaa prioriteettijonosta
-vain pienimmän etäisyyden solmun,
-lisäämme solmun etäisyyden muuttuessa uuden solmun jonoon.
-Jos olemme käsitelleet jonosta tulevan solmun,
-emme käsittele sitä uudestaan.
-
-Vaikka jonossa on ''ylimääräisiä'' solmuja, ratkaisu säilyy
-tehokkaana ja toimii ajassa $O((n+m) \log n)$.
-Jonossa voi olla enintään $m$ solmua, ja koska $m=O(n^2)$,
-jokainen operaatio jonoon vie aikaa $O(\log (n^2))=O(2 \log n)=O(\log n)$.
 
 \section{Floyd–Warshallin algoritmi}
 
