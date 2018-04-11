@@ -1,12 +1,12 @@
 \chapter{Lyhimmät polut}
 
 Lyhimmän polun etsiminen on keskeinen verkko-ongelma,
-jolle on helppoa löytää käytännön sovelluksia.
+jolle on helppoa keksiä käytännön sovelluksia.
 Esimerkiksi voimme haluta selvittää,
 mikä on nopein reitti kahden katuosoitteen välillä
 tai mikä on halvin tapa lentää kaupungista toiseen.
 Näissä ja muissa sovelluksissa on tärkeää,
-että algoritmit toimivat mahdollisimman nopeasti.
+että löydämme lyhimmän polun tehokkaasti.
 
 Olemme käyttäneet aiemmin leveyshakua lyhimmän
 polun etsimiseen.
@@ -14,29 +14,19 @@ Tämä onkin hyvä ratkaisu silloin, kun haluamme löytää polun,
 jonka kaarten määrä on pienin.
 Tässä luvussa keskitymme kuitenkin vaikeampaan
 tilanteeseen, jossa verkko on \emph{painotettu}
-eli jokaiseen kaareen liittyy paino, ja haluamme löytää polun,
+ja haluamme löytää polun,
 jossa painojen summa on pienin.
-Kuvassa \ref{fig:verpai} on esimerkkinä painotettu verkko,
-jossa jokaisen kaaren vieressä on ilmoitettu sen paino.
-Tässä verkossa lyhin polku solmusta $1$ solmuun $5$ on
+Esimerkiksi kuvassa \ref{fig:verpai}
+lyhin polku solmusta $1$ solmuun $5$ on
 $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$,
 jonka pituus on $2+4+3=9$.
-
-Tutustumme ensin Bellman–Fordin algoritmiin,
-joka etsii lyhimmät polut annetusta lähtösolmusta
-kaikkiin verkon solmuihin ajassa $O(nm)$.
-Tämän jälkeen vuoroon tulee Dijkstran algoritmi,
-joka tekee saman tehokkaammin ajassa $O(n+m \log n)$
-olettaen, että verkossa ei ole negatiivisen painoisia kaaria.
-Lopuksi käsitte\-lemme Floyd–Warshallin algoritmin,
-joka etsii samanaikaisesti lyhimmät polut \emph{kaikkien}
-verkon solmujen välillä ajassa $O(n^3)$.
 
 \begin{figure}
 \center
 \begin{center}
 \begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
 \small
+\begin{scope}
 \node[draw, circle] (1) at (1,3) {$1$};
 \node[draw, circle] (2) at (4,3) {$2$};
 \node[draw, circle] (3) at (1,1) {$3$};
@@ -50,12 +40,48 @@ verkon solmujen välillä ajassa $O(n^3)$.
 \path[draw,thick,->] (2) -- node[font=\small,label=above:8] {} (5);
 \path[draw,thick,->] (4) -- node[font=\small,label=right:2] {} (2);
 \path[draw,thick,->] (4) -- node[font=\small,label=below:3] {} (5);
+
+\node at (3,-1) {(a)};
+\end{scope}
+\begin{scope}[xshift=8cm]
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=left:2] {} (3);
+\path[draw,thick,->] (1) -- node[font=\small,label=above:9] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:4] {} (4);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:8] {} (5);
+\path[draw,thick,->] (4) -- node[font=\small,label=right:2] {} (2);
+\path[draw,thick,->] (4) -- node[font=\small,label=below:3] {} (5);
+
+\path[draw,thick,->,red,line width=1.5pt] (1) -- (3);
+\path[draw,thick,->,red,line width=1.5pt] (3) -- (4);
+\path[draw,thick,->,red,line width=1.5pt] (4) -- (5);
+
+\node at (3,-1) {(b)};
+\end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Painotettu verkko, jossa lyhin polku solmusta $1$ solmuun $5$
-on $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.}
+\caption{(a) Painotettu verkko. (b) Lyhin polku solmusta $1$ solmuun $5$.
+}
 \label{fig:verpai}
 \end{figure}
+
+Painotetussa verkossa lyhimmän polun etsimiseen
+on monia algoritmeja, joilla on erilaisia ominaisuuksia.
+Tutustumme ensin Bellman–Fordin algoritmiin,
+joka etsii lyhimmät polut annetusta lähtösolmusta
+kaikkiin verkon solmuihin.
+Tämän jälkeen opimme Dijkstran algoritmin,
+joka tekee saman tehokkaammin
+olettaen, että verkossa ei ole negatiivisen painoisia kaaria.
+Lopuksi käsitte\-lemme Floyd–Warshallin algoritmin,
+joka etsii samanaikaisesti lyhimmät polut \emph{kaikkien}
+verkon solmujen välillä.
 
 \section{Bellman–Fordin algoritmi}
 
@@ -77,7 +103,7 @@ lyhentää polkuja.
 Jokaisessa vaiheessa algoritmi etsii kaaren $a \rightarrow b$,
 jolle pätee, että pääsemme solmuun $b$ lyhempää polkua
 kulkemalla kaarella solmusta $a$.
-Kun mitään etäisyyttä ei voi enää parantaa,
+Kun mitään etäisyysarviota ei voi enää parantaa,
 algoritmi päättyy ja kaikki etäisyydet vastaavat
 todellisia lyhimpien polkujen pituuksia.
 
@@ -163,14 +189,25 @@ jonka pituus on $2+4+5=11$.
 
 \subsection{Algoritmin toteutus}
 
-Oletamme, että haluamme selvittää lyhimmät
-polut lähtösolmusta $1$ alkaen.
-Alustamme etäisyydet seuraavasti:
+Toteutamme Bellman–Fordin algoritmin niin,
+että se muodostuu kierroksista,
+joista jokainen käy läpi kaikki verkon kaaret
+ja koettaa parantaa etäisyys\-arvioita niiden avulla.
+Jos jonkin kierroksen aikana mikään etäisyysarvio ei parane,
+algoritmi päättyy.
+
+Koska algoritmi käy joka kierroksella läpi
+kaikki verkon kaaret,
+hyvä tapa tallentaa verkko on kaarilista,
+jossa jokaisesta kaaresta on tiedossa
+alku- ja loppusolmu sekä paino.
+Lisäksi tarvitsemme taulukon etäisyyksille,
+joka alustetaan seuraavasti:
 
 \begin{code}
-etaisyys[1] = 0;
-for (int i = 2; i <= n; i++) {
-    etaisyys[i] = INF;
+for (int i = 1; i <= n; i++) {
+    if (i == alku) etaisyys[i] = 0;
+    else etaisyys[i] = INF;
 }
 \end{code}
 
@@ -178,16 +215,7 @@ Tässä \texttt{INF} on vakio, joka edustaa ääretöntä.
 Käytännössä tämä on jokin suuri luku,
 joka on suurempi, kuin mikä tahansa todellinen etäisyys.
 
-
-Nyt olemme valmiita toteuttamaan itse algoritmin.
-Toteutamme algoritmin niin, että se käy joka kierroksella
-läpi kaikki verkon kaaret.
-Jos pystymme parantamaan etäisyyttä kaaren avulla,
-algoritmi merkitsee muistiin uuden etäisyyden sekä
-myös tiedon siitä, että olemme muuttaneet etäisyyttä.
-Algoritmi jatkuu niin kauan, kunnes tulee kierros,
-jonka aikana mikään etäisyys ei muutu,
-jolloin etäisyydet ovat lopulliset.
+Tämän jälkeen voimme toteuttaa algoritmin seuraavasti:
 
 \begin{code}
 while (true) {
