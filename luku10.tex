@@ -475,84 +475,54 @@ ja päättyy heti tässä tilanteessa.
 Muuten metodi merkitsee, että olemme nyt käyneet solmussa
 ja etenee rekursiivisesti kaikkiin solmun naapureihin.
 
-Syvyyshaku vie aikaa $O(n+m)$, missä $n$ on solmujen määrä
-ja $m$ on kaarten määrä,
-koska käymme läpi kerran jokaisesta solmusta lähtevät kaaret.
+Syvyyshaku käsittelee kerran jokaisen solmun,
+johon pääsee lähtösolmusta,
+käymällä läpi siitä lähtevät kaaret.
+Niinpä syvyyshaku vie aikaa $O(n+m)$, missä $n$ on
+verkon solmujen määrä ja $m$ on verkon kaarten määrä.
 
 \subsection{Sovelluksia}
 
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.6]
-\small
-\begin{scope}
-\node[draw, circle] (1) at (1,3) {$1$};
-\node[draw, circle] (2) at (4,3) {$2$};
-\node[draw, circle] (3) at (1,1) {$3$};
-\node[draw, circle] (4) at (4,1) {$4$};
-\node[draw, circle] (5) at (6,2) {$5$};
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (3) -- (4);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (4) -- (5);
-\node at (-2,2) {(a)};
-\end{scope}
-\begin{scope}[yshift=-4cm]
-\node[draw, circle] (1) at (1,3) {$1$};
-\node[draw, circle] (2) at (4,3) {$2$};
-\node[draw, circle] (3) at (1,1) {$3$};
-\node[draw, circle] (4) at (4,1) {$4$};
-\node[draw, circle] (5) at (6,2) {$5$};
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (4) -- (5);
-\node at (-2,2) {(b)};
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{(a) Verkko on yhtenäinen. (b) Verkon yhtenäiset komponentit ovat $\{1,3\}$ ja $\{2,4,5\}$.}
-\label{fig:veryht}
-\end{figure}
+Syvyyshaku on yleistyökalu verkko-ongelmien ratkaisemiseen.
+Seuraavassa on joitakin esimerkkejä syvyyshaun käyttökohteista.
+Oletamme, että verkko on suuntaamaton, eli voimme kulkea
+kaikkia kaaria kumpaankin suuntaan.
 
-Kun suoritamme verkossa syvyyshaun tietystä solmusta alkaen,
-löydämme polut kaikkiin solmuihin, joihin kyseisestä
-solmusta pääsee.
-Esimerkiksi kuvan \ref{fig:syvhak} syvyyshaun aikana
-olemme saaneet selville polut solmusta 1 kaikkiin muihin solmuihin.
-Tässä tapauksessa esimerkiksi polku solmusta $1$ solmuun $5$ on
-$1 \rightarrow 2 \rightarrow 4 \rightarrow 5$,
-joka on löytynyt haun vaiheessa 4.
+\subsubsection{Polun etsiminen}
 
-Sanomme, että verkko on \emph{yhtenäinen},
-jos verkossa on polku minkä tahansa kahden solmun välillä.
-Verkko on yhtenäinen tarkalleen silloin,
-kun pääsemme \emph{mistä tahansa} solmusta
-kaikkiin muihin solmuihin.
-Niinpä voimme tarkastaa yhtenäisyyden suorittamalla
-syvyyshaun mielivaltaisesta solmusta alkaen.
-Esimerkiksi kuvan \ref{fig:veryht}(a) verkko on yhtenäinen,
-koska solmusta 1 alkava syvyyshaku käy kaikissa solmuissa.
+Syvyyshaun avulla voimme etsiä verkosta polun solmusta
+$a$ solmuun $b$, jos tällainen polku on olemassa.
+Tämä tapahtuu aloittamalla haku solmusta $a$
+ja pysähtymällä, kun vastaan tulee solmu $b$.
+Jos polkuja on useita, syvyyshaku löytää jonkin niistä
+riippuen solmujen käsittelyjärjestyksestä.
 
-Jos verkko ei ole yhtenäinen, se jakautuu
-yhtenäisiin \emph{komponentteihin},
-joista jokainen sisältää solmut, jotka ovat yhteydessä
+\subsubsection{Yhtenäisyys ja komponentit}
+
+Verkko on yhtenäinen, jos kaikki solmut ovat yhteydessä
 toisiinsa.
-Esimerkiksi kuvan \ref{fig:veryht}(b) verkon
-yhtenäiset komponentit ovat $\{1,3\}$ ja $\{2,4,5\}$.
-Löydäm\-me verkon yhtenäiset komponentit
-käymällä läpi kaikki verkon solmut ja aloittamalla
-uuden syvyyshaun aina, kun emme ole käyneet solmussa aiemmin.
-Jokainen syvyyshaku löytää yhden yhtenäisen komponentin.
+Voimmekin tarkastaa verkon yhtenäisyyden aloittamalla
+syvyyshaun mielivaltaisesta solmusta ja tutkimalla,
+saavuttaako haku kaikki verkon solmut.
+Lisäksi voimme löytää verkon yhtenäiset komponentit
+käymällä läpi solmut ja aloittamalla syvyyshaun aina,
+kun vastaan tulee uusi solmu.
+Jokainen syvyyshaku muodostaa yhden komponentin.
+
+\subsubsection{Syklin etsiminen}
+
+Jos verkossa on sykli, huomaamme sen syvyyshaun aikana siitä,
+että tulemme tulemme toista kautta johonkin solmuun,
+jossa olemme käyneet jo aiemmin.
+Niinpä löydämme syvyyshaun avulla jonkin verkossa olevan
+syklin, jos sellainen on olemassa.
 
 \section{Leveyshaku}
 
 \emph{Leveyshaku} on algoritmi, joka selvittää \emph{lyhimmän} polun
 lähtösolmusta kaikkiin solmuihin, jotka ovat saavutettavissa siitä.
-Lyhin polku tarkoittaa polkua, jossa on mahdollisimman vähän kaaria.
-Käsittelemme solmut kerroksittain lähtösolmusta alkaen
+Lyhin polku tarkoittaa tässä polkua, jossa on mahdollisimman vähän kaaria.
+Ideana on käsitellä solmut kerroksittain lähtösolmusta alkaen
 siinä järjestyksessä kuin olemme löytäneet ne.
 Jokaisen solmun kohdalla käymme läpi kaikki siitä lähtevät kaaret.
 
@@ -626,7 +596,11 @@ Jokaisen solmun kohdalla käymme läpi kaikki siitä lähtevät kaaret.
 Kuvassa \ref{fig:levhak} on esimerkki leveyshaun toiminnasta,
 kun etsimme polkuja solmusta 1 aloittaen.
 Käsittelemme ensin solmun 1, josta pääsemme uusiin solmuihin 2 ja 3.
+Tämä tarkoittaa, että lyhimmät polut solmuihin 2 ja 3
+ovat $1 \rightarrow 2$ ja $1 \rightarrow 3$.
 Sitten käsittelemme solmun 2, josta pääsemme uusiin solmuihin 4 ja 5.
+Tämä tarkoittaa, että lyhimmät polut solmuihin 4 ja 5
+ovat $1 \rightarrow 2 \rightarrow 4$ ja $1 \rightarrow 2 \rightarrow 5$.
 Lopuksi käsittelemme vielä solmut 3, 4 ja 5,
 joista emme kuitenkaan pääse enää uusiin solmuihin.
 
@@ -650,7 +624,8 @@ missä solmuissa olemme käyneet:
 boolean[] vierailtu = new boolean[n+1];
 \end{code}
 
-Nyt voimme toteuttaa leveyshaun seuraavasti solmusta \texttt{alku} lähtien:
+Oletamme seuraavassa koodissa, että aloitamme leveyshaun solmusta \texttt{alku} alkaen.
+Voimme toteuttaa haun seuraavasti:
 
 \begin{code}
 vierailtu[alku] = true;
@@ -688,7 +663,7 @@ int[] aiempi = new int[n+1];
 \end{code}
 
 Taulukko \texttt{etaisyys} kertoo, mikä on etäisyys
-(eli lyhimmän polun pituus) lähtösolmusta solmuun,
+(eli lyhimmän polun pituus) lähtösolmusta kyseiseen solmuun,
 ja taulukko \texttt{aiempi} viittaa edelliseen solmuun lyhimmällä polulla.
 Näiden taulukoiden avulla voimme leveyshaun jälkeen muodostaa
 lyhimmän polun lähtösolmusta mihin tahansa solmuun.
@@ -781,7 +756,7 @@ ja kahden solmun välillä on kaari,
 jos vastaavat ruudut ovat vierekkäin labyrintissa.
 Kuva \ref{fig:labrei}(b) näyttää esimerkkilabyrinttimme verkkona.
 Nyt ruudusta $A$ on reitti ruutuun $B$ tarkalleen silloin,
-kun vastaavat verkon solmut kuuluvat samaan komponenttiin,
+kun vastaavat verkon solmut kuuluvat samaan yhtenäiseen komponenttiin,
 minkä voimme tarkastaa syvyyshaulla.
 Lyhin reitti ruudusta $A$ ruutuun $B$ löytyy puolestaan leveyshaulla,
 joka lähtee liikkeelle ruudusta $A$.
@@ -790,7 +765,7 @@ Huomaa, että meidän ei tarvitse erikseen muuttaa labyrinttia
 verkoksi, vaan voimme toteuttaa haut \emph{implisiittiseen} verkkoon.
 Tämä tarkoittaa, että teemme haun labyrinttiin sen omassa
 esitysmuodossa. Käytännössä labyrintti on kätevää tallentaa kaksiulotteisena
-taulukkona, joka ilmaisee, mitkä ruudut ovat lattiaa ja seinää.
+taulukkona, joka kertoo, mitkä ruudut ovat seinäruutuja.
 Tällöin voimme toteuttaa esimerkiksi syvyyshaun seuraavan tyylisesti:
 
 \begin{code}
