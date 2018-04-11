@@ -412,21 +412,21 @@ jonka avulla löydämme joka vaiheessa pienimmän etäisyyden solmun
 logaritmisessa ajassa.
 
 Oletamme seuraavaksi, että haluamme muodostaa lyhimmät
-polut lähtö\-solmusta $1$ alkaen.
+polut lähtö\-solmusta \texttt{alku} alkaen.
 Tallennamme kekoon solmuja, joista on tiedossa
-etäisyys ja solmun tunnus,
+etäi\-syys ja solmun tunnus,
 järjestettynä etäisyyden mukaan pienimmästä suurimpaan.
-Merkitsemme aluksi taulukkoon, että solmun $1$ etäisyys on $0$
+Merkitsemme aluksi taulukkoon, että lähtösolmun etäisyys on $0$
 ja lisäämme sitä vastaavan solmun kekoon.
 Lisäksi merkitsemme taulukkoon, että kaikkien muiden
 solmujen etäisyys on ääretön.
 
 \begin{code}
-etaisyys[1] = 0;
-keko.push(new Solmu(0,1));
-for (int i = 2; i <= n; i++) {
-    etaisyys[i] = INF;
+for (int i = 1; i <= n; i++) {
+    if (i == alku) etaisyys[i] = 0;
+    else etaisyys[i] = INF;
 }
+keko.push(new Solmu(0,alku));
 \end{code}
 
 Tämän jälkeen haemme joka askeleella keosta solmun,
