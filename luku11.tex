@@ -315,8 +315,8 @@ Erona on kuitenkin tapa, miten Dijkstran algoritmi parantaa etäisyyksiä.
 Dijkstran algoritmissa verkon solmut kuuluvat kahteen luokkaan:
 käsitte\-lemättömiin ja käsiteltyihin.
 Aluksi kaikki solmut ovat käsittelemättömiä.
-Algoritmi etsii jokaisessa vaiheessa solmun, jota ei ole vielä
-käsitelty ja jonka etäisyysarvio on pienin.
+Algoritmi etsii jokaisessa vaiheessa käsittelemättömän solmun,
+jonka etäisyys\-arvio on pienin.
 Sitten algoritmi käy läpi kaikki solmusta lähtevät kaaret ja
 koettaa parantaa etäisyyksiä niiden avulla.
 Tämän jälkeen solmu on käsitelty eikä sen etäisyys enää muutu,
@@ -394,7 +394,7 @@ olemme saaneet selville sen lopullisen etäisyyden.
 Kuva \ref{fig:dijalg} näyttää esimerkin Dijkstran algoritmin
 toiminnasta.
 Solmun harmaa väri tarkoittaa, että se on käsitelty.
-Alussa valitsemme käsittelyyn solmun 1, koska sen etäisyys 0 on pienin.
+Aluksi valitsemme käsittelyyn solmun 1, koska sen etäisyys 0 on pienin.
 Sitten jäljellä ovat solmut 2, 3, 4 ja 5,
 joista valitsemme käsittelyyn solmun 3, jonka etäisyys 2 on pienin.
 Tämän jälkeen valitsemme käsittelyyn solmun 2,
@@ -403,23 +403,13 @@ Sama jatkuu, kunnes olemme käsitelleet kaikki verkon solmut.
 
 \subsection{Algoritmin toteutus}
 
-Dijkstran algoritmi muodostuu $n$ vaiheesta,
-jossa jokaisessa etsimme verkosta seuraavaksi käsiteltävän
-solmun ja käymme läpi siitä lähtevät kaaret.
-Koska haluamme saada aikaan tehokkaan toteutuksen,
-meidän täytyy pystyä löytämään joka vaiheessa
-seuraavaksi käsiteltävä solmu tehokkaasti.
-Tämä onnistuu sopivan tietorakenteen avulla.
-
-Tarvitsemme käytännössä tietorakenteen,
-joka pitää yllä joukkoa jäljellä olevista
-käsittelemättömistä solmuista ja josta voimme
-etsiä tehokkaasti solmun, jonka etäisyys on pienin.
-Tähän tarkoitukseen sopivia tietorakenteita ovat
-binäärihakupuu ja keko.
-Yleensä Dijkstran algoritmi toteutetaan käyttäen kekoa,
-koska keon ominaisuudet riittävät ja sen vakiokertoimet
-ovat binäärihakupuuta pienemmät.
+Dijkstran algoritmissa etsimme $n$ kertaa
+käsittelemättömän solmun, jonka etäisyysarvio on pienin.
+Koska haluamme saada algoritmista tehokkaan,
+meidän täytyy pystyä löytämään solmut nopeasti.
+Tavallinen tapa toteuttaa Dijkstran algoritmi on käyttää \emph{kekoa},
+jonka avulla löydämme joka vaiheessa pienimmän etäisyyden solmun
+logaritmisessa ajassa.
 
 Oletamme seuraavaksi, että haluamme muodostaa lyhimmät
 polut lähtö\-solmusta $1$ alkaen.
@@ -504,8 +494,7 @@ solmun ja käsitellä sen.
 \path[draw,thick,->] (3) -- node[font=\small,label=below:$-4$] {} (4);
 \end{tikzpicture}
 \end{center}
-\caption{Dijkstran algoritmi ei toimi oikein verkossa
-negatiivisen kaaren takia.}
+\caption{Dijkstran algoritmi ei toimi oikein negatiivisen kaaren takia.}
 \label{fig:dijneg}
 \end{figure}
 
@@ -517,22 +506,26 @@ että pienin etäisyys solmusta 1 solmuun 4 on 8.
 Kuitenkin parempi tapa olisi kulkea alempaa polkua,
 jolloin negatiivisen kaaren asiosta pienin etäisyys on vain 3.
 
-Seuraava kysymys on, kuinka nopeasti algoritmi toimii.
-Algoritmin aikana käsittelemme vuorollaan kunkin verkon solmun
+Dijkstran algoritmi toimii siis oikein,
+jos verkossa ei ole negatiivisia kaaria,
+mutta kuinka nopeasti algoritmi toimii?
+
+Algoritmin aikana käsittelemme kunkin verkon solmun
 ja käymme läpi siitä lähtevät kaaret, missä kuluu aikaa $O(n+m)$.
+Lisäksi algoritmissa on joukko kekoon liittyviä operaatioita,
+jotka vaikuttavat tehokkuuteen.
 Pahimmassa tapauksessa lisäämme jokaisen kaaren kohdalla
 kekoon uuden alkion, eli lisäykset kekoon vievät aikaa $O(m \log m)$.
 Toisaalta poistamme kaikki alkiot aikanaan keosta,
 mihin menee myös aikaa $O(m \log m)$.
-Kun yhdistämme nämä tiedot, saamme algoritmin
-kokonaisaikavaativuudeksi $O(n + m \log m)$.
+Algoritmin kokonaisaikavaativuus on siis $O(n + m \log m)$.
 
 \section{Floyd–Warshallin algoritmi}
 
 Floyd-Warshallin algoritmi muodostaa verkolle \emph{etäisyysmatriisin},
 jossa rivin $a$ sarakkeessa $b$ on lyhimmän polun pituus
 solmusta $a$ solmuun $b$.
-Algoritmi eroaa siis Bellman–Fordin ja Dijkstran algoritmeista
+Algoritmi eroaa Bellman–Fordin ja Dijkstran algoritmeista
 siinä, että se laskee samalla kertaa \emph{kaikki} etäisyydet verkossa
 eikä meidän tarvitse valita, mistä solmusta lähdemme liikkeelle.
 
@@ -546,7 +539,7 @@ Kierroksella $k$ algoritmi etsii polkuja, joissa on välisolmuna
 solmu $k$ sekä mahdollisesti solmuja $1,2,\dots,k-1$.
 Jos tällainen polku parantaa etäisyyttä,
 päivitämme uuden etäisyyden matriisiin.
-Viimeisen kierroksen jälkeen jokainen solmu on voinut olla
+Viimeisen kierroksen jälkeen jokainen solmu on ollut
 välisolmuna poluilla, jolloin olemme saaneet selville
 kaikki lyhimmät polut.
 
@@ -633,7 +626,7 @@ Floyd–Warshallin algoritmin etuna on, että se on hyvin helppoa toteuttaa.
 Meidän riittää rakentaa kolme sisäkkäistä for-silmukkaa,
 jotka toteuttavat matriisin päivitykset.
 Seuraavassa koodissa muuttuja $k$ kertoo,
-mikä kierros on kyseessä ja mitä solmua käytämme välisolmuna.
+mikä kierros on kyseessä eli mitä solmua käytämme välisolmuna.
 Jokaisella kierroksella käymme läpi kaikki solmuparit $(i,j)$
 ja koetamme parantaa niiden etäisyyksiä kulkemalla solmun $k$ kautta.
 
@@ -649,7 +642,8 @@ for (int k = 1; k <= n; k++) {
 }
 \end{code}
 
-Algoritmin aikavaativuus on selkeästi $O(n^3)$.
+Algoritmin aikavaativuus on selkeästi $O(n^3)$,
+koska se muodostuu kolmesta sisäkkäisestä for-silmukasta.
 
 \subsection{Miksi algoritmi toimii?}
 
