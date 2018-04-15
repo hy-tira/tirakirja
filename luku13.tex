@@ -348,7 +348,7 @@ $x$ lisäyksen jälkeen, voimme tarkistaa helposti,
 pitääkö arvaus paikkansa:
 lisäämme ensin $x$ ensimmäistä tietä verkkoon ja tarkastamme
 sitten, onko verkko yhtenäinen. Tämä vie aikaa $O(n+m)$
-käyttäen esimerkiksi syvyyshakua.
+käyttäen syvyyshakua.
 
 Tämän jälkeen voimme etsiä binäärihaun avulla suurimman arvon
 $x$, jolle pätee, että kaikki kaupungit eivät ole yhteydessä
@@ -360,10 +360,10 @@ aikaa $O((n+m) \log n)$.
 
 \section{Pienin virittävä puu}
 
-Verkon \emph{virittävä} puu on kokoelma verkon kaaria,
+Verkon \emph{virittävä puu} on kokoelma verkon kaaria,
 jotka kytkevät kaikki verkon solmut toisiinsa.
-Kuten puut yleensäkin, virittävä puu on syklitön eli
-jokaisen kahden solmun välillä on yksikäsitteinen reitti.
+Kuten puut yleensäkin, virittävä puu on yhtenäinen ja syklitön eli
+jokaisen kahden solmun välillä on yksikäsitteinen polku.
 Kuvassa \ref{fig:virpuu} on esimerkkinä verkko ja yksi sen virittävistä puista.
 
 \begin{figure}
@@ -404,11 +404,11 @@ Kuvassa \ref{fig:virpuu} on esimerkkinä verkko ja yksi sen virittävistä puist
 
 Jos verkko on painotettu, kiinnostava ongelma on etsiä verkon
 \emph{pienin virittävä puu}.
-Tämä on virittivä puu, jonka kaarten painojen summa on
+Tämä on virittävä puu, jonka kaarten painojen summa on
 mahdollisimman pieni.
-Esimerkiksi kuvassa \ref{fig:pievir} on painotettu verkko ja kaksi sen virittävää puuta.
-Vasemman puun paino on 12 ja oikean puun paino on 10.
-Oikea puu on tämän verkon pienin virittävä puu.
+Esimerkiksi kuvassa \ref{fig:pievir} on painotettu verkko ja kaksi sen virittävää puuta,
+joiden painot ovat 12 ja 10.
+Näistä jälkimmäinen on verkon pienin virittävä puu.
 
 \begin{figure}
 \center
@@ -455,33 +455,21 @@ Oikea puu on tämän verkon pienin virittävä puu.
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Vasemman virittävän puun paino on $5+1+2+4=12$
-ja oikean virittävän puun paino on $1+2+2+5=10$.}
+\caption{Painotettu verkko ja kaksi virittävää puuta,
+joiden painot ovat $4+1+2+5=12$ ja $2+1+2+5=10$.}
 \label{fig:pievir}
 \end{figure}
 
-Seuraavaksi tutustumme kahteen algoritmiin, joiden avulla voimme
-selvittää tehokkaasti verkon pienimmän virittävän puun.
-Kruskalin algoritmi perustuu union-find-rakenteeseen,
-ja Primin algoritmi on Dijkstran algoritmin muunnelma.
-
 \subsection{Kruskalin algoritmi}
 
-Kruskalin algoritmissa lähdemme liikkeelle verkosta,
-jossa on valmiina kaikki solmut mutta ei vielä mitään kaaria.
-Käymme läpi kaaret järjestyksessä niiden painon mukaan
-keveimmästä raskaimpaan, ja jokaisen kaaren kohdalla
-lisäämme sen verkkoon, jos se yhdistää kaksi eri komponenttia.
+Kruskalin algoritmi muodostaa verkon
+pienimmän virittävän puun aloittamalla tyhjästä verkosta,
+jossa on vain verkon solmut, ja lisäämällä siihen kaaria.
+Algoritmi käy läpi tarjolla olevat kaaret
+järjestyksessä niiden painon mukaan keveimmästä raskaimpaan.
+Jokaisen kaaren kohdalla algoritmi ottaa kaaren mukaan,
+jos se yhdistää kaksi eri komponenttia.
 Kun kaikki komponentit on yhdistetty, pienin virittävä puu on valmis.
-
-Kuva \ref{fig:kruesi} näyttää, kuinka Kruskalin algoritmi löytää pienimmän virittävän
-puun esimerkkiverkossamme.
-Algoritmi lisää ensin puuhun kaaren $(2,3)$, jonka paino on 1,
-sekä kaaret $(1,2)$ ja $(2,4)$, joiden paino on 2.
-Seuraavaksi vuorossa on kaari $(1,3)$, jonka paino on 4,
-mutta tätä ei lisätä puuhun, koska se aiheuttaisi syklin.
-Tämän jälkeen algoritmi lisää kaaren $(4,5)$ painolla 5,
-jolloin pienin virittävä puu on valmis.
 
 \begin{figure}
 \center
@@ -494,36 +482,42 @@ jolloin pienin virittävä puu on valmis.
 \node[draw, circle] (3) at (2,-2) {$3$};
 \node[draw, circle] (4) at (4,0) {$4$};
 \node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=below:4] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-] (3) -- node[font=\small,label=below:7] {} (5);
 \node at (2,-3.5) {vaihe #1};
 }
 \begin{scope}
 \verkko{1}
-\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-,red,line width=2pt] (2) -- (3);
 \end{scope}
 \begin{scope}[xshift=6.5cm]
 \verkko{2}
-\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-,red,line width=2pt] (2) -- (3);
+\path[draw,thick,-,red,line width=2pt] (1) -- (2);
 \end{scope}
 \begin{scope}[xshift=13cm]
 \verkko{3}
-\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
-\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-,red,line width=2pt] (2) -- (3);
+\path[draw,thick,-,red,line width=2pt] (1) -- (2);
+\path[draw,thick,-,red,line width=2pt] (2) -- (4);
 \end{scope}
 \begin{scope}[yshift=-5.5cm]
 \verkko{4}
-\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
-\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
-\path[draw,thick,-,dashed] (1) -- node[font=\small,label=below:4] {} (3);
+\path[draw,thick,-,red,line width=2pt] (2) -- (3);
+\path[draw,thick,-,red,line width=2pt] (1) -- (2);
+\path[draw,thick,-,red,line width=2pt] (2) -- (4);
+\path[draw,thick,-,red,line width=2pt,dashed] (3) -- (1);
 \end{scope}
 \begin{scope}[yshift=-5.5cm,xshift=6.5cm]
 \verkko{5}
-\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
-\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
-\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-,red,line width=2pt] (2) -- (3);
+\path[draw,thick,-,red,line width=2pt] (1) -- (2);
+\path[draw,thick,-,red,line width=2pt] (2) -- (4);
+\path[draw,thick,-,red,line width=2pt] (4) -- (5);
 \end{scope}
 \end{tikzpicture}
 \end{center}
@@ -531,46 +525,54 @@ jolloin pienin virittävä puu on valmis.
 \label{fig:kruesi}
 \end{figure}
 
-Kruskalin algoritmi on mahdollista toteuttaa tehokkaasti
+Kuva \ref{fig:kruesi} näyttää, kuinka Kruskalin algoritmi löytää pienimmän virittävän
+puun esimerkkiverkossamme.
+Verkon kaaret järjestyksessä keveim\-mästä raskaimpaan ovat:
+
+\begin{center}
+\begin{tabular}{rr}
+kaari & paino \\
+\hline
+$(2,3)$ & $1$ \\
+$(1,2)$ & $2$ \\
+$(2,4)$ & $2$ \\
+$(1,3)$ & $4$ \\
+$(4,5)$ & $5$ \\
+$(3,5)$ & $7$ \\
+\end{tabular}
+\end{center}
+
+Algoritmi käsittelee ensin kaaren $(2,3)$.
+Solmut $2$ ja $3$ ovat eri komponenteissa,
+joten kaari otetaan mukaan puuhun.
+Tämän jälkeen algoritmi käsittelee kaaret $(1,2)$ ja $(2,4)$,
+jotka valitaan myös puuhun.
+Seuraavaksi vuorossa on kaari $(1,3)$,
+mutta tämä kaari ei tule puuhun,
+koska solmut $1$ ja $3$ ovat jo samassa komponentissa.
+Lopuksi algoritmi ottaa mukaan kaaren $(4,5)$,
+jolloin pienin virittävä puu on valmis.
+
+Voimme toteuttaa Kruskalin algoritmin tehokkaasti
 käyttäen union-find-rakennetta.
 Algoritmin alussa järjestämme kaaret painojärjestykseen,
 missä kuluu aikaa $O(m \log m)$.
 Tämän jälkeen käymme kaaret läpi, ja jokaisen kaaren
-kohdalla lisäämme sen puuhun, jos se yhdistää kaksi eri komponenttia.
-Tässä kuluu aikaa $O(m \log n)$ tai $O(m \alpha(n))$
-riippuen rakenteen toteutuksesta.
-Algoritmi vie siis yhteensä aikaa $O(m \log n)$.
+kohdalla otamme kaaren mukaan, jos se yhdistää kaksi eri komponenttia.
+Tässä kuluu aikaa $O(m \alpha(n))$,
+kun käytämme union-find-rakennetta.
+Algoritmi vie siis yhteensä aikaa $O(m \log m)$.
 
 \subsection{Primin algoritmi}
 
-Primin algoritmi aloittaa virittävän puun muodostamisen
-mielivaltaisesti valitusta solmusta.
-Tämän jälkeen se lisää joka vaiheessa puuhun uuden solmun,
-joka yhdistyy valmiina olevaan puuhun kaarella.
-Lisättävä solmu valitaan niin, että kaari on kevein mahdollinen.
+Primin algoritmi tarjoaa toisen lähestymistavan
+pienimmän virittävän puun muodostamiseen.
+Algoritmi aloittaa puun muodostamisen tilanteesta,
+jossa puussa on vain yksi solmu.
+Tämän jälkeen se etsii joka vaiheessa keveimmän kaaren,
+jonka toinen päätesolmu kuuluu puuhun ja toinen
+päätesolmu on puun ulkopuolella, ja lisää puuhun tämän kaaren.
 Kun kaikki solmut on lisätty puuhun, pienin virittävä puu on valmis.
-
-Kuva \ref{fig:priesi} näyttää esimerkin Primin algoritmin toiminnasta.
-Voimme aloittaa puun rakentamisen mistä tahansa solmusta;
-tässä valitsemme solmun 1.
-Lisäämme sen jälkeen puuhun kaaret järjestyksessä
-$(1,2)$, $(2,3)$, $(2,4)$, $(4,5)$, ja saamme aikaan pienimmän
-virittävän puun.
-
-Primin algoritmi muistuttaa paljon Dijkstran algoritmia.
-Erona on, että Dijkstran algoritmissa valitsemme joka vaiheessa
-seuraavaksi solmun, jonka etäisyys alkusolmusta on pienin
-mahdollinen.
-Primin algoritmissa taas valitsemme solmun, jonka etäisyys
-johonkin puun solmuun on pienin mahdollinen.
-
-Voimme myös toteuttaa Primin algoritmin tehokkaasti samaan
-tapaan kuin Dijkstran algoritmin.
-Jotta voimme löytää tehokkaasti seuraavaksi lisät\-tävän solmun,
-säilytämme solmuja keossa tai binäärihakupuussa.
-Jokaisen solmun yhteydessä on tieto, kuinka painava on kaari,
-jolla voi yhdistää solmun puuhun, ja solmut on järjestetty
-näiden painojen mukaan.
 
 \begin{figure}
 \center
@@ -583,6 +585,12 @@ näiden painojen mukaan.
 \node[draw, circle] (3) at (2,-2) {$3$};
 \node[draw, circle] (4) at (4,0) {$4$};
 \node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=below:4] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-] (3) -- node[font=\small,label=below:7] {} (5);
 \node at (2,-3.5) {vaihe #1};
 }
 \begin{scope}
@@ -590,31 +598,50 @@ näiden painojen mukaan.
 \end{scope}
 \begin{scope}[xshift=6.5cm]
 \verkko{2}
-\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-,red,line width=2pt] (1) -- (2);
 \end{scope}
 \begin{scope}[xshift=13cm]
 \verkko{3}
-\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-,red,line width=2pt] (1) -- (2);
+\path[draw,thick,-,red,line width=2pt] (2) -- (3);
 \end{scope}
 \begin{scope}[yshift=-5.5cm]
 \verkko{4}
-\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
-\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-,red,line width=2pt] (1) -- (2);
+\path[draw,thick,-,red,line width=2pt] (2) -- (3);
+\path[draw,thick,-,red,line width=2pt] (2) -- (4);
 \end{scope}
 \begin{scope}[yshift=-5.5cm,xshift=6.5cm]
 \verkko{5}
-\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
-\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
-\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-,red,line width=2pt] (1) -- (2);
+\path[draw,thick,-,red,line width=2pt] (2) -- (3);
+\path[draw,thick,-,red,line width=2pt] (2) -- (4);
+\path[draw,thick,-,red,line width=2pt] (4) -- (5);
 \end{scope}
 \end{tikzpicture}
 \end{center}
 \caption{Esimerkki Primin algoritmin toiminnasta.}
 \label{fig:priesi}
 \end{figure}
+
+Kuva \ref{fig:priesi} näyttää esimerkin Primin algoritmin toiminnasta.
+Voimme aloittaa puun rakentamisen mistä tahansa solmusta;
+tässä esimerkissä aloitamme solmusta $1$.
+Solmuun $1$ on yhteydessä kaksi kaarta $(1,2)$ ja $(2,3)$,
+joista valitsemme kaaren $(1,2)$, koska se on keveämpi.
+Seuraavaksi tarjolla ovat kaaret $(1,3)$, $(2,3)$ ja $(2,4)$,
+joista valitsemme kaaren $(2,3)$.
+Tämän jälkeen lisäämme puuhun vastaavalla tavalla kaaret
+$(2,4)$, $(4,5)$, minkä jälkeen pienin virittävä puu on valmis.
+
+Primin algoritmi muistuttaa paljon Dijkstran algoritmia.
+Erona on, että Dijkstran algoritmissa valitsemme
+seuraavaksi solmun, jonka etäisyys \emph{alkusolmuun} on pienin,
+mutta Primin algoritmissa valitsemme solmun, jonka etäisyys
+\emph{johonkin solmuun} on pienin mahdollinen.
+Voimme myös toteuttaa Primin algoritmin tehokkaasti samaan
+tapaan kuin Dijkstran algoritmin keon avulla,
+jolloin algoritmi vie aikaa $O(m \log m)$.
 
 \subsection{Miksi algoritmit toimivat?}
 
@@ -692,94 +719,3 @@ TODO parempi todistus?
 koska muuten voisimme pienentää puun painoa valitsemalla sen.}
 \label{fig:pietod}
 \end{figure}
-
-\section{Esimerkki: Agentit}
-
-Olet salaisen palvelun päällikkö ja palveluksessasi on $n$ agenttia.
-Jokainen agentti on onnistunut hankkimaan tietoa ja haluat kerätä
-kaikki tiedot itsellesi.
-Agentit voivat tavata toisiaan ja voit tavata agentteja.
-Ongelmana on kuitenkin, että on hankalaa järjestää tapaamisia turvallisesti.
-
-Sinulla on lista $m$ agenttiparista, jotka voivat tavata toisensa turvallisesti.
-Tapaamisessa kaksi agenttia kertoo toisilleen kaikki tietonsa,
-ja tapaamiseen liittyy tietty kustannus.
-Tämän jälkeen sopivasti valittu osajoukko agenteista tapaa sinut ja välittää tietonsa.
-Voit tavata kenet tahansa agenteista, mutta jokaiseen tapaamiseen liittyy
-kaikille sama kustannus $x$.
-
-Mikä on pienin kokonaiskustannus, jolla saat kaikki tiedot itsellesi?
-
-Esimerkiksi oletetaan, että $n=4$, $m=5$, $x=4$,
-ja mahdolliset agenttien tapaamiset ovat seuraavat:
-
-\begin{itemize}
-\item agentit 1 ja 2 tapaavat (kustannus 5)
-\item agentit 1 ja 3 tapaavat (kustannus 3)
-\item agentit 2 ja 3 tapaavat (kustannus 2)
-\item agentit 2 ja 4 tapaavat (kustannus 6)
-\item agentit 3 ja 4 tapaavat (kustannus 7)
-\end{itemize}
-
-Optimaalinen ratkaisu on, että ensin agentit 1 ja 3 tapaavat,
-sitten agentit 2 ja 3 tapaavat, ja lopuksi tapaat itse agentit 3 ja 4.
-Agentti 3 on saanut kaikki tiedot agenteilta 1 ja 2.
-Tämän ratkaisun kustannus on $3+2+4+4=13$, joka on pienin mahdollinen.
-
-\subsubsection{Ratkaisu}
-
-Voimme mallintaa ongelman verkkona, jossa on $n+1$ solmua:
-jokaisella agentilla on oma solmu ja lisäksi sinulla on oma solmu.
-Jos kaksi agenttia voivat tavata, niiden välillä on kaari,
-jonka painona on tapaamisen kustannus.
-Sinusta on kaari jokaiseen agenttiin painolla $x$.
-Nyt pienin virittävä puu tässä verkossa vastaa optimaalista ratkaisua tehtävään.
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
-\begin{scope}
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (0,-3) {$2$};
-\node[draw, circle] (3) at (3,0) {$3$};
-\node[draw, circle] (4) at (3,-3) {$4$};
-\node[draw, circle] (5) at (6,-1.5) {$*$};
-\path[draw,thick,-] (1) -- node[font=\small,label=left:5] {} (2);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:3] {} (3);
-\path[draw,thick,-] (2) -- node[font=\small,label=right:2] {} (3);
-\path[draw,thick,-] (2) -- node[font=\small,label=below:6] {} (4);
-\path[draw,thick,-] (3) -- node[font=\small,label=right:7] {} (4);
-
-\path[draw,thick,-] (1) edge [bend left=50] node[font=\small,label=above:4] {} (5);
-\path[draw,thick,-] (2) edge [bend right=50] node[font=\small,label=below:4] {} (5);
-\path[draw,thick,-] (3) -- node[font=\small,label=above:4] {} (5);
-\path[draw,thick,-] (4) -- node[font=\small,label=below:4] {} (5);
-\end{scope}
-\begin{scope}[xshift=9cm]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (0,-3) {$2$};
-\node[draw, circle] (3) at (3,0) {$3$};
-\node[draw, circle] (4) at (3,-3) {$4$};
-\node[draw, circle] (5) at (6,-1.5) {$*$};
-%\path[draw,thick,-] (1) -- node[font=\small,label=left:5] {} (2);
-\path[draw,thick,-] (1) -- node[font=\small,label=above:3] {} (3);
-\path[draw,thick,-] (2) -- node[font=\small,label=right:2] {} (3);
-%\path[draw,thick,-] (2) -- node[font=\small,label=below:6] {} (4);
-%\path[draw,thick,-] (3) -- node[font=\small,label=right:7] {} (4);
-
-%\path[draw,thick,-] (1) edge [bend left=50] node[font=\small,label=above:4] {} (5);
-%\path[draw,thick,-] (2) edge [bend right=50] node[font=\small,label=below:4] {} (5);
-\path[draw,thick,-] (3) -- node[font=\small,label=above:4] {} (5);
-\path[draw,thick,-] (4) -- node[font=\small,label=below:4] {} (5);
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{Verkko ja pienin virittävä puu agenttitehtävässä.}
-\label{fig:ageesi}
-\end{figure}
-
-Kuva \ref{fig:ageesi} näyttää verkon ja pienimmän virittävän puun esimerkkitapauksessa.
-Tähdellä merkitty solmu on oma solmusi, joka on yhteydessä kaikkiin
-muihin solmuihin.
-Puun paino on $3+2+4+4=13$, mikä vastaa optimaalista ratkaisua.
