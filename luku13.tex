@@ -571,7 +571,7 @@ Algoritmi aloittaa puun muodostamisen tilanteesta,
 jossa puussa on vain yksi solmu.
 Tämän jälkeen se etsii joka vaiheessa keveimmän kaaren,
 jonka toinen päätesolmu kuuluu puuhun ja toinen
-päätesolmu on puun ulkopuolella, ja lisää puuhun tämän kaaren.
+päätesolmu on vielä puun ulkopuolella, ja lisää puuhun tämän kaaren.
 Kun kaikki solmut on lisätty puuhun, pienin virittävä puu on valmis.
 
 \begin{figure}
@@ -638,7 +638,7 @@ Primin algoritmi muistuttaa paljon Dijkstran algoritmia.
 Erona on, että Dijkstran algoritmissa valitsemme
 seuraavaksi solmun, jonka etäisyys \emph{alkusolmuun} on pienin,
 mutta Primin algoritmissa valitsemme solmun, jonka etäisyys
-\emph{johonkin solmuun} on pienin mahdollinen.
+\emph{johonkin solmuun} puussa on pienin.
 Voimme myös toteuttaa Primin algoritmin tehokkaasti samaan
 tapaan kuin Dijkstran algoritmin keon avulla,
 jolloin algoritmi vie aikaa $O(m \log m)$.
@@ -655,7 +655,7 @@ Jos meillä on kaksi solmua $a$ ja $b$, jotka ovat eri komponenteissa,
 meidän on yhdistettävä ne jotenkin samaan komponenttiin algoritmin aikana.
 Jos kevein saatavilla oleva kaari on solmujen $a$ ja $b$ välillä,
 meidän kannattaa valita se, koska muuten joutuisimme yhdistämään komponentit
-käyttäen raskaampaa kaarta.
+myöhemmin käyttäen raskaampaa kaarta.
 
 Tarkastellaan esimerkkinä Kruskalin algoritmin alkua:
 mitä tapahtuu, jos emme valitse puuhun keveintä kaarta?
@@ -664,15 +664,11 @@ jossa katkoviivoilla esitetty pienin virittävä puu ei sisällä
 keveintä kaarta $(2,3)$, jonka paino on 1.
 Ei ole kuitenkaan mahdollista, että tämä olisi todellisuudessa
 pienin virittävä puu, koska voisimme vaihtaa jonkin puun kaaren
-kaareen $(2,3)$ ja saada pienennettyä puun painoa.
-
+kaareen $(2,3)$, jolloin puun paino pienenee.
 Tämä tarkoittaa, että on varmasti turvallinen ratkaisu valita
 kevein kaari puuhun Kruskalin algoritmin alussa.
-Vastaavasti voimme perustella, miksi seuraavaksi kannattaa
-valita seuraavaksi kevein kaari jne.
-
-TODO parempi todistus?
-
+Vastaavasti voimme perustella, miksi tämän jälkeen kannattaa
+valita seuraavaksi kevein kaari, jne.
 
 \begin{figure}
 \center
