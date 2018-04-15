@@ -350,13 +350,13 @@ lisäämme ensin $x$ ensimmäistä tietä verkkoon ja tarkastamme
 sitten, onko verkko yhtenäinen. Tämä vie aikaa $O(n+m)$
 käyttäen syvyyshakua.
 
-Tämän jälkeen voimme etsiä binäärihaun avulla suurimman arvon
-$x$, jolle pätee, että kaikki kaupungit eivät ole yhteydessä
-$x$ lisäyksen jälkeen. Tästä voimme päätellä, että kaupungit
-ovat ensi kertaa yhteydessä $x+1$ lisäyksen jälkeen.
-Koska mahdolliset $x$:n arvot ovat $1,2,\ldots,n$,
-binäärihaku suorittaa $O(\log n)$ askelta ja ratkaisu vie
-aikaa $O((n+m) \log n)$.
+Jos verkko on yhtenäinen ensimmäistä kertaa vaiheessa $k$,
+selvästikin verkko ei ole yhtenäinen vaiheissa
+$1,2,\dots,k-1$ ja on yhtenäinen vaiheissa $k,k+1,\dots,m$,
+koska kaarten lisääminen ei voi poistaa verkon yhtenäisyyttä.
+Tämän ansiosta voimme etsiä arvon $k$ binäärihaun avulla.
+Binäärihaku suorittaa $O(\log m)$ askelta ja ratkaisu vie
+aikaa $O((n+m) \log m)$.
 
 \section{Pienin virittävä puu}
 
