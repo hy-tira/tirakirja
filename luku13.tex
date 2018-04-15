@@ -149,7 +149,7 @@ Joukon $A$ edustaja on $1$ ja joukon $B$ edustaja on $5$.
 Koska joukko $A$ on pienempi, asetamme joukon $A$
 edustajan osoittamaan joukon $B$ edustajaan.
 Tämän jälkeen kaikki alkiot kuuluvat samaan joukkoon ja
-ne viittaavat alkioon $5$, joka on tästä lähtien koko joukon edustaja.
+alkio $5$ on tästä lähtien koko joukon edustaja.
 
 Jotta voimme toteuttaa yhdistämisen tehokkaasti,
 meidän täytyy myös pitää kirjaa kunkin joukon koosta.
@@ -171,14 +171,14 @@ void yhdista(int a, int b) {
 }
 \end{code}
 
-Kun toteutamme yhdistämiset tällä tavalla, jokainen joukon
-alkioiden ketju sisältää vain $O(\log n)$ alkiota.
+Kun toteutamme yhdistämiset tällä tavalla, jokainen
+alkioiden ketju sisäl\-tää vain $O(\log n)$ alkiota.
 Tämä johtuu siitä, että aina kun kuljemme ketjussa
 askeleen eteenpäin alkiosta $a$ alkioon $b$,
 $\texttt{koko}[b] \ge 2 \cdot \texttt{koko}[a]$ eli
 edustajaa vastaavan joukon koko ainakin \emph{kaksinkertaistuu}.
 Koska joukossa on enintään $n$ alkiota,
-kuljemme enintään $O(\log n)$ askelta.
+kuljemme siis yhteensä enintään $O(\log n)$ askelta.
 Niinpä operaatio \texttt{edustaja} toimii ajassa $O(\log n)$,
 ja sen myötä myös operaatiot \texttt{sama} ja \texttt{yhdista}
 toimivat ajassa $O(\log n)$.
@@ -237,7 +237,7 @@ pääsemme suoraan alkiosta $4$ edustajaan $1$.
 \end{figure}
 
 On mahdollista osoittaa, että ketjujen tiivistämisen ansiosta
-$\texttt{edustaja}$-ope\-raatiot vievät keskimäärin aikaa vain
+$\texttt{edustaja}$-ope\-raatiot vievät tasoitetusti aikaa vain
 $O(\alpha(n))$, missä $\alpha(n)$ on hyvin hitaasti kasvava
 \emph{käänteinen Ackermannin funktio}.
 Funktiosta tiedetään, että $\alpha(n)<5$, kun $n$ on mikä tahansa
@@ -245,13 +245,13 @@ käytännössä esiintyvä joukon koko.
 Tämä tarkoittaa, että voimme ajatella union-find-rakenteen
 operaatioiden olevan käytännössä \emph{vakioaikaisia}.
 Tämän tuloksen osoittaminen on kuitenkin vaikeaa,
-emmekä käsittele asiaa tällä kurssilla.
+emmekä käsittele asiaa tarkemmin tällä kurssilla.
 
 \section{Esimerkki: Kaupungit}
 
-Maassa on $n$ kaupunkia, joiden välillä ei ole vielä yhtään tietä.
+Bittimaassa on $n$ kaupunkia, joiden välillä ei ole vielä yhtään tietä.
 Sitten teitä aletaan rakentaa yksi kerrallaan, yhteensä $m$ tietä.
-Jokainen tie on kaksisuuntainen ja yhdistää kaksi kaupunkia.
+Jokainen tie yhdistää kaksi kaupunkia toisiinsa.
 Minkä tien rakentamisen jälkeen kaikki kaupungit ovat ensimmäistä
 kertaa yhteydessä toisiinsa?
 
@@ -321,18 +321,24 @@ Kaikki kaupungit ovat yhteydessä toisiinsa vaiheen 5 jälkeen.
 
 \subsubsection{Ratkaisu 1: Union-find-rakenne}
 
-Voimme ratkaista tehtävän tehokkaasti union-find-rakenteen avulla.
-Alussa jokainen kaupunkin on solmuna omassa komponentissaan.
-Tämän jälkeen käymme läpi tiet, ja jos tien päissä olevat kaupungit
-ovat eri komponenteissa, yhdistämme komponentit ja kasvatamme
-laskurin arvoa. Kun laskurin arvo saavuttaa arvon $n$,
-kaikki kaupungit ovat yhteydessä toisiinsa.
+Voimme ratkaista tehtävän union-find-rakenteen avulla.
+Esitämme verkon yhtenäiset komponentit joukkoina niin,
+että kukin joukko sisältää komponentin solmut.
+Alussa joukot ovat $\{1\},\{2\},\dots,\{n\}$
+eli jokainen solmu on omassa komponentissaan.
+Sitten jokaisen kaaren kohdalla tarkastamme,
+ovatko sen päätesolmut eri joukoissa,
+ja jos ovat, yhdistämme joukot.
+Kun lopulta kaikki solmut ovat samassa joukossa,
+verkko on tullut yhtenäiseksi.
 
-Tässä ratkaisussa jokaisen tien kohdalla suoritamme yhden
-union-find-rakenteen \texttt{same}-operaation ja mahdollisesti
-yhden \texttt{union}-operaation.
-Ratkaisu vie aikaa $O(m \log n)$ tai $O(m \alpha(n))$
-riippuen rakenteen toteutuksesta.
+Luomme ensin jokaiselle solmulle oman komponentin ja
+suoritamme sitten jokaisen kaaren kohdalla yhden
+\texttt{sama}-operaation
+ja mahdollisesti yhden \texttt{yhdista}-operaation.
+Tuloksena oleva algoritmi vie aikaa $O(n+m \alpha(n))$,
+kun käytämme union-find-rakennetta, jossa on
+tehokas yhdistäminen ja ketjujen tiivistäminen.
 
 \subsubsection{Ratkaisu 2: Binäärihaku}
 
@@ -341,7 +347,7 @@ Jos meillä on arvaus, että kaikki kaupungit ovat yhteydessä
 $x$ lisäyksen jälkeen, voimme tarkistaa helposti,
 pitääkö arvaus paikkansa:
 lisäämme ensin $x$ ensimmäistä tietä verkkoon ja tarkastamme
-sitten, onko verkko yhtenäinen. Tämä vie aikaa $O(m)$
+sitten, onko verkko yhtenäinen. Tämä vie aikaa $O(n+m)$
 käyttäen esimerkiksi syvyyshakua.
 
 Tämän jälkeen voimme etsiä binäärihaun avulla suurimman arvon
@@ -350,7 +356,7 @@ $x$ lisäyksen jälkeen. Tästä voimme päätellä, että kaupungit
 ovat ensi kertaa yhteydessä $x+1$ lisäyksen jälkeen.
 Koska mahdolliset $x$:n arvot ovat $1,2,\ldots,n$,
 binäärihaku suorittaa $O(\log n)$ askelta ja ratkaisu vie
-aikaa $O(m \log n)$.
+aikaa $O((n+m) \log n)$.
 
 \section{Pienin virittävä puu}
 
