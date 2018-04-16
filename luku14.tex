@@ -217,11 +217,136 @@ solmusta $1$ solmuun $5$, joten maksimivirtaus on $4+3=7$.
 \label{fig:floesi}
 \end{figure}
 
-\subsection{Polkujen etsiminen}
-
 \subsection{Yhteys minimileikkaukseen}
 
+Ford-Fulkersonin algoritmin toimintaidea on sinänsä järkevä,
+mutta ei ole silti päältä päin todellakaan selvää,
+miksi algoritmi löytää varmasti maksimivirtauksen.
+Jotta voimme ymmärtää paremmin algoritmin toimintaa,
+tarkastelemme seuraavaksi toista verkko-ongelmaa,
+joka antaa meille uuden näkökulman maksimivirtaukseen.
+
+Lähtökohtanamme on edelleen suunnattu verkko,
+jossa on lähtösolmu ja kohdesolmu.
+Sanomme, että joukko kaaria muodostaa \emph{leikkauksen},
+jos niiden poistaminen verkosta estää kulkemisen
+lähtösolmusta kohdesolmuun.
+\emph{Minimileikkaus} on puolestaan leikkaus,
+jossa kaarten yhteispaino on mahdollisimman pieni.
+Kuvassa \ref{fig:minlei} näkyy esimerkkiverkkomme minimileikkaus,
+jossa poistamme kaaret $2 \rightarrow 4$ ja $3 \rightarrow 5$
+ja jonka paino on $3+4=7$.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:$4$] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:$6$] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=right:$8$] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:$3$] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:$4$] {} (5);
+\path[draw,thick,->] (4) -- node[font=\small,label=right:$5$] {} (5);
+\path[draw,thick,-,red,line width=2pt] (2.75,-0.25) -- (3.25,0.25);
+\path[draw,thick,-,red,line width=2pt] (2.75,0.25) -- (3.25,-0.25);
+\path[draw,thick,-,red,line width=2pt] (2.75,-2.25) -- (3.25,-1.75);
+\path[draw,thick,-,red,line width=2pt] (2.75,-1.75) -- (3.25,-2.25);
+\end{tikzpicture}
+\end{center}
+\caption{Minimileikkaus, jossa poistamme kaaret $2 \rightarrow 4$ ja $3 \rightarrow 5$.}
+\label{fig:minlei}
+\end{figure}
+
+Osoittautuu, että verkon maksimivirtaus on aina yhtä suuri kuin
+minimileikkaus, ja tämä yhteys auttaa perustelemaan,
+miksi Ford-Fulkersonin algoritmi toimii.
+Ensinnäkin voimme havaita, että \emph{mikä tahansa}
+verkon leikkaus on yhtä suuri tai suurempi
+kuin maksimivirtaus.
+Tämä johtuu siitä, että virtauksen täytyy ylittää
+leikkaukseen kuuluvat kaaret, jotta se pääsee
+lähtösolmusta kohdesolmuun.
+Esimerkiksi kuvassa \ref{fig:minlei} virtaus voi
+päästä solmusta $1$ solmuun $5$
+joko kulkemalla kaarta $2 \rightarrow 4$ tai kaarta $3 \rightarrow 5$.
+Niinpä virtaus ei voi olla suurempi kuin näiden kaarten
+painojen summa.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.9,label distance=-1.5mm]
+\node[draw, circle, fill=lightgray] (1) at (0,-1) {$1$};
+\node[draw, circle, fill=lightgray] (2) at (2,0) {$2$};
+\node[draw, circle, fill=lightgray] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,->] (1) edge [bend left=20] node[font=\small,label=above:$0$] {} (2);
+\path[draw,thick,->] (2) edge [bend left=20] node[font=\small,label=above:$4$] {} (1);
+\path[draw,thick,->] (1) edge [bend left=20] node[font=\small,label=below:$3$] {} (3);
+\path[draw,thick,->] (3) edge [bend left=20] node[font=\small,label=below:$3$] {} (1);
+\path[draw,thick,->] (2) edge [bend left=20] node[font=\small,label=right:$7$] {} (3);
+\path[draw,thick,->] (3) edge [bend left=20] node[font=\small,label=right:$1$] {} (2);
+\path[draw,thick,->] (2) edge [bend left=20] node[font=\small,label=above:$0$] {} (4);
+\path[draw,thick,->] (4) edge [bend left=20] node[font=\small,label=above:$3$] {} (2);
+\path[draw,thick,->] (3) edge [bend left=20] node[font=\small,label=below:$0$] {} (5);
+\path[draw,thick,->] (5) edge [bend left=20] node[font=\small,label=below:$4$] {} (3);
+\path[draw,thick,->] (4) edge [bend left=20] node[font=\small,label=right:$2$] {} (5);
+\path[draw,thick,->] (5) edge [bend left=20] node[font=\small,label=right:$3$] {} (4);
+\end{tikzpicture}
+\end{center}
+\caption{Solmut 1, 2 ja 3 ovat saavutettavissa lähtösolmusta.}
+\label{fig:flolei}
+\end{figure}
+
+Toisaalta Ford-Fulkersonin algoritmi muodostaa sivutuotteenaan
+myös verkon leikkauksen, joka on yhtä suuri kuin maksimivirtaus.
+Löydämme leikkauksen etsimällä ensin kaikki solmut,
+joihin pääsemme lähtösolmusta positiivisia kaaria pitkin
+algoritmin lopputilanteessa.
+Kuva \ref{fig:flolei} näyttää nämä solmut esimerkkiverkossamme:
+solmut ovat 1, 2 ja 3.
+Kun valitsemme sitten alkuperäisen verkon kaaret,
+jotka johtavat näiden solmujen ulkopuolelle
+ja joiden kapasiteetti on käytetty kokonaan,
+saamme aikaan verkon leikkauksen.
+Esimerkissämme nämä kaaret ovat $2 \rightarrow 4$ ja $3 \rightarrow 5$.
+
+Koska olemme löytäneet virtauksen, joka on yhtä suuri kuin leikkaus,
+ja toisaalta virtaus ei voi olla mitään leikkausta suurempi,
+olemme siis löytäneet maksimivirtauksen ja minimileikkauksen,
+joten Ford-Fulkersonin algoritmi toimii oikein.
+
+\subsection{Polkujen valitseminen}
+
+Voimme muodostaa Ford-Fulkersonin algoritmin aikana miten tahansa,
+mutta polkujen valintatapa vaikuttaa algoritmin tehokkuuteen.
+Pahimmassa tapauksessa jokainen polku tuottaa vain yhden yksikön
+lisää virtausta, jolloin algoritmi joutuu muodostamaan kaikkiaan $f$ polkua,
+missä $f$ on verkon maksimivirtaus.
+Jos muodostamme polut syvyyshaulla, saamme siis algoritmin
+ajankäytölle ylärajan $O(f (n+m))$.
+
+Edmonds-Karpin algoritmi on Ford-Fulkersonin algoritmin versio,
+jossa muodostammekin polut \emph{leveyshaulla}.
+Tämä tarkoittaa, että valitsemme aina
+polun, jossa on mahdollisimman vähän kaaria.
+On mahdollista osoittaa, että tällaisen valinnan ansiosta
+algoritmi muodostaa aina enintään $nm$ polkua ja
+sen aikavaativuus on $O(nm (n+m))$.
+
 \section{Sovelluksia}
+
+Virtauslaskennan merkitys on siinä, että voimme \emph{palauttaa}
+monia ongelmia maksimivirtauksen laskemiseen.
+Tämä tarkoittaa, että muunnamme ongelman jotenkin
+sellaiseen muotoon, että se vastaa maksimivirtauksen etsimistä.
+Tutustumme seuraavaksi joihinkin tällaisiin ongelmiin.
 
 \subsection{Erilliset polut}
 
