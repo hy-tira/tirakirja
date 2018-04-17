@@ -1,455 +1,1131 @@
-\chapter{Hajautustaulu}
+\chapter{Binäärihakupuu}
 
-Algoritmien suunnittelussa on usein tarvetta
-tietorakenteelle, joka pitää yllä alkioiden kokoelmaa.
-Kutsumme tällaista tietorakennetta nimellä \emph{joukko}.
-Esimerkiksi $\{2,4,5,7\}$ on joukko, joka sisältää
-alkiot $2$, $4$, $5$ ja $7$.
-Haluamme toteuttaa rakenteen niin,
-että pystymme tarkastamaan, kuuluuko tietty alkio
-joukkoon, sekä lisäämään ja poistamaan alkioita.
-Lisäksi haluamme,
-että kukin alkio voi esiintyä joukossa vain kerran,
-mikä vastaa tavallista joukon määritelmää matematiikassa.
+Binäärihakupuu on tietorakenne, joka pitää yllä
+alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
+Binäärihakupuuta käyttäen joukon operaatiot vievät aikaa $O(\log n)$
+kaikissa tapauksissa.
+Käytännössä binäärihakupuu toimii yleensä hieman hitaammin
+kuin hajautustaulu, mutta toisaalta siinä ei ole riskinä,
+että operaatiot veisivät koskaan aikaa $O(n)$.
 
-Helppo tapa toteuttaa joukko on tallentaa
-kaikki joukon alkiot listaan.
-Tällaisen toteutuksen heikkoutena on kuitenkin,
-että meidän täytyy käydä koko lista läpi,
-kun haluamme selvittää, kuuluuko tietty alkio joukkoon.
-Joudumme käymään listan läpi myös alkion lisäämisessä ja
-poistamisessa, koska emme halua lisätä samaa alkiota
-uudestaan ja meidän täytyy löytää poistettava alkio.
-Niinpä joukon operaatiot vievät aikaa $O(n)$.
+Binäärihakupuun tärkein etu hajautustauluun verrattuna on kuitenkin,
+että se säilyttää joukon alkioita \emph{järjestyksessä}.
+Tämän ansiosta voimme toteuttaa tehokkaasti
+esimerkiksi seuraavat operaatiot:
 
-Tässä ja seuraavassa luvussa käymme läpi kaksi
-tietorakennetta, joiden avulla voimme toteuttaa
-joukon operaatiot \emph{tehokkaasti}.
-Tämän luvun aiheena on hajautustaulu,
-jonka avulla pystymme toteuttamaan operaatiot
-keskimäärin ajassa $O(1)$.
-Seuraavassa luvussa tutustumme binäärihaku\-puuhun,
-jonka operaatiot toimivat ajassa $O(\log n)$
-ja johon voimme toteuttaa lisäksi alkioiden järjestykseen
-liittyviä operaatioita.
+\begin{itemize}
+\item etsi joukon pienin/suurin alkio
+\item etsi joukon pienin alkio, joka on vähintään $x$
+\item etsi joukon suurin alkio, joka on enintään $x$
+\end{itemize}
 
-\section{Hajautustaulun toiminta}
+Hajautustaulu \emph{ei} pysty tarjoamaan näitä operaatioita tehokkaasti,
+koska alkiot ovat siinä sekalaisessa järjestyksessä.
+Jos tarvitsemme näitä operaatioita,
+meidän tuleekin käyttää binäärihakupuuta hajautustaulun sijasta.
 
-\emph{Hajautustaulu} on $N$-alkioinen taulukko,
-jonka jokaisessa kohdassa on lista joukkoon kuuluvia alkioita.
-Jotta voimme käyttää hajautustaulua,
-meillä täytyy olla \emph{hajautusfunktio} $f$,
-joka antaa \emph{hajautusarvon}
-$f(x)$ mille tahansa joukon alkiolle $x$.
-Hajautusarvo on kokonaisluku väliltä
-$0,1,\dots,N-1$, missä $N$ on hajautustaulun koko.
-Tallennamme hajautustaulun kohdassa $k$ olevaan listaan
-kaikki ne joukon alkiot, joiden hajautusarvo on $k$.
+\section{Taustaa binääripuista}
+
+Binäärihakupuun taustalla on yleisempi tietorakenne \emph{binääripuu}.
+Ennen kuin tutustumme binäärihakupuuhun,
+meidän onkin hyvä selvittää ensin, mikä on binääripuu ja mitä
+ominaisuuksia siihen liittyy.
+
+Binääripuu muodostuu $n$ solmusta, jotka on yhdistetty toisiinsa.
+Puussa ylimpänä on solmu, jota kutsutaan \emph{juureksi}.
+Jokaisella solmulla voi olla vasen ja oikea \emph{lapsi},
+ja kaikilla solmuilla juurta lukuun ottamatta on yksikäsitteinen \emph{vanhempi}.
+Puun \emph{lehtiä} ovat solmut, joilla ei ole lapsia.
+
+Binääripuun rakenne on rekursiivinen:
+jokainen solmu toimii juurena \emph{alipuulle},
+joka on myös binääripuu.
+Voimme ajatella, että jokaisessa binääripuun
+solmussa vasen ja oikea lapsi on joko tyhjä
+tai toinen binääripuu.
 
 \begin{figure}
-\begin{tikzpicture}[scale=0.5]
-\draw (0,0) grid (10,1);
-\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
-\draw[->,thick] (2.5,0) -- (2.5,-1);
-\draw[->,thick] (5.5,0) -- (5.5,-1);
-\draw[->,thick] (7.5,0) -- (7.5,-1);
-\draw[->,thick] (2.5,-2) -- (2.5,-3);
-\node at (2.5,-1.5) {$12$};
-\node at (5.5,-1.5) {$15$};
-\node at (7.5,-1.5) {$7$};
-\node at (2.5,-3.5) {$32$};
+\center
+\begin{tikzpicture}[scale=0.6]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$3$};
+\node[draw, circle] (4) at (-4.5,-4) {$4$};
+\node[draw, circle] (5) at (0.5,-4) {$5$};
+\node[draw, circle] (6) at (4.5,-4) {$6$};
+\node[draw, circle] (7) at (3,-6) {$7$};
+\node[draw, circle] (8) at (6,-6) {$8$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (6) -- (7);
+\path[draw,thick,-] (6) -- (8);
 \end{tikzpicture}
-\caption{Hajautustaulu, joka vastaa joukkoa $\{7,12,15,32\}$.
-Hajautusfunktiona on $f(x)=x \bmod 10$.}
-\label{fig:hajtau}
+\caption{Binääripuu, jossa on 8 solmua. Puun juuri on solmu 1,
+ja puun lehtiä ovat solmut 4, 5, 7 ja 8.}
+\label{fig:binpuu}
 \end{figure}
 
-Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu,
-jonka kokona on $N=10$.
-Olemme tallentaneet hajautustauluun joukon $\{7,12,15,32\}$
-käyttäen hajautusfunktiota $f(x)=x \bmod 10$.
-Tämä tarkoittaa, että alkion $x$ hajautusarvo on sen jakojäännös $10$:llä
-eli luvun viimeinen numero.
-Esimerkiksi alkiot $12$ ja $32$ ovat kohdassa $2$,
-koska niissä viimeinen numero on $2$,
-ja alkiot $15$ ja $7$ ovat vastaavasti kohdissa $5$ ja $7$.
-Kaikki muut hajautustaulun listat ovat tällä hetkellä tyhjiä.
+Kuvassa \ref{fig:binpuu} on esimerkki binääripuusta, jossa on 8 solmua.
+Solmu 1 on puun juuri, ja solmut 4, 5, 7 ja 8 ovat puun lehtiä.
+Solmun 3 vasen lapsi on solmu 5, oikea lapsi on solmu 6
+ja vanhempi on solmu 1.
+Solmun 3 alipuu sisältää solmut 3, 5, 6, 7 ja 8.
 
-Kun haluamme tarkistaa, onko joukossa alkiota $x$,
-laskemme ensin sen hajautusarvon $f(x)$.
-Tämän jälkeen käymme läpi kaikki kohdan $f(x)$
-listassa olevat alkiot ja tarkistamme,
-onko jokin niistä alkio $x$.
-Vastaavasti kun haluamme lisätä alkion $x$ joukkoon
-tai poistaa alkion $x$ joukosta,
-teemme muutoksen kohdassa $f(x)$ olevaan listaan.
-Jokaisen operaation aikavaativuus on $O(m)$,
-missä $m$ on listan alkioiden määrä.
-Hajautustaulu toimii siis tehokkaasti, jos jokainen
-siinä oleva lista on lyhyt.
-
-\subsection{Hajautusfunktio}
-
-Hajautusfunktio $f(x)$ määrittää, mihin kohtaan hajautustaulua
-alkio $x$ sijoitetaan.
-Sen täytyy antaa jokaiselle mahdolliselle alkiolle
-hajautusarvo eli kokonaisluku väliltä $0,1,\dots,N-1$,
-missä $N$ on hajautustaulun koko.
-Muilta osin meillä on periaatteessa vapaat kädet
-hajautusfunktion suunnitteluun.
-Mutta millainen olisi hyvä hajautusfunktio?
+Binääripuun juuren \emph{syvyys} on 0 ja jokaisen muun solmun syvyys on yhtä
+suurempi kuin sen vanhemman syvyys.
+Binääripuun \emph{korkeus} on puolestaan suurin puun solmussa
+esiintyvä syvyys.
+Esimerkiksi kuvan \ref{fig:binpuu} puun korkeus on 3,
+koska solmujen 7 ja 8 syvyys on 3.
 
 \begin{figure}
-\begin{tikzpicture}[scale=0.5]
+\center
+\begin{tikzpicture}[scale=0.6]
 \begin{scope}
-\draw (0,0) grid (10,1);
-\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
-\draw[->,thick] (1.5,0) -- (1.5,-1);
-\draw[->,thick] (4.5,0) -- (4.5,-1);
-\draw[->,thick] (8.5,0) -- (8.5,-1);
-\node at (1.5,-1.5) {$a$};
-\node at (4.5,-1.5) {$b$};
-\node at (8.5,-1.5) {$c$};
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (0,-2) {$2$};
+\node[draw, circle] (3) at (0,-4) {$3$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (3);
+\node at (0,-6) {(a)};
 \end{scope}
-\begin{scope}[xshift=15cm]
-\draw (0,0) grid (10,1);
-\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
-\draw[->,thick] (3.5,0) -- (3.5,-1);
-\draw[->,thick] (3.5,-4) -- (3.5,-5);
-\draw[->,thick] (3.5,-2) -- (3.5,-3);
-\node at (3.5,-1.5) {$a$};
-\node at (3.5,-3.5) {$b$};
-\node at (3.5,-5.5) {$c$};
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$3$};
+\node[draw, circle] (4) at (-4,-4) {$4$};
+\node[draw, circle] (5) at (-1,-4) {$5$};
+\node[draw, circle] (6) at (1,-4) {$6$};
+\node[draw, circle] (7) at (4,-4) {$7$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\node at (0,-6) {(b)};
 \end{scope}
 \end{tikzpicture}
-\caption{Kaksi hajautustaulua joukolle $\{a,b,c\}$.
-Vasen tilanne on paras mahdollinen, oikea tilanne taas
-huonoin mahdollinen.}
-\label{fig:hajjak}
+\caption{(a) Vähiten solmuja sisältävä korkeuden 2 binääripuu.
+(b) Eniten solmuja sisältävä korkeuden 2 binääripuu.}
+\label{fig:binraj}
 \end{figure}
 
-Haluamme, että hajautusfunktio jakaa alkioita \emph{tasaisesti}
-hajautustaulun eri puolille.
-Jos onnistumme tässä, kaikki listat ovat lyhyitä ja
-joukon operaatiot ovat tehokkaita.
-Kuva \ref{fig:hajjak} näyttää kaksi hajautustaulua, jotka vastaavat
-joukkoa $\{a,b,c\}$ kahdella eri hajautusfunktiolla.
-Vasemmassa taulussa hajautus on onnistunut täydellisesti
-ja jokainen alkio on omassa listassaan.
-Oikeassa taulussa taas kaikki alkiot ovat joutuneet samaan
-listaan eikä hajautuksesta ole mitään hyötyä.
-Tavoitteemme on, että saisimme aikaan hajautusfunktion,
-jonka toiminta on lähempänä vasenta taulua.
+Jos binääripuun korkeus on $h$, siinä on vähintään $h+1$ solmua,
+jolloin puu on pelkkä solmujen lista,
+ja enintään $2^{h+1}-1$ solmua,
+jolloin kaikilla tasoilla on kaikki mahdolliset solmut.
+Kuva \ref{fig:binraj} näyttää esimerkit näistä tapauksista,
+kun puun korkeus on $2$.
 
-Jos hajautettavat alkiot ovat kokonaislukuja,
-suoraviivainen hajautusfunktio on $f(x)=x \bmod N$,
-mikä tarkoittaa, että otamme jakojäännöksen hajautustaulun koolla $N$.
-Tämä on hyvin toimiva hajautusfunktio,
-kunhan aineistossa esiintyy tasaisesti eri jakojäännöksiä.
-Entä jos alkiot ovat jotain muuta tyyppiä kuin kokonaislukuja?
-Tällöin voimme päättää jonkin tavan,
-kuinka muutamme alkion kokonaisluvuksi,
-minkä jälkeen voimme laskea jakojäännöksen $N$:llä.
-Tarkastelemme seuraavaksi esimerkkinä hajautusfunktioita,
-jotka antavat hajautusarvon merkkijonolle.
+\subsection{Binääripuun toteutus}
 
-Oletamme, että merkkijonossa on $k$ merkkiä,
-joiden merkkikoodit\footnote{Käytämme tässä merkkien ASCII-koodeja.
-Esimerkiksi Javassa char-merkin \texttt{c} koodin saa
-selville kirjoittamalla \texttt{(int)c}, eli esimerkiksi
-\texttt{(int)'a'} on 97.} ovat $c_0,c_1,\dots,c_{k-1}$.
-Esimerkiksi jos merkkijono on \texttt{apina},
-$k=5$ ja koodit ovat $c_0=97$, $c_1=112$, $c_2=105$,
-$c_3=110$ ja $c_4=97$.
-Seuraavassa on kolme mahdollista tapaa määritellä hajautusfunktio:
-
-\begin{enumerate}
-\item Hajautusarvo on merkkijonon pituus $k$.
-Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on 5.
-\item Hajautusarvo on merkkikoodien summa
-\[ c_0 + c_1 + \dots + c_{k-1}.\]
-Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on
-\[97+112+105+110+97=521.\]
-\item Hajautusarvo on summa
-\[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
-missä $A$ on vakio.
-Esimerkiksi jos $A=7$, merkkijonon \texttt{apina} hajautusarvo on
-\[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=61235.\]
-\end{enumerate}
-
-Funktiot 1 ja 2 eivät ole käytännössä hyviä hajautusfunktioita,
-koska ne antavat saman hajautusarvon monille merkkijonoille.
-Funktio 1 antaa kahdelle merkkijonolle saman hajautusarvon,
-jos ne ovat yhtä pitkiä,
-ja funktio 2 antaa kahdelle merkkijonolle saman hajautusarvon,
-jos ne sisältävät samat merkit eri järjestyksessä.
-
-Funktio 3, jota kutsutaan nimellä \emph{polynominen hajautus},
-on käytännössä hyvä merkkijonon hajautustapa, joka on käytössä esimerkiksi
-Javan standardikirjastossa.
-Vakio $A$ valitaan tyypillisesti niin, että se on pieni alkuluku.
-Koska hajautusarvo lasketaan painotettuna summana,
-kaksi eri merkkijonoa eivät yleensä saa samaa hajautusarvoa.
-Toisaalta pystymme laskemaan hajautusarvon tehokkaasti
-mille tahansa merkkijonolle.
-
-\subsection{Hajautuksen tehokkuus}
-
-Hajautustaulun operaatiot vievät aikaa $O(m)$,
-jossa $m$ on hajautustaulussa olevan listan pituus.
-Mutta kuinka suuri $m$ on? Tämä riippuu siitä,
-mikä on alkioiden määrä $n$, hajautustaulun koko $N$
-sekä hajautusfunktio $f$.
-
-Jos kaikki sujuu hyvin ja hajautusfunktio jakaa alkioita
-tasaisesti hajautustaulun eri puolille,
-jokaisessa listassa on noin $n/N$ alkiota.
-Niinpä jos valitsemme hajautustaulun koon niin,
-että $N$ on samaa luokkaa kuin $n$,
-operaatiot toimivat tehokkaasti ajassa $O(1)$.
-Kuitenkin on mahdollista että hajautus epäonnistuu
-ja alkiot jakautuvat hajautustauluun epätasaisesti.
-Pahimmassa tapauksessa kaikki alkiot saavat saman
-hajautusarvon ja ne kaikki tallennetaan samaan listaan,
-jolloin operaatiot vievät aikaa $O(n)$.
-
-Voimme helposti vaikuttaa hajautustaulun kokoon $N$,
-mutta hajautusfunktion suunnittelu on epämääräisempi ala.
-Miten voimme tietää, että valitsemamme hajautusfunktio
-toimii hyvin?
-Itse asiassa emme voi olla koskaan varmoja tästä.
-Vaikka meillä olisi erittäin hyvä hajautusfunktio,
-\emph{ilkeä vastustaja} voi kuitenkin antaa
-meille joukon alkioita, jotka kaikki saavat saman hajautusarvon.
-Tämä riski on aina hajautuksessa, koska eri
-hajautusarvojen määrä on paljon pienempi kuin eri alkioiden määrä.
-Tämän vuoksi ei ole mahdollista suunnitella hajautusfunktiota niin,
-että se jakaisi alkiot \emph{varmasti} tasaisesti hajautustauluun.
-
-Kaikeksi onneksi hajautus toimii yleensä aina \emph{käytännössä}
-hyvin ja voimme ajatella, että hajautustaulun operaatiot ovat
-$O(1)$-aikaisia.
-Vaikka on mahdollista, että hajautus epäonnistuu,
-tämän riski on niin pieni, että meidän ei tarvitse murehtia
-siitä käytännössä.
-
-\section{Hajautus Javassa}
-
-Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
-\texttt{HashSet} pitää yllä alkioiden joukkoa
-hajautustaulun avulla, ja \texttt{HashMap} säilyttää
-joukkoa avain-arvo-pareja, mitä voi ajatella taulukon yleistyksenä.
-Seuraavaksi tutustumme tarkemmin näihin rakenteisiin.
-
-\subsection{\texttt{HashSet}-rakenne}
-
-\texttt{HashSet}-rakenne pitää yllä alkioiden joukkoa.
-Joukkoon voi lisätä alkion metodilla \texttt{add},
-ja siitä voi poistaa alkion metodilla \texttt{remove}.
-Esimerkiksi seuraava koodi luo joukon, jossa voi olla
-kokonaislukuja, ja lisää siihen luvut 3, 5 ja 8.
-Tämän jälkeen koodi poistaa luvun 5 joukosta.
+Voimme toteuttaa binääripuun linkitettynä rakenteena niin,
+että jokainen puun solmu on olio, josta on viittaus
+vasempaan ja oikeaan lapseen.
+Javassa voimme määritellä solmua vastaavan luokan seuraavasti:
 
 \begin{code}
-HashSet<Integer> joukko = new HashSet<>();
-joukko.add(3);
-joukko.add(5);
-joukko.add(8);
-System.out.println(joukko); // [3, 5, 8]
-joukko.remove(5);
-System.out.println(joukko); // [3, 8]
-\end{code}
+public class Solmu {
+    Solmu vasen, oikea;
+    int arvo;
 
-Metodin \texttt{contains} avulla voimme selvittää,
-esiintyykö tietty alkio $x$ joukossa:
-
-\begin{code}
-if (joukko.contains(x)) {
-    System.out.println("alkio on joukossa");
-} else {
-    System.out.println("alkiota ei ole joukossa");
+    public Solmu(Solmu vasen, Solmu oikea, int arvo) {
+        this.vasen = vasen;
+        this.oikea = oikea;
+        this.arvo = arvo;
+    }
 }
 \end{code}
 
-Huomaa, että jokainen alkio voi esiintyä vain kerran joukossa.
-Esimerkiksi vaikka seuraava koodi lisää luvun 5 kolmesti
-joukkoon, se menee sinne vain ensimmäisellä kerralla ja
-muut lisäykset jätetään huomiotta.
+Kentät \texttt{vasen} ja \texttt{oikea} osoittavat solmun
+vasempaan ja oikeaan lapseen.
+Jos lapsi puuttuu, sen tilalla on arvo \texttt{null}.
+Kentässä \texttt{arvo} on puolestaan solmun arvo.
+Nyt voimme määritellä kuvan \ref{fig:binpuu} binääripuun näin:
 
 \begin{code}
-HashSet<Integer> joukko = new HashSet<>();
-joukko.add(5);
-joukko.add(5);
-joukko.add(5);
-System.out.println(joukko); // [5]
+Solmu s1, s2, s3, s4, s5, s6, s7, s8;
+s1 = new Solmu(s2, s3, 1);
+s2 = new Solmu(s4, null, 2);
+s3 = new Solmu(s5, s6, 3);
+s4 = new Solmu(null, null, 4);
+s5 = new Solmu(null, null, 5);
+s6 = new Solmu(s7, s8, 6);
+s7 = new Solmu(null, null, 7);
+s8 = new Solmu(null, null, 8);
 \end{code}
 
-Koska \texttt{HashSet} on toteutettu hajautustaulun avulla,
-sen operaatiot toimivat ajassa $O(1)$.
-
-\subsection{\texttt{HashMap}-rakenne}
-
-\texttt{HashMap}-rakenne pitää yllä joukkoa avain-arvo-pareja.
-Rakennetta voi ajatella taulukon yleistyksenä:
-$n$ alkion taulukossa avaimet ovat aina kokonaisluvut
-$0,1,\ldots,n-1$, mutta \texttt{HashMap} sallii
-avaimina minkä tahansa tyyppisiä alkioita eikä niiden
-tarvitse olla peräkkäin.
-
-\texttt{HashMap}-rakenteen määrittelyssä tulee antaa
-avaimen ja arvon tyyppi.
-Esimerkiksi seuraava koodi luo sanakirjan, jossa sekä
-avaimet että arvot ovat merkkijonoja.
-Syötämme sanakirjaan merkkijonopareja, jotka kertovat
-sanan käännöksen suomesta englanniksi.
-Metodi \texttt{put} lisää uuden avain-arvo-parin,
-ja metodi \texttt{get} hakee arvon avaimen perusteella.
+Voimme toteuttaa monia binääripuun käsittelyyn liittyviä
+operaatioita luontevasti rekursiolla.
+Esimerkiksi seuraava metodi laskee, montako solmua
+sille annetussa puussa on:
 
 \begin{code}
-HashMap<String,String> sanakirja = new HashMap<>();
+int laskeSolmut(Solmu puu) {
+    if (puu == null) return 0;
+    return 1 + laskeSolmut(puu.vasen) + laskeSolmut(puu.oikea);
+}
+\end{code}
 
+Metodille annetaan parametrina solmu,
+joka vastaa puun juurta.
+Jos puu on tyhjä, siinä ei ole yhtään solmua.
+Muuten puussa on juurisolmu sekä vasemman
+ja oikean alipuun solmut.
+Pystymme laskemaan alipuiden solmut rekursiivisesti
+kutsumalla samaa metodia uudestaan.
+
+
+Seuraava metodi puolestaan selvittää, mikä on puun korkeus.
+Huomaa, että jos puu on tyhjä, tulkitsemme,
+että sen korkeus on $-1$.
+
+\begin{code}
+int korkeus(Solmu puu) {
+    if (puu == null) return -1;
+    return 1 + Math.max(korkeus(puu.vasen), korkeus(puu.oikea));
+}
+\end{code}
+
+\subsection{Läpikäyntijärjestykset}
+
+Voimme käydä läpi binääripuun solmut rekursiivisesti
+juuresta alkaen.
+Solmujen läpikäyntiin on kolme tavallista järjestystä:
+
+\begin{itemize}
+\item \emph{esijärjestys}: käsittelemme ensin solmun, sitten vasemman alipuun
+ja lopuksi oikean alipuun
+\item \emph{sisäjärjestys}: käsittelemme ensin vasemman alipuun, sitten solmun
+ja lopuksi oikean alipuun
+\item \emph{jälkijärjestys}: käsittelemme ensin vasemman alipuun,
+sitten oikean alipuun ja lopuksi solmun
+\end{itemize}
+
+Esimerkiksi kuvan \ref{fig:binpuu} puussa
+esijärjestys on $[1,2,4,3,5,6,7,8]$,
+sisäjärjes\-tys on $[4,2,1,5,3,7,6,8]$ ja
+jälkijärjestys on $[4,2,5,7,8,6,3,1]$.
+
+Seuraava metodi tulostaa binääripuun solmut
+sisäjärjestyksessä, kun sille annetaan parametrina
+puun juuri.
+
+\begin{code}
+void tulosta(Solmu puu) {
+    if (puu == null) return;
+    tulosta(puu.vasen);
+    System.out.println(puu.arvo);
+    tulosta(puu.oikea);
+}
+\end{code}
+
+\section{Binäärihakupuun toiminta}
+
+\emph{Binäärihakupuu} on binääripuu, jonka jokaisen solmun
+arvona on yksi joukon alkioista.
+Jokaisessa solmussa
+kaikki alkiot vasemmassa alipuussa ovat pienempiä
+kuin solmun alkio ja vastaavasti kaikki alkiot
+oikeassa alipuussa ovat suurempia kuin solmun alkio.
+Tämän ominaisuuden ansiosta voimme löytää halutun
+alkion puusta aloittamalla haun puun juuresta.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\node[draw, circle] (1) at (0,0) {$5$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$8$};
+\node[draw, circle] (4) at (-4,-4) {$2$};
+\node[draw, circle] (5) at (1,-4) {$7$};
+\node[draw, circle] (6) at (4,-4) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\end{tikzpicture}
+\caption{Joukkoa $\{2,3,5,7,8,9\}$ vastaava binäärihakupuu.}
+\label{fig:bihpuu}
+\end{figure}
+
+Kuvassa \ref{fig:bihpuu} on esimerkkinä
+joukkoa $\{2,3,5,7,8,9\}$ vastaava binääri\-hakupuu,
+jonka juurena on alkio 5.
+Vasemmassa alipuussa on kaikki alkiota 5
+pienemmät alkiot, eli se vastaa joukkoa $\{2,3\}$.
+Oikeassa alipuussa taas on kaikki alkiota 5
+suuremmat alkiot, eli se vastaa joukkoa $\{7,8,9\}$.
+Huomaa, että tämä on yksi monista tavoista muodostaa
+binäärihakupuu joukolle ja voisimme valita myös
+minkä tahansa toisen alkion puun juureksi.
+
+\subsection{Operaatioiden toteutus}
+
+Seuraavaksi käymme läpi, kuinka voimme toteuttaa
+joukko-operaatioita bi\-näärihakupuun avulla.
+Osoittautuu, että voimme toteuttaa kaikki
+operaatiot ajassa $O(h)$, missä $h$ on puun korkeus.
+
+\subsubsection{Alkion etsiminen}
+
+Kun haluamme etsiä joukosta alkiota $x$, lähdemme liikkeelle
+puun juuresta ja kuljemme alaspäin puussa.
+Kun olemme solmussa, jossa on alkio $a$,
+vaihtoehtoja on kolme.
+Jos $a=x$, olemme löytäneet halutun alkion,
+jos $a>x$, jatkamme hakua solmun vasempaan lapseen,
+ja jos $a<x$, jatkamme hakua solmun oikeaan lapseen.
+Jos kuitenkaan solmulla ei ole lasta,
+johon meidän tulisi edetä, toteamme,
+että joukossa ei ole alkiota $x$.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\node[draw, circle] (1) at (0,0) {$5$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$8$};
+\node[draw, circle] (4) at (-4,-4) {$2$};
+\node[draw, circle] (5) at (1,-4) {$7$};
+\node[draw, circle] (6) at (4,-4) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,red,line width=2pt,->] (1) -- (3);
+\path[draw,thick,red,line width=2pt,->] (3) -- (5);
+\end{tikzpicture}
+\caption{Alkion $7$ etsiminen joukosta $\{2,3,5,7,8,9\}$ juuresta alkaen.}
+\label{fig:bihets}
+\end{figure}
+
+Kuva \ref{fig:bihets} näyttää, kuinka löydämme alkion 7
+joukosta $\{2,3,5,7,8,9\}$.
+Juurena on alkio 5, joten alkion 7 täytyy olla juuren
+oikeassa alipuussa.
+Tämän alipuun juurena on alkio 8,
+joten nyt taas tiedämme, että alkion 7 täytyy olla
+vasemmassa alipuussa, josta se löytyykin.
+
+\subsubsection{Alkion lisääminen}
+
+Kun haluamme lisätä joukkoon alkion $x$,
+jota ei vielä ole joukossa, kuljemme ensin
+puussa aivan kuin etsisimme alkiota $x$.
+Sitten kun olemme päässeet solmuun,
+jolla ei ole lasta, johon meidän tulisi edetä,
+luomme uuden solmun alkiolle $x$ ja lisäämme
+sen tähän kohtaan lapseksi.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\node[draw, circle] (1) at (0,0) {$5$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$8$};
+\node[draw, circle] (4) at (-4,-4) {$2$};
+\node[draw, circle] (5) at (1,-4) {$7$};
+\node[draw, circle] (6) at (4,-4) {$9$};
+\node[draw, circle, dashed] (7) at (-1,-4) {$4$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,dashed,-] (2) -- (7);
+\path[draw,thick,red,line width=2pt,->] (1) -- (2);
+\end{tikzpicture}
+\caption{Alkion 4 lisääminen joukkoon $\{2,3,5,7,8,9\}$.}
+\label{fig:bihpu2}
+\end{figure}
+
+Kuva \ref{fig:bihpu2} näyttää, kuinka lisäämme alkion 4
+joukkoon $\{2,3,5,7,8,9\}$.
+Kun haemme puusta solmua 4, päädymme solmuun 3,
+jolla ei ole oikeaa lasta.
+Niinpä lisäämme solmun 4 solmun 3 oikeaksi lapseksi.
+
+\subsubsection{Pienin alkio / suurin alkio}
+
+Kun haluamme löytää joukon pienimmän alkion,
+lähdemme liikkeelle juuresta ja etenemme joka askeleella
+solmun vasempaan lapseen.
+Kun solmulla ei ole enää vasenta lasta,
+olemme löytäneet joukon pienimmän alkion.
+
+Vastaavalla tavalla löydämme joukon suurimman alkion
+etenemällä koko ajan oikeaan lapseen juuresta.
+
+\subsubsection{Seuraava suurempi alkio / edellinen pienempi alkio}
+
+Kun haluamme löytää joukon pienimmän alkion,
+joka on suurempi kuin $x$,
+lähdemme liikkeelle puun juuresta.
+Kun olemme solmussa, jossa on alkio $a$,
+etenemme vasempaan lapseen,
+jos $a>x$, ja oikeaan lapseen, jos $a \le x$.
+Jatkamme näin, kunnes emme voi edetä alemmas.
+Haluttu alkio on pienin alkiota $x$ suurempi alkio
+kaikista alkioista, joiden kautta kuljimme.
+
+Kun haluamme vastaavasti löytää joukon suurimman alkion,
+joka on pienempi kuin $x$,
+menettelemme käänteisesti edelliseen nähden.
+
+\subsubsection{Alkion poistaminen}
+
+Kun haluamme poistaa joukosta alkion $x$, etsimme ensin
+alkiota $x$ vastaavan solmun tavalliseen tapaan.
+Jos solmulla ei ole lapsia tai vain yksi lapsi,
+meidän on helppoa poistaa solmu puusta ja säilyttää
+puun rakenne muuten ennallaan.
+Jos kuitenkin solmulla on kaksi lasta,
+tilanne on hankalampi.
+Tällöin etsimme alkion $y$,
+joka on pienin $x$:ää suurempi alkio,
+ja vaihdamme keskenään alkiot $x$ ja $y$ puussa.
+Tämän jälkeen meidän on helppoa poistaa solmu,
+jossa on nyt alkio $x$,
+koska sillä ei voi olla kahta lasta
+(koska jos solmulla olisi vasen lapsi,
+$y$ ei olisi pienin $x$:ää suurempi alkio).
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$5$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$8$};
+\node[draw, circle] (4) at (-4,-4) {$2$};
+\node[draw, circle] (5) at (1,-4) {$7$};
+\node[draw, circle] (6) at (4,-4) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,red,line width=2pt,->] (1) -- (3);
+\path[draw,thick,red,line width=2pt,->] (3) -- (5);
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,0) {$7$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$8$};
+\node[draw, circle] (4) at (-4,-4) {$2$};
+\node[draw, circle] (5) at (1,-4) {$5$};
+\node[draw, circle] (6) at (4,-4) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,<->,dashed] (1) -- (5);
+\end{scope}
+\end{tikzpicture}
+\caption{Alkion 5 poistaminen joukosta $\{2,3,5,7,8,9\}$. (a) Koska alkiolla
+5 on kaksi lasta, etsimme seuraavan suuremman alkion 7.
+(b) Vaihdamme keskenään alkiot 5 ja 7, minkä jälkeen voimme poistaa helposti alkion 5.}
+\label{fig:bihpu3}
+\end{figure}
+
+Kuva \ref{fig:bihpu3} näyttää, kuinka poistamme joukosta $\{2,3,5,7,8,9\}$ alkion 5.
+Alkio on puun juuressa ja solmulla on kaksi lasta,
+joten meidän tulee etsiä ensin pienin alkiota 5 suurempi alkio,
+joka on 7.
+Vaihdamme sitten keskenään arvot 5 ja 7,
+minkä jälkeen meidän on helppoa poistaa alkio 5.
+
+\subsection{Operaatioiden tehokkuus}
+
+Binäärihakupuun operaatiot vievät aikaa $O(h)$,
+missä $h$ on puun korkeus, joten operaatioiden tehokkuus
+riippuu puun korkeudesta.
+Niinpä operaatioiden tehokkuuteen vaikuttaa, miten olemme
+rakentaneet puun.
+Esimerkiksi kuvassa \ref{fig:bihkor} on kaksi mahdollista
+binäärihakupuuta joukolle $\{1,2,3,4,5\}$.
+Vasemman puun korkeus on 2, kun taas oikean puun korkeus on 4.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (1,-2) {$2$};
+\node[draw, circle] (3) at (2,-4) {$3$};
+\node[draw, circle] (4) at (3,-6) {$4$};
+\node[draw, circle] (5) at (4,-8) {$5$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (4) -- (5);
+\end{scope}
+\begin{scope}[xshift=-8cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (-2,-2) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (-4,-4) {$4$};
+\node[draw, circle] (5) at (0,-4) {$5$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\end{scope}
+\end{tikzpicture}
+\caption{Kaksi binäärihakupuuta joukolle $\{1,2,3,4,5\}$.
+Vasemman puun korkeus on 2 ja oikean puun korkeus on 4.}
+\label{fig:bihkor}
+\end{figure}
+
+Jotta binäärihakupuu toimii tehokkaasti, haluamme,
+että puun korkeus ei kasva liian suureksi.
+Tarkemmin ottaen tavoitteemme on, että
+solmut ovat jakautuneet tasaisesti puun eri puolille
+ja puun korkeus on $O(\log n)$.
+Tällöin sanomme, että puu on \emph{tasapainoinen}.
+Jos onnistumme tässä, kaikki puun operaatiot toimivat
+tehokkaasti ajassa $O(\log n)$.
+Saavutamme tavoitteemme
+lisäämällä puuhun ehtoja, jotka rajoittavat
+sen korkeutta sopivasti.
+
+Binäärihakupuun tasapainottamiseen tunnetaan monia menetelmiä.
+Tutustumme seuraavaksi AVL-puuhun, joka on 
+varhaisin tunnettu tasapainoinen binäärihakupuu.
+AVL-puu on yksinkertaisempi kuin monet myöhemmin
+kehitetyt rakenteet, minkä vuoksi se sopii hyvin esittelemään
+puiden tasapainotuksen ideoita.
+Javan ja muiden ohjelmointikielten standardikirjastoissa
+käyte\-tään kuitenkin muita rakenteita, kuten punamustaa puuta.
+
+\section{AVL-puu}
+
+\emph{AVL-puu} on tasapainoinen binäärihakupuu, jonka
+korkeus on aina $O(\log n)$, minkä ansiosta puun operaatiot
+toimivat tehokkaasti ajassa $O(\log n)$.
+AVL-puussa jokaiseen solmuun liittyy \emph{tasapainoehto},
+joka takaa, että puu on tasapainoinen.
+Kun päivitämme puuta, meidän täytyy pitää huolta siitä,
+että tasapainoehto säilyy voimassa kaikissa solmuissa.
+
+\subsection{Tasapainoehto}
+
+AVL-puun tasapainoehtona on, että
+jokaisessa solmussa vasemman ja oikean lapsen alipuiden korkeusero 
+on enintään 1.
+
+Esimerkiksi kuvan \ref{fig:bihkor} vasen puu on
+AVL-puu, kun taas oikea puu ei ole.
+Oikea puu ei ole AVL-puu, koska esimerkiksi solmussa 1
+vasemman lapsen alipuun korkeus on $-1$ mutta oikean lapsen
+alipuun korkeus on 3.
+Korkeuksien erona on siis 4, vaikka ero saisi olla enintään 1.
+
+Kutsumme AVL-puun tasapainoehtoa \emph{AVL-ehdoksi}.
+Osoittautuu, että jos binäärihakupuu täyttää AVL-ehdon,
+sen korkeus on $O(\log n)$.
+Eli jos pystymme toteuttamaan puun operaatiot niin,
+että AVL-ehto säilyy, saamme aikaan binäärihakupuun,
+jonka operaatiot toimivat ajassa $O(\log n)$.
+
+\begin{figure}
+\center
+\scriptsize
+\begin{tikzpicture}[scale=0.4]
+\begin{scope}
+\node[draw, circle] (2) at (-2.5,-2) {\phantom{$1$}};
+\end{scope}
+\begin{scope}[xshift=5cm]
+\node[draw, circle] (2) at (-2.5,-2) {\phantom{$1$}};
+\node[draw, circle] (4) at (-3.5,-4) {\phantom{$1$}};
+\path[draw,thick,-] (2) -- (4);
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (2) at (-2.5,-2) {\phantom{$1$}};
+\node[draw, circle] (4) at (-3.5,-4) {\phantom{$1$}};
+\node[draw, circle] (5) at (-1.5,-4) {\phantom{$1$}};
+\node[draw, circle] (7) at (-4.5,-6) {\phantom{$1$}};
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (4) -- (7);
+\end{scope}
+\begin{scope}[xshift=15cm,yshift=-2cm]
+\node[draw, circle] (1) at (0,0) {\phantom{$1$}};
+\node[draw, circle] (2) at (-2.5,-2) {\phantom{$1$}};
+\node[draw, circle] (3) at (2.5,-2) {\phantom{$1$}};
+\node[draw, circle] (4) at (-3.5,-4) {\phantom{$1$}};
+\node[draw, circle] (5) at (-1.5,-4) {\phantom{$1$}};
+\node[draw, circle] (6) at (1.5,-4) {\phantom{$1$}};
+\node[draw, circle] (7) at (-4.5,-6) {\phantom{$1$}};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (4) -- (7);
+\end{scope}
+\end{tikzpicture}
+\caption{Vähiten solmuja sisältävät AVL-puut korkeuksille 0, 1, 2 ja 3.}
+\label{fig:avlkor}
+\end{figure}
+
+Miksi sitten AVL-ehto takaa, että binäärihakupuun korkeus
+on $O(\log n)$?
+Voimme lähestyä asiaa pahimman tapauksen kautta:
+kun tiedämme, että AVL-puussa on $n$ solmua,
+mikä on sen \emph{suurin mahdollinen} korkeus?
+Voimme selvittää tämän tutkimalla käänteisesti,
+mikä on \emph{pienin mahdollinen} solmujen määrä
+AVL-puussa, jonka korkeus on $h$.
+
+Merkitään $f(h)$:lla korkeutta $h$ olevan AVL-puun
+pienintä mahdollista solmujen määrää.
+Kuvan \ref{fig:avlkor} mukaisesti funktion ensimmäiset arvot
+ovat $f(0)=1$, $f(1)=2$, $f(2)=4$ ja $f(3)=7$.
+Yleisemmin
+\[f(h)=1+f(h-1)+f(h-2),\]
+kun $h \ge 2$, koska jos haluamme rakentaa AVL-puun korkeutta $h$,
+jossa on mahdollisimman vähän solmuja,
+meidän kannattaa laittaa juuren lapsiksi AVL-puut
+korkeutta $h-1$ ja $h-2$ niin,
+että kummassakin alipuussa on mahdollisimman vähän solmuja.
+Funktiolle pätee
+\[f(h) \ge 2 f(h-2),\]
+eli funktion arvo ainakin kaksinkertaistuu kahden askeleen välein.
+Voimme ilmaista tämän alarajan
+\[f(h) \ge 2^{h/2},\]
+jonka voimme taas muuttaa ylärajaksi
+\[ h \le 2 \log_2 f(h).\]
+
+Tarkastellaan sitten puuta, jossa on $n$ solmua
+ja jonka korkeus on $h$.
+Korkeudelle täytyy päteä $f(h) \le n$,
+koska korkeutta $h$ olevassa puussa on vähintään $f(h)$ solmua.
+Niinpä saamme ylärajan
+\[h \le 2 \log_2 n,\]
+mikä tarkoittaa samaa kuin $h = O(\log n)$.
+
+\subsection{Kiertojen toteutus}
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\small
+\newcommand\alipuu[3]{
+\path[draw,thick,-] (0+#1,0+#2) -- (-0.5+#1,-1.25+#2) -- (0.5+#1,-1.25+#2) -- (0+#1,0+#2);
+\node at (0+#1,-0.85+#2) {#3};
+}
+\draw[thick,<->] (5,-2) -- (7,-2);
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$x$};
+\node[draw, circle] (2) at (2,-2) {$y$};
+\alipuu{-2}{-1.5}{$A$}
+\alipuu{0.75}{-3.5}{$B$}
+\alipuu{3.25}{-3.5}{$C$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (-2,-1.5);
+\path[draw,thick,-] (2) -- (0.75,-3.5);
+\path[draw,thick,-] (2) -- (3.25,-3.5);
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,-2) {$x$};
+\node[draw, circle] (2) at (2,0) {$y$};
+\alipuu{-1.25}{-3.5}{$A$}
+\alipuu{1.25}{-3.5}{$B$}
+\alipuu{4}{-1.5}{$C$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (-1.25,-3.5);
+\path[draw,thick,-] (1) -- (1.25,-3.5);
+\path[draw,thick,-] (2) -- (4,-1.5);
+\end{scope}
+\end{tikzpicture}
+\caption{Kierrot, joiden avulla korjaamme AVL-puuta.}
+\label{fig:avlkie}
+\end{figure}
+
+Voimme toteuttaa AVL-puun operaatiot muuten samaan tapaan
+kuin yleisessä binäärihakupuussa, mutta meidän täytyy varmistaa
+alkion lisäämisen ja poistamisen jälkeen, että AVL-ehto
+on edelleen voimassa.
+Tämä onnistuu tekemällä sopivia \emph{kiertoja},
+jotka muuttavat puun rakennetta.
+
+Osoittautuu, että voimme korjata puun rakenteen kaikissa
+tilanteessa käyttäen kahta kiertotyyppiä,
+jotka on esitetty kuvassa \ref{fig:avlkie}.
+Kierrämme solmuja $x$ ja $y$,
+joihin liittyvät alipuut $A$, $B$ ja $C$.
+Voimme tehdä kierron joko vasemmalta oikealle,
+jolloin solmu $y$ nousee ylöspäin,
+tai oikealta vasemmalle,
+jolloin solmu $x$ nousee ylöspäin.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$7$};
+\node[draw, circle] (5) at (1,-4) {$5$};
+\node[draw, circle] (6) at (4,-4) {$8$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-2.5,-2) {$2$};
+\node[draw, circle] (3) at (2.5,-2) {$7$};
+\node[draw, circle] (5) at (1,-4) {$5$};
+\node[draw, circle] (6) at (4,-4) {$8$};
+\node[draw, circle] (7) at (5,-6) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (6) -- (7);
+\end{scope}
+\end{tikzpicture}
+\caption{AVL-ehto menee rikki, kun lisäämme puuhun solmun 9.}
+\label{fig:avlrik}
+\end{figure}
+
+Kun lisäämme AVL-puuhun solmun, jonkin solmun AVL-ehto
+voi rikkoontua. Tämä ilmenee niin,
+että jossain solmussa lasten alipuiden korkeudet ovat ennen lisäämistä
+$h$ ja $h+1$ ja lisäämisen jälkeen $h$ ja $h+2$.
+Kuva \ref{fig:avlrik} näyttää esimerkin tällaisesta tilanteesta.
+Vasemmassa puussa solmun $3$ lasten korkeudet ovat 0 ja 1,
+joten AVL-ehto on kunnossa.
+Oikeassa puussa olemme lisänneet solmun $9$,
+minkä seurauksena solmun $3$ lasten korkeudet ovat 0 ja 2
+eikä AVL-ehto enää päde.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\small
+\newcommand\alipuu[3]{
+\path[draw,thick,-] (0+#1,0+#2) -- (-0.5+#1,-1.25+#2) -- (0.5+#1,-1.25+#2) -- (0+#1,0+#2);
+\node at (0+#1,-0.85+#2) {#3};
+}
+\draw[thick,->] (5,-2) -- (7,-2);
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$x$};
+\node[draw, circle] (2) at (2,-2) {$y$};
+\node[draw, circle] (3) at (3.5,-4) {$z$};
+\alipuu{-2}{-1.5}{$A$}
+\alipuu{0.75}{-3.5}{$B$}
+\alipuu{2.5}{-5.5}{$C$}
+\alipuu{4.5}{-5.5}{$D$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (1) -- (-2,-1.5);
+\path[draw,thick,-] (2) -- (0.75,-3.5);
+\path[draw,thick,-] (3) -- (2.5,-5.5);
+\path[draw,thick,-] (3) -- (4.5,-5.5);
+\end{scope}
+\begin{scope}[xshift=12cm]
+\node[draw, circle] (1) at (-2,-2) {$x$};
+\node[draw, circle] (2) at (0,0) {$y$};
+\node[draw, circle] (3) at (2,-2) {$z$};
+\alipuu{-3}{-3.5}{$A$}
+\alipuu{-1}{-3.5}{$B$}
+\alipuu{1}{-3.5}{$C$}
+\alipuu{3}{-3.5}{$D$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (1) -- (-3,-3.5);
+\path[draw,thick,-] (1) -- (-1,-3.5);
+\path[draw,thick,-] (3) -- (1,-3.5);
+\path[draw,thick,-] (3) -- (3,-3.5);
+\end{scope}
+\end{tikzpicture}
+\caption{Tapaus 1: nostamme solmua $y$ ylöspäin.}
+\label{fig:avlta1}
+\end{figure}
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\small
+\newcommand\alipuu[3]{
+\path[draw,thick,-] (0+#1,0+#2) -- (-0.5+#1,-1.25+#2) -- (0.5+#1,-1.25+#2) -- (0+#1,0+#2);
+\node at (0+#1,-0.85+#2) {#3};
+}
+\draw[thick,->] (4,-2) -- (6,-2);
+\draw[thick,->] (14,-2) -- (16,-2);
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$x$};
+\node[draw, circle] (2) at (2,-2) {$y$};
+\node[draw, circle] (3) at (0.5,-4) {$z$};
+\alipuu{-2}{-1.5}{$A$}
+\alipuu{-0.5}{-5.5}{$B$}
+\alipuu{1.5}{-5.5}{$C$}
+\alipuu{3.5}{-3.5}{$D$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (1) -- (-2,-1.5);
+\path[draw,thick,-] (3) -- (-0.5,-5.5);
+\path[draw,thick,-] (3) -- (1.5,-5.5);
+\path[draw,thick,-] (2) -- (3.5,-3.5);
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,0) {$x$};
+\node[draw, circle] (2) at (2,-2) {$z$};
+\node[draw, circle] (3) at (3.5,-4) {$y$};
+\alipuu{-2}{-1.5}{$A$}
+\alipuu{0.75}{-3.5}{$B$}
+\alipuu{2.5}{-5.5}{$C$}
+\alipuu{4.5}{-5.5}{$D$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (1) -- (-2,-1.5);
+\path[draw,thick,-] (2) -- (0.75,-3.5);
+\path[draw,thick,-] (3) -- (2.5,-5.5);
+\path[draw,thick,-] (3) -- (4.5,-5.5);
+\end{scope}
+\begin{scope}[xshift=20cm]
+\node[draw, circle] (1) at (-2,-2) {$x$};
+\node[draw, circle] (2) at (0,0) {$z$};
+\node[draw, circle] (3) at (2,-2) {$y$};
+\alipuu{-3}{-3.5}{$A$}
+\alipuu{-1}{-3.5}{$B$}
+\alipuu{1}{-3.5}{$C$}
+\alipuu{3}{-3.5}{$D$}
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (1) -- (-3,-3.5);
+\path[draw,thick,-] (1) -- (-1,-3.5);
+\path[draw,thick,-] (3) -- (1,-3.5);
+\path[draw,thick,-] (3) -- (3,-3.5);
+\end{scope}
+\end{tikzpicture}
+\caption{Tapaus 2: nostamme solmua $z$ kahdesti ylöspäin.}
+\label{fig:avlta2}
+\end{figure}
+
+Solmun lisäämisen jälkeen meidän täytyy mahdollisesti
+muuttaa puun rakennetta niin, että AVL-ehto tulee taas
+voimaan kaikissa solmuissa.
+Tämän vuoksi kuljemme puussa ylöspäin lisätystä solmusta lähtien,
+kunnes tulemme ensimmäiseen solmuun, jossa ehto ei ole voimassa.
+Jos tällainen solmu $x$ löytyy, palautamme ehdon voimaan tekemällä yhden
+tai kaksi kiertoa riippuen lisätyn solmun sijainnista.
+Oletetaan, että $y$ on $x$:n lapsi, jonka alipuussa on lisätty solmu,
+ja $z$ on puolestaan $y$:n lapsi, jonka alipuussa on lisätty solmu.
+Tapauksia on kaksi: jos $y$ ja $z$ ovat saman puoleisia lapsia,
+kierrämme solmua $y$ kerran ylöspäin (kuva \ref{fig:avlta1}),
+ja muuten kierrämme solmua $z$ kahdesti ylöspäin (kuva \ref{fig:avlta2}).
+Tämän korjauksen jälkeen AVL-ehto on jälleen
+voimassa kaikissa puun solmuissa, eli meidän riittää aina
+korjata ehto alimmassa solmussa, jossa se ei ole voimassa.
+
+Kuvassa \ref{fig:avlrik} AVL-ehto ei ole voimassa solmussa $3$,
+koska vasemman alipuun korkeus on 0 ja oikean alipuun korkeus on 2.
+Tässä tapauksessa $x=3$, $y=7$ ja $z=8$.
+Koska $y$ on $x$:n oikea lapsi ja $z$ on $y$:n oikea lapsi,
+meidän riittää tehdä yksi kierto, joka nostaa solmua $7$ ylöspäin
+puun juureksi.
+Tuloksena on kuvan \ref{fig:avlkor} mukainen puu, jossa
+AVL-ehto on jälleen voimassa,
+koska solmun $7$ kummankin alipuun korkeus on nyt 1.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\node[draw, circle] (1) at (0,0) {$7$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$8$};
+\node[draw, circle] (5) at (-4,-4) {$2$};
+\node[draw, circle] (6) at (-1,-4) {$5$};
+\node[draw, circle] (7) at (4,-4) {$9$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (2) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\end{tikzpicture}
+\caption{Kierrämme solmun $7$ puun juureksi, jolloin AVL-ehto pätee taas.}
+\label{fig:avlkor}
+\end{figure}
+
+Kun poistamme puusta solmun, menettelemme melko samalla tavalla
+kuin lisäämisessä.
+Nyt on mahdollista, että ennen poistoa
+jossakin solmussa lasten alipuiden korkeudet ovat $h$ ja $h-1$
+ja poiston jälkeen $h$ ja $h-2$.
+Poiston jälkeen nousemme puussa ylöspäin ja jos löydämme
+tällaisen solmun, korjaamme ehdon niin, että kummankin alipuun
+korkeus on $h-1$.
+Tällä kertaa valitsemme solmut $x$, $y$ ja $z$ niin,
+että $y$ on $x$:n lapsi, jonka korkeus on suurin,
+ja samoin $z$ on $y$:n lapsi, jonka korkeus on suurin.
+Toisin kuin lisäämisessä, jatkamme tämän jälkeen ylöspäin
+ja korjaamme tarvittaessa ehtoa muissa solmuissa,
+koska ehdon korjaaminen yhdessä solmussa saattaa rikkoa
+sen jossain ylemmässä solmussa.
+Kun lopulta saavumme juureen, ehto pätee jälleen kaikissa solmuissa.
+
+Koska AVL-puun korkeus on $O(\log n)$ ja jokainen kierto
+tapahtuu vakioajassa,
+pystymme korjaamaan tasapainon sekä lisäämisen että poistamisen
+jälkeen ajassa $O(\log n)$.
+Lisäämisen jälkeen kuljemme puuta ylöspäin $O(\log n)$ askelta
+ja teemme enintään kaksi kiertoa.
+Poistamisen jälkeen taas kuljemme puuta ylöspäin $O(\log n)$ askelta
+ja teemme enintään $O(\log n)$ kiertoa.
+
+
+\section{Javan rakenteet}
+
+Javan tietorakenteet \texttt{TreeSet} ja \texttt{TreeMap}
+pohjautuvat punamustaan puuhun,
+joka on AVL-puun tapainen mutta monimutkaisempi
+binäärihakupuu.
+Ne muistuttavat rakenteita \texttt{HashSet} ja \texttt{HashMap},
+mutta erona on, että pystymme lisäksi etsimään
+alkioita niiden järjestyksen perusteella.
+
+\subsection{\texttt{TreeSet}-rakenne}
+
+Seuraava koodi luo \texttt{TreeSet}-rakenteen,
+joka pitää yllä lukujen joukkoa.
+Koodi lisää joukkoon alkioita ja tulostaa sitten sen sisällön.
+Huomaa, että tulostuksessa joukon alkiot näkyvät
+järjestyksessä pienimmästä suurimpaan, koska
+binäärihakupuu pitää niitä järjestyksessä.
+
+\begin{code}
+TreeSet<Integer> joukko = new TreeSet<>();
+joukko.add(4);
+joukko.add(1);
+joukko.add(8);
+joukko.add(7);
+System.out.println(joukko); // [1, 4, 7, 8]
+\end{code}
+
+Koska joukko on järjestyksessä, pystymme etsimään tehokkaasti
+pienim\-män ja suurimman alkion metodeilla \texttt{first} ja \texttt{last}:
+
+\begin{code}
+System.out.println(joukko.first()); // 1
+System.out.println(joukko.last()); // 8
+\end{code}
+
+Pystymme myös etsimään seuraavan tiettyä alkiota
+suuremman tai pienemmän alkion metodeilla \texttt{higher} ja \texttt{lower}:
+
+\begin{code}
+System.out.println(joukko.higher(5)); // 7
+System.out.println(joukko.lower(5)); // 4
+\end{code}
+
+Kaikki nämä operaatiot toimivat ajassa $O(\log n)$.
+
+\subsection{\texttt{TreeMap}-rakenne}
+
+Seuraava koodi luo sanakirjan \texttt{TreeMap}-rakenteen avulla:
+
+\begin{code}
+TreeMap<String,String> sanakirja = new TreeMap<>();
 sanakirja.put("apina","monkey");
 sanakirja.put("banaani","banana");
 sanakirja.put("cembalo","harpsichord");
-
-System.out.println(sanakirja.get("banaani")); // banana
 \end{code}
 
-Hyödyllinen on myös metodi \texttt{containsKey},
-jonka avulla voi tarkastaa, onko tietylle avaimelle
-tallennettu arvoa:
+Sanakirjan avaimet on järjestetty,
+joten pystymme etsimään tietoa avainten perusteella.
+Esimerkiksi voimme selvittää, mikä on aakkosjärjestyksessä
+ensimmäinen ja viimeinen sanakirjassa oleva sana:
 
 \begin{code}
-if (sanakirja.containsKey(sana)) {
-    System.out.println("Käännös: " + sanakirja.get(sana));
-} else {
-    System.out.println("Sana puuttuu sanakirjasta!");
-}
+System.out.println(sanakirja.firstKey()); // apina
+System.out.println(sanakirja.lastKey()); // cembalo
 \end{code}
 
-Koska \texttt{HashMap} on toteutettu hajautustaulun avulla,
-sen operaatiot toimivat ajassa $O(1)$.
+Samoin voimme selvittää lähinnä tiettyä avainta olevat avaimet:
+
+\begin{code}
+System.out.println(sanakirja.higherKey("biisoni")); // cembalo
+System.out.println(sanakirja.lowerKey("biisoni")); // banaani
+\end{code}
 
 \subsection{Omat luokat}
 
-Javan luokissa on metodi \texttt{hashCode},
-jonka avulla olio kertoo pyydettäessä hajautusarvonsa.
-Voimme esimerkiksi selvittää merkkijonon \texttt{apina}
-hajautusarvon seuraavasti:
+Jos haluamme käyttää omia olioitamme \texttt{TreeSet}- ja
+\texttt{TreeMap}-rakenteissa, meidän tulee toteuttaa
+luokkaan kaksi metodia:
+\texttt{equals} ilmaisee, ovatko kaksi oliota samat,
+ja \texttt{compareTo} kertoo kahden olion suuruusjärjestyksen.
+Jälkimmäisen metodin ansiosta luokka toteuttaa rajapinnan
+\texttt{Comparable}.
+
+Esimerkiksi seuraava luokka sisältää henkilön etu- ja sukunimen.
+Metodi \texttt{compareTo} on toteutettu niin,
+että henkilöt järjestetään ensisijaisesti sukunimen mukaan ja
+toissijaisesti etunimen mukaan.
 
 \begin{code}
-System.out.println("apina".hashCode());
-\end{code}
+class Henkilo implements Comparable<Henkilo> {
+    String etunimi, sukunimi;
 
-Tämä koodi tulostaa luvun 93022541,
-joka on siis merkkijonon \texttt{apina} hajautusarvo Javassa.
-On tunnettua, että Java käyttää merkkijonon hajautusarvon laskemiseen
-polynomista hajautusta vakiolla $A=31$,
-joten voimme laskea Javan hajautusarvon myös itse kaavalla
-\[31^4 \cdot 97+31^3 \cdot 112+31^2 \cdot 105+31^1 \cdot 110+31^0 \cdot 97=93022541.\]
-
-Jos haluamme käyttää omia oliota hajautustauluissa,
-meidän täytyy toteuttaa luokkaan kaksi metodia:
-\texttt{hashCode}, joka antaa olion hajautusarvon,
-sekä \texttt{equals},
-joka ilmaisee, ovatko kaksi oliota samat.
-Metodi \texttt{hashCode} riittää toteuttaa niin,
-että se palauttaa jonkin kokonaisluvun.
-Metodi \texttt{equals} on tarpeen,
-jotta Java pystyy varmistamaan, ovatko saman hajautusarvon
-antavat oliot todella samat.
-
-Esimerkiksi jos meillä on luokka \texttt{Piste},
-jossa on kenttinä kokonaisluvut \texttt{x} ja \texttt{y},
-voisimme toteuttaa metodit seuraavasti:
-
-\begin{code}
-class Piste {
-    public int x, y;
-
-    public int hashCode() {
-        return 97*x+y;
+    bool equals(Object o) {
+        Henkilo h = (Henkilo)o;
+        return etunimi.equals(h.etunimi) &&
+               sukunimi.equals(h.sukunimi);
     }
-    
-    public boolean equals(Object o) {
-        Piste p = (Piste)o;
-        return x == p.x && y == p.y;
+
+    int compareTo(Henkilo h) {
+        if (sukunimi.equals(h.sukunimi)) {
+            return etunimi.compareTo(etunimi);
+        } else {
+            return sukunimi.compareTo(sukunimi);
+        }
+    }
+
+    String toString() {
+        return etunimi + " " + sukunimi;
     }
 
     // ...
 }
 \end{code}
 
-Tässä toteutuksessa siis pisteen $(x,y)$ hajautusarvo lasketaan
-kaavalla $97x+y$, missä 97 on valitsemamme vakio, jolla ei ole
-syvällistä merkitystä.
-Nyt kun hajautusfunktio on kunnossa,
-voimme luoda vaikkapa \texttt{HashSet}-rakenteen, jossa on pisteitä:
+Voimme lisätä henkilöitä joukkoon seuraavasti:
 
 \begin{code}
-HashSet<Piste> joukko = new HashSet<Piste>();
-joukko.add(new Piste(3,2));
-joukko.add(new Piste(1,4));
-joukko.add(new Piste(1,3));
+TreeSet<Henkilo> joukko = new TreeSet<>();
+joukko.add(new Henkilo("Aku","Ankka"));
+joukko.add(new Henkilo("Iines","Ankka"));
+joukko.add(new Henkilo("Pelle","Peloton));
 \end{code}
 
-\section{Esimerkki: Anagrammit}
-
-Annettuna on lista sanoja ja haluamme jakaa sanat ryhmiin niin,
-että kukin ryhmä sisältää sanat, jotka ovat keskenään anagrammeja.
-Kaksi sanaa ovat anagrammit, jos ne on mahdollista muuttaa toisikseen
-muuttamalla niiden kirjainten järjestystä.
-Esimerkiksi jos sanat ovat ''abc'', ''iines'', ''bac'', ''cba'' ja ''sieni'',
-niistä muodostuu kaksi ryhmää.
-Ensimmäisessä ryhmässä on sanat ''abc'', ''bac'' ja ''cba'',
-ja toisessa ryhmässä on sanat ''iines'' ja ''sieni''.
-
-Voimme ratkaista tehtävän tehokkaasti seuraavan havainnon avulla:
-jos kaksi sanaa ovat anagrammit ja järjestämme niiden kirjaimet,
-ne muuttuvat samoiksi.
-Esimerkiksi sanoissa ''iines'' ja ''sieni'' kirjaimet
-järjestettyinä ovat ''eiins''.
-Tämän havainnon ansiosta voimme käyttää kunkin anagrammiryhmän
-\emph{tunnuksena} sen kirjainten järjestettyä muotoa.
-
-Luomme ryhmiä varten rakenteen
+Tämän jälkeen voimme vaikkapa tarkastaa, onko joukossa henkilöä,
+jonka sukunimi alkaa P-kirjaimella.
+Tämä onnistuu luomalla ''valehenkilö'', jonka sukunimi
+on ''P'' ja etunimi on tyhjä.
+Jos joukossa on henkilö, jonka sukunimi alkaa P-kirjaimella,
+se on tätä henkilöä seuraava henkilö.
 
 \begin{code}
-HashMap<String,ArrayList<String>> ryhmat = new HashMap<>();
+Henkilo haettu = joukko.higher(new Henkilo("","P"));
+System.out.println(haettu); // Pelle Peloton
 \end{code}
 
-jossa avaimena on anagrammiryhmän tunnus ja arvona on lista,
-joka sisältää kaikki listaan kuuluvat sanat.
-Algoritmin runko näyttää seuraavalta, kun oletamme,
-että sanat on tallennettu listaan \texttt{sanat}:
+\section{Tehokkuusvertailu}
+
+Monissa tehtävissä meillä on kaksi mahdollista lähestymistapaa:
+voimme käyttää joko joukkorakenteita tai sitten taulukoita ja järjestämistä.
+Vaikka molemmat tavat johtavat tehokkaaseen ratkaisuun,
+vakiokertoimissa voi olla merkittäviä eroja, jotka vaikuttavat
+käytännön tehokkuuteen.
+
+Keskitymme seuraavaksi ongelmaan, jossa meille on annettu
+$n$ lukua sisältävä taulukko, ja haluamme selvittää,
+montko eri lukua taulukossa on.
+Ratkaisemme ongelman kolmella eri tavalla ja tutkimme sitten
+ratkaisujen tehokkuutta.
+
+Ensimmäinen tapa ratkaista tehtävä on luoda \texttt{TreeSet},
+johon lisäämme taulukon luvut.
+Koska jokainen luku voi esiintyä joukossa vain kerran,
+joukon koko ilmaisee meille, montako eri lukua taulukossa on.
+Tämä ratkaisu vie aikaa $O(n \log n)$, koska jokainen
+\texttt{add}-operaatio vie aikaa $O(\log n)$.
 
 \begin{code}
-for (String sana : sanat) {
-    String avain = tunnus(sana);
-    if (!ryhmat.containsKey(avain)) {
-        ryhmat.put(avain,new ArrayList<>());
+int eriLuvut(int[] taulu) {
+    TreeSet<Integer> joukko = new TreeSet<>();
+    for (int i = 0; i < taulu.length; i++) {
+        joukko.add(taulu[i]);
     }
-    ryhmat.get(avain).add(sana);
-}
-System.out.println(ryhmat);
-\end{code}
-
-Tarvitsemme vielä metodin \texttt{tunnus}, joka järjestää
-sanan kirjaimet aakkosjärjestykseen.
-Jotta voimme järjestää sanan, muutamme sen merkkitaulukoksi,
-järjestämme taulukon, ja palautamme sitten uuden merkkijonon,
-joka on muodostettu taulukosta.
-
-\begin{code}
-String tunnus(String sana) {
-    char[] taulu = sana.toCharArray();
-    Arrays.sort(taulu);
-    return new String(taulu);
+    return joukko.size();
 }
 \end{code}
 
-Esimerkin tapauksessa ohjelmamme tulostus on seuraava:
+Emme tarvitse oikeastaan \texttt{TreeSet}-rakenteen
+alkioiden järjestystä, joten saamme toisen ratkaisun
+käyttämällä sen sijaan \texttt{HashSet}-rakennetta.
+Koodi säilyy muuten täysin samanlaisena.
+Tämä ratkaisu vie aikaa $O(n)$ hajautuksen ansiosta.
 
 \begin{code}
-{abc=[abc, bac, cba], eiins=[iines, sieni]}
+int eriLuvut(int[] taulu) {
+    HashSet<Integer> joukko = new HashSet<>();
+    for (int i = 0; i < taulu.length; i++) {
+        joukko.add(taulu[i]);
+    }
+    return joukko.size();
+}
 \end{code}
+
+Kolmas tapa ratkaista tehtävä on käyttää järjestämistä:
+kopioimme ensin luvut uuteen taulukkoon, järjestämme tämän taulukon ja
+tutkimme sitten, monessako kohdassa järjestetyssä taulukossa luku vaihtuu.
+Tämä ratkaisu vie aikaa $O(n \log n)$, koska taulukon järjestäminen
+vie aikaa $O(n \log n)$.
+
+\begin{code}
+int eriLuvut(int[] taulu) {
+    int[] lista = taulu.clone();
+    Arrays.sort(lista);
+    int tulos = 1;
+    for (int i = 1; i < lista.length; i++) {
+        if (lista[i-1] != lista[i]) tulos++;
+    }
+    return tulos;
+}
+\end{code}
+
+Taulukko \ref{tab:eriver} esittää tehokkuusvertailun tulokset.
+Jokaisessa testissä taulukossa on satunnaisia lukuja väliltä $1 \dots 10^9$.
+
+Osoittautuu, että ratkaisujen välillä on merkittäviä tehokkuuseroja.
+Ensinnäkin \texttt{HashSet}-ratkaisu on noin kolme kertaa
+nopeampi kuin \texttt{TreeSet}-ratkaisu.
+Tämä onkin odotettavaa, koska hajautustaulun
+operaatiot vievät aikaa $O(1)$, kun taas binäärihakupuun
+operaatiot vievät aikaa $O(\log n)$.
+Selvästi nopein ratkaisu on kuitenkin kolmas järjestämistä
+käyttävä ratkaisu, joka on noin kymmenen kertaa
+\texttt{TreeSet}-ratkaisua nopeampi.
+
+Miten on mahdollista, että sekä \texttt{TreeSet}-ratkaisun että
+järjestämisrat\-kaisun aikavaativuus on $O(n \log n)$, mutta
+järjestämisratkaisu on kymmenen kertaa nopeampi?
+Tämä johtuu siitä, että taulukon järjestäminen on hyvin kevyt
+operaatio, ja se tehdään vain kerran.
+Binäärihakupuussa jokaisen lisäyksen jälkeen täytyy muuttaa
+puun rakennetta, mikä on hidasta ja aiheuttaa suuret vakiokertoimet.
+
+Vaikka joukkorakenteet ovat käteviä, niitä ei siis kannata
+käyttää turhaan.
+Joukkorakenteiden etuna on, että alkioiden lisääminen ja poistaminen
+toimivat tehokkaasti.
+Jos tällaiselle ei ole tarvetta, järjestämiseen perustuva ratkaisu
+on usein parempi valinta.
+
+\begin{table}
+\center
+\begin{tabular}{rrrr}
+taulukon koko $n$ & \texttt{TreeSet} & \texttt{HashSet} & järjestäminen \\
+\hline
+$10^6$ & 0.74 s & 0.25 s & 0.09 s \\
+$2 \cdot 10^6$ & 1.60 s & 0.45 s & 0.19 s \\
+$4 \cdot 10^6$ & 5.60 s & 1.56 s & 0.52 s \\
+$8 \cdot 10^6$ & 12.19 s & 4.50 s & 0.97 s \\
+\end{tabular}
+\caption{Algoritmien suoritusaikojen vertailu.}
+\label{tab:eriver}
+\end{table}

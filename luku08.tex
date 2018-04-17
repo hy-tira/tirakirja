@@ -1,671 +1,573 @@
-\chapter{Keko}
+\chapter{Algoritmien suunnittelu}
 
-\emph{Keko} on tietorakenne, joka pitää yllä alkioiden kokoelmaa
-ja tarjoaa seuraavat operaatiot:
+Kuinka voi suunnitella hyvän algoritmin?
+On selvää, ettei tähän kysymykseen ole helppoa vastausta.
+Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
+tai säveltää hyvää musiikkia.
 
-\begin{itemize}
-\item lisää alkio $x$ joukkoon
-\item etsi joukon pienin/suurin alkio
-\item poista joukon pienin/suurin alkio
-\end{itemize}
+Tämän kurssin keskeinen tavoitteemme on saada aikaan tehokkaita algoritmeja,
+jotka toimivat ajassa $O(n)$ tai $O(n \log n)$.
+Kun tämä tavoite on tiedossa, voimme ottaa sen algoritmien
+suunnittelun lähtökohdaksi ja kartoittaa sen avulla mahdollisia
+lähestymistapoja, joita voimme käyttää.
 
-Keon operaatioiden toiminta riippuu siitä,
-onko keko \emph{minimikeko} vai \emph{maksimikeko}.
-Minimikeossa voimme etsiä ja poistaa pienimmän alkion,
-kun taas maksimikeossa voimme etsiä ja poistaa suurimman alkion.
-Meidän täytyy päättää keon luontivaiheessa,
-onko keko minimikeko vai maksimikeko.
+\section{Perustekniikoita}
 
-Tässä luvussa tutustumme binäärikeko-rakenteeseen,
-jossa lisäykset ja poistot vievät aikaa $O(\log n)$
-ja haku vie aikaa $O(1)$.
-Binäärikeko toteutetaan binääripuun avulla,
-ja se on tavallisimmin käytetty kekorakenne.
-Javan standardikirjaston tietorakenne prioriteettijono
-perustuu binäärikekoon.
-
-\section{Binäärikeko}
-
-\emph{Binäärikeko} on binääripuu, jonka jokaisessa solmussa on
-yksi keossa oleva alkio.
-Puu on rakennettu niin, että sen kaikki tasot alinta
-tasoa lukuun ottamatta ovat täynnä solmuja,
-eli kaikilla solmuilla on vasen ja oikea lapsi.
-Alin taso on puolestaan täytetty niin,
-että solmut on sijoitettu mahdollisimman vasemmalle
-ylempien solmujen lapsiksi.
-
-Keon toiminta perustuu siihen,
-että jokainen keon solmu täyttää \emph{kekoehdon}.
-Minimikeossa kekoehto vaatii, että jokaisen
-solmun arvo on suurempi tai yhtä suuri kuin solmun vanhemman arvo.
-Maksimikeossa puolestaan jokaisen solmun arvon tulee olla
-pienempi tai yhtä suuri kuin solmun vanhemman arvon.
-Kekoehdon ansiosta minimikeon juuressa on keon
-pienin alkio ja maksimikeon juuressa on keon suurin alkio.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.6]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-3.5,-2) {$3$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$5$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\node[draw, circle] (10) at (-2.5,-6) {$5$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\path[draw,thick,-] (5) -- (10);
-\end{tikzpicture}
-\caption{Minimikeko, joka sisältää alkiot $[1,3,4,5,5,5,7,8,8,9]$.}
-\label{fig:minkek}
-\end{figure}
-
-
-Kuvassa \ref{fig:minkek} on minimikeko,
-johon on tallennettu kymmenen alkiota.
-Keon kolme ensimmäistä tasoa ovat täynnä
-ja neljännellä tasolla kolme ensimmäistä kohtaa on käytetty.
-Keon juurena on kokoelman pienin alkio $1$,
-ja kaikki solmut täyttävät kekoehdon.
-Huomaa, että sama alkio voi esiintyä keossa useasti,
-kuten tässä keossa alkiot $5$ ja $8$.
-
-\subsection{Keon tallentaminen}
-
-Tallennamme binäärikeon \emph{taulukkona},
-joka sisältää keon solmujen arvot jär\-jestyksessä
-ylhäältä alaspäin ja vasemmalta oikealle.
-Tämä tehokas tallennustapa on mahdollinen,
-koska keon kaikki tasot ovat täynnä solmuja.
-Tallennamme keon taulukkoon kohdasta $1$ alkaen,
-koska tämä helpottaa keon operaatioiden toteuttamista.
-
-Esimerkiksi tallennamme kuvan \ref{fig:minkek}
-keon taulukkona seuraavasti:
+Millainen on algoritmi, joka vie aikaa $O(n)$ tai $O(n \log n)$?
+Tämä tarkoittaa,
+että kun algoritmille annetaan syötteenä $n$ alkiota,
+se saa käyttää jokaisen alkion käsittelyyn
+vain pienen määrän aikaa.
+Niinpä algoritmissa tulisi esiintyä seuraavan kaltaisia silmukoita:
 
 \begin{code}
-int[] keko = {0,1,3,5,4,5,8,9,7,8,5};
-\end{code}
-
-Huomaa, että taulukon ensimmäinen alkio on $0$,
-koska emme käytä kohtaa $0$ keon tallentamiseen.
-
-Taulukkototeutuksen etuna on, että voimme laskea
-helposti, missä kohdissa keon alkiot ovat taulukossa.
-Ensinnäkin keon juuri eli pienin tai suurin alkio
-on aina kohdassa $1$.
-Lisäksi jos tiedämme, että tietty solmu on kohdassa $k$,
-niin solmun vasen lapsi on kohdassa $2k$,
-solmun oikea lapsi on kohdassa $2k+1$ ja
-solmun vanhempi on kohdassa $\lfloor k/2 \rfloor$.
-Esimerkissämme solmu 4
-on taulukossa kohdassa $4$,
-joten sen vasen lapsi on kohdassa $8$,
-oikea lapsi on kohdassa $9$ ja
-vanhempi on kohdassa $2$.
-
-Käytännössä haluamme yleensä, että pystymme lisäämään kekoon uusia alkioita,
-jolloin varaamme suuren taulukon,
-jonka alkuosa on keon käytössä ja loppuosassa
-on tilaa myöhemmin lisättäville alkioille.
-
-\subsection{Operaatioiden toteutus}
-
-On helppoa etsiä minimikeon pienin alkio
-tai maksimikeon suurin alkio $O(1)$-ajassa,
-koska tämä alkio on aina keon juuressa.
-Seuraavaksi näemme, kuinka voimme toteuttaa alkion lisäämisen
-sekä pienimmän tai suurimman alkion poistamisen $O(\log n)$-ajassa.
-
-\subsubsection{Alkion lisääminen}
-
-Kun lisäämme uuden alkion kekoon, lisäämme sen ensin seuraavaan
-vapaana olevaan paikkaan puussa. Jos alimmalla tasolla on tilaa,
-lisäämme sen sinne mahdollisimman vasemmalle,
-ja muuten aloitamme uuden tason, jossa on toistaiseksi vain lisättävä solmu.
-Alkion lisäämisen jälkeen meidän täytyy varmistaa,
-että kekoehto säilyy edelleen voimassa.
-Tämä tapahtuu siirtämällä alkiota ylöspäin keossa,
-kunnes kekoehto tulee voimaan.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.4]
-\scriptsize
-\begin{scope}
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-3.5,-2) {$3$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$5$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\node[draw, circle] (10) at (-2.5,-6) {$5$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\path[draw,thick,-] (5) -- (10);
-\node at (0,-8) {\small vaihe $1$};
-\end{scope}
-\begin{scope}[xshift=15cm]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-3.5,-2) {$3$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$5$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\node[draw, circle] (10) at (-2.5,-6) {$5$};
-\node[draw, circle] (11) at (-0.5,-6) {$2$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\path[draw,thick,-] (5) -- (10);
-\path[draw,thick,-] (5) -- (11);
-\node at (0,-8) {\small vaihe $2$};
-\end{scope}
-\begin{scope}[yshift=-11cm]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-3.5,-2) {$3$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$2$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\node[draw, circle] (10) at (-2.5,-6) {$5$};
-\node[draw, circle] (11) at (-0.5,-6) {$5$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\path[draw,thick,-] (5) -- (10);
-\path[draw,thick,-] (5) -- (11);
-\node at (0,-8) {\small vaihe $3$};
-\path[draw,thick,<->,red,line width=1.5pt] (5) -- (11);
-\end{scope}
-\begin{scope}[yshift=-11cm,xshift=15cm]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-3.5,-2) {$2$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\node[draw, circle] (10) at (-2.5,-6) {$5$};
-\node[draw, circle] (11) at (-0.5,-6) {$5$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\path[draw,thick,-] (5) -- (10);
-\path[draw,thick,-] (5) -- (11);
-\node at (0,-8) {\small vaihe $4$};
-\path[draw,thick,<->,red,line width=1.5pt] (2) -- (5);
-\end{scope}
-\end{tikzpicture}
-\caption{Lisäämme alkion 2 kekoon ja nostamme sitä ylöspäin,
-kunnes kekoehto tulee jälleen voimaan.}
-\label{fig:keklis}
-\end{figure}
-
-Kuva \ref{fig:keklis} näyttää, mitä tapahtuu, kun lisäämme
-alkion  $2$ esimerkkikekoomme.
-Lisäämme alkion ensimmäiseen vapaaseen kohtaan
-keon alimmalla tasolla.
-Koska alkio 2 on pienempi kuin sen vanhempi 5,
-vaihdamme nämä alkiot keskenään.
-Tämän jälkeen alkio 2 on pienempi kuin sen vanhempi 3,
-joten vaihdamme myös nämä alkiot keskenään.
-Nyt kekoehto on voimassa eikä meidän tarvitse enää
-tehdä muutoksia kekoon.
-
-Alkion lisääminen kekoon vie aikaa $O(\log n)$,
-koska keossa on $O(\log n)$ tasoa ja kuljemme aina polkua
-ylöspäin keon pohjalta huippua kohden,
-kunnes olemme löytäneet alkiolle sopivan paikan keosta.
-
-\subsubsection{Alkion poistaminen}
-
-Kun haluamme poistaa keon juuressa olevan alkion,
-siirrämme ensin keon viimeisen alkion keon juureksi
-ja poistamme sille kuuluneen solmun.
-Tämän jälkeen lasketamme juureen nostettua alkiota
-alaspäin keossa, kunnes kekoehto tulee jälleen voimaan.
-Koska solmulla voi olla kaksi lasta,
-meillä voi olla kaksi vaihtoehtoa,
-kumman lapsista nostamme ylemmäs.
-Jos keko on minimikeko, valitsemme lapsen,
-jossa on pienempi arvo,
-ja jos keko on maksimikeko, valitsemme vastaavasti
-lapsen, jossa on suurempi arvo.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.4]
-\scriptsize
-\begin{scope}
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-3.5,-2) {$3$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$5$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\node[draw, circle] (10) at (-2.5,-6) {$5$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\path[draw,thick,-] (5) -- (10);
-\node at (0,-8) {\small vaihe $1$};
-\end{scope}
-\begin{scope}[xshift=15cm]
-\node[draw, circle] (1) at (0,0) {$5$};
-\node[draw, circle] (2) at (-3.5,-2) {$3$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$5$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\node at (0,-8) {\small vaihe $2$};
-\end{scope}
-\begin{scope}[yshift=-11cm]
-\node[draw, circle] (1) at (0,0) {$3$};
-\node[draw, circle] (2) at (-3.5,-2) {$5$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$5$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\node at (0,-8) {\small vaihe $3$};
-\path[draw,thick,<->,red,line width=1.5pt] (1) -- (2);
-\end{scope}
-\begin{scope}[yshift=-11cm,xshift=15cm]
-\node[draw, circle] (1) at (0,0) {$3$};
-\node[draw, circle] (2) at (-3.5,-2) {$4$};
-\node[draw, circle] (3) at (3.5,-2) {$5$};
-\node[draw, circle] (4) at (-5.5,-4) {$5$};
-\node[draw, circle] (5) at (-1.5,-4) {$5$};
-\node[draw, circle] (6) at (1.5,-4) {$8$};
-\node[draw, circle] (7) at (5.5,-4) {$9$};
-\node[draw, circle] (8) at (-6.5,-6) {$7$};
-\node[draw, circle] (9) at (-4.5,-6) {$8$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\path[draw,thick,-] (4) -- (8);
-\path[draw,thick,-] (4) -- (9);
-\node at (0,-8) {\small vaihe $4$};
-\path[draw,thick,<->,red,line width=1.5pt] (2) -- (4);
-\end{scope}
-\end{tikzpicture}
-\caption{Poistamme keon juuressa olevan alkion korvaamalla sen viimeisellä alkiolla
-ja laskettamalla sitä alaspäin puussa.}
-\label{fig:kekpoi}
-\end{figure}
-
-Kuva \ref{fig:kekpoi} näyttää, kuinka poistamme
-esimerkkikeostamme pienimmän alkion eli juuressa
-olevan alkion 1.
-Aluksi korvaamme alkion 1
-keon viimeisellä alkiolla 5 ja poistamme keosta
-alkiolle 5 kuuluneen solmun.
-Tämän jälkeen vaihdamme keskenään alkion 5
-ja sen vasemman lapsen alkion 3,
-ja sitten vielä alkion 5 ja sen vasemman lapsen alkion 4.
-Tämän jälkeen kekoehto on voimassa ja olemme onnistuneet
-poistamaan pienimmän alkion keosta.
-
-Alkion poistaminen keosta vie aikaa $O(\log n)$,
-koska keossa on $O(\log n)$ tasoa ja kuljemme polkua
-alaspäin keon huipulta pohjaa kohden.
-
-\section{Prioriteettijono}
-
-Monissa ohjelmointikielissä kekoa vastaava tietorakenne
-tunnetaan nimellä \emph{prioriteettijono}.
-Näin on myös Javassa, jonka standardikirjastoon 
-kuuluu tietorakenne \texttt{PriorityQueue}.
-Se on binäärikekoon perustuva tietorakenne,
-joka toteuttaa oletuksena minimikeon.
-
-Seuraava koodi esittelee Javan prioriteettijonon käyttämistä.
-Metodi \texttt{add} lisää alkion jonoon,
-metodi \texttt{peek} hakee pienimmän alkion
-ja metodi \texttt{poll} hakee ja poistaa pienimmän alkion.
-
-\begin{code}
-PriorityQueue<Integer> jono = new PriorityQueue<>();
-jono.add(5);
-jono.add(3);
-jono.add(8);
-jono.add(7);
-System.out.println(jono.peek()); // 3
-System.out.println(jono.poll()); // 3
-System.out.println(jono.poll()); // 5
-\end{code}
-
-Jos haluamme luoda prioriteettijonon, joka onkin
-maksimikeko, voimme tehdä sen seuraavaan tapaan:
-
-\begin{code}
-PriorityQueue<Integer> jono =
-    new PriorityQueue<>(10,Collections.reverseOrder());
-\end{code}
-
-Tässä tilanteessa meidän täytyy antaa konstruktorille kaksi tietoa:
-keolle alussa muistista varattava tila (tässä 10)
-sekä alkioiden järjestämistapa (tässä käänteinen järjestys).
-Java varaa keolle tarvittaessa myöhemmin uuden suuremman muistialueen,
-joten tämä määrittely ei tarkoita, että keossa voisi olla enintään 10 alkiota.
-
-Jos haluamme tallentaa \texttt{PriorityQueue}-rakenteeseen omia olioitamme,
-meidän tulee toteuttaa luokkaan metodi \texttt{compareTo} ja
-merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
-
-\section{Tehokkuusvertailu}
-
-Mitä hyötyä keosta oikeastaan on?
-Meillähän on olemassa jo binäärihakupuu,
-jonka avulla voimme toteuttaa kaikki keon operaatiot
-ja \emph{enemmänkin}.
-Keossa voimme hakea ja poistaa vain pienimmän tai suurimman alkion,
-mutta binäärihakupuussa voimme käsitellä myös muita alkioita.
-
-Keon etuna on, että siinä on tehokkaan taulukkototeutuksen
-ansiosta pienemmät \emph{vakiokertoimet} kuin binäärihakupuussa.
-Jos meille riittää, että voimme hakea ja poistaa
-vain pienimmän tai suurimman alkion, voi siis olla hyvä
-ratkaisu käyttää kekoa binäärihakupuun sijasta.
-Mutta kuinka suuria erot ovat käytännössä?
-
-Teemme seuraavaksi testin, jossa vertailemme keskenään
-Javan rakenteita
-\texttt{PriorityQueue} ja \texttt{TreeSet}.
-Testissä meillä on taulukko,
-jossa on satunnaisessa järjestyksessä luvut $1,2,\dots,n$.
-Lisäämme ensin taulukon $n/2$ ensimmäistä lukua kokoelmaan.
-Tämän jälkeen käymme läpi loput $n/2$ lukua,
-ja jokaisen luvun kohdalla lisäämme sen kokoelmaan ja
-poistamme kokoelman pienimmän luvun.
-Laskemme lisäksi samalla summaa poistetuista luvuista.
-Käytämme testissä seuraavia koodeja:
-
-\begin{code}
-PriorityQueue<Integer> jono = new PriorityQueue<>();
-for (int i = 0; i < n/2; i++) {
-    jono.add(luvut[i]);
+for (int i = 0; i < n; i++) {
+    // tee jotain nopeaa
 }
+\end{code}
+
+Tässä ''jotain nopeaa'' tarkoittaa koodia, joka vie aikaa
+$O(1)$ tai $O(\log n)$.
+Algoritmi voi myös järjestää aineistoa,
+koska tehokkaat järjestämisalgoritmit vievät aikaa $O(n \log n)$.
+Kovin paljon muuta tehokas algoritmi ei sitten voikaan tehdä.
+Tämä rajoittaa paljon, mitä aineksia voimme laittaa algoritmiin,
+mutta voimme ajatella asiaa myös myönteisesti:
+vaatimus tehokkuudesta rajaa pois suuren määrän lähestymistapoja,
+eli meidän on helpompaa löytää hyvä algoritmi,
+kun vaihtoehtojen määrä on pienempi.
+
+Algoritmien suunnittelussa keskeisiä ovat \emph{havainnot}:
+haluamme saada käsityksen,
+mitä ominaisuuksia ratkaistavaan ongelmaan liittyy,
+jotta voimme käyttää niitä algoritmissa.
+Voimme tehdä havaintoja tutkimalla ongelman pieniä tapauksia
+ja etsimällä riippuvuuksia ja säännöllisyyksiä.
+Jos käy hyvin, huomaamme asioita, jotka pätevät kaikissa ongelman
+tapauksissa, ja voimme hyödyntää niitä koko tehtävän ratkaisemisessa.
+
+\subsection{Algoritmin tehostaminen}
+
+Tavallinen tilanne algoritmien suunnittelussa on,
+että pystymme ratkaisemaan annetun ongelman
+helposti $O(n^2)$-ajassa ensimmäisellä mieleen tulevalla algoritmilla,
+mutta haasteena on keksiä tehokkaampi algoritmi,
+joka toimisi ajassa $O(n)$ tai $O(n \log n)$.
+Kokemus on osoittanut, että tämä on hyvä tilanne:
+yleensä \emph{pystymme} tehostamaan
+tavalla tai toisella algoritmia,
+kunhan mietimme huolellisesti asiaa.
+
+Tarkastellaan esimerkkinä seuraavaa tehtävää:
+Annettuna on taulukko, joka sisältää luvut $1,2,\dots,n$
+jossakin järjestyksessä,
+ja haluamme kerätä taulukon luvut järjestyksessä pienimmästä suurimpaan.
+Joka kierroksella käym\-me läpi taulukon vasemmalta
+oikealle ja keräämme mahdollisimman monta seuraavaa lukua.
+Montako kierrosta tarvitsemme yhteensä?
+Esimerkiksi taulukossa $[4,3,1,5,2]$
+tarvitsemme kolme kierrosta:
+ensimmäisellä kierroksella keräämme luvut $1$ ja $2$,
+toisella luvun $3$ ja kolmannella luvut $4$ ja $5$.
+
+Voimme ratkaista tehtävän suoraviivaisesti $O(n^2)$-ajassa
+simuloimalla lukujen keräämistä tehtävänannon kuvaamalla tavalla:
+
+\begin{code}
+int luku = 1;
+int laskuri = 0;
+while (luku <= n) {
+    laskuri++;
+    for (int i = 0; i < n; i++) {
+        if (taulu[i] == luku) luku++;
+    }
+}
+System.out.println(laskuri);
+\end{code}
+
+Tässä muuttuja \texttt{luku} kertoo,
+minkä luvun haluamme kerätä seuraavaksi,
+ja muuttuja \texttt{laskuri} laskee,
+montako kierrosta tarvitaan.
+Kierroksia tarvitaan aina korkeintaan $n$,
+koska saamme kerättyä joka kierroksella
+ainakin yhden luvun,
+joten algoritmi toimii ajassa $O(n^2)$.
+
+Kuinka voisimme sitten tehostaa algoritmia niin,
+että se veisi aikaa vain $O(n)$ tai $O(n \log n)$?
+Yllä olevan algoritmin hitaus johtuu pohjimmiltaan siitä,
+että algoritmilla menee kauan aikaa löytää,
+missä kohtaa taulukossa on seuraava luku,
+jonka haluamme kerätä.
+Niinpä jotta voimme ratkaista tehtävän tehokkaasti,
+meidän täytyy jollakin tavalla löytää seuraava kerät\-tävä luku nopeammin.
+Kätevä ratkaisu tähän on luoda aputaulukko,
+joka kertoo jokaisen luvun kohdan:
+
+\begin{code}
+int[] kohta = new int[n+1];
+for (int i = 0; i < n; i++) {
+    kohta[taulu[i]] = i;
+}
+\end{code}
+
+Tämän taulukon avulla saamme selville $O(1)$-ajassa,
+missä kohdassa taulukossa on seuraava kerättävä luku.
+Entä mistä tiedämme, montako kierrosta tarvitsemme?
+Meidän täytyy aloittaa uusi kierros aina silloin,
+kun viimeksi keräämämme luku on myöhemmin taulukossa
+kuin seuraava kerättävä luku.
+Niinpä voimme laskea kierrosten määrän näin:
+
+\begin{code}
+int laskuri = 1;
+for (int i = 2; i <= n; i++) {
+    if (kohta[i-1] > kohta[i]) {
+        laskuri++;
+    }
+}
+System.out.println(laskuri);
+\end{code}
+
+Tuloksena on algoritmi, jossa on kaksi silmukkaa,
+joista molemmat vievät aikaa vain $O(n)$.
+Niinpä algoritmin aikavaativuus on $O(n)$,
+eli olemme saavuttaneet tavoitteemme.
+
+\subsection{Ahneet algoritmit}
+
+Tehokkaan algoritmin saaminen aikaan vaatii usein,
+että pystymme tekemään algoritmissa jotain \emph{ahneesti}.
+Tämä tarkoittaa, että meidän ei tarvitse käydä läpi
+kaikkia mahdollisia ratkaisuja vaan pystymme rakentamaan
+ratkaisun suoraan askel askeleelta käsittelemällä
+syötteen sopivassa järjestyksessä.
+
+Tarkastellaan esimerkkinä seuraavaa tehtävää:
+Meillä on $n$ kolikkoa, jonka jokaisen arvo on positiivinen kokonaisluku,
+ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa kolikoista.
+Esimerkiksi jos kolikot ovat $[1,2,2,9]$, voimme muodostaa summat
+$1$, $2$, $1+2=3$, $2+2=4$ ja $1+2+2=5$,
+mutta emme voi muodostaa summaa $6$.
+
+Tämä tehtävä vaikuttaa ensi silmäykseltä vaikealta,
+koska mahdollisia tapoja summien muodostamiseen on niin paljon.
+Kun meillä on $n$ kolikkoa, voimme valita $2^n$ tavalla
+kolikoiden osajoukon, joista syntyy jokin summa.
+On selvää, että algoritmista tulee liian hidas,
+jos se käy läpi kaikki tällaiset osajoukot.
+Jotta saisimme aikaan tehokkaan algoritmin,
+meidän tulisi huomata ongelmasta jotain,
+jonka ansiosta pystymme välttämään osajoukkojen läpikäynnin
+ja löydämme ratkaisun suoremmin.
+
+Yksi hyvä tapa lähestyä tehtävää ja saada jotain tietoa ongelman luonteesta
+on lähteä ensin liikkeelle pienistä summista.
+Haluamme muodostaa ensin summan $1$, ja tähän tarvitsemme välttämättä
+kolikon, jonka arvo on $1$.
+Sitten haluamme muodostaa summan $2$, mihin tarvitsemme joko
+toisen kolikon $1$ tai kolikon $2$, ja sen jälkeen summan $3$,
+joka voi muodostua kolikoista $1+1+1$, $1+2$ tai $3$.
+Voisimme jatkaa eteenpäin, mutta vaihtoehtoja alkaa tulla
+paljon ja meidän on vaikeaa hallita niitä.
+Kuitenkin näyttää siltä, että meidän kannattaa aloittaa
+summien muodostaminen pienistä kolikoista.
+
+Seuraavaksi voimme yrittää alkaa miettiä ongelmaa yleisemmin.
+Oletetaan, että meillä on joukko kolikoita,
+joista voimme muodostaa kaikki summat $1,2,\dots,s$.
+Voisimmeko ottaa mukaan vielä jonkin uuden kolikon arvoltaan $u$ niin,
+että saamme muodostettua myös summan $s+1$?
+Tämä on mahdollista tarkalleen silloin, kun $u \le s+1$,
+eli uuden kolikon arvo saa olla enintään $s+1$.
+Jos tämä ehto pätee, voimme ottaa kolikon mukaan ja
+pystymme muodostamaan tämän jälkeen kaikki summat $1,2,\dots,s+u$.
+Esimerkiksi jos meillä on kolikot $[1,1,3]$, voimme muodostaa
+niistä summat $1,2,\dots,5$ ja uuden kolikon arvon tulee olla enintään $6$.
+Jos uuden kolikon arvo on vaikkapa $4$, voimme ottaa sen mukaan ja
+pystymme muodostamaan sen jälkeen kolikoista $[1,1,3,4]$ summat $1,2,\dots,9$.
+
+Lisäksi jos meillä on monia vaihtoehtoja valita uusi kolikko,
+ei ole väliä, missä järjestyksessä otamme ne mukaan vaan
+voimme valita seuraavaksi minkä tahansa niistä.
+Erityisesti voimme päättää, että valitsemme aina
+seuraavaksi ahneesti \emph{pienimmän} mahdollisen kolikon.
+Nyt meillä on koossa kaikki tarvittavat ainekset
+tehokasta algoritmia varten.
+Aloitamme tyhjästä joukosta ja lisäämme siihen kolikoita
+pienimmästä suurimpaan niin kauan kuin mahdollista.
+Lopuksi vastaus tehtävään on yhtä suurempi kuin kolikoiden
+summa.
+Seuraava koodi toteuttaa algoritmin:
+
+\begin{code}
 long summa = 0;
-for (int i = n/2; i < n; i++) {
-    jono.add(luvut[i]);
-    summa += jono.poll();
+Arrays.sort(kolikot);
+for (int i = 0; i < n; i++) {
+    if (kolikot[i] <= summa+1) {
+        summa += kolikot[i];
+    } else {
+        break;
+    }
 }
-System.out.println(summa);
+System.out.println(summa+1);
 \end{code}
+
+Kuten koodista näkyy, meidän ei tarvitse pitää yllä
+kolikoiden joukkoa, vaan riittää säilyttää tietoa
+joukossa olevien kolikoiden summasta muuttujassa \texttt{summa}.
+Käymme läpi kolikot järjestyksessä pienimmästä suurimpaan
+ja kasvatamme summaa, jos se on mahdollista.
+Kun vastaan tulee ensimmäinen kolikko, jota emme voi ottaa mukaan,
+silmukka päättyy, koska tämä tarkoittaa,
+että emme voi valita enää mitään muutakaan kolikkoa.
+Tuloksena on algoritmi, jonka aikavaativuus on $O(n \log n)$.
+
+\section{Binäärihaku}
+
+\emph{Binäärihaku} on tekniikka, joka pelastaa meidät monesta
+kiipelistä algoritmien suunnittelussa.
+Parhaiten tunnettu binäärihaun käyttötarkoitus on alkion
+etsiminen järjestetystä taulukosta ajassa $O(\log n)$.
+Tämä on kuitenkin vain alkusoittoa sille,
+mitä binäärihaun avulla pystyy tekemään ja mikä on sen
+todellinen merkitys algoritmien suunnittelussa.
+
+\subsection{Muutoskohdan etsiminen}
+
+Oletetaan, että meillä on funktio $f$,
+jolle pätee, että $f(x)=0$, kun $x<k$,
+ja $f(x)=1$, kun $x \ge k$.
+Binäärihaun avulla voimme etsiä tehokkaasti,
+mikä on funktion \emph{muutoskohta} $k$
+eli ensimmäinen kohta, jossa funktio saa arvon $1$.
+Seuraava koodi toteuttaa haun olettaen,
+että $k$ on välillä $1 \dots N$:
+
 
 \begin{code}
-TreeSet<Integer> joukko = new TreeSet<>();
-for (int i = 0; i < n/2; i++) {
-    joukko.add(luvut[i]);
+int a = 1, b = N;
+while (a < b) {
+    int u = (a+b)/2;
+    if (f(u) == 0) a = u+1;
+    if (f(u) == 1) b = u;
 }
-long summa = 0;
-for (int i = n/2; i < n; i++) {
-    joukko.add(luvut[i]);
-    summa += jono.pollFirst();
-}
-System.out.println(summa);
+int k = a;
 \end{code}
 
-Taulukko \ref{tab:kekver} näyttää vertailun tulokset.
-Tämän testin perusteella näyttää siltä,
-että keon käyttämiseestä on todellista hyötyä,
-koska \texttt{PriorityQueue} toimii 2–3
-kertaa nopeammin kuin \texttt{TreeSet}.
+Haun joka vaiheessa tiedämme, että muutoskohta on välillä $[a,b]$.
+Laskemme keskikohdan $u=(a+b)/2$ ja tutkimme funktion arvoa kohdassa $u$.
+Jos $f(u)=0$, niin tiedämme, että muutoskohta on välillä $[u+1,b]$.
+Jos taas $f(u)=1$, niin muutoskohdan on oltava välillä $[a,u]$.
+Lopulta välillä on vain yksi alkio, jolloin olemme löytäneet muutoskohdan.
+Koska välin koko puolittuu joka askeleella,
+kutsumme $O(\log N)$ kertaa funktiota $f$.
 
-\begin{table}
-\center
-\begin{tabular}{rrrr}
-taulukon koko $n$ & \texttt{PriorityQueue} & \texttt{TreeSet} \\
-\hline
-$10^6$ & 0.29 s & 0.78 s \\
-$2 \cdot 10^6$ & 0.71 s & 1.50 s \\
-$4 \cdot 10^6$ & 1.56 s & 3.72 s \\
-$8 \cdot 10^6$ & 3.68 s & 9.43 s \\
-\end{tabular}
-\caption{Algoritmien suoritusaikojen vertailu.}
-\label{tab:kekver}
-\end{table}
-
-\section{Lisää keosta}
-
-\subsection{Taulukosta keoksi}
-
-Oletetaan, että meillä on $n$ alkiota sisältävä taulukko
-ja haluamme muuttaa sen keoksi.
-Suoraviivainen tapa on luoda tyhjä keko ja
-lisätä jokainen taulukon alkio siihen erikseen $O(\log n)$-ajassa.
-Tällä tavalla saamme rakennettua keon $O(n \log n)$-ajassa.
-Osoittautuu kuitenkin, että pystymme myös muuttamaan taulukon
-suoraan keoksi tehokkaammin ajassa $O(n)$.
-
-Ideana on järjestää taulukon alkioita uudestaan niin,
-että kekoehto tulee voimaan taulukon jokaiseen kohtaan --
-jolloin taulukko on keko.
-Käymme läpi taulukon alkiot lopusta alkuun ja varmistamme
-jokaisessa kohdassa, että kekoehto on voimassa kyseisestä
-kohdasta alkavassa alipuussa.
-Jos kekoehto ei ole voimassa, korjaamme sen laskettamalla
-kyseisen kohdan alkiota alaspäin keossa.
-Kun lopulta pääsemme taulukon alkuun, kekoehto on voimassa
-koko taulukossa.
+Mitä hyötyä on siitä, että löydämme tehokkaasti muutoskohdan?
+Tarkastellaan esimerkkinä tehtävää, jossa käytössämme on $n$ konetta
+ja haluamme valmistaa niiden avulla $m$ tavaraa.
+Tiedossamme on myös arvot $[x_1,x_2,\dots,x_n]$:
+jokaisesta koneesta tieto, montako minuuttia vie aikaa valmistaa
+yksi tavara konetta käyttäen.
+Haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
+$m$ tavaraa mahdollisimman nopeasti.
+Esimerkiksi jos $n=3$, $m=7$ ja koneiden nopeudet ovat $[2,3,7]$,
+paras aikataulu on kuvassa \ref{fig:optkon}.
+Sitä käyttäen tavaroiden muodostaminen vie aikaa $8$ minuuttia.
+Käynnistämme koneen 1 neljästi hetkinä 0, 2, 4 ja 6,
+koneen 2 kahdesti hetkinä 0 ja 3
+ja koneen 3 kerran hetkenä 0.
+Aikaa kuluu $8$ minuuttia, koska viimeisenä pysähtyy kone 1 hetkenä 8.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.4]
-\scriptsize
-\begin{scope}
-\node[draw, circle] (1) at (0,0) {$7$};
-\node[draw, circle] (2) at (-2.5,-2) {$4$};
-\node[draw, circle] (3) at (2.5,-2) {$6$};
-\node[draw, circle] (4) at (-3.5,-4) {$1$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\node[draw, circle] (6) at (1.5,-4) {$5$};
-\node[draw, circle] (7) at (3.5,-4) {$2$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\node at (0,-6) {\small vaihe $1$};
-\end{scope}
-\begin{scope}[xshift=10cm]
-\node[draw, circle] (1) at (0,0) {$7$};
-\node[draw, circle] (2) at (-2.5,-2) {$4$};
-\node[draw, circle] (3) at (2.5,-2) {$2$};
-\node[draw, circle] (4) at (-3.5,-4) {$1$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\node[draw, circle] (6) at (1.5,-4) {$5$};
-\node[draw, circle] (7) at (3.5,-4) {$6$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\node at (0,-6) {\small vaihe $2$};
-\path[draw,thick,<->,red,line width=1.5pt] (3) -- (7);
-\end{scope}
-\begin{scope}[xshift=20cm]
-\node[draw, circle] (1) at (0,0) {$7$};
-\node[draw, circle] (2) at (-2.5,-2) {$1$};
-\node[draw, circle] (3) at (2.5,-2) {$2$};
-\node[draw, circle] (4) at (-3.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\node[draw, circle] (6) at (1.5,-4) {$5$};
-\node[draw, circle] (7) at (3.5,-4) {$6$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\node at (0,-6) {\small vaihe $3$};
-\path[draw,thick,<->,red,line width=1.5pt] (2) -- (4);
-\end{scope}
-\begin{scope}[yshift=-8cm]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-2.5,-2) {$7$};
-\node[draw, circle] (3) at (2.5,-2) {$2$};
-\node[draw, circle] (4) at (-3.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$3$};
-\node[draw, circle] (6) at (1.5,-4) {$5$};
-\node[draw, circle] (7) at (3.5,-4) {$6$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\node at (0,-6) {\small vaihe $4$};
-\path[draw,thick,<->,red,line width=1.5pt] (1) -- (2);
-\end{scope}
-\begin{scope}[yshift=-8cm,xshift=10cm]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-2.5,-2) {$3$};
-\node[draw, circle] (3) at (2.5,-2) {$2$};
-\node[draw, circle] (4) at (-3.5,-4) {$4$};
-\node[draw, circle] (5) at (-1.5,-4) {$7$};
-\node[draw, circle] (6) at (1.5,-4) {$5$};
-\node[draw, circle] (7) at (3.5,-4) {$6$};
-\path[draw,thick,-] (1) -- (2);
-\path[draw,thick,-] (1) -- (3);
-\path[draw,thick,-] (2) -- (4);
-\path[draw,thick,-] (2) -- (5);
-\path[draw,thick,-] (3) -- (6);
-\path[draw,thick,-] (3) -- (7);
-\node at (0,-6) {\small vaihe $5$};
-\path[draw,thick,<->,red,line width=1.5pt] (2) -- (5);
-\end{scope}
+\begin{tikzpicture}[scale=0.7]
+\draw[->] (-1,1.5) -- (10,1.5);
+\foreach \x in {0,...,8} \draw (\x,1.40) -- (\x,1.60);
+\foreach \x in {0,...,8} \node at (\x,2) {\scriptsize $\x$};
+\node at (-2,0) {kone $1$};
+\draw[|-|] (0.05,0) -- (1.95,0);
+\draw[|-|] (2.05,0) -- (3.95,0);
+\draw[|-|] (4.05,0) -- (5.95,0);
+\draw[|-|] (6.05,0) -- (7.95,0);
+\node at (-2,-1.5) {kone $2$};
+\draw[|-|] (0.05,-1.5) -- (2.95,-1.5);
+\draw[|-|] (3.05,-1.5) -- (5.95,-1.5);
+\node at (-2,-3) {kone $3$};
+\draw[|-|] (0.05,-3) -- (6.95,-3);
 \end{tikzpicture}
-\caption{Muutamme taulukon keoksi korjaamalla kekoehdon alipuissa.}
-\label{fig:taukek}
+\caption{Optimaalinen tapa valmistaa 7 tavaraa vie 8 sekuntia,
+kun koneiden nopeudet ovat $[2,3,7]$.}
+\label{fig:optkon}
 \end{figure}
 
-Kuva \ref{fig:taukek} näyttää esimerkin, jossa muutamme taulukon
-$[7,4,6,1,3,5,2]$ minimikeoksi.
-Kun tulkitsemme taulukon kekona, kekoehto on aluksi
-rikki monessa kohdassa taulukossa.
-Ensin korjaamme kekoehdon tason 2 alipuissa vaihtamalla
-keskenään alkiot 2 ja 6 ja sitten alkiot 1 ja 4.
-Tämän jälkeen korjaamme kekoehdon tason 1 alipuussa
-eli koko keossa laskettamalla alkion 7 keon huipulta pohjalle.
-Nyt kekoehto on voimassa kaikkialla taulukossa,
-joten olemme onnistuneet muuttamaan taulukon keoksi.
+Voimme pukea tehtävän binäärihaulle sopivaan muotoon niin,
+että $f(x)=1$ tarkalleen silloin, kun voimme muodostaa
+\emph{ainakin} $m$ tavaraa ajassa $x$.
+Tällöin funktion muutoskohta $k$ vastaa tehtävän ratkaisua.
+Entä miten voimme laskea funktion $f$ arvon?
+Jos meillä on $u$ minuuttia aikaa ja jollakin koneella kestää $x_i$
+minuuttia valmistaa yksi tavara, pystymme valmistamaan
+$\lfloor u/x_i \rfloor$ tavaraa kyseistä konetta käyttäen.
+Kun sitten käytössämme on kaikki koneet,
+pystymme valmistamaan yhteensä
+\[ s = \sum_{i=1}^n \lfloor u/x_i \rfloor \]
+tavaraa. Niinpä $f(u)=0$, jos $s<m$,
+ja $f(u)=1$, jos $s \ge m$. Voimme toteuttaa tämän seuraavasti:
 
-Miksi sitten tämä vie aikaa vain $O(n)$?
-Oletetaan, että keossa on $h$ tasoa ja kaikki
-tasot ovat täynnä solmuja, eli keossa on $n=2^h-1$ solmua.
-Laskemme jokaiselle tasolle, montako alkiota laskeutuu
-enintään jostakin tämän tason solmusta alaspäin.
-Ensinnäkin tasolta 1 tasolle 2 laskeutuu enintään 1 alkio --
-juuressa oleva alkio.
-Vastaavasti
-tasolta 2 tasolle 3 laskeutuu enintään $1+2$ alkiota
-ja
-tasolta 3 tasolle 4 laskeutuu enintään $1+2+4$ alkiota.
-Yleisemmin tasolta $k$ tasolle $k+1$ laskeutuu
-enintään $1+2+\dots+2^{k-1} = 2^k-1$ alkiota
-Koska tasoja on $h$ ja alimmalta tasolta ei voi laskeutua alaspäin,
-kokonaistyömäärä on enintään
-\[(2^1-1)+(2^2-1)+\dots+(2^{h-1}-1)=2^h-h \le n,\]
-joten aikaa kuluu vain $O(n)$.
+\begin{code}
+int f(int u) {
+    int s = 0;
+    for (int i = 1; i <= n; i++) s += u/x[i];
+    return (s < m) ? 0 : 1;
+}
+\end{code}
 
-\subsection{Kekojärjestäminen}
+Voimme kytkeä tämän metodin suoraan binäärihakuun,
+jolloin tuloksena on tehokas algoritmi tehtävän ratkaisemiseen.
+Meidän täytyy kuitenkin vielä valita arvo $N$,
+joka on jokin yläraja kohdalle $k$.
+Tässä tehtävässä helppo valinta on
+\[N = x_1 \cdot m,\]
+mikä vastaa ratkaisua, jossa käytämme vain ensimmäistä konetta.
+On varmaa, että oikea $k$:n arvo on korkeintaan $N$,
+joten binäärihaku kutsuu $O(\log N)$ kertaa metodia $\texttt{f}$.
+Koska jokainen metodin kutsu vie aikaa $O(n)$,
+tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
 
-\emph{Kekojärjestäminen} on järjestämisalgoritmi,
-jonka toiminta perustuu kekoon.
-Ideana on muuttaa järjestettävä taulukko ensin keoksi
-ja sen jälkeen poistaa alkiot keosta yksi kerrallaan,
-jolloin saamme alkiot järjestyk\-sessä pienimmästä suurimpaan
-tai suurimmasta pienimpään.
-Kekojärjestäminen vie aikaa $O(n \log n)$,
-koska taulukon muuttaminen keoksi vie aikaa $O(n)$
-ja $n$ alkion poistaminen keosta vie aikaa $O(n \log n)$.
+Huomaa, että $\log N$ on käytännössä pieni luku riippumatta
+siitä, kuinka suuri luku $N$ on.
+Niinpä meidän ei tarvitse murehtia siitä,
+kuinka suuria $x_1$ ja $m$ ovat,
+vaan voimme luottaa siihen, että algoritmi on tehokas.
 
-Kekojärjestäminen ei ole käytännössä yhtä tehokas algoritmi
-kuin lomitusjärjestäminen tai pikajärjestäminen,
-minkä vuoksi se ei ole saavuttanut samanlaista asemaa
-järjestämisalgoritmien joukossa.
-Siinä on kuitenkin yksi kiinnostava ominaisuus:
-jos haluamme selvittää vain taulukon $k$ pienintä tai suurinta
-alkiota, tämä onnistuu ajassa $O(n+k \log n)$,
-koska meidän riittää poistaa keosta $k$ kertaa
-pienin tai suurin alkio ajassa $O(\log n)$.
+\subsection{Alitaulukot, osa 1}
+
+Tarkastellaan sitten tehtävää, jossa annettuna on $n$
+positiivista kokonaislukua sisältävä taulukko ja lisäksi kokonaisluku $x$.
+Haluamme selvittää, monessako yhtenäisessä alitaulukossa
+lukujen summa on $x$.
+Esimerkiksi jos taulukko on $[3,2,1,1,3,1]$ ja $x=4$,
+niin halutut alitaulukot ovat $[2,1,1]$, $[1,3]$ ja $[3,1]$,
+eli vastaus on tässä tapauksessa $3$.
+
+Voimme ratkaista tehtävän helposti ajassa $O(n^2)$
+käymällä läpi kaikki yhtenäiset alitaulukot seuraavasti:
+
+\begin{code}
+int laskuri = 0;
+for (int i = 0; i < n; i++) {
+    int summa = 0;
+    for (int j = i; j < n; j++) {
+        summa += taulu[j];
+        if (summa == x) laskuri++;
+    }
+}
+System.out.println(laskuri);
+\end{code}
+
+Binäärihaun avulla voimme kuitenkin parantaa algoritmia niin,
+että aikaa kuluu vain $O(n \log n)$.
+Ideana on korvata koodin sisempi silmukka
+binääri\-haulla, joka etsii tehokkaasti kohdasta $i$
+alkavan alitaulukon, jonka summa on $x$, jos tällainen alitaulukko on olemassa.
+Voimme käyttää binäärihakua, koska tiedämme, että taulukon kaikki
+luvut ovat positiivisia, jolloin mitä enemmän lukuja laitamme alitaulukkoon,
+sitä suurempi sen summa on.
+Niinpä voimme etsiä ensimmäisen kohdan $j$,
+jossa välin $[i,j]$ lukujen summa on ainakin $x$.
+Jos summa on tasan $x$, olemme löytäneet halutun alitaulukon,
+ja muuten tällaista alitaulukkoa ei ole olemassa.
+
+Jotta voimme toteuttaa tehokkaan ratkaisun,
+tarvitsemme kuitenkin vielä yhden aineksen:
+meidän täytyy pystyä laskemaan algoritmin aikana tehokkaasti,
+mikä on lukujen summa taulukon välillä $[a,b]$.
+Tarvittava tietorakenne on \emph{summataulukko},
+jossa kohdassa $k$ on taulukon
+lukujen summa taulukon alusta kohtaan $k$ asti.
+Seuraava koodi muodostaa taulukosta summataulukon ajassa $O(n)$:
+
+\begin{code}
+st[0] = taulu[0];
+for (int i = 1; i < n; i++) {
+    st[i] = st[i-1]+taulu[i];
+}
+\end{code}
+
+Tämän jälkeen pystymme laskemaan $O(1)$-ajassa,
+mikä on taulukon lukujen summa välillä $[a,b]$:
+
+\begin{code}
+int summa(int a, int b) {
+    if (a == 0) return st[b];
+    else return st[b]-st[a-1];
+}
+\end{code}
+
+Nyt voimme toteuttaa binäärihaun seuraavasti:
+
+\begin{code}
+int laskuri = 0;
+for (int i = 0; i < n; i++) {
+    int a = i, b = n-1;
+    while (a < b) {
+        int u = (a+b)/2;
+        if (summa(i,u) < x) a = u+1;
+        else b = u;
+    }
+    if (summa(i,a) == x) laskuri++;
+}
+System.out.println(laskuri);
+\end{code}
+
+Jokaisessa kohdassa $i$ etsimme binäärihaulla väliltä $[i,n-1]$
+ensimmäisen kohdan, jossa alitaulukon summa on ainakin $x$.
+Sitten tarkastamme, onko summa tasan $x$,
+ja jos on, kasvatamme laskuria yhdellä.
+Tuloksena olevan algoritmin aikavaativuus on $O(n \log n)$,
+koska jokainen binäärihaku vie summataulukon ansiosta
+aikaa vain $O(\log n)$.
+
+\section{Tasoitettu analyysi}
+
+Tähän mennessä olemme arvioineet algoritmien tehokkuutta
+lähinnä määrit\-tämällä jokaiselle silmukalle ylärajan,
+montako kertaa siinä olevaa koodia suoritetaan.
+Tämä onkin yleensä hyvä tapa laskea aikavaativuus,
+mutta joskus ongelmaksi voi tulla, että silmukan kierrosten
+määrä vaihtelee algoritmin eri vaiheissa eikä yläraja
+anna oikeaa kuvaa tehokkuudesta.
+
+Seuraavaksi tutustumme tekniikkaan nimeltä
+\emph{tasoitettu analyysi}, jossa koetamme arvioida tarkemmin,
+montako kertaa silmukassa olevaa koodia suoritetaan
+\emph{yhteensä} algoritmin aikana.
+Tämän avulla pystymme joskus huomaamaan, että algoritmi
+toimii tehokkaammin kuin vaikuttaa ensin.
+
+\subsection{Alitaulukot, osa 2}
+
+Palaamme aluksi tehtävään, jossa meille on annettu
+$n$ positiivisen kokonaisluvun taulukko ja haluamme laskea,
+monenko yhtenäisen alitaulukon summa on $x$.
+Olemme jo ratkaisseet tehtävän ajassa $O(n \log n)$
+binäärihaun ja summataulukon avulla,
+mutta nyt ratkaisemme tehtävän vielä tehokkaammin
+ajassa $O(n)$ esimerkkinä tasoitetusta analyysista.
+
+Ideana on, että meillä on kaksi muuttujaa $i$ ja $j$,
+jotka osoittavat taulukkoon.
+Muuttujat aloittavat taulukon alusta,
+ja jokaisella vuorolla $i$ siirtyy askeleen oikealle
+ja $j$ siirtyy oikealle niin kauan, kunnes välin $[i,j]$
+lukujen summa on ainakin $x$.
+Jos lukujen summa on tasan $x$, olemme löytäneet yhden
+alitaulukon, jonka summa on $x$.
+Seuraava koodi toteuttaa algoritmin:
+
+\begin{code}
+int j = -1;
+int summa = 0;
+int laskuri = 0;
+for (int i = 0; i < n; i++) {
+    while (j+1 < n && summa < x) {
+        j++;
+        summa += taulu[j];
+    }
+    if (summa == x) laskuri++;
+    summa -= taulu[i];
+}
+System.out.println(laskuri);
+\end{code}
+
+Tästä koodista on ensin näkemältä vaikeaa määrittää algoritmin
+aikavaativuutta, koska ei ole varmaa, montako kierrosta
+\texttt{while}-silmukkaa suoritetaan milloinkin.
+Saattaa olla, että jollakin kertaa silmukkaa ei suoriteta lainkaan
+mutta toisella kertaa $O(n)$ kierrosta.
+Koska silmukkaa suoritetaan aina enintään $O(n)$ kierrosta,
+saamme algoritmille aikavaativuuden $O(n^2)$,
+mutta antaako tämä hyvän kuvan algoritmista?
+
+Voimme analysoida algoritmia tarkemmin kiinnittämällä huomiota
+siihen, miten muuttujan $j$ arvo muuttuu algoritmissa.
+Muuttujan arvo on aluksi $-1$,
+se kasvaa yhdellä jokaisella \texttt{while}-silmukan kierroksella
+ja silmukkaan mennään vain, jos arvo on enintään $n-1$.
+Niinpä voimme päätellä, että silmukassa oleva koodi suoritetaan \emph{yhteensä}
+$O(n)$ kertaa, mikä tarkoittaa sitä,
+että koko algoritmin aikavaativuus on vain $O(n)$.
+
+\subsection{Lähin pienempi edeltäjä}
+
+Tasoitettuun analyysiin liittyy usein jokin tietorakenne,
+jonka operaatioiden määrää haluamme arvioida.
+Näin on myös seuraavassa tehtävässä:
+
+Annettuna on taulukko, jossa on $n$ kokonaislukua,
+ja haluamme muodostaa toisen taulukon,
+jossa on jokaisen luvun \emph{lähin pienempi edeltäjä}.
+Tämä tarkoittaa, että haluamme löytää jokaiselle taulukon luvulle
+sitä pienemmän luvun, joka on mahdollisimman lähellä aiemmin taulukossa.
+Esimerkiksi taulukon $[1,4,5,2,3,2]$
+lähimmät pienemmät edeltäjät ovat $[-,1,4,1,2,1]$.
+Koska luvulla $1$ ei ole pienempää edeltäjää,
+sen kohdalla on merkki $-$.
+
+Seuraavassa on $O(n^2)$-algoritmi, joka etsii
+lähimmät pienemmät edeltäjät:
+
+\begin{code}
+for (int i = 0; i < n; i++) {
+    for (int j = i-1; j >= 0; j--) {
+        if (taulu[j] < taulu[i]) {
+            edeltaja[i] = taulu[j];
+            break;
+        }
+    }
+}
+\end{code}
+
+Ratkaisemme tehtävän tehokkaasti pitämällä yllä \emph{pinoa},
+jossa on kasvava lista taulukon lukuja.
+Pino on tietorakenne, jossa voimme lisätä alkion pinon päälle
+ja hakea tai poistaa pinon ylimmän alkion.
+Voisimme toteuttaa pinon listana,
+mutta Javassa on myös erikoistunut tietorakenne \texttt{Stack},
+jota käytämme seuraavassa koodissa:
+
+\begin{code}
+Stack<Integer> pino = new Stack<>();
+for (int i = 0; i < n; i++) {
+    while (!pino.empty() && pino.peek() >= taulu[i]) {
+        pino.pop();
+    }
+    if (!pino.empty()) {
+        edeltaja[i] = pino.peek();
+    }
+    pino.push(taulu[i]);
+}
+\end{code}
+
+Metodi \texttt{push} lisää alkion pinoon,
+\texttt{peek} hakee ylimmän alkion ja \texttt{pop}
+poistaa ylimmän alkion.
+Ideana on, että säilytämme pinossa kasvavassa järjestyk\-sessä
+ehdokkaita tulevien lukujen lähimmiksi pienimmiksi edeltäjiksi.
+Jokaisessa taulukon kohdassa poistamme
+pinosta lukuja, kunnes pinon ylin luku on pienempi kuin nykyinen luku
+tai pino on tyhjä.
+Jos pino ei ole tämän jälkeen tyhjä, sen ylin luku on nykyisen luvun
+lähin pienempi edeltäjä.
+Lopuksi lisäämme nykyisen luvun pinoon päälle.
+
+Algoritmin tehokkuus riippuu siitä, montako kertaa suoritamme
+\texttt{while}-silmukassa olevan koodin.
+Oleellinen havainto on, että voimme poistaa pinosta
+korkeintaan niin monta alkiota kuin olemme lisänneet siihen,
+eli emme voi kutsua \texttt{pop}-metodia useammin kuin \texttt{push}-metodia.
+Koska lisäämme pinoon $n$ alkiota, suoritamme \texttt{while}-silmukkaa
+siis enintään $n$ kierrosta.
+Tämän ansiosta algoritmin aikavaativuus on $O(n)$.

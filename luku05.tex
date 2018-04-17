@@ -1,573 +1,455 @@
-\chapter{Algoritmien suunnittelu}
+\chapter{Hajautustaulu}
 
-Kuinka voi suunnitella hyvän algoritmin?
-On selvää, ettei tähän kysymykseen ole helppoa vastausta.
-Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
-tai säveltää hyvää musiikkia.
+Algoritmien suunnittelussa on usein tarvetta
+tietorakenteelle, joka pitää yllä alkioiden kokoelmaa.
+Kutsumme tällaista tietorakennetta nimellä \emph{joukko}.
+Esimerkiksi $\{2,4,5,7\}$ on joukko, joka sisältää
+alkiot $2$, $4$, $5$ ja $7$.
+Haluamme toteuttaa rakenteen niin,
+että pystymme tarkastamaan, kuuluuko tietty alkio
+joukkoon, sekä lisäämään ja poistamaan alkioita.
+Lisäksi haluamme,
+että kukin alkio voi esiintyä joukossa vain kerran,
+mikä vastaa tavallista joukon määritelmää matematiikassa.
 
-Tämän kurssin keskeinen tavoitteemme on saada aikaan tehokkaita algoritmeja,
-jotka toimivat ajassa $O(n)$ tai $O(n \log n)$.
-Kun tämä tavoite on tiedossa, voimme ottaa sen algoritmien
-suunnittelun lähtökohdaksi ja kartoittaa sen avulla mahdollisia
-lähestymistapoja, joita voimme käyttää.
+Helppo tapa toteuttaa joukko on tallentaa
+kaikki joukon alkiot listaan.
+Tällaisen toteutuksen heikkoutena on kuitenkin,
+että meidän täytyy käydä koko lista läpi,
+kun haluamme selvittää, kuuluuko tietty alkio joukkoon.
+Joudumme käymään listan läpi myös alkion lisäämisessä ja
+poistamisessa, koska emme halua lisätä samaa alkiota
+uudestaan ja meidän täytyy löytää poistettava alkio.
+Niinpä joukon operaatiot vievät aikaa $O(n)$.
 
-\section{Perustekniikoita}
+Tässä ja seuraavassa luvussa käymme läpi kaksi
+tietorakennetta, joiden avulla voimme toteuttaa
+joukon operaatiot \emph{tehokkaasti}.
+Tämän luvun aiheena on hajautustaulu,
+jonka avulla pystymme toteuttamaan operaatiot
+keskimäärin ajassa $O(1)$.
+Seuraavassa luvussa tutustumme binäärihaku\-puuhun,
+jonka operaatiot toimivat ajassa $O(\log n)$
+ja johon voimme toteuttaa lisäksi alkioiden järjestykseen
+liittyviä operaatioita.
 
-Millainen on algoritmi, joka vie aikaa $O(n)$ tai $O(n \log n)$?
-Tämä tarkoittaa,
-että kun algoritmille annetaan syötteenä $n$ alkiota,
-se saa käyttää jokaisen alkion käsittelyyn
-vain pienen määrän aikaa.
-Niinpä algoritmissa tulisi esiintyä seuraavan kaltaisia silmukoita:
+\section{Hajautustaulun toiminta}
 
-\begin{code}
-for (int i = 0; i < n; i++) {
-    // tee jotain nopeaa
-}
-\end{code}
-
-Tässä ''jotain nopeaa'' tarkoittaa koodia, joka vie aikaa
-$O(1)$ tai $O(\log n)$.
-Algoritmi voi myös järjestää aineistoa,
-koska tehokkaat järjestämisalgoritmit vievät aikaa $O(n \log n)$.
-Kovin paljon muuta tehokas algoritmi ei sitten voikaan tehdä.
-Tämä rajoittaa paljon, mitä aineksia voimme laittaa algoritmiin,
-mutta voimme ajatella asiaa myös myönteisesti:
-vaatimus tehokkuudesta rajaa pois suuren määrän lähestymistapoja,
-eli meidän on helpompaa löytää hyvä algoritmi,
-kun vaihtoehtojen määrä on pienempi.
-
-Algoritmien suunnittelussa keskeisiä ovat \emph{havainnot}:
-haluamme saada käsityksen,
-mitä ominaisuuksia ratkaistavaan ongelmaan liittyy,
-jotta voimme käyttää niitä algoritmissa.
-Voimme tehdä havaintoja tutkimalla ongelman pieniä tapauksia
-ja etsimällä riippuvuuksia ja säännöllisyyksiä.
-Jos käy hyvin, huomaamme asioita, jotka pätevät kaikissa ongelman
-tapauksissa, ja voimme hyödyntää niitä koko tehtävän ratkaisemisessa.
-
-\subsection{Algoritmin tehostaminen}
-
-Tavallinen tilanne algoritmien suunnittelussa on,
-että pystymme ratkaisemaan annetun ongelman
-helposti $O(n^2)$-ajassa ensimmäisellä mieleen tulevalla algoritmilla,
-mutta haasteena on keksiä tehokkaampi algoritmi,
-joka toimisi ajassa $O(n)$ tai $O(n \log n)$.
-Kokemus on osoittanut, että tämä on hyvä tilanne:
-yleensä \emph{pystymme} tehostamaan
-tavalla tai toisella algoritmia,
-kunhan mietimme huolellisesti asiaa.
-
-Tarkastellaan esimerkkinä seuraavaa tehtävää:
-Annettuna on taulukko, joka sisältää luvut $1,2,\dots,n$
-jossakin järjestyksessä,
-ja haluamme kerätä taulukon luvut järjestyksessä pienimmästä suurimpaan.
-Joka kierroksella käym\-me läpi taulukon vasemmalta
-oikealle ja keräämme mahdollisimman monta seuraavaa lukua.
-Montako kierrosta tarvitsemme yhteensä?
-Esimerkiksi taulukossa $[4,3,1,5,2]$
-tarvitsemme kolme kierrosta:
-ensimmäisellä kierroksella keräämme luvut $1$ ja $2$,
-toisella luvun $3$ ja kolmannella luvut $4$ ja $5$.
-
-Voimme ratkaista tehtävän suoraviivaisesti $O(n^2)$-ajassa
-simuloimalla lukujen keräämistä tehtävänannon kuvaamalla tavalla:
-
-\begin{code}
-int luku = 1;
-int laskuri = 0;
-while (luku <= n) {
-    laskuri++;
-    for (int i = 0; i < n; i++) {
-        if (taulu[i] == luku) luku++;
-    }
-}
-System.out.println(laskuri);
-\end{code}
-
-Tässä muuttuja \texttt{luku} kertoo,
-minkä luvun haluamme kerätä seuraavaksi,
-ja muuttuja \texttt{laskuri} laskee,
-montako kierrosta tarvitaan.
-Kierroksia tarvitaan aina korkeintaan $n$,
-koska saamme kerättyä joka kierroksella
-ainakin yhden luvun,
-joten algoritmi toimii ajassa $O(n^2)$.
-
-Kuinka voisimme sitten tehostaa algoritmia niin,
-että se veisi aikaa vain $O(n)$ tai $O(n \log n)$?
-Yllä olevan algoritmin hitaus johtuu pohjimmiltaan siitä,
-että algoritmilla menee kauan aikaa löytää,
-missä kohtaa taulukossa on seuraava luku,
-jonka haluamme kerätä.
-Niinpä jotta voimme ratkaista tehtävän tehokkaasti,
-meidän täytyy jollakin tavalla löytää seuraava kerät\-tävä luku nopeammin.
-Kätevä ratkaisu tähän on luoda aputaulukko,
-joka kertoo jokaisen luvun kohdan:
-
-\begin{code}
-int[] kohta = new int[n+1];
-for (int i = 0; i < n; i++) {
-    kohta[taulu[i]] = i;
-}
-\end{code}
-
-Tämän taulukon avulla saamme selville $O(1)$-ajassa,
-missä kohdassa taulukossa on seuraava kerättävä luku.
-Entä mistä tiedämme, montako kierrosta tarvitsemme?
-Meidän täytyy aloittaa uusi kierros aina silloin,
-kun viimeksi keräämämme luku on myöhemmin taulukossa
-kuin seuraava kerättävä luku.
-Niinpä voimme laskea kierrosten määrän näin:
-
-\begin{code}
-int laskuri = 1;
-for (int i = 2; i <= n; i++) {
-    if (kohta[i-1] > kohta[i]) {
-        laskuri++;
-    }
-}
-System.out.println(laskuri);
-\end{code}
-
-Tuloksena on algoritmi, jossa on kaksi silmukkaa,
-joista molemmat vievät aikaa vain $O(n)$.
-Niinpä algoritmin aikavaativuus on $O(n)$,
-eli olemme saavuttaneet tavoitteemme.
-
-\subsection{Ahneet algoritmit}
-
-Tehokkaan algoritmin saaminen aikaan vaatii usein,
-että pystymme tekemään algoritmissa jotain \emph{ahneesti}.
-Tämä tarkoittaa, että meidän ei tarvitse käydä läpi
-kaikkia mahdollisia ratkaisuja vaan pystymme rakentamaan
-ratkaisun suoraan askel askeleelta käsittelemällä
-syötteen sopivassa järjestyksessä.
-
-Tarkastellaan esimerkkinä seuraavaa tehtävää:
-Meillä on $n$ kolikkoa, jonka jokaisen arvo on positiivinen kokonaisluku,
-ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa kolikoista.
-Esimerkiksi jos kolikot ovat $[1,2,2,9]$, voimme muodostaa summat
-$1$, $2$, $1+2=3$, $2+2=4$ ja $1+2+2=5$,
-mutta emme voi muodostaa summaa $6$.
-
-Tämä tehtävä vaikuttaa ensi silmäykseltä vaikealta,
-koska mahdollisia tapoja summien muodostamiseen on niin paljon.
-Kun meillä on $n$ kolikkoa, voimme valita $2^n$ tavalla
-kolikoiden osajoukon, joista syntyy jokin summa.
-On selvää, että algoritmista tulee liian hidas,
-jos se käy läpi kaikki tällaiset osajoukot.
-Jotta saisimme aikaan tehokkaan algoritmin,
-meidän tulisi huomata ongelmasta jotain,
-jonka ansiosta pystymme välttämään osajoukkojen läpikäynnin
-ja löydämme ratkaisun suoremmin.
-
-Yksi hyvä tapa lähestyä tehtävää ja saada jotain tietoa ongelman luonteesta
-on lähteä ensin liikkeelle pienistä summista.
-Haluamme muodostaa ensin summan $1$, ja tähän tarvitsemme välttämättä
-kolikon, jonka arvo on $1$.
-Sitten haluamme muodostaa summan $2$, mihin tarvitsemme joko
-toisen kolikon $1$ tai kolikon $2$, ja sen jälkeen summan $3$,
-joka voi muodostua kolikoista $1+1+1$, $1+2$ tai $3$.
-Voisimme jatkaa eteenpäin, mutta vaihtoehtoja alkaa tulla
-paljon ja meidän on vaikeaa hallita niitä.
-Kuitenkin näyttää siltä, että meidän kannattaa aloittaa
-summien muodostaminen pienistä kolikoista.
-
-Seuraavaksi voimme yrittää alkaa miettiä ongelmaa yleisemmin.
-Oletetaan, että meillä on joukko kolikoita,
-joista voimme muodostaa kaikki summat $1,2,\dots,s$.
-Voisimmeko ottaa mukaan vielä jonkin uuden kolikon arvoltaan $u$ niin,
-että saamme muodostettua myös summan $s+1$?
-Tämä on mahdollista tarkalleen silloin, kun $u \le s+1$,
-eli uuden kolikon arvo saa olla enintään $s+1$.
-Jos tämä ehto pätee, voimme ottaa kolikon mukaan ja
-pystymme muodostamaan tämän jälkeen kaikki summat $1,2,\dots,s+u$.
-Esimerkiksi jos meillä on kolikot $[1,1,3]$, voimme muodostaa
-niistä summat $1,2,\dots,5$ ja uuden kolikon arvon tulee olla enintään $6$.
-Jos uuden kolikon arvo on vaikkapa $4$, voimme ottaa sen mukaan ja
-pystymme muodostamaan sen jälkeen kolikoista $[1,1,3,4]$ summat $1,2,\dots,9$.
-
-Lisäksi jos meillä on monia vaihtoehtoja valita uusi kolikko,
-ei ole väliä, missä järjestyksessä otamme ne mukaan vaan
-voimme valita seuraavaksi minkä tahansa niistä.
-Erityisesti voimme päättää, että valitsemme aina
-seuraavaksi ahneesti \emph{pienimmän} mahdollisen kolikon.
-Nyt meillä on koossa kaikki tarvittavat ainekset
-tehokasta algoritmia varten.
-Aloitamme tyhjästä joukosta ja lisäämme siihen kolikoita
-pienimmästä suurimpaan niin kauan kuin mahdollista.
-Lopuksi vastaus tehtävään on yhtä suurempi kuin kolikoiden
-summa.
-Seuraava koodi toteuttaa algoritmin:
-
-\begin{code}
-long summa = 0;
-Arrays.sort(kolikot);
-for (int i = 0; i < n; i++) {
-    if (kolikot[i] <= summa+1) {
-        summa += kolikot[i];
-    } else {
-        break;
-    }
-}
-System.out.println(summa+1);
-\end{code}
-
-Kuten koodista näkyy, meidän ei tarvitse pitää yllä
-kolikoiden joukkoa, vaan riittää säilyttää tietoa
-joukossa olevien kolikoiden summasta muuttujassa \texttt{summa}.
-Käymme läpi kolikot järjestyksessä pienimmästä suurimpaan
-ja kasvatamme summaa, jos se on mahdollista.
-Kun vastaan tulee ensimmäinen kolikko, jota emme voi ottaa mukaan,
-silmukka päättyy, koska tämä tarkoittaa,
-että emme voi valita enää mitään muutakaan kolikkoa.
-Tuloksena on algoritmi, jonka aikavaativuus on $O(n \log n)$.
-
-\section{Binäärihaku}
-
-\emph{Binäärihaku} on tekniikka, joka pelastaa meidät monesta
-kiipelistä algoritmien suunnittelussa.
-Parhaiten tunnettu binäärihaun käyttötarkoitus on alkion
-etsiminen järjestetystä taulukosta ajassa $O(\log n)$.
-Tämä on kuitenkin vain alkusoittoa sille,
-mitä binäärihaun avulla pystyy tekemään ja mikä on sen
-todellinen merkitys algoritmien suunnittelussa.
-
-\subsection{Muutoskohdan etsiminen}
-
-Oletetaan, että meillä on funktio $f$,
-jolle pätee, että $f(x)=0$, kun $x<k$,
-ja $f(x)=1$, kun $x \ge k$.
-Binäärihaun avulla voimme etsiä tehokkaasti,
-mikä on funktion \emph{muutoskohta} $k$
-eli ensimmäinen kohta, jossa funktio saa arvon $1$.
-Seuraava koodi toteuttaa haun olettaen,
-että $k$ on välillä $1 \dots N$:
-
-
-\begin{code}
-int a = 1, b = N;
-while (a < b) {
-    int u = (a+b)/2;
-    if (f(u) == 0) a = u+1;
-    if (f(u) == 1) b = u;
-}
-int k = a;
-\end{code}
-
-Haun joka vaiheessa tiedämme, että muutoskohta on välillä $[a,b]$.
-Laskemme keskikohdan $u=(a+b)/2$ ja tutkimme funktion arvoa kohdassa $u$.
-Jos $f(u)=0$, niin tiedämme, että muutoskohta on välillä $[u+1,b]$.
-Jos taas $f(u)=1$, niin muutoskohdan on oltava välillä $[a,u]$.
-Lopulta välillä on vain yksi alkio, jolloin olemme löytäneet muutoskohdan.
-Koska välin koko puolittuu joka askeleella,
-kutsumme $O(\log N)$ kertaa funktiota $f$.
-
-Mitä hyötyä on siitä, että löydämme tehokkaasti muutoskohdan?
-Tarkastellaan esimerkkinä tehtävää, jossa käytössämme on $n$ konetta
-ja haluamme valmistaa niiden avulla $m$ tavaraa.
-Tiedossamme on myös arvot $[x_1,x_2,\dots,x_n]$:
-jokaisesta koneesta tieto, montako minuuttia vie aikaa valmistaa
-yksi tavara konetta käyttäen.
-Haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
-$m$ tavaraa mahdollisimman nopeasti.
-Esimerkiksi jos $n=3$, $m=7$ ja koneiden nopeudet ovat $[2,3,7]$,
-paras aikataulu on kuvassa \ref{fig:optkon}.
-Sitä käyttäen tavaroiden muodostaminen vie aikaa $8$ minuuttia.
-Käynnistämme koneen 1 neljästi hetkinä 0, 2, 4 ja 6,
-koneen 2 kahdesti hetkinä 0 ja 3
-ja koneen 3 kerran hetkenä 0.
-Aikaa kuluu $8$ minuuttia, koska viimeisenä pysähtyy kone 1 hetkenä 8.
+\emph{Hajautustaulu} on $N$-alkioinen taulukko,
+jonka jokaisessa kohdassa on lista joukkoon kuuluvia alkioita.
+Jotta voimme käyttää hajautustaulua,
+meillä täytyy olla \emph{hajautusfunktio} $f$,
+joka antaa \emph{hajautusarvon}
+$f(x)$ mille tahansa joukon alkiolle $x$.
+Hajautusarvo on kokonaisluku väliltä
+$0,1,\dots,N-1$, missä $N$ on hajautustaulun koko.
+Tallennamme hajautustaulun kohdassa $k$ olevaan listaan
+kaikki ne joukon alkiot, joiden hajautusarvo on $k$.
 
 \begin{figure}
-\center
-\begin{tikzpicture}[scale=0.7]
-\draw[->] (-1,1.5) -- (10,1.5);
-\foreach \x in {0,...,8} \draw (\x,1.40) -- (\x,1.60);
-\foreach \x in {0,...,8} \node at (\x,2) {\scriptsize $\x$};
-\node at (-2,0) {kone $1$};
-\draw[|-|] (0.05,0) -- (1.95,0);
-\draw[|-|] (2.05,0) -- (3.95,0);
-\draw[|-|] (4.05,0) -- (5.95,0);
-\draw[|-|] (6.05,0) -- (7.95,0);
-\node at (-2,-1.5) {kone $2$};
-\draw[|-|] (0.05,-1.5) -- (2.95,-1.5);
-\draw[|-|] (3.05,-1.5) -- (5.95,-1.5);
-\node at (-2,-3) {kone $3$};
-\draw[|-|] (0.05,-3) -- (6.95,-3);
+\begin{tikzpicture}[scale=0.5]
+\draw (0,0) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\draw[->,thick] (2.5,0) -- (2.5,-1);
+\draw[->,thick] (5.5,0) -- (5.5,-1);
+\draw[->,thick] (7.5,0) -- (7.5,-1);
+\draw[->,thick] (2.5,-2) -- (2.5,-3);
+\node at (2.5,-1.5) {$12$};
+\node at (5.5,-1.5) {$15$};
+\node at (7.5,-1.5) {$7$};
+\node at (2.5,-3.5) {$32$};
 \end{tikzpicture}
-\caption{Optimaalinen tapa valmistaa 7 tavaraa vie 8 sekuntia,
-kun koneiden nopeudet ovat $[2,3,7]$.}
-\label{fig:optkon}
+\caption{Hajautustaulu, joka vastaa joukkoa $\{7,12,15,32\}$.
+Hajautusfunktiona on $f(x)=x \bmod 10$.}
+\label{fig:hajtau}
 \end{figure}
 
-Voimme pukea tehtävän binäärihaulle sopivaan muotoon niin,
-että $f(x)=1$ tarkalleen silloin, kun voimme muodostaa
-\emph{ainakin} $m$ tavaraa ajassa $x$.
-Tällöin funktion muutoskohta $k$ vastaa tehtävän ratkaisua.
-Entä miten voimme laskea funktion $f$ arvon?
-Jos meillä on $u$ minuuttia aikaa ja jollakin koneella kestää $x_i$
-minuuttia valmistaa yksi tavara, pystymme valmistamaan
-$\lfloor u/x_i \rfloor$ tavaraa kyseistä konetta käyttäen.
-Kun sitten käytössämme on kaikki koneet,
-pystymme valmistamaan yhteensä
-\[ s = \sum_{i=1}^n \lfloor u/x_i \rfloor \]
-tavaraa. Niinpä $f(u)=0$, jos $s<m$,
-ja $f(u)=1$, jos $s \ge m$. Voimme toteuttaa tämän seuraavasti:
+Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu,
+jonka kokona on $N=10$.
+Olemme tallentaneet hajautustauluun joukon $\{7,12,15,32\}$
+käyttäen hajautusfunktiota $f(x)=x \bmod 10$.
+Tämä tarkoittaa, että alkion $x$ hajautusarvo on sen jakojäännös $10$:llä
+eli luvun viimeinen numero.
+Esimerkiksi alkiot $12$ ja $32$ ovat kohdassa $2$,
+koska niissä viimeinen numero on $2$,
+ja alkiot $15$ ja $7$ ovat vastaavasti kohdissa $5$ ja $7$.
+Kaikki muut hajautustaulun listat ovat tällä hetkellä tyhjiä.
+
+Kun haluamme tarkistaa, onko joukossa alkiota $x$,
+laskemme ensin sen hajautusarvon $f(x)$.
+Tämän jälkeen käymme läpi kaikki kohdan $f(x)$
+listassa olevat alkiot ja tarkistamme,
+onko jokin niistä alkio $x$.
+Vastaavasti kun haluamme lisätä alkion $x$ joukkoon
+tai poistaa alkion $x$ joukosta,
+teemme muutoksen kohdassa $f(x)$ olevaan listaan.
+Jokaisen operaation aikavaativuus on $O(m)$,
+missä $m$ on listan alkioiden määrä.
+Hajautustaulu toimii siis tehokkaasti, jos jokainen
+siinä oleva lista on lyhyt.
+
+\subsection{Hajautusfunktio}
+
+Hajautusfunktio $f(x)$ määrittää, mihin kohtaan hajautustaulua
+alkio $x$ sijoitetaan.
+Sen täytyy antaa jokaiselle mahdolliselle alkiolle
+hajautusarvo eli kokonaisluku väliltä $0,1,\dots,N-1$,
+missä $N$ on hajautustaulun koko.
+Muilta osin meillä on periaatteessa vapaat kädet
+hajautusfunktion suunnitteluun.
+Mutta millainen olisi hyvä hajautusfunktio?
+
+\begin{figure}
+\begin{tikzpicture}[scale=0.5]
+\begin{scope}
+\draw (0,0) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\draw[->,thick] (1.5,0) -- (1.5,-1);
+\draw[->,thick] (4.5,0) -- (4.5,-1);
+\draw[->,thick] (8.5,0) -- (8.5,-1);
+\node at (1.5,-1.5) {$a$};
+\node at (4.5,-1.5) {$b$};
+\node at (8.5,-1.5) {$c$};
+\end{scope}
+\begin{scope}[xshift=15cm]
+\draw (0,0) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\draw[->,thick] (3.5,0) -- (3.5,-1);
+\draw[->,thick] (3.5,-4) -- (3.5,-5);
+\draw[->,thick] (3.5,-2) -- (3.5,-3);
+\node at (3.5,-1.5) {$a$};
+\node at (3.5,-3.5) {$b$};
+\node at (3.5,-5.5) {$c$};
+\end{scope}
+\end{tikzpicture}
+\caption{Kaksi hajautustaulua joukolle $\{a,b,c\}$.
+Vasen tilanne on paras mahdollinen, oikea tilanne taas
+huonoin mahdollinen.}
+\label{fig:hajjak}
+\end{figure}
+
+Haluamme, että hajautusfunktio jakaa alkioita \emph{tasaisesti}
+hajautustaulun eri puolille.
+Jos onnistumme tässä, kaikki listat ovat lyhyitä ja
+joukon operaatiot ovat tehokkaita.
+Kuva \ref{fig:hajjak} näyttää kaksi hajautustaulua, jotka vastaavat
+joukkoa $\{a,b,c\}$ kahdella eri hajautusfunktiolla.
+Vasemmassa taulussa hajautus on onnistunut täydellisesti
+ja jokainen alkio on omassa listassaan.
+Oikeassa taulussa taas kaikki alkiot ovat joutuneet samaan
+listaan eikä hajautuksesta ole mitään hyötyä.
+Tavoitteemme on, että saisimme aikaan hajautusfunktion,
+jonka toiminta on lähempänä vasenta taulua.
+
+Jos hajautettavat alkiot ovat kokonaislukuja,
+suoraviivainen hajautusfunktio on $f(x)=x \bmod N$,
+mikä tarkoittaa, että otamme jakojäännöksen hajautustaulun koolla $N$.
+Tämä on hyvin toimiva hajautusfunktio,
+kunhan aineistossa esiintyy tasaisesti eri jakojäännöksiä.
+Entä jos alkiot ovat jotain muuta tyyppiä kuin kokonaislukuja?
+Tällöin voimme päättää jonkin tavan,
+kuinka muutamme alkion kokonaisluvuksi,
+minkä jälkeen voimme laskea jakojäännöksen $N$:llä.
+Tarkastelemme seuraavaksi esimerkkinä hajautusfunktioita,
+jotka antavat hajautusarvon merkkijonolle.
+
+Oletamme, että merkkijonossa on $k$ merkkiä,
+joiden merkkikoodit\footnote{Käytämme tässä merkkien ASCII-koodeja.
+Esimerkiksi Javassa char-merkin \texttt{c} koodin saa
+selville kirjoittamalla \texttt{(int)c}, eli esimerkiksi
+\texttt{(int)'a'} on 97.} ovat $c_0,c_1,\dots,c_{k-1}$.
+Esimerkiksi jos merkkijono on \texttt{apina},
+$k=5$ ja koodit ovat $c_0=97$, $c_1=112$, $c_2=105$,
+$c_3=110$ ja $c_4=97$.
+Seuraavassa on kolme mahdollista tapaa määritellä hajautusfunktio:
+
+\begin{enumerate}
+\item Hajautusarvo on merkkijonon pituus $k$.
+Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on 5.
+\item Hajautusarvo on merkkikoodien summa
+\[ c_0 + c_1 + \dots + c_{k-1}.\]
+Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on
+\[97+112+105+110+97=521.\]
+\item Hajautusarvo on summa
+\[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
+missä $A$ on vakio.
+Esimerkiksi jos $A=7$, merkkijonon \texttt{apina} hajautusarvo on
+\[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=61235.\]
+\end{enumerate}
+
+Funktiot 1 ja 2 eivät ole käytännössä hyviä hajautusfunktioita,
+koska ne antavat saman hajautusarvon monille merkkijonoille.
+Funktio 1 antaa kahdelle merkkijonolle saman hajautusarvon,
+jos ne ovat yhtä pitkiä,
+ja funktio 2 antaa kahdelle merkkijonolle saman hajautusarvon,
+jos ne sisältävät samat merkit eri järjestyksessä.
+
+Funktio 3, jota kutsutaan nimellä \emph{polynominen hajautus},
+on käytännössä hyvä merkkijonon hajautustapa, joka on käytössä esimerkiksi
+Javan standardikirjastossa.
+Vakio $A$ valitaan tyypillisesti niin, että se on pieni alkuluku.
+Koska hajautusarvo lasketaan painotettuna summana,
+kaksi eri merkkijonoa eivät yleensä saa samaa hajautusarvoa.
+Toisaalta pystymme laskemaan hajautusarvon tehokkaasti
+mille tahansa merkkijonolle.
+
+\subsection{Hajautuksen tehokkuus}
+
+Hajautustaulun operaatiot vievät aikaa $O(m)$,
+jossa $m$ on hajautustaulussa olevan listan pituus.
+Mutta kuinka suuri $m$ on? Tämä riippuu siitä,
+mikä on alkioiden määrä $n$, hajautustaulun koko $N$
+sekä hajautusfunktio $f$.
+
+Jos kaikki sujuu hyvin ja hajautusfunktio jakaa alkioita
+tasaisesti hajautustaulun eri puolille,
+jokaisessa listassa on noin $n/N$ alkiota.
+Niinpä jos valitsemme hajautustaulun koon niin,
+että $N$ on samaa luokkaa kuin $n$,
+operaatiot toimivat tehokkaasti ajassa $O(1)$.
+Kuitenkin on mahdollista että hajautus epäonnistuu
+ja alkiot jakautuvat hajautustauluun epätasaisesti.
+Pahimmassa tapauksessa kaikki alkiot saavat saman
+hajautusarvon ja ne kaikki tallennetaan samaan listaan,
+jolloin operaatiot vievät aikaa $O(n)$.
+
+Voimme helposti vaikuttaa hajautustaulun kokoon $N$,
+mutta hajautusfunktion suunnittelu on epämääräisempi ala.
+Miten voimme tietää, että valitsemamme hajautusfunktio
+toimii hyvin?
+Itse asiassa emme voi olla koskaan varmoja tästä.
+Vaikka meillä olisi erittäin hyvä hajautusfunktio,
+\emph{ilkeä vastustaja} voi kuitenkin antaa
+meille joukon alkioita, jotka kaikki saavat saman hajautusarvon.
+Tämä riski on aina hajautuksessa, koska eri
+hajautusarvojen määrä on paljon pienempi kuin eri alkioiden määrä.
+Tämän vuoksi ei ole mahdollista suunnitella hajautusfunktiota niin,
+että se jakaisi alkiot \emph{varmasti} tasaisesti hajautustauluun.
+
+Kaikeksi onneksi hajautus toimii yleensä aina \emph{käytännössä}
+hyvin ja voimme ajatella, että hajautustaulun operaatiot ovat
+$O(1)$-aikaisia.
+Vaikka on mahdollista, että hajautus epäonnistuu,
+tämän riski on niin pieni, että meidän ei tarvitse murehtia
+siitä käytännössä.
+
+\section{Hajautus Javassa}
+
+Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
+\texttt{HashSet} pitää yllä alkioiden joukkoa
+hajautustaulun avulla, ja \texttt{HashMap} säilyttää
+joukkoa avain-arvo-pareja, mitä voi ajatella taulukon yleistyksenä.
+Seuraavaksi tutustumme tarkemmin näihin rakenteisiin.
+
+\subsection{\texttt{HashSet}-rakenne}
+
+\texttt{HashSet}-rakenne pitää yllä alkioiden joukkoa.
+Joukkoon voi lisätä alkion metodilla \texttt{add},
+ja siitä voi poistaa alkion metodilla \texttt{remove}.
+Esimerkiksi seuraava koodi luo joukon, jossa voi olla
+kokonaislukuja, ja lisää siihen luvut 3, 5 ja 8.
+Tämän jälkeen koodi poistaa luvun 5 joukosta.
 
 \begin{code}
-int f(int u) {
-    int s = 0;
-    for (int i = 1; i <= n; i++) s += u/x[i];
-    return (s < m) ? 0 : 1;
+HashSet<Integer> joukko = new HashSet<>();
+joukko.add(3);
+joukko.add(5);
+joukko.add(8);
+System.out.println(joukko); // [3, 5, 8]
+joukko.remove(5);
+System.out.println(joukko); // [3, 8]
+\end{code}
+
+Metodin \texttt{contains} avulla voimme selvittää,
+esiintyykö tietty alkio $x$ joukossa:
+
+\begin{code}
+if (joukko.contains(x)) {
+    System.out.println("alkio on joukossa");
+} else {
+    System.out.println("alkiota ei ole joukossa");
 }
 \end{code}
 
-Voimme kytkeä tämän metodin suoraan binäärihakuun,
-jolloin tuloksena on tehokas algoritmi tehtävän ratkaisemiseen.
-Meidän täytyy kuitenkin vielä valita arvo $N$,
-joka on jokin yläraja kohdalle $k$.
-Tässä tehtävässä helppo valinta on
-\[N = x_1 \cdot m,\]
-mikä vastaa ratkaisua, jossa käytämme vain ensimmäistä konetta.
-On varmaa, että oikea $k$:n arvo on korkeintaan $N$,
-joten binäärihaku kutsuu $O(\log N)$ kertaa metodia $\texttt{f}$.
-Koska jokainen metodin kutsu vie aikaa $O(n)$,
-tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
-
-Huomaa, että $\log N$ on käytännössä pieni luku riippumatta
-siitä, kuinka suuri luku $N$ on.
-Niinpä meidän ei tarvitse murehtia siitä,
-kuinka suuria $x_1$ ja $m$ ovat,
-vaan voimme luottaa siihen, että algoritmi on tehokas.
-
-\subsection{Alitaulukot, osa 1}
-
-Tarkastellaan sitten tehtävää, jossa annettuna on $n$
-positiivista kokonaislukua sisältävä taulukko ja lisäksi kokonaisluku $x$.
-Haluamme selvittää, monessako yhtenäisessä alitaulukossa
-lukujen summa on $x$.
-Esimerkiksi jos taulukko on $[3,2,1,1,3,1]$ ja $x=4$,
-niin halutut alitaulukot ovat $[2,1,1]$, $[1,3]$ ja $[3,1]$,
-eli vastaus on tässä tapauksessa $3$.
-
-Voimme ratkaista tehtävän helposti ajassa $O(n^2)$
-käymällä läpi kaikki yhtenäiset alitaulukot seuraavasti:
+Huomaa, että jokainen alkio voi esiintyä vain kerran joukossa.
+Esimerkiksi vaikka seuraava koodi lisää luvun 5 kolmesti
+joukkoon, se menee sinne vain ensimmäisellä kerralla ja
+muut lisäykset jätetään huomiotta.
 
 \begin{code}
-int laskuri = 0;
-for (int i = 0; i < n; i++) {
-    int summa = 0;
-    for (int j = i; j < n; j++) {
-        summa += taulu[j];
-        if (summa == x) laskuri++;
+HashSet<Integer> joukko = new HashSet<>();
+joukko.add(5);
+joukko.add(5);
+joukko.add(5);
+System.out.println(joukko); // [5]
+\end{code}
+
+Koska \texttt{HashSet} on toteutettu hajautustaulun avulla,
+sen operaatiot toimivat ajassa $O(1)$.
+
+\subsection{\texttt{HashMap}-rakenne}
+
+\texttt{HashMap}-rakenne pitää yllä joukkoa avain-arvo-pareja.
+Rakennetta voi ajatella taulukon yleistyksenä:
+$n$ alkion taulukossa avaimet ovat aina kokonaisluvut
+$0,1,\ldots,n-1$, mutta \texttt{HashMap} sallii
+avaimina minkä tahansa tyyppisiä alkioita eikä niiden
+tarvitse olla peräkkäin.
+
+\texttt{HashMap}-rakenteen määrittelyssä tulee antaa
+avaimen ja arvon tyyppi.
+Esimerkiksi seuraava koodi luo sanakirjan, jossa sekä
+avaimet että arvot ovat merkkijonoja.
+Syötämme sanakirjaan merkkijonopareja, jotka kertovat
+sanan käännöksen suomesta englanniksi.
+Metodi \texttt{put} lisää uuden avain-arvo-parin,
+ja metodi \texttt{get} hakee arvon avaimen perusteella.
+
+\begin{code}
+HashMap<String,String> sanakirja = new HashMap<>();
+
+sanakirja.put("apina","monkey");
+sanakirja.put("banaani","banana");
+sanakirja.put("cembalo","harpsichord");
+
+System.out.println(sanakirja.get("banaani")); // banana
+\end{code}
+
+Hyödyllinen on myös metodi \texttt{containsKey},
+jonka avulla voi tarkastaa, onko tietylle avaimelle
+tallennettu arvoa:
+
+\begin{code}
+if (sanakirja.containsKey(sana)) {
+    System.out.println("Käännös: " + sanakirja.get(sana));
+} else {
+    System.out.println("Sana puuttuu sanakirjasta!");
+}
+\end{code}
+
+Koska \texttt{HashMap} on toteutettu hajautustaulun avulla,
+sen operaatiot toimivat ajassa $O(1)$.
+
+\subsection{Omat luokat}
+
+Javan luokissa on metodi \texttt{hashCode},
+jonka avulla olio kertoo pyydettäessä hajautusarvonsa.
+Voimme esimerkiksi selvittää merkkijonon \texttt{apina}
+hajautusarvon seuraavasti:
+
+\begin{code}
+System.out.println("apina".hashCode());
+\end{code}
+
+Tämä koodi tulostaa luvun 93022541,
+joka on siis merkkijonon \texttt{apina} hajautusarvo Javassa.
+On tunnettua, että Java käyttää merkkijonon hajautusarvon laskemiseen
+polynomista hajautusta vakiolla $A=31$,
+joten voimme laskea Javan hajautusarvon myös itse kaavalla
+\[31^4 \cdot 97+31^3 \cdot 112+31^2 \cdot 105+31^1 \cdot 110+31^0 \cdot 97=93022541.\]
+
+Jos haluamme käyttää omia oliota hajautustauluissa,
+meidän täytyy toteuttaa luokkaan kaksi metodia:
+\texttt{hashCode}, joka antaa olion hajautusarvon,
+sekä \texttt{equals},
+joka ilmaisee, ovatko kaksi oliota samat.
+Metodi \texttt{hashCode} riittää toteuttaa niin,
+että se palauttaa jonkin kokonaisluvun.
+Metodi \texttt{equals} on tarpeen,
+jotta Java pystyy varmistamaan, ovatko saman hajautusarvon
+antavat oliot todella samat.
+
+Esimerkiksi jos meillä on luokka \texttt{Piste},
+jossa on kenttinä kokonaisluvut \texttt{x} ja \texttt{y},
+voisimme toteuttaa metodit seuraavasti:
+
+\begin{code}
+class Piste {
+    public int x, y;
+
+    public int hashCode() {
+        return 97*x+y;
     }
-}
-System.out.println(laskuri);
-\end{code}
-
-Binäärihaun avulla voimme kuitenkin parantaa algoritmia niin,
-että aikaa kuluu vain $O(n \log n)$.
-Ideana on korvata koodin sisempi silmukka
-binääri\-haulla, joka etsii tehokkaasti kohdasta $i$
-alkavan alitaulukon, jonka summa on $x$, jos tällainen alitaulukko on olemassa.
-Voimme käyttää binäärihakua, koska tiedämme, että taulukon kaikki
-luvut ovat positiivisia, jolloin mitä enemmän lukuja laitamme alitaulukkoon,
-sitä suurempi sen summa on.
-Niinpä voimme etsiä ensimmäisen kohdan $j$,
-jossa välin $[i,j]$ lukujen summa on ainakin $x$.
-Jos summa on tasan $x$, olemme löytäneet halutun alitaulukon,
-ja muuten tällaista alitaulukkoa ei ole olemassa.
-
-Jotta voimme toteuttaa tehokkaan ratkaisun,
-tarvitsemme kuitenkin vielä yhden aineksen:
-meidän täytyy pystyä laskemaan algoritmin aikana tehokkaasti,
-mikä on lukujen summa taulukon välillä $[a,b]$.
-Tarvittava tietorakenne on \emph{summataulukko},
-jossa kohdassa $k$ on taulukon
-lukujen summa taulukon alusta kohtaan $k$ asti.
-Seuraava koodi muodostaa taulukosta summataulukon ajassa $O(n)$:
-
-\begin{code}
-st[0] = taulu[0];
-for (int i = 1; i < n; i++) {
-    st[i] = st[i-1]+taulu[i];
-}
-\end{code}
-
-Tämän jälkeen pystymme laskemaan $O(1)$-ajassa,
-mikä on taulukon lukujen summa välillä $[a,b]$:
-
-\begin{code}
-int summa(int a, int b) {
-    if (a == 0) return st[b];
-    else return st[b]-st[a-1];
-}
-\end{code}
-
-Nyt voimme toteuttaa binäärihaun seuraavasti:
-
-\begin{code}
-int laskuri = 0;
-for (int i = 0; i < n; i++) {
-    int a = i, b = n-1;
-    while (a < b) {
-        int u = (a+b)/2;
-        if (summa(i,u) < x) a = u+1;
-        else b = u;
+    
+    public boolean equals(Object o) {
+        Piste p = (Piste)o;
+        return x == p.x && y == p.y;
     }
-    if (summa(i,a) == x) laskuri++;
+
+    // ...
 }
-System.out.println(laskuri);
 \end{code}
 
-Jokaisessa kohdassa $i$ etsimme binäärihaulla väliltä $[i,n-1]$
-ensimmäisen kohdan, jossa alitaulukon summa on ainakin $x$.
-Sitten tarkastamme, onko summa tasan $x$,
-ja jos on, kasvatamme laskuria yhdellä.
-Tuloksena olevan algoritmin aikavaativuus on $O(n \log n)$,
-koska jokainen binäärihaku vie summataulukon ansiosta
-aikaa vain $O(\log n)$.
-
-\section{Tasoitettu analyysi}
-
-Tähän mennessä olemme arvioineet algoritmien tehokkuutta
-lähinnä määrit\-tämällä jokaiselle silmukalle ylärajan,
-montako kertaa siinä olevaa koodia suoritetaan.
-Tämä onkin yleensä hyvä tapa laskea aikavaativuus,
-mutta joskus ongelmaksi voi tulla, että silmukan kierrosten
-määrä vaihtelee algoritmin eri vaiheissa eikä yläraja
-anna oikeaa kuvaa tehokkuudesta.
-
-Seuraavaksi tutustumme tekniikkaan nimeltä
-\emph{tasoitettu analyysi}, jossa koetamme arvioida tarkemmin,
-montako kertaa silmukassa olevaa koodia suoritetaan
-\emph{yhteensä} algoritmin aikana.
-Tämän avulla pystymme joskus huomaamaan, että algoritmi
-toimii tehokkaammin kuin vaikuttaa ensin.
-
-\subsection{Alitaulukot, osa 2}
-
-Palaamme aluksi tehtävään, jossa meille on annettu
-$n$ positiivisen kokonaisluvun taulukko ja haluamme laskea,
-monenko yhtenäisen alitaulukon summa on $x$.
-Olemme jo ratkaisseet tehtävän ajassa $O(n \log n)$
-binäärihaun ja summataulukon avulla,
-mutta nyt ratkaisemme tehtävän vielä tehokkaammin
-ajassa $O(n)$ esimerkkinä tasoitetusta analyysista.
-
-Ideana on, että meillä on kaksi muuttujaa $i$ ja $j$,
-jotka osoittavat taulukkoon.
-Muuttujat aloittavat taulukon alusta,
-ja jokaisella vuorolla $i$ siirtyy askeleen oikealle
-ja $j$ siirtyy oikealle niin kauan, kunnes välin $[i,j]$
-lukujen summa on ainakin $x$.
-Jos lukujen summa on tasan $x$, olemme löytäneet yhden
-alitaulukon, jonka summa on $x$.
-Seuraava koodi toteuttaa algoritmin:
+Tässä toteutuksessa siis pisteen $(x,y)$ hajautusarvo lasketaan
+kaavalla $97x+y$, missä 97 on valitsemamme vakio, jolla ei ole
+syvällistä merkitystä.
+Nyt kun hajautusfunktio on kunnossa,
+voimme luoda vaikkapa \texttt{HashSet}-rakenteen, jossa on pisteitä:
 
 \begin{code}
-int j = -1;
-int summa = 0;
-int laskuri = 0;
-for (int i = 0; i < n; i++) {
-    while (j+1 < n && summa < x) {
-        j++;
-        summa += taulu[j];
-    }
-    if (summa == x) laskuri++;
-    summa -= taulu[i];
-}
-System.out.println(laskuri);
+HashSet<Piste> joukko = new HashSet<Piste>();
+joukko.add(new Piste(3,2));
+joukko.add(new Piste(1,4));
+joukko.add(new Piste(1,3));
 \end{code}
 
-Tästä koodista on ensin näkemältä vaikeaa määrittää algoritmin
-aikavaativuutta, koska ei ole varmaa, montako kierrosta
-\texttt{while}-silmukkaa suoritetaan milloinkin.
-Saattaa olla, että jollakin kertaa silmukkaa ei suoriteta lainkaan
-mutta toisella kertaa $O(n)$ kierrosta.
-Koska silmukkaa suoritetaan aina enintään $O(n)$ kierrosta,
-saamme algoritmille aikavaativuuden $O(n^2)$,
-mutta antaako tämä hyvän kuvan algoritmista?
+\section{Esimerkki: Anagrammit}
 
-Voimme analysoida algoritmia tarkemmin kiinnittämällä huomiota
-siihen, miten muuttujan $j$ arvo muuttuu algoritmissa.
-Muuttujan arvo on aluksi $-1$,
-se kasvaa yhdellä jokaisella \texttt{while}-silmukan kierroksella
-ja silmukkaan mennään vain, jos arvo on enintään $n-1$.
-Niinpä voimme päätellä, että silmukassa oleva koodi suoritetaan \emph{yhteensä}
-$O(n)$ kertaa, mikä tarkoittaa sitä,
-että koko algoritmin aikavaativuus on vain $O(n)$.
+Annettuna on lista sanoja ja haluamme jakaa sanat ryhmiin niin,
+että kukin ryhmä sisältää sanat, jotka ovat keskenään anagrammeja.
+Kaksi sanaa ovat anagrammit, jos ne on mahdollista muuttaa toisikseen
+muuttamalla niiden kirjainten järjestystä.
+Esimerkiksi jos sanat ovat ''abc'', ''iines'', ''bac'', ''cba'' ja ''sieni'',
+niistä muodostuu kaksi ryhmää.
+Ensimmäisessä ryhmässä on sanat ''abc'', ''bac'' ja ''cba'',
+ja toisessa ryhmässä on sanat ''iines'' ja ''sieni''.
 
-\subsection{Lähin pienempi edeltäjä}
+Voimme ratkaista tehtävän tehokkaasti seuraavan havainnon avulla:
+jos kaksi sanaa ovat anagrammit ja järjestämme niiden kirjaimet,
+ne muuttuvat samoiksi.
+Esimerkiksi sanoissa ''iines'' ja ''sieni'' kirjaimet
+järjestettyinä ovat ''eiins''.
+Tämän havainnon ansiosta voimme käyttää kunkin anagrammiryhmän
+\emph{tunnuksena} sen kirjainten järjestettyä muotoa.
 
-Tasoitettuun analyysiin liittyy usein jokin tietorakenne,
-jonka operaatioiden määrää haluamme arvioida.
-Näin on myös seuraavassa tehtävässä:
-
-Annettuna on taulukko, jossa on $n$ kokonaislukua,
-ja haluamme muodostaa toisen taulukon,
-jossa on jokaisen luvun \emph{lähin pienempi edeltäjä}.
-Tämä tarkoittaa, että haluamme löytää jokaiselle taulukon luvulle
-sitä pienemmän luvun, joka on mahdollisimman lähellä aiemmin taulukossa.
-Esimerkiksi taulukon $[1,4,5,2,3,2]$
-lähimmät pienemmät edeltäjät ovat $[-,1,4,1,2,1]$.
-Koska luvulla $1$ ei ole pienempää edeltäjää,
-sen kohdalla on merkki $-$.
-
-Seuraavassa on $O(n^2)$-algoritmi, joka etsii
-lähimmät pienemmät edeltäjät:
+Luomme ryhmiä varten rakenteen
 
 \begin{code}
-for (int i = 0; i < n; i++) {
-    for (int j = i-1; j >= 0; j--) {
-        if (taulu[j] < taulu[i]) {
-            edeltaja[i] = taulu[j];
-            break;
-        }
-    }
-}
+HashMap<String,ArrayList<String>> ryhmat = new HashMap<>();
 \end{code}
 
-Ratkaisemme tehtävän tehokkaasti pitämällä yllä \emph{pinoa},
-jossa on kasvava lista taulukon lukuja.
-Pino on tietorakenne, jossa voimme lisätä alkion pinon päälle
-ja hakea tai poistaa pinon ylimmän alkion.
-Voisimme toteuttaa pinon listana,
-mutta Javassa on myös erikoistunut tietorakenne \texttt{Stack},
-jota käytämme seuraavassa koodissa:
+jossa avaimena on anagrammiryhmän tunnus ja arvona on lista,
+joka sisältää kaikki listaan kuuluvat sanat.
+Algoritmin runko näyttää seuraavalta, kun oletamme,
+että sanat on tallennettu listaan \texttt{sanat}:
 
 \begin{code}
-Stack<Integer> pino = new Stack<>();
-for (int i = 0; i < n; i++) {
-    while (!pino.empty() && pino.peek() >= taulu[i]) {
-        pino.pop();
+for (String sana : sanat) {
+    String avain = tunnus(sana);
+    if (!ryhmat.containsKey(avain)) {
+        ryhmat.put(avain,new ArrayList<>());
     }
-    if (!pino.empty()) {
-        edeltaja[i] = pino.peek();
-    }
-    pino.push(taulu[i]);
+    ryhmat.get(avain).add(sana);
+}
+System.out.println(ryhmat);
+\end{code}
+
+Tarvitsemme vielä metodin \texttt{tunnus}, joka järjestää
+sanan kirjaimet aakkosjärjestykseen.
+Jotta voimme järjestää sanan, muutamme sen merkkitaulukoksi,
+järjestämme taulukon, ja palautamme sitten uuden merkkijonon,
+joka on muodostettu taulukosta.
+
+\begin{code}
+String tunnus(String sana) {
+    char[] taulu = sana.toCharArray();
+    Arrays.sort(taulu);
+    return new String(taulu);
 }
 \end{code}
 
-Metodi \texttt{push} lisää alkion pinoon,
-\texttt{peek} hakee ylimmän alkion ja \texttt{pop}
-poistaa ylimmän alkion.
-Ideana on, että säilytämme pinossa kasvavassa järjestyk\-sessä
-ehdokkaita tulevien lukujen lähimmiksi pienimmiksi edeltäjiksi.
-Jokaisessa taulukon kohdassa poistamme
-pinosta lukuja, kunnes pinon ylin luku on pienempi kuin nykyinen luku
-tai pino on tyhjä.
-Jos pino ei ole tämän jälkeen tyhjä, sen ylin luku on nykyisen luvun
-lähin pienempi edeltäjä.
-Lopuksi lisäämme nykyisen luvun pinoon päälle.
+Esimerkin tapauksessa ohjelmamme tulostus on seuraava:
 
-Algoritmin tehokkuus riippuu siitä, montako kertaa suoritamme
-\texttt{while}-silmukassa olevan koodin.
-Oleellinen havainto on, että voimme poistaa pinosta
-korkeintaan niin monta alkiota kuin olemme lisänneet siihen,
-eli emme voi kutsua \texttt{pop}-metodia useammin kuin \texttt{push}-metodia.
-Koska lisäämme pinoon $n$ alkiota, suoritamme \texttt{while}-silmukkaa
-siis enintään $n$ kierrosta.
-Tämän ansiosta algoritmin aikavaativuus on $O(n)$.
+\begin{code}
+{abc=[abc, bac, cba], eiins=[iines, sieni]}
+\end{code}
