@@ -151,85 +151,57 @@ että se ei löydä aina parasta ratkaisua.
 Ennen kuin voimme käyttää ahnetta algoritmia luottavaisin mielin,
 meidän täytyykin vakuuttua sen toimivuudesta.
 
+\subsection{Esimerkki: Asunnot}
+
 Tarkastellaan esimerkkinä seuraavaa tehtävää:
-Meillä on $n$ kolikkoa, jonka jokaisen arvo on positiivinen kokonaisluku,
-ja haluamme selvittää pienimmän summan, jota \emph{ei} voi muodostaa kolikoista.
-Esimerkiksi jos kolikot ovat $[1,2,2,9]$, voimme muodostaa summat
-$1$, $2$, $1+2=3$, $2+2=4$ ja $1+2+2=5$,
-mutta emme voi muodostaa summaa $6$.
+Meillä on tiedot $n$ vapaasta asunnosta sekä
+$m$ asunnon hakijasta.
+Tiedämme jokaisen asunnon vuokran,
+ja lisäksi kukin asunnon hakija on ilmoittanut
+ylärajan, kuinka suurta vuok\-raa hän voi maksaa.
+Miten voimme jakaa asunnot niin,
+että mahdollisimman moni saa asunnon?
 
-Tämä tehtävä vaikuttaa ensi silmäykseltä vaikealta,
-koska mahdollisia tapoja summien muodostamiseen on niin paljon.
-Kun meillä on $n$ kolikkoa, voimme valita $2^n$ tavalla
-kolikoiden osajoukon, joista syntyy jokin summa.
-On selvää, että algoritmista tulee liian hidas,
-jos se käy läpi kaikki tällaiset osajoukot.
-Jotta saisimme aikaan tehokkaan algoritmin,
-meidän tulisi huomata ongelmasta jotain,
-jonka ansiosta pystymme välttämään osajoukkojen läpikäynnin
-ja löydämme ratkaisun suoremmin.
+Voimme ratkaista tehtävän ahneella algoritmilla,
+joka käy läpi hakijat järjestyksessä vuokran
+ylärajan mukaan pienimmästä suurempaan.
+Jokaisen hakijan kohdalla tarkastamme,
+onko jäljellä asuntoa, jonka hän voi vuokrata,
+ja jos on, annamme kyseisen asunnon hänelle.
+Jos mahdollisia asuntoja on useita,
+valitsemme jonkin niistä.
+Tämän jälkeen siirrymme seuraavaan hakijaan
+ja jatkamme samalla tavalla.
 
-Yksi hyvä tapa lähestyä tehtävää ja saada jotain tietoa ongelman luonteesta
-on lähteä ensin liikkeelle pienistä summista.
-Haluamme muodostaa ensin summan $1$, ja tähän tarvitsemme välttämättä
-kolikon, jonka arvo on $1$.
-Sitten haluamme muodostaa summan $2$, mihin tarvitsemme joko
-toisen kolikon $1$ tai kolikon $2$, ja sen jälkeen summan $3$,
-joka voi muodostua kolikoista $1+1+1$, $1+2$ tai $3$.
-Voisimme jatkaa eteenpäin, mutta vaihtoehtoja alkaa tulla
-paljon ja meidän on vaikeaa hallita niitä.
-Kuitenkin näyttää siltä, että meidän kannattaa aloittaa
-summien muodostaminen pienistä kolikoista.
+Esimerkiksi jos asuntojen vuokrat ovat $[600,650,700]$
+ja vuokraajien ylä\-rajat ovat $[500,600,600,800]$,
+toimimme seuraavasti:
+Koetamme ensin löytää asunnon vuokraajalle,
+jonka vuokran yläraja on $500$.
+Mitään tällaista asuntoa ei ole, joten siirrymme eteenpäin.
+Seuraavaksi vuoroon tulee vuokraaja, jonka vuokran yläraja on $600$,
+ja annamme hänelle asunnon, jonka vuokra on $600$.
+Sitten toinen vuokraaja, jonka yläraja on $600$,
+ei saa asuntoa (koska ainoa näin halpa asunto meni jo),
+ja lopuksi vuokraaja, jonka yläraja on $800$
+saa jommankumman jäljellä olevista asunnoista.
 
-Seuraavaksi voimme yrittää alkaa miettiä ongelmaa yleisemmin.
-Oletetaan, että meillä on joukko kolikoita,
-joista voimme muodostaa kaikki summat $1,2,\dots,s$.
-Voisimmeko ottaa mukaan vielä jonkin uuden kolikon arvoltaan $u$ niin,
-että saamme muodostettua myös summan $s+1$?
-Tämä on mahdollista tarkalleen silloin, kun $u \le s+1$,
-eli uuden kolikon arvo saa olla enintään $s+1$.
-Jos tämä ehto pätee, voimme ottaa kolikon mukaan ja
-pystymme muodostamaan tämän jälkeen kaikki summat $1,2,\dots,s+u$.
-Esimerkiksi jos meillä on kolikot $[1,1,3]$, voimme muodostaa
-niistä summat $1,2,\dots,5$ ja uuden kolikon arvon tulee olla enintään $6$.
-Jos uuden kolikon arvo on vaikkapa $4$, voimme ottaa sen mukaan ja
-pystymme muodostamaan sen jälkeen kolikoista $[1,1,3,4]$ summat $1,2,\dots,9$.
-
-Lisäksi jos meillä on monia vaihtoehtoja valita uusi kolikko,
-ei ole väliä, missä järjestyksessä otamme ne mukaan vaan
-voimme valita seuraavaksi minkä tahansa niistä.
-Erityisesti voimme päättää, että valitsemme aina
-seuraavaksi ahneesti \emph{pienimmän} mahdollisen kolikon.
-Nyt meillä on koossa kaikki tarvittavat ainekset
-tehokasta algoritmia varten.
-Aloitamme tyhjästä joukosta ja lisäämme siihen kolikoita
-pienimmästä suurimpaan niin kauan kuin mahdollista.
-Lopuksi vastaus tehtävään on yhtä suurempi kuin kolikoiden
-summa.
-Seuraava koodi toteuttaa algoritmin:
-
-\begin{code}
-long summa = 0;
-Arrays.sort(kolikot);
-for (int i = 0; i < n; i++) {
-    if (kolikot[i] <= summa+1) {
-        summa += kolikot[i];
-    } else {
-        break;
-    }
-}
-System.out.println(summa+1);
-\end{code}
-
-Kuten koodista näkyy, meidän ei tarvitse pitää yllä
-kolikoiden joukkoa, vaan riittää säilyttää tietoa
-joukossa olevien kolikoiden summasta muuttujassa \texttt{summa}.
-Käymme läpi kolikot järjestyksessä pienimmästä suurimpaan
-ja kasvatamme summaa, jos se on mahdollista.
-Kun vastaan tulee ensimmäinen kolikko, jota emme voi ottaa mukaan,
-silmukka päättyy, koska tämä tarkoittaa,
-että emme voi valita enää mitään muutakaan kolikkoa.
-Tuloksena on algoritmi, jonka aikavaativuus on $O(n \log n)$.
+Miksi tämä algoritmi toimii?
+Ahneissa algoritmeissa auttaa usein ajatella,
+mitä tapahtuu, jos \emph{emme} tee jotain valintaa.
+Jos saatavilla olisi vuokraajalle $x$ sopiva asunto,
+mutta emme anna asuntoa hänelle,
+joku myöhemmin käsiteltävä vuokraaja $y$ voi saada kyseisen asunnon.
+Lopulta saamme aikaan jonkin ratkaisun, jossa
+vuokraajalla $x$ ei ole asuntoa ja vuokraajalla $y$ on asunto.
+Kuitenkin voimme \emph{muuttaa} tätä ratkaisua niin,
+että ratkaisu säilyy muuten samana, mutta vuokraajan $y$
+asunnon saakin vuokraaja $x$.
+Tuloksena on ratkaisu, joka on yhtä hyvä kuin alkuperäinen ratkaisu.
+Niinpä emme saa koskaan aikaan parempaa ratkaisua
+jättämällä vuokraajan $x$ ilman asuntoa,
+mikä tarkoittaa, että voimme yhtä hyvin antaa asunnon alunperin
+vuokraajalle $x$ ja ahne algoritmi toimii.
 
 \section{Binäärihaun sovellukset}
 
