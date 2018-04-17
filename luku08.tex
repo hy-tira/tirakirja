@@ -1,17 +1,21 @@
 \chapter{Algoritmien suunnittelu}
 
 Kuinka voi suunnitella hyvän algoritmin?
-On selvää, ettei tähän kysymykseen ole helppoa vastausta.
+On selvää, ettei tähän kysymykseen ole yhtä helppoa vastausta.
 Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
 tai säveltää hyvää musiikkia.
+Algoritmien suunnittelu on taito, jonka oppiminen vie aikaa.
 
-Tämän kurssin keskeinen tavoitteemme on saada aikaan tehokkaita algoritmeja,
-jotka toimivat ajassa $O(n)$ tai $O(n \log n)$.
-Kun tämä tavoite on tiedossa, voimme ottaa sen algoritmien
-suunnittelun lähtökohdaksi ja kartoittaa sen avulla mahdollisia
+Hyvä tavoite algoritmien suunnittelussa on saada aikaan
+algoritmi, joka toimii ajassa $O(n)$ tai $O(n \log n)$.
+Tällaisen algoritmin etuna on, että se toimii tehokkaasti
+myös silloin, kun syötteen koko $n$ on suuri.
+Tavoitteen asettaminen etukäteen on hyödyllistä,
+koska kun tiedämme tavoitteen, voimme ottaa sen suunnittelumme
+lähtökohdaksi ja rajata sen avulla mahdollisia
 lähestymistapoja, joita voimme käyttää.
 
-\section{Perustekniikoita}
+\section{Algoritmin tehostaminen}
 
 Millainen on algoritmi, joka vie aikaa $O(n)$ tai $O(n \log n)$?
 Tämä tarkoittaa,
@@ -21,9 +25,8 @@ vain pienen määrän aikaa.
 Niinpä algoritmissa tulisi esiintyä seuraavan kaltaisia silmukoita:
 
 \begin{code}
-for (int i = 0; i < n; i++) {
+for i = 0 to n-1
     // tee jotain nopeaa
-}
 \end{code}
 
 Tässä ''jotain nopeaa'' tarkoittaa koodia, joka vie aikaa
@@ -37,26 +40,26 @@ vaatimus tehokkuudesta rajaa pois suuren määrän lähestymistapoja,
 eli meidän on helpompaa löytää hyvä algoritmi,
 kun vaihtoehtojen määrä on pienempi.
 
-Algoritmien suunnittelussa keskeisiä ovat \emph{havainnot}:
-haluamme saada käsityksen,
-mitä ominaisuuksia ratkaistavaan ongelmaan liittyy,
-jotta voimme käyttää niitä algoritmissa.
-Voimme tehdä havaintoja tutkimalla ongelman pieniä tapauksia
-ja etsimällä riippuvuuksia ja säännöllisyyksiä.
-Jos käy hyvin, huomaamme asioita, jotka pätevät kaikissa ongelman
-tapauksissa, ja voimme hyödyntää niitä koko tehtävän ratkaisemisessa.
-
-\subsection{Algoritmin tehostaminen}
-
 Tavallinen tilanne algoritmien suunnittelussa on,
 että pystymme ratkaisemaan annetun ongelman
 helposti $O(n^2)$-ajassa ensimmäisellä mieleen tulevalla algoritmilla,
-mutta haasteena on keksiä tehokkaampi algoritmi,
+mutta tarvitsisimme tehokkaamman algoritmin,
 joka toimisi ajassa $O(n)$ tai $O(n \log n)$.
 Kokemus on osoittanut, että tämä on hyvä tilanne:
 yleensä \emph{pystymme} tehostamaan
 tavalla tai toisella algoritmia,
 kunhan mietimme huolellisesti asiaa.
+Donald Knuth kuvailee samaa ilmiötä teoksessaan
+\emph{The Art of Computer Programming} (osa 4A, esipuhe):
+
+\begin{quote}
+Starting about 1970, computer scientists began to experience
+a phenomenon that we called ''Floyd's Lemma'':
+Problems that seemed to need $n^3$ operations could actually be
+solved in $O(n^2)$; problems that seemed to require $n^2$
+could be handled in $O(n \log n)$; and $n \log n$ was often
+reducible to $O(n)$.
+\end{quote}
 
 Tarkastellaan esimerkkinä seuraavaa tehtävää:
 Annettuna on taulukko, joka sisältää luvut $1,2,\dots,n$
@@ -70,19 +73,18 @@ tarvitsemme kolme kierrosta:
 ensimmäisellä kierroksella keräämme luvut $1$ ja $2$,
 toisella luvun $3$ ja kolmannella luvut $4$ ja $5$.
 
-Voimme ratkaista tehtävän suoraviivaisesti $O(n^2)$-ajassa
+Voimme ratkaista tehtävän helposti $O(n^2)$-ajassa
 simuloimalla lukujen keräämistä tehtävänannon kuvaamalla tavalla:
 
 \begin{code}
-int luku = 1;
-int laskuri = 0;
-while (luku <= n) {
-    laskuri++;
-    for (int i = 0; i < n; i++) {
-        if (taulu[i] == luku) luku++;
-    }
-}
-System.out.println(laskuri);
+luku = 1
+laskuri = 0
+while luku <= n
+    laskuri++
+    for i = 0 to n-1
+        if taulu[i] == luku
+            luku++
+print(laskuri)
 \end{code}
 
 Tässä muuttuja \texttt{luku} kertoo,
@@ -98,18 +100,16 @@ Kuinka voisimme sitten tehostaa algoritmia niin,
 että se veisi aikaa vain $O(n)$ tai $O(n \log n)$?
 Yllä olevan algoritmin hitaus johtuu pohjimmiltaan siitä,
 että algoritmilla menee kauan aikaa löytää,
-missä kohtaa taulukossa on seuraava luku,
+missä kohdassa taulukossa on seuraava luku,
 jonka haluamme kerätä.
 Niinpä jotta voimme ratkaista tehtävän tehokkaasti,
 meidän täytyy jollakin tavalla löytää seuraava kerät\-tävä luku nopeammin.
-Kätevä ratkaisu tähän on luoda aputaulukko,
+Kätevä ratkaisu tähän on luoda aputaulukko \texttt{kohta},
 joka kertoo jokaisen luvun kohdan:
 
 \begin{code}
-int[] kohta = new int[n+1];
-for (int i = 0; i < n; i++) {
-    kohta[taulu[i]] = i;
-}
+for i = 0 to n-1
+    kohta[taulu[i]] = i
 \end{code}
 
 Tämän taulukon avulla saamme selville $O(1)$-ajassa,
@@ -121,13 +121,11 @@ kuin seuraava kerättävä luku.
 Niinpä voimme laskea kierrosten määrän näin:
 
 \begin{code}
-int laskuri = 1;
-for (int i = 2; i <= n; i++) {
-    if (kohta[i-1] > kohta[i]) {
-        laskuri++;
-    }
-}
-System.out.println(laskuri);
+laskuri = 1
+for i = 2 to n
+    if kohta[i-1] > kohta[i]
+        laskuri++
+print(laskuri)
 \end{code}
 
 Tuloksena on algoritmi, jossa on kaksi silmukkaa,
@@ -135,14 +133,23 @@ joista molemmat vievät aikaa vain $O(n)$.
 Niinpä algoritmin aikavaativuus on $O(n)$,
 eli olemme saavuttaneet tavoitteemme.
 
-\subsection{Ahneet algoritmit}
+\section{Ahneet algoritmit}
 
 Tehokkaan algoritmin saaminen aikaan vaatii usein,
 että pystymme tekemään algoritmissa jotain \emph{ahneesti}.
 Tämä tarkoittaa, että meidän ei tarvitse käydä läpi
 kaikkia mahdollisia ratkaisuja vaan pystymme rakentamaan
-ratkaisun suoraan askel askeleelta käsittelemällä
-syötteen sopivassa järjestyksessä.
+ratkaisun suoremmin käsittelemällä syötteen sopivassa järjestyksessä.
+
+Ahneen algoritmin idea on yleensä yksinkertainen ja
+se on helppoa toteuttaa.
+Vaikeutena on kuitenkin keksiä ahne algoritmi,
+joka toimii oikein kaikissa tilanteissa.
+Koska ahne algoritmi muodostaa vastauksen suoraan
+käymättä läpi kaikkia vaihtoehtoja, on suuri riski,
+että se ei löydä aina parasta ratkaisua.
+Ennen kuin voimme käyttää ahnetta algoritmia luottavaisin mielin,
+meidän täytyykin vakuuttua sen toimivuudesta.
 
 Tarkastellaan esimerkkinä seuraavaa tehtävää:
 Meillä on $n$ kolikkoa, jonka jokaisen arvo on positiivinen kokonaisluku,
@@ -224,7 +231,7 @@ silmukka päättyy, koska tämä tarkoittaa,
 että emme voi valita enää mitään muutakaan kolikkoa.
 Tuloksena on algoritmi, jonka aikavaativuus on $O(n \log n)$.
 
-\section{Binäärihaku}
+\section{Binäärihaun sovellukset}
 
 \emph{Binäärihaku} on tekniikka, joka pelastaa meidät monesta
 kiipelistä algoritmien suunnittelussa.
