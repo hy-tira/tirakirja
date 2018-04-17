@@ -1,29 +1,30 @@
 \chapter{Virtauslaskenta}
 
-Lähtökohtanamme on suunnattu verkko, jossa on kaksi erityistä solmua:
-\emph{lähtösolmu} ja \emph{kohdesolmu}.
-Jokaisella kaarella on paino, joka rajoittaa,
-miten paljon virtausta voi kulkea kaarta pitkin,
-ja haluamme selvittää, mikä on \emph{maksimivirtaus} lähtösolmusta
-kohdesolmuun.
+Tässä luvussa tarkastelemme ongelmaa,
+jossa haluamme selvittää suurimman \emph{virtauksen}
+verkon lähtösolmusta kohdesolmuun.
+Tämä tarkoittaa, että haluamme välittää jotakin
+kaaria pitkin mahdollisimman tehokkaasti
+ottaen huomioon kaarten kapasiteetit.
+Esimerkiksi tietoverkossa meitä voi kiinnostaa,
+kuinka nopeasti voimme välittää tietoa koneelta toiselle.
 
-Lähtökohtanamme on suunnattu verkko, jossa on kaksi erityistä solmua:
-\emph{lähtösolmu} ja \emph{kohdesolmu}.
-Jokaisella kaarella on paino, joka rajoittaa,
-miten paljon virtausta voi kulkea kaarta pitkin,
-ja haluamme selvittää, mikä on \emph{maksimivirtaus} lähtösolmusta
-kohdesolmuun.
+Tutustumme aluksi Ford-Fulkersonin algoritmiin,
+jonka avulla voimme sekä selvittää maksimivirtauksen
+että saada paremman käsityksen ongelman luonteesta.
+Tämän jälkeen käymme läpi joukon muita verkko-ongelmia,
+jotka pystymme ratkaisemaan \emph{palauttamalla}
+ongelmat maksimivirtaukseen.
 
 \section{Maksimivirtaus}
 
-Maksimivirtausongelmassa haluamme selvittää
-suurimman \emph{virtauksen} suunnatun verkon
-lähtösolmusta kohdesolmuun.
-Virtaus lähtee liikkeelle lähtö\-solmusta ja saapuu kohdesolmuun
-niin, että jokaiseen välisolmuun tuleva virtaus on
+Verkossa kulkeva \emph{virtaus} lähtee liikkeelle
+tietystä lähtösolmusta ja päätyy tiettyyn kohdesolmuun.
+Jokaisessa välisolmussa solmuun tuleva virtaus on
 yhtä suuri kuin solmusta lähtevä virtaus.
-Jokaisella kaarella on \emph{kapasiteetti}, jota virtauksen
+Lisäksi kullakin verkon kaarella on \emph{kapasiteetti}, jota virtauksen
 määrä kaarta pitkin ei saa ylittää.
+\emph{Maksimivirtaus} on virtaus, joka on mahdollisimman suuri.
 
 \begin{figure}
 \center
@@ -90,17 +91,17 @@ muodostamaan maksimivirtauksen.
 \end{tikzpicture}
 \end{center}
 \caption{Verkon esitysmuoto Ford-Fulkersonin algoritmissa.}
-\label{fig:floesi}
+\label{fig:flouus}
 \end{figure}
 
-Algoritmin käyttäminen vaatii, että verkko on esitetty
+Jotta voimme käyttää algoritmia, oletamme, että verkko on esitetty
 erityisessä muodossa, jossa jokaista alkuperäisen verkon
-kaarta vastaa kaksi kaarta:
-alkuperäinen kaari, jonka painona on aluksi kaaren kapasiteetti,
-sekä sille kään\-teinen kaari, jonka painona on aluksi $0$.
+kaarta vastaa \emph{kaksi} kaarta:
+alkuperäinen kaari, jonka painona on kaaren kapasiteetti,
+sekä sille kään\-teinen kaari, jonka painona on $0$.
 Käänteisten kaarten avulla pystymme tarvittaessa \emph{peruuttamaan}
 virtausta algoritmin aikana.
-Kuva \ref{fig:floesi} näyttää, kuinka esitämme esimerkkiverkkomme algoritmissa.
+Kuva \ref{fig:flouus} näyttää, kuinka esitämme esimerkkiverkkomme algoritmissa.
 
 Algoritmin jokaisessa vaiheessa muodostamme polun
 lähtösolmusta kohdesolmuun.
@@ -110,7 +111,7 @@ Polun muodostamisen jälkeen virtaus lähtösolmusta kohdesolmuun
 kasvaa $p$:llä, missä $p$ on pienin kaaren paino polulla.
 Lisäksi jokaisen polulla olevan kaaren paino vähenee $p$:llä
 ja jokaisen niille käänteisen kaaren paino kasvaa $p$:llä.
-Etsimme vastaavasti uusia polkuja, kunnes mitään sallittua
+Etsimme tällä tavalla uusia polkuja, kunnes mitään sallittua
 polkua ei voi enää muodostaa.
 
 Kuva \ref{fig:floesi} näyttää, kuinka Ford-Fulkersonin algoritmi muodostaa
@@ -326,19 +327,55 @@ joten Ford-Fulkersonin algoritmi toimii oikein.
 
 Voimme muodostaa Ford-Fulkersonin algoritmin aikana miten tahansa,
 mutta polkujen valintatapa vaikuttaa algoritmin tehokkuuteen.
-Pahimmassa tapauksessa jokainen polku tuottaa vain yhden yksikön
-lisää virtausta, jolloin algoritmi joutuu muodostamaan kaikkiaan $f$ polkua,
-missä $f$ on verkon maksimivirtaus.
+Riippumatta polkujen valintatavasta on selvää,
+että jokainen polku kasvattaa virtausta ainakin \emph{yhdellä}.
+Niinpä tiedämme, että joudumme etsimään enintään $f$ polkua,
+kun verkon maksimivirtaus on $f$.
 Jos muodostamme polut syvyyshaulla, saamme siis algoritmin
 ajankäytölle ylärajan $O(f (n+m))$.
 
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,-1) {$4$};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:$10^9$] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:$10^9$] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=right:$1$] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:$10^9$] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:$10^9$] {} (4);
+\end{tikzpicture}
+\end{center}
+\caption{Verkko, joka voi aiheuttaa ongelmia algoritmille.}
+\label{fig:polhuo}
+\end{figure}
+
+Voiko todella käydä niin, että jokainen polku parantaa
+virtausta vain yhdellä?
+Tämä on mahdollista, ja kuva \ref{fig:polhuo} tarjoaa esimerkin asiasta.
+Jos muodostamme polut syvyyshaulla ja valitsemme haussa aina solmun,
+jonka numero on pienin,
+muodostamme vuorotellen polkuja $1 \rightarrow 2 \rightarrow 3 \rightarrow 4$
+ja $1 \rightarrow 3 \rightarrow 2 \rightarrow 4$ niin, että
+lisäämme ja peruutamme edestakaisin kaarta $2 \rightarrow 3$ kulkevaa virtausta.
+Tämän vuoksi joudumme muodostamaan $2 \cdot 10^9$ polkua,
+ennen kuin olemme saaneet selville verkon maksimivirtauksen.
+
+Tästä ongelmasta on kuitenkin mahdollista selviytyä
+tekemällä yksinkertainen muutos algoritmiin.
 Edmonds-Karpin algoritmi on Ford-Fulkersonin algoritmin versio,
-jossa muodostammekin polut \emph{leveyshaulla}.
+jossa muodostamme polut \emph{leveyshaulla}.
 Tämä tarkoittaa, että valitsemme aina
 polun, jossa on mahdollisimman vähän kaaria.
-On mahdollista osoittaa, että tällaisen valinnan ansiosta
-algoritmi muodostaa aina enintään $nm$ polkua ja
-sen aikavaativuus on $O(nm (n+m))$.
+Leveyshakua käyttäen muodostamme kuvan \ref{fig:polhuo} verkossa
+vain kaksi polkua $1 \rightarrow 2 \rightarrow 4$ ja
+$1 \rightarrow 3 \rightarrow 4$, jotka antavat suoraan maksimivirtauksen.
+Yleisemmin on mahdollista osoittaa, että
+Edmonds-Karpin algoritmi muodostaa aina enintään $nm$ polkua,
+joten sen aikavaativuus on $O(nm (n+m))$.
 
 \section{Sovelluksia}
 
