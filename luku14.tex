@@ -522,5 +522,97 @@ esimerkissämme.
 Maksimivirtaus tässä verkossa vastaa alkuperäisen verkon
 maksimiparitusta.
 
-
 \subsection{Polkupeite}
+
+\emph{Polkupeite} on joukko verkon polkuja,
+jotka kattavat yhdessä kaikki verkon solmut.
+Oletamme seuraavaksi, että verkko on suunnattu ja syklitön,
+ja haluamme muodostaa mahdollisimman pienen polkupeitteen
+niin, että jokainen solmu esiintyy tarkalleen yhdessä polussa.
+Kuvassa \ref{fig:polpei} on esimerkkinä verkko ja sen pienin polkupeite,
+joka muodostuu kahdesta polusta.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (4,0) {$3$};
+\node[draw, circle] (4) at (6,0) {$4$};
+\node[draw, circle] (5) at (2,-2) {$5$};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (2) -- (3);
+\path[draw,thick,->] (3) -- (4);
+\path[draw,thick,->] (5) -- (2);
+\path[draw,thick,->] (5) -- (3);
+\path[draw,thick,->,red,line width=2pt] (1) -- (2);
+\path[draw,thick,->,red,line width=2pt] (5) -- (3);
+\path[draw,thick,->,red,line width=2pt] (3) -- (4);
+\end{tikzpicture}
+\end{center}
+\caption{Polkupeite, joka muodostuu poluista $1 \rightarrow 2$ ja $5 \rightarrow 3 \rightarrow 4$.}
+\label{fig:polpei}
+\end{figure}
+
+Voimme ratkaista pienimmän polkupeitteen etsimisen
+ongelman maksimivirtauksen avulla muodostamalla verkon,
+jossa jokaista alkuperäistä solmua vastaa kaksi solmua:
+vasen ja oikea solmu.
+Vasemmasta solmusta on kaari oikeaan solmuun,
+jos alkuperäisessä verkossa on vastaava kaari.
+Lisäämme vielä verkkoon lähtösolmun ja kohdesolmun niin,
+että lähtösolmusta pääsee kaikkiin vasempiin solmuihin
+ja kaikista oikeista solmuista pääsee kohdesolmuihin.
+Tämän verkon maksimivirtaus antaa meille alkuperäisen
+verkon pienimmän solmupeitteen.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\node[draw, circle] (1a) at (0,0) {$1$};
+\node[draw, circle] (2a) at (0,-1.25) {$2$};
+\node[draw, circle] (3a) at (0,-2.5) {$3$};
+\node[draw, circle] (4a) at (0,-3.75) {$4$};
+\node[draw, circle] (5a) at (0,-5) {$5$};
+\node[draw, circle] (1b) at (4,0) {$1$};
+\node[draw, circle] (2b) at (4,-1.25) {$2$};
+\node[draw, circle] (3b) at (4,-2.5) {$3$};
+\node[draw, circle] (4b) at (4,-3.75) {$4$};
+\node[draw, circle] (5b) at (4,-5) {$5$};
+\node[draw, circle] (a) at (-3,-2.5) {\phantom{$a$}};
+\node[draw, circle] (b) at (7,-2.5) {\phantom{$b$}};
+\path[draw,thick,->] (1a) -- (2b);
+\path[draw,thick,->] (2a) -- (3b);
+\path[draw,thick,->] (3a) -- (4b);
+\path[draw,thick,->] (5a) -- (2b);
+\path[draw,thick,->] (5a) -- (3b);
+\path[draw,thick,->] (a) -- (1a);
+\path[draw,thick,->] (a) -- (2a);
+\path[draw,thick,->] (a) -- (3a);
+\path[draw,thick,->] (a) -- (4a);
+\path[draw,thick,->] (a) -- (5a);
+\path[draw,thick,->] (1b) -- (b);
+\path[draw,thick,->] (2b) -- (b);
+\path[draw,thick,->] (3b) -- (b);
+\path[draw,thick,->] (4b) -- (b);
+\path[draw,thick,->] (5b) -- (b);
+\end{tikzpicture}
+\end{center}
+\caption{Polkupeitteen etsiminen maksimivirtauksen avulla.}
+\label{fig:polvir}
+\end{figure}
+
+Kuva \ref{fig:polvir} näyttää tuloksena olevan verkon
+esimerkissämme.
+Ideana on, että maksimivirtaus etsii,
+mitkä kaaret kuuluvat polkuihin:
+jos kaari solmusta $a$ solmuun $b$ kuuluu virtaukseen,
+niin vastaavasti polkupeitteessä on polku,
+jossa on kaari $a \rightarrow b$.
+Koska virtauksessa voi olla valittuna vain yksi kaari,
+joka alkaa tietystä solmusta tai päättyy tiettyyn solmuun,
+tuloksena on varmasti joukko polkuja.
+Toisaalta mitä enemmän kaaria saamme laitettua polkuihin,
+sitä pienempi on polkujen määrä.
