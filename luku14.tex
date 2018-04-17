@@ -350,6 +350,177 @@ Tutustumme seuraavaksi joihinkin tällaisiin ongelmiin.
 
 \subsection{Erilliset polut}
 
+Ensimmäinen tehtävämme on muodostaa mahdollisimman monta
+\emph{erillistä} polkua verkon lähtösolmusta kohdesolmuun.
+Tämä tarkoittaa, että jokainen verkon kaari saa esiintyä
+enintään yhdellä polulla.
+Saamme kuitenkin halutessamme kulkea saman solmun kautta useita kertoja.
+Esimerkiksi kuvassa \ref{fig:eripol} voimme muodostaa
+kaksi erillistä polkua solmusta $1$ solmuun $5$,
+mutta ei ole mahdollista muodostaa kolmea erillistä polkua.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\newcommand\verkko[0]{
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (2) -- (3);
+\path[draw,thick,->] (4) -- (2);
+\path[draw,thick,->] (3) -- (5);
+\path[draw,thick,->] (4) -- (5);
+\path[draw,thick,->] (3) -- (4);
+}
+\begin{scope}
+\verkko
+\path[draw,thick,->,red,line width=2pt] (1) -- (2);
+\path[draw,thick,->,red,line width=2pt] (2) -- (3);
+\path[draw,thick,->,red,line width=2pt] (3) -- (4);
+\path[draw,thick,->,red,line width=2pt] (4) -- (5);
+\end{scope}
+\begin{scope}[xshift=7cm]
+\verkko
+\path[draw,thick,->,red,line width=2pt] (1) -- (3);
+\path[draw,thick,->,red,line width=2pt] (3) -- (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Kaksi erillistä polkua solmusta $1$ solmuun $5$.}
+\label{fig:eripol}
+\end{figure}
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,->] (1) -- node[font=\small,label=above:$1/1$] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:$1/1$] {} (3);
+\path[draw,thick,->] (2) -- node[font=\small,label=left:$1/1$] {} (3);
+\path[draw,thick,->] (4) -- node[font=\small,label=above:$0/1$] {} (2);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:$1/1$] {} (5);
+\path[draw,thick,->] (4) -- node[font=\small,label=right:$1/1$] {} (5);
+\path[draw,thick,->] (3) -- node[font=\small,label=above:$1/1$] {} (4);
+\end{tikzpicture}
+\end{center}
+\caption{Erilliset polut tulkittuna maksimivirtauksena.}
+\label{fig:erivir}
+\end{figure}
+
+Voimme ratkaista erillisten polkujen ongelman
+tulkitsemalla tehtävän maksimivirtauksena.
+Ideana on etsiä maksimivirtaus lähtösolmusta kohdesolmuun
+niin, että jokaisen kaaren kapasiteetti on $1$.
+Tämä maksimivirtaus on yhtä suuri kuin suurin
+erillisten polkujen määrä.
+Kuva \ref{fig:erivir} näyttää maksimivirtauksen
+esimerkkiverkossamme.
+
+Miksi maksimivirtaus ja erillisten polkujen määrä ovat yhtä suuret?
+Ensinnäkin erilliset polut muodostavat yhdessä virtauksen,
+joten maksimivirtaus ei voi olla pienempi kuin erillisten polkujen määrä.
+Toisaalta jos virtaus on $k$, voimme muodostaa $k$ erillistä polkua
+valitsemalla kaaria ahneesti lähtösolmusta alkaen,
+joten maksimivirtaus ei voi olla suurempi kuin erillisten polkujen määrä.
+Ainoa mahdollisuus on, että maksimivirtaus ja erillisten polkujen määrä
+ovat yhtä suuret.
+
 \subsection{Maksimiparitus}
 
-\subsection{X}
+Verkon \emph{paritus} on joukko kaaria, joille pätee,
+että jokainen solmu on enintään yhden kaaren päätepisteenä.
+\emph{Maksimiparitus} on puolestaan paritus,
+jossa on mahdollisimman paljon kaaria.
+Keskitymme tapaukseen,
+jossa verkko on \emph{kaksijakoinen} eli
+voimme jakaa verkon solmut
+vasempaan ja oikeaan ryhmään niin, että jokainen
+kaari kulkee ryhmien välillä.
+
+Kuvassa \ref{fig:makpar} on esimerkkinä kaksijakoinen verkko,
+jonka maksimiparitus on $3$.
+Tässä vasen ryhmä on $\{1,2,3,4\}$, oikea ryhmä on $\{5,6,7\}$
+ja maksimiparitus muodostuu kaarista
+$(1,6)$, $(3,5)$ ja $(4,7)$.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (0,-1.25) {$2$};
+\node[draw, circle] (3) at (0,-2.5) {$3$};
+\node[draw, circle] (4) at (0,-3.75) {$4$};
+\node[draw, circle] (5) at (4,-0.625) {$5$};
+\node[draw, circle] (6) at (4,-1.875) {$6$};
+\node[draw, circle] (7) at (4,-3.125) {$7$};
+\path[draw,thick,-] (1) -- (6);
+\path[draw,thick,-] (2) -- (6);
+\path[draw,thick,-] (4) -- (6);
+\path[draw,thick,-] (3) -- (5);
+\path[draw,thick,-] (3) -- (7);
+\path[draw,thick,-] (4) -- (7);
+\path[draw,thick,-,red,line width=2pt] (1) -- (6);
+\path[draw,thick,-,red,line width=2pt] (3) -- (5);
+\path[draw,thick,-,red,line width=2pt] (4) -- (7);
+\end{tikzpicture}
+\end{center}
+\caption{Kaksijakoisen verkon maksimiparitus.}
+\label{fig:makpar}
+\end{figure}
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.8,label distance=-1.5mm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (0,-1.25) {$2$};
+\node[draw, circle] (3) at (0,-2.5) {$3$};
+\node[draw, circle] (4) at (0,-3.75) {$4$};
+\node[draw, circle] (5) at (4,-0.625) {$5$};
+\node[draw, circle] (6) at (4,-1.875) {$6$};
+\node[draw, circle] (7) at (4,-3.125) {$7$};
+\node[draw, circle] (a) at (-3,-1.875) {\phantom{$a$}};
+\node[draw, circle] (b) at (7,-1.875) {\phantom{$b$}};
+\path[draw,thick,->] (1) -- (6);
+\path[draw,thick,->] (2) -- (6);
+\path[draw,thick,->] (4) -- (6);
+\path[draw,thick,->] (3) -- (5);
+\path[draw,thick,->] (3) -- (7);
+\path[draw,thick,->] (4) -- (7);
+\path[draw,thick,->] (a) -- (1);
+\path[draw,thick,->] (a) -- (2);
+\path[draw,thick,->] (a) -- (3);
+\path[draw,thick,->] (a) -- (4);
+\path[draw,thick,->] (5) -- (b);
+\path[draw,thick,->] (6) -- (b);
+\path[draw,thick,->] (7) -- (b);
+\end{tikzpicture}
+\end{center}
+\caption{Maksimiparitus tulkittuna maksimivirtauksena.}
+\label{fig:parver}
+\end{figure}
+
+Voimme tulkita maksimiparituksen maksimivirtauksena
+lisäämällä verkkoon kaksi uutta solmua: lähtösolmun ja kohdesolmun.
+Lähtösolmusta pääsee kaarella jokaiseen vasemman ryhmän solmuun,
+ja jokaisesta oikean ryhmän solmusta pääsee kaarella kohdesolmuun.
+Lisäksi suuntaamme alkuperäiset kaaret niin,
+että ne kulkevat vasemmasta ryhmästä oikeaan ryhmään.
+Kuva \ref{fig:parver} näyttää tuloksena olevan verkon
+esimerkissämme.
+Maksimivirtaus tässä verkossa vastaa alkuperäisen verkon
+maksimiparitusta.
+
+
+\subsection{Polkupeite}
