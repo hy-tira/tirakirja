@@ -153,14 +153,20 @@ meidän täytyykin vakuuttua sen toimivuudesta.
 
 \subsection{Esimerkki: Asunnot}
 
-Tarkastellaan esimerkkinä seuraavaa tehtävää:
 Meillä on tiedot $n$ vapaasta asunnosta sekä
-$m$ asunnon hakijasta.
+$n$ asunnon hakijasta.
 Tiedämme jokaisen asunnon vuokran,
 ja lisäksi kukin asunnon hakija on ilmoittanut
 ylärajan, kuinka suurta vuok\-raa hän voi maksaa.
 Miten voimme jakaa asunnot niin,
 että mahdollisimman moni hakija saa asunnon?
+
+Esimerkiksi jos vuokrat ovat $[600,650,700]$ ja
+hakijoiden vuokrien ylärajat ovat $[500,600,600,800]$,
+pystymme antamaan asunnon kahdelle hakijalle.
+Voimme antaa esimerkiksi 600-hintaisen asunnon
+toiselle hakijalle, jonka yläraja on 600,
+ja 650-hintaisen asunnon hakijalle, jonka yläraja on 800.
 
 Voimme ratkaista tehtävän ahneella algoritmilla,
 joka käy läpi hakijat järjestyksessä vuokran
@@ -172,36 +178,81 @@ Jos mahdollisia asuntoja on useita,
 valitsemme jonkin niistä.
 Tämän jälkeen siirrymme seuraavaan hakijaan
 ja jatkamme samalla tavalla.
+Voimme toteuttaa algoritmin ajassa $O(n \log n)$,
+kun järjestämme ensin asunnot ja hakijat
+vuokran suuruuden mukaan ja käymme sitten niitä
+läpi rinnakkain.
 
 Esimerkiksi jos asuntojen vuokrat ovat $[600,650,700]$
-ja vuokraajien ylä\-rajat ovat $[500,600,600,800]$,
+ja hakijoiden vuok\-rien ylärajat ovat $[500,600,600,800]$,
 toimimme seuraavasti:
-Koetamme ensin löytää asunnon vuokraajalle,
-jonka vuokran yläraja on $500$.
+Koetamme ensin löytää asunnon hakijalle,
+jonka yläraja on $500$.
 Mitään tällaista asuntoa ei ole, joten siirrymme eteenpäin.
-Seuraavaksi vuoroon tulee vuokraaja, jonka vuokran yläraja on $600$,
+Seuraavaksi vuoroon tulee hakija, jonka yläraja on $600$,
 ja annamme hänelle asunnon, jonka vuokra on $600$.
-Sitten toinen vuokraaja, jonka yläraja on $600$,
-ei saa asuntoa (koska ainoa näin halpa asunto meni jo),
-ja lopuksi vuokraaja, jonka yläraja on $800$
+Sitten toinen hakija, jonka yläraja on $600$,
+ei saa asuntoa, koska ainoa näin halpa asunto meni jo.
+Lopuksi hakija, jonka yläraja on $800$,
 saa jommankumman jäljellä olevista asunnoista.
 
 Miksi tämä algoritmi toimii?
 Ahneissa algoritmeissa auttaa usein ajatella,
 mitä tapahtuu, jos \emph{emme} tee jotain valintaa.
-Jos saatavilla olisi vuokraajalle $x$ sopiva asunto,
+Jos saatavilla olisi hakijalle $x$ sopiva asunto,
 mutta emme anna asuntoa hänelle,
-joku myöhemmin käsiteltävä vuokraaja $y$ voi saada kyseisen asunnon.
+voimme antaa kyseisen asunnon jollekin
+myöhemmin käsiteltävälle hakijalle $y$.
 Lopulta saamme aikaan jonkin ratkaisun, jossa
-vuokraajalla $x$ ei ole asuntoa ja vuokraajalla $y$ on asunto.
+hakijalla $x$ ei ole asuntoa ja hakijalla $y$ on asunto.
 Kuitenkin voimme \emph{muuttaa} tätä ratkaisua niin,
-että ratkaisu säilyy muuten samana, mutta vuokraajan $y$
-asunnon saakin vuokraaja $x$.
-Tuloksena on ratkaisu, joka on yhtä hyvä kuin alkuperäinen ratkaisu.
-Niinpä emme saa koskaan aikaan parempaa ratkaisua
-jättämällä vuokraajan $x$ ilman asuntoa,
+että ratkaisu säilyy muuten samana, mutta hakijalle $y$
+annetun asunnon saakin hakija $x$.
+Tuloksena on ratkaisu, jossa yhtä moni hakija
+saa asunnon kuin alkuperäisessä ratkaisussa.
+Niinpä emme saa koskaan kasvatettua asunnon saajien määrää
+jättämällä hakijan $x$ ilman asuntoa,
 mikä tarkoittaa, että voimme yhtä hyvin antaa asunnon alunperin
-vuokraajalle $x$ ja ahne algoritmi toimii.
+hakijalle $x$ ja ahne algoritmi toimii.
+
+\subsection{Esimerkki: Tehtävät}
+
+Meidän tulee suorittaa $n$ tehtävää,
+joista jokaisella on tietty kesto.
+Aloitamme tehtävien suorittamisen hetkellä 0,
+ja saamme valita järjestyksen, jossa suoritamme tehtävät.
+Koska tehtävät tulee suorittaa mahdollisimman nopeasti,
+saamme kustakin tehtävästä sakkoa $x$,
+kun suoritamme sen loppuun ajanhetkellä $x$.
+Miten meidän kannattaa valita tehtävien suoritusjärjestys,
+jotta sakkojen summa on mahdollisimman pieni?
+
+Esimerkiksi jos tehtävien kestot ovat $[4,3,8]$,
+optimaalinen järjestys suorittaa ne on $[3,4,8]$.
+Tällöin saamme tehtävistä sakkoa $3$, $3+4=7$ ja $3+4+8=15$,
+joten sakkojen summa on $3+7+15=25$.
+Tämä on pienin mahdollinen sakkojen summa.
+
+Tässä tehtävässä voimme käyttää yksinkertaista ahnetta ideaa:
+suoritamme tehtävät järjestyksessä pienimmästä suurimpaan
+keston mukaan.
+Tuloksena on algoritmi, joka vie aikaa $O(n \log n)$,
+koska meidän riittää järjestää tehtävien kestot.
+Mutta miksi tämä algoritmi antaa oikean ratkaisun?
+
+Voimme ymmärtää algoritmin toiminnan tekemällä \emph{vastaoletuksen}:
+oletamme, että jossakin tapauksessa optimaalinen ratkaisu
+ei olisi suorittaa tehtäviä järjestyksessä keston mukaan.
+Tällöin suoritamme jossakin vaiheessa ensin tehtävän kestoa $a$
+ja sitten tehtävän kestoa $b$ niin, että $a>b$.
+Kun aloitamme tehtävän $a$ suorittamisen hetkellä $x$,
+saamme sakkoa näistä tehtävistä $x+a$ ja $x+a+b$ eli yhteensä $2x+2a+b$.
+Nyt kuitenkin voimme vaihtaa keskenään tehtävien suoritusjärjestyksen
+eli suorittaa ensin tehtävän $b$ ja sitten tehtävän $a$.
+Tällöin sakkoa tulee $x+b$ ja $x+b+a$ eli yhteensä $2x+a+2b$.
+Koska $a>b$, niin $a+2b < 2a+b$ eli uusi järjestys tuottaakin
+vähemmän sakkoa.
+Niinpä vastaoletuksemme on väärä ja ahne algoritmi on toimiva.
 
 \section{Binäärihaun sovellukset}
 
