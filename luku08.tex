@@ -256,52 +256,56 @@ Niinpä vastaoletuksemme on väärä ja ahne algoritmi on toimiva.
 
 \section{Binäärihaun sovellukset}
 
-\emph{Binäärihaku} on tekniikka, joka pelastaa meidät monesta
-kiipelistä algoritmien suunnittelussa.
-Parhaiten tunnettu binäärihaun käyttötarkoitus on alkion
-etsiminen järjestetystä taulukosta ajassa $O(\log n)$.
+Binäärihaun tunnetuin käyttötarkoitus on alkion etsiminen
+järjestetystä taulukosta ajassa $O(\log n)$.
 Tämä on kuitenkin vain alkusoittoa sille,
-mitä binäärihaun avulla pystyy tekemään ja mikä on sen
-todellinen merkitys algoritmien suunnittelussa.
+mitä binää\-rihaulla pystyy tekemään ja mikä on sen
+merkitys algoritmiikassa.
 
-\subsection{Muutoskohdan etsiminen}
-
-Oletetaan, että meillä on funktio $f$,
-jolle pätee, että $f(x)=0$, kun $x<k$,
-ja $f(x)=1$, kun $x \ge k$.
+Oletetaan, että meillä on funktio $\texttt{ok}(x)$,
+joka kertoo, onko $x$ kelvollinen ratkaisu tehtävään.
+Lisäksi pätee $\texttt{ok}(x)=\texttt{false}$, kun $x<k$,
+ja $\texttt{ok}(x)=\texttt{true}$, kun $x \ge k$.
 Binäärihaun avulla voimme etsiä tehokkaasti,
 mikä on funktion \emph{muutoskohta} $k$
-eli ensimmäinen kohta, jossa funktio saa arvon $1$.
-Seuraava koodi toteuttaa haun olettaen,
-että $k$ on välillä $1 \dots N$:
+eli ensimmäinen kohta, jossa funktio saa arvon \texttt{true}.
+Seuraava koodi toteuttaa haun,
+kun $k$ on välillä $1 \dots N$:
 
 
 \begin{code}
-int a = 1, b = N;
-while (a < b) {
-    int u = (a+b)/2;
-    if (f(u) == 0) a = u+1;
-    if (f(u) == 1) b = u;
-}
-int k = a;
+a = 1
+b = N
+while a < b
+    u = (a+b)/2
+    if ok(u)
+        b = u
+    else
+        a = u+1
+k = a
 \end{code}
 
 Haun joka vaiheessa tiedämme, että muutoskohta on välillä $[a,b]$.
 Laskemme keskikohdan $u=(a+b)/2$ ja tutkimme funktion arvoa kohdassa $u$.
-Jos $f(u)=0$, niin tiedämme, että muutoskohta on välillä $[u+1,b]$.
-Jos taas $f(u)=1$, niin muutoskohdan on oltava välillä $[a,u]$.
+Jos pätee $\texttt{ok}(u)$, niin muutoskohdan on oltava välillä $[a,u]$,
+ja muuten sen täytyy olla välillä $[u+1,b]$.
 Lopulta välillä on vain yksi alkio, jolloin olemme löytäneet muutoskohdan.
 Koska välin koko puolittuu joka askeleella,
-kutsumme $O(\log N)$ kertaa funktiota $f$.
+kutsumme $O(\log N)$ kertaa funktiota $\texttt{ok}$.
 
-Mitä hyötyä on siitä, että löydämme tehokkaasti muutoskohdan?
-Tarkastellaan esimerkkinä tehtävää, jossa käytössämme on $n$ konetta
+Mutta mitä hyötyä on siitä, että löydämme tehokkaasti funktion muutoskohdan?
+Tämä selviää seuraavissa esimerkkitehtävissä.
+
+\subsection{Esimerkki: Tehdas}
+
+Käytössämme on $n$ konetta
 ja haluamme valmistaa niiden avulla $m$ tavaraa.
-Tiedossamme on myös arvot $[x_1,x_2,\dots,x_n]$:
-jokaisesta koneesta tieto, montako minuuttia vie aikaa valmistaa
+Tiedossamme on arvot $x_1,x_2,\dots,x_n$:
+jokaisesta koneesta tieto, kuinka paljon aikaa vie valmistaa
 yksi tavara konetta käyttäen.
 Haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
-$m$ tavaraa mahdollisimman nopeasti.
+vaaditut $m$ tavaraa mahdollisimman nopeasti.
+
 Esimerkiksi jos $n=3$, $m=7$ ja koneiden nopeudet ovat $[2,3,7]$,
 paras aikataulu on kuvassa \ref{fig:optkon}.
 Sitä käyttäen tavaroiden muodostaminen vie aikaa $8$ minuuttia.
@@ -371,94 +375,6 @@ siitä, kuinka suuri luku $N$ on.
 Niinpä meidän ei tarvitse murehtia siitä,
 kuinka suuria $x_1$ ja $m$ ovat,
 vaan voimme luottaa siihen, että algoritmi on tehokas.
-
-\subsection{Alitaulukot, osa 1}
-
-Tarkastellaan sitten tehtävää, jossa annettuna on $n$
-positiivista kokonaislukua sisältävä taulukko ja lisäksi kokonaisluku $x$.
-Haluamme selvittää, monessako yhtenäisessä alitaulukossa
-lukujen summa on $x$.
-Esimerkiksi jos taulukko on $[3,2,1,1,3,1]$ ja $x=4$,
-niin halutut alitaulukot ovat $[2,1,1]$, $[1,3]$ ja $[3,1]$,
-eli vastaus on tässä tapauksessa $3$.
-
-Voimme ratkaista tehtävän helposti ajassa $O(n^2)$
-käymällä läpi kaikki yhtenäiset alitaulukot seuraavasti:
-
-\begin{code}
-int laskuri = 0;
-for (int i = 0; i < n; i++) {
-    int summa = 0;
-    for (int j = i; j < n; j++) {
-        summa += taulu[j];
-        if (summa == x) laskuri++;
-    }
-}
-System.out.println(laskuri);
-\end{code}
-
-Binäärihaun avulla voimme kuitenkin parantaa algoritmia niin,
-että aikaa kuluu vain $O(n \log n)$.
-Ideana on korvata koodin sisempi silmukka
-binääri\-haulla, joka etsii tehokkaasti kohdasta $i$
-alkavan alitaulukon, jonka summa on $x$, jos tällainen alitaulukko on olemassa.
-Voimme käyttää binäärihakua, koska tiedämme, että taulukon kaikki
-luvut ovat positiivisia, jolloin mitä enemmän lukuja laitamme alitaulukkoon,
-sitä suurempi sen summa on.
-Niinpä voimme etsiä ensimmäisen kohdan $j$,
-jossa välin $[i,j]$ lukujen summa on ainakin $x$.
-Jos summa on tasan $x$, olemme löytäneet halutun alitaulukon,
-ja muuten tällaista alitaulukkoa ei ole olemassa.
-
-Jotta voimme toteuttaa tehokkaan ratkaisun,
-tarvitsemme kuitenkin vielä yhden aineksen:
-meidän täytyy pystyä laskemaan algoritmin aikana tehokkaasti,
-mikä on lukujen summa taulukon välillä $[a,b]$.
-Tarvittava tietorakenne on \emph{summataulukko},
-jossa kohdassa $k$ on taulukon
-lukujen summa taulukon alusta kohtaan $k$ asti.
-Seuraava koodi muodostaa taulukosta summataulukon ajassa $O(n)$:
-
-\begin{code}
-st[0] = taulu[0];
-for (int i = 1; i < n; i++) {
-    st[i] = st[i-1]+taulu[i];
-}
-\end{code}
-
-Tämän jälkeen pystymme laskemaan $O(1)$-ajassa,
-mikä on taulukon lukujen summa välillä $[a,b]$:
-
-\begin{code}
-int summa(int a, int b) {
-    if (a == 0) return st[b];
-    else return st[b]-st[a-1];
-}
-\end{code}
-
-Nyt voimme toteuttaa binäärihaun seuraavasti:
-
-\begin{code}
-int laskuri = 0;
-for (int i = 0; i < n; i++) {
-    int a = i, b = n-1;
-    while (a < b) {
-        int u = (a+b)/2;
-        if (summa(i,u) < x) a = u+1;
-        else b = u;
-    }
-    if (summa(i,a) == x) laskuri++;
-}
-System.out.println(laskuri);
-\end{code}
-
-Jokaisessa kohdassa $i$ etsimme binäärihaulla väliltä $[i,n-1]$
-ensimmäisen kohdan, jossa alitaulukon summa on ainakin $x$.
-Sitten tarkastamme, onko summa tasan $x$,
-ja jos on, kasvatamme laskuria yhdellä.
-Tuloksena olevan algoritmin aikavaativuus on $O(n \log n)$,
-koska jokainen binäärihaku vie summataulukon ansiosta
-aikaa vain $O(\log n)$.
 
 \section{Tasoitettu analyysi}
 
