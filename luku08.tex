@@ -258,21 +258,20 @@ järjestetystä taulukosta ajassa $O(\log n)$.
 Tämä on kuitenkin vain alkusoittoa sille,
 mitä binää\-rihaulla pystyy tekemään ja mikä on sen
 merkitys algoritmiikassa.
+Binääri\-haun todellinen hyöty algoritmien suunnittelussa on,
+että pystymme etsimään sen avulla tehokkaasti funktion \emph{muutoskohdan}.
 
 Oletetaan, että meillä on funktio $\texttt{ok}(x)$,
 joka kertoo, onko $x$ kelvollinen ratkaisu tehtävään.
 Lisäksi pätee $\texttt{ok}(x)=\texttt{false}$, kun $x<k$,
 ja $\texttt{ok}(x)=\texttt{true}$, kun $x \ge k$.
 Binäärihaun avulla voimme etsiä tehokkaasti,
-mikä on funktion \emph{muutoskohta} $k$
+mikä on funktion muutoskohta $k$
 eli ensimmäinen kohta, jossa funktio saa arvon \texttt{true}.
-Seuraava koodi toteuttaa haun,
-kun $k$ on välillä $1 \dots N$:
-
+Seuraava koodi toteuttaa haun, kun oletamme, että $k$ on välillä $1 \dots N$:
 
 \begin{code}
-a = 1
-b = N
+a = 1, b = N
 while a < b
     u = (a+b)/2
     if ok(u)
@@ -288,28 +287,7 @@ Jos pätee $\texttt{ok}(u)$, niin muutoskohdan on oltava välillä $[a,u]$,
 ja muuten sen täytyy olla välillä $[u+1,b]$.
 Lopulta välillä on vain yksi alkio, jolloin olemme löytäneet muutoskohdan.
 Koska välin koko puolittuu joka askeleella,
-kutsumme $O(\log N)$ kertaa funktiota $\texttt{ok}$.
-
-Mutta mitä hyötyä on siitä, että löydämme tehokkaasti funktion muutoskohdan?
-Tämä selviää seuraavissa esimerkkitehtävissä.
-
-\subsection{Esimerkki: Tehdas}
-
-Käytössämme on $n$ konetta
-ja haluamme valmistaa niiden avulla $m$ tavaraa.
-Tiedossamme on arvot $x_1,x_2,\dots,x_n$:
-jokaisesta koneesta tieto, kuinka paljon aikaa vie valmistaa
-yksi tavara konetta käyttäen.
-Haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
-vaaditut $m$ tavaraa mahdollisimman nopeasti.
-
-Esimerkiksi jos $n=3$, $m=7$ ja koneiden nopeudet ovat $[2,3,7]$,
-paras aikataulu on kuvassa \ref{fig:optkon}.
-Sitä käyttäen tavaroiden muodostaminen vie aikaa $8$ minuuttia.
-Käynnistämme koneen 1 neljästi hetkinä 0, 2, 4 ja 6,
-koneen 2 kahdesti hetkinä 0 ja 3
-ja koneen 3 kerran hetkenä 0.
-Aikaa kuluu $8$ minuuttia, koska viimeisenä pysähtyy kone 1 hetkenä 8.
+kutsumme funktiota \texttt{ok} yhteensä $O(\log N)$ kertaa.
 
 \begin{figure}
 \center
@@ -333,29 +311,46 @@ kun koneiden nopeudet ovat $[2,3,7]$.}
 \label{fig:optkon}
 \end{figure}
 
-Voimme pukea tehtävän binäärihaulle sopivaan muotoon niin,
-että $f(x)=1$ tarkalleen silloin, kun voimme muodostaa
+Mutta mitä hyötyä on siitä, että löydämme tehokkaasti funktion muutoskohdan?
+Tämä selviää seuraavassa tehtävässä:
+Käytössämme on $n$ konetta
+ja haluamme valmistaa niiden avulla $m$ tavaraa.
+Tiedämme jokaisesta koneesta,
+montako minuuttia kestää valmistaa yksi tavara konetta käyttäen,
+ja haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
+$m$ tavaraa mahdollisimman nopeasti.
+
+Kuva \ref{fig:optkon} näyttää parhaan aikataulun tilanteessa,
+jossa koneiden nopeudet ovat $[2,3,7]$ ja haluamme
+valmistaa seitsemän tavaraa (eli $m=7$).
+Käynnistämme koneen 1 neljästi kahden minuutin välein,
+koneen 2 kahdesti kolmen minuutin välein ja koneen 3 kerran.
+Viimeisenä pysähtyy kone 1, kun aloittamisesta
+on kulunut kahdeksan minuuttia.
+
+Voimme pukea tehtävän binäärihaulle sopivaan muotoon määrittämällä,
+että $\texttt{ok}(x)=\texttt{true}$ tarkalleen silloin, kun voimme muodostaa
 \emph{ainakin} $m$ tavaraa ajassa $x$.
 Tällöin funktion muutoskohta $k$ vastaa tehtävän ratkaisua.
-Entä miten voimme laskea funktion $f$ arvon?
-Jos meillä on $u$ minuuttia aikaa ja jollakin koneella kestää $x_i$
+Entä miten voimme laskea funktion \texttt{ok} arvon?
+Jos meillä on $u$ minuuttia aikaa ja koneella $i$ kestää $x_i$
 minuuttia valmistaa yksi tavara, pystymme valmistamaan
 $\lfloor u/x_i \rfloor$ tavaraa kyseistä konetta käyttäen.
 Kun sitten käytössämme on kaikki koneet,
 pystymme valmistamaan yhteensä
 \[ s = \sum_{i=1}^n \lfloor u/x_i \rfloor \]
-tavaraa. Niinpä $f(u)=0$, jos $s<m$,
-ja $f(u)=1$, jos $s \ge m$. Voimme toteuttaa tämän seuraavasti:
+tavaraa. Niinpä $\texttt{ok}(u)=\texttt{false}$, jos $s<m$,
+ja $\texttt{ok}(u)=\texttt{true}$, jos $s \ge m$. Voimme toteuttaa tämän seuraavasti:
 
 \begin{code}
-int f(int u) {
-    int s = 0;
-    for (int i = 1; i <= n; i++) s += u/x[i];
-    return (s < m) ? 0 : 1;
-}
+function ok(u)
+    s = 0
+    for i = 1 to n
+        s += u/x[i]
+    return s >= m
 \end{code}
 
-Voimme kytkeä tämän metodin suoraan binäärihakuun,
+Voimme kytkeä tämän funktion suoraan binäärihakuun,
 jolloin tuloksena on tehokas algoritmi tehtävän ratkaisemiseen.
 Meidän täytyy kuitenkin vielä valita arvo $N$,
 joka on jokin yläraja kohdalle $k$.
@@ -363,7 +358,7 @@ Tässä tehtävässä helppo valinta on
 \[N = x_1 \cdot m,\]
 mikä vastaa ratkaisua, jossa käytämme vain ensimmäistä konetta.
 On varmaa, että oikea $k$:n arvo on korkeintaan $N$,
-joten binäärihaku kutsuu $O(\log N)$ kertaa metodia $\texttt{f}$.
+joten binäärihaku kutsuu $O(\log N)$ kertaa metodia $\texttt{ok}$.
 Koska jokainen metodin kutsu vie aikaa $O(n)$,
 tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
 
