@@ -22,44 +22,35 @@ Tutustumme kurssilla sekä algoritmien suunnittelun teoriaan että
 käytäntöön -- haluamme ymmärtää syvällisesti, mistä algoritmeissa on kysymys,
 mutta myös osata toteuttaa niitä käytännössä.
 
-\section{Laskennalliset ongelmat}
+\section{Mitä algoritmit ovat?}
 
-\emph{Laskennallinen ongelma} on hyvin määritelty laskentatehtävä,
-jonka haluamme ratkaista.
-Lähtökohtana on, että meille annetaan ongelman kuvaus,
-jossa kerrotaan täsmällisesti algoritmille annettava
-\emph{syöte} sekä haluttu \emph{tuloste}.
-Syöte tarkoittaa, mitä tietoja algoritmille annetaan,
-ja tuloste tarkoittaa, mitä algoritmin tulee tuottaa vastauksena.
+Algoritmi on toimintaohje, jota seuraamalla voimme ratkaista
+jonkin laskennallisen ongelman.
+Esimerkiksi ''onko luku $n$ alkuluku?'' on laskennallinen ongelma,
+jossa algoritmille annetaan luku $n$
+ja sen täytyy ilmoittaa ''kyllä'' tai ''ei'' riippuen siitä,
+onko $n$ alkuluku vai ei.
+Esimerkiksi jos algoritmille annetaan luku $7$,
+sen täytyy ilmoittaa ''kyllä'',
+ja jos algoritmille annetaan luku $9$,
+sen täytyy ilmoittaa ''ei''.
 
-Seuraavassa on esimerkki laskennallisesta ongelmasta:
-
-\begin{itemize}
-\item \textbf{Syöte}: Algoritmille annetaan taulukko,
-jossa on $n$ kokonaislukua.
-\item \textbf{Tuloste:} Algoritmin tulee ilmoittaa,
-mikä on taulukon lukujen summa.
-\end{itemize}
-
-Esimerkiksi jos $n=4$ ja taulukko on $[2,1,5,2]$,
-niin algoritmin tulee antaa vastaus $10$,
-koska taulukon lukujen summa on $2+1+5+2=10$.
-
-Voimme ratkaista tämän ongelman seuraavasti Javalla:
-
-\begin{code}
-int summa = 0;
-for (int i = 0; i < n; i++) {
-    summa += luvut[i];
-}
-System.out.println(summa);
-\end{code}
+Voimme tarkastaa, onko annettu luku $n$ alkuluku, seuraavalla algoritmilla:
+käymme läpi kaikki luvut $2,3,\dots,n-1$ ja koetamme
+jakaa lukua $n$ jokaisella niistä.
+Jos $n$ on jaollinen jollain luvuista, se ei ole alkuluku,
+ja muuten se on alkuluku.
+Esimerkiksi luku $7$ on alkuluku, koska se ei ole jaollinen
+millään luvuista $2,3,\dots,6$,
+ja luku $9$ puolestaan ei ole alkuluku, koska se on jaollinen luvulla $3$.
+Voimme tutkia tämän algoritmin avulla mistä tahansa luvusta,
+onko se alkuluku vai ei.
 
 Ensimmäinen vaihe ohjelmoinnin oppimisessa on oppia
 ohjelmoinnin perustaidot niin, että osaamme laatia
-jonkin toimivan koodin, joka ratkaisee annetun ongelman.
-On arvokas taito sinänsä, että osaamme kirjoittaa
-toimivan koodin ongelman ratkaisemiseen.
+\emph{jonkin} toimivan annetun algoritmin ongelman ratkaisemiseen.
+On arvokas taito sinänsä, että osaamme ratkaista
+ongelman jollakin tavalla.
 Toinen vaihe, johon keskitymme tällä kurssilla,
 on oppia suunnittelemaan \emph{tehokkaita} algoritmeja.
 Tämä tarkoittaa, että haluamme saada aikaan mahdollisuuksien mukaan
@@ -85,13 +76,165 @@ ennen kuin voimme alkaa suunnitella tehokkaita algoritmeja.
 Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
 tekniikoita eri tilanteessa.
 
-Käytämme kirjassa algoritmien esittämiseen Java-kieltä,
-joka on tuttu ohjelmoinnin peruskursseilta,
-ja käymme myös erikseen läpi Java-kielen
-standardikirjaston tietorakenteita ja algoritmeja.
-Ohjelmointikieli ei ole kuitenkaan merkittävässä osassa
-algoritmien suunnittelussa, vaan kirjassa käsitellyt asiat
-ovat sovellettavissa myös muissa ohjelmointikielissä.
+\section{Algoritmien esittäminen}
+
+Algoritmin toiminnan esittämiseen on useita tapoja.
+Yksi tapa on selittää sanallisesti, kuinka algoritmi toimii,
+kuten teimme luvussa 1.1.
+Toinen tapa taas on antaa koodi, joka toteuttaa algoritmin.
+Tällöin meidän täytyy valita jokin ohjelmointikieli,
+jonka avulla esitämme algoritmin.
+Esimerkiksi voimme tarkastaa seuraavasti Java-kielellä,
+onko luku $n$ alkuluku:
+
+\begin{code}
+boolean alkuluku = true;
+for (int i = 2; i < n; i++) {
+    if (n%i == 0) {
+        alkuluku = false;
+    }
+}
+\end{code}
+
+Algoritmien suunnittelussa on usein tapana esittää
+algoritmin koodi \emph{pseudokoodina} todellisen ohjelmointikielen sijasta.
+Tämä tarkoittaa, että kirjoitamme koodia,
+joka on lähellä todellista ohjelmointia, mutta voimme
+päättää koodin tarkan syntaksin itse ja ottaa joitakin vapauksia,
+joiden ansiosta voimme kuvata algoritmin mukavammin.
+Voisimme esimerkiksi esittää äskeisen algoritmin pseudokoodina seuraavasti:
+
+\begin{code}
+alkuluku = true
+for i = 2 to n-1
+    if n%i == 0
+        alkuluku = false
+\end{code}
+
+Tässä kirjassa esitämme algoritmeja sekä Java-koodina että pseudokoodina
+tilanteesta riippuen.
+Käytämme Java-koodia silloin, kun haluamme erityisesti kiinnittää huomiota siihen,
+miten jokin asia toteutetaan käytännössä Javassa.
+Pseudokoodia käytämme taas silloin, kun haluamme kuvata algoritmin yleisen
+idean eikä käytetyllä kielellä ole merkitystä.
+
+Taulukko \ref{tab:psekoo} esittää yhteenvedon tässä kirjassa käytetyn pseudokoodin syntaksista
+suhteessa Java-kieleen.
+Tavoitteena on ollut, että voimme esittää koodin tiiviisti ja
+käyttää joitakin hyödyllisiä lyhennyksiä.
+Tämä ei tarkoita, että kyseinen tapa kirjoittaa pseudokoodia olisi ainoa sallittu --
+se on vain yksi mahdollisuus, joka soveltuu hyvin tähän kirjaan.
+
+\lstnewenvironment{smallcode}[1][]%
+{
+   \noindent
+   \small
+   \minipage{0.47\linewidth} 
+   \vspace{0.5\baselineskip}
+   \lstset{#1,xleftmargin=0pt}}
+{\endminipage}
+
+\begin{table}
+\center
+\begin{tabular}{ll}
+pseudokoodi & Java-koodi \\
+\hline
+\begin{smallcode}[xleftmargin=0pt]
+x = 5
+s = "abc"
+t = [1,2,3]
+\end{smallcode}
+&
+\begin{smallcode}
+int x = 5;
+String s = "abc";
+int[] t = {1,2,3};
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+if a == b
+    // koodia
+\end{smallcode}
+&
+\begin{smallcode}
+if (a == b) {
+    // koodia
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+while a == b
+    // koodia
+\end{smallcode}
+&
+\begin{smallcode}
+while (a == b) {
+    // koodia
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+for i = 1 to n
+    // koodia
+\end{smallcode}
+&
+\begin{smallcode}
+for (int i = 1; i <= n; i++) {
+    // koodia
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+sort(x)
+\end{smallcode}
+&
+\begin{smallcode}
+Arrays.sort(x);
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+print(x)
+\end{smallcode}
+&
+\begin{smallcode}
+System.out.println(x);
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+swap(a,b)
+\end{smallcode}
+&
+\begin{smallcode}
+t = a;
+a = b;
+b = t;
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+a = min(x,y)
+b = max(x,y)
+\end{smallcode}
+&
+\begin{smallcode}
+a = Math.min(x,y);
+b = Math.max(x,y);
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+summa(a,b)
+    return a+b
+\end{smallcode}
+&
+\begin{smallcode}
+int summa(int a, int b) {
+    return a+b;
+}
+\end{smallcode}
+\\
+\end{tabular}
+\caption{Kirjassa käytetty pseudokoodin syntaksi.}
+\label{tab:psekoo}
+\end{table}
 
 \section{Rekursiiviset algoritmit}
 
