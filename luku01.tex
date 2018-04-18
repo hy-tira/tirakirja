@@ -76,11 +76,9 @@ ennen kuin voimme alkaa suunnitella tehokkaita algoritmeja.
 Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
 tekniikoita eri tilanteessa.
 
-\section{Algoritmien esittäminen}
-
 Algoritmin toiminnan esittämiseen on useita tapoja.
 Yksi tapa on selittää sanallisesti, kuinka algoritmi toimii,
-kuten teimme luvussa 1.1.
+kuten teimme äsken.
 Toinen tapa taas on antaa koodi, joka toteuttaa algoritmin.
 Tällöin meidän täytyy valita jokin ohjelmointikieli,
 jonka avulla esitämme algoritmin.
@@ -185,6 +183,17 @@ for (int i = 1; i <= n; i++) {
 \end{smallcode}
 \\
 \begin{smallcode}[xleftmargin=0pt]
+for i = n to 1
+    // koodia
+\end{smallcode}
+&
+\begin{smallcode}
+for (int i = n; i >= 1; i--) {
+    // koodia
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
 sort(x)
 \end{smallcode}
 &
@@ -236,14 +245,13 @@ int summa(int a, int b) {
 \label{tab:psekoo}
 \end{table}
 
-\section{Rekursiiviset algoritmit}
+\section{Rekursio}
 
-Ohjelmoinnin perusteiden opiskelussa rekursio jää usein sivurooliin,
-mikä on vahinko, koska se on hyvin hyödyllinen työkalu.
-Voimme toteuttaa rekursion avulla kätevästi algoritmeja,
-jotka käyvät järjestelmällisesti läpi ongelman ratkaisuja.
-Seuraavaksi käymme läpi muutamia esimerkkejä siitä,
-kuinka voimme hyödyntää rekursiota ohjelmoinnissa.
+Rekursio on hyödyllinen ohjelmointitekniikka,
+joka jää kuitenkin usein sivurooliin ohjelmoinnin perusteiden opiskelussa.
+Nyt onkin hyvä hetki perehtyä kunnolla siihen,
+mitä hyötyä meille on rekursiosta.
+Tulemme tarvitsemaan rekursiota useassa vaiheessa kurssin aikana.
 
 \subsection{Osajoukkojen läpikäynti}
 
