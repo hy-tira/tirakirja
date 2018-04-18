@@ -133,128 +133,125 @@ joista molemmat vievät aikaa vain $O(n)$.
 Niinpä algoritmin aikavaativuus on $O(n)$,
 eli olemme saavuttaneet tavoitteemme.
 
-\section{Ahneet algoritmit}
+\section{Algoritmien aineksia}
 
-Tehokkaan algoritmin saaminen aikaan vaatii usein,
-että pystymme tekemään algoritmissa jotain \emph{ahneesti}.
-Tämä tarkoittaa, että meidän ei tarvitse käydä läpi
-kaikkia mahdollisia ratkaisuja vaan pystymme rakentamaan
-ratkaisun suoremmin käsittelemällä syötteen sopivassa järjestyksessä.
+Seuraavaksi käymme läpi tarkemmin \emph{aineksia},
+joita näkee usein tehokkaissa algoritmeissa.
+Nämä ainekset muodostavat hyvän perustan algoritmien
+suunnitteluun: kun saamme vastaamme uuden ongelman,
+voimme miettiä, voisimmeko hyödyntää aineksia jotenkin
+ongelman ratkaisemisessa.
 
-Ahneen algoritmin idea on yleensä yksinkertainen ja
-se on helppoa toteuttaa.
-Vaikeutena on kuitenkin keksiä ahne algoritmi,
-joka toimii oikein kaikissa tilanteissa.
-Koska ahne algoritmi muodostaa vastauksen suoraan
-käymättä läpi kaikkia vaihtoehtoja, on suuri riski,
-että se ei löydä aina parasta ratkaisua.
-Ennen kuin voimme käyttää ahnetta algoritmia luottavaisin mielin,
-meidän täytyykin vakuuttua sen toimivuudesta.
+\subsection{Järjestäminen}
 
-\subsection{Esimerkki: Asunnot}
+Tehokas algoritmi perustuu usein tavalla tai toisella järjestämiseen.
+Monessa tilanteessa meidän on helpompaa lähestyä ongelmaa,
+jos voimme olettaa, että syöte on järjestyksessä.
+Järjestäminen vie aikaa $O(n \log n)$, joten voimme käyttää sitä
+huoletta tehokkaassa algoritmissa.
 
-Meillä on tiedot $n$ vapaasta asunnosta sekä
-$n$ asunnon hakijasta.
-Tiedämme jokaisen asunnon vuokran,
-ja lisäksi kukin asunnon hakija on ilmoittanut
-ylärajan, kuinka suurta vuok\-raa hän voi maksaa.
-Miten voimme jakaa asunnot niin,
-että mahdollisimman moni hakija saa asunnon?
+Jotta voimme käyttää järjestämistä, meidän täytyy usein havaita
+ongelmasta jokin ominaisuus, jonka ansiosta voimme ratkaista
+ongelman \emph{ahneella} algoritmilla.
+Tyypillinen ahne algoritmi käy syötteen läpi järjestyksessä ja
+muodostaa ratkaisun suoraan tämän järjestyksen perusteella.
+Meidän täytyy kuitenkin olla varmoja, että saamme oikean ratkaisun tällä tavalla.
 
-Esimerkiksi jos vuokrat ovat $[600,650,700]$ ja
-hakijoiden vuokrien ylärajat ovat $[500,600,600,800]$,
-pystymme antamaan asunnon kahdelle hakijalle.
-Voimme antaa esimerkiksi 600-hintaisen asunnon
-toiselle hakijalle, jonka yläraja on 600,
-ja 650-hintaisen asunnon hakijalle, jonka yläraja on 800.
+Tarkastellaan esimerkkinä tehtävää, jossa haluamme laskea
+tutkijan \emph{$h$-indeksin}. Tämä on suurin luku $x$, jolle pätee,
+että tutkijalla on $x$ julkaisua, joihin on viitattu ainakin $x$ kertaa.
+Esimerkiksi jos tutkijalla on kolme julkaisua,
+joiden viittausmäärät ovat $[5,1,3]$, hänen $h$-indeksinsä on $2$,
+koska hänellä on kaksi julkaisua, joihin on viitattu ainakin kahdesti.
 
-Voimme ratkaista tehtävän ahneella algoritmilla,
-joka käy läpi hakijat järjestyksessä vuokran
-ylärajan mukaan pienimmästä suurimpaan.
-Jokaisen hakijan kohdalla tarkastamme,
-onko jäljellä asuntoa, jonka hän voi vuokrata,
-ja jos on, annamme kyseisen asunnon hänelle.
-Jos mahdollisia asuntoja on useita,
-valitsemme jonkin niistä.
-Tämän jälkeen siirrymme seuraavaan hakijaan
-ja jatkamme samalla tavalla.
-Voimme toteuttaa algoritmin ajassa $O(n \log n)$,
-kun järjestämme ensin asunnot ja hakijat
-vuokran suuruuden mukaan ja käymme sitten niitä
-läpi rinnakkain.
+Tässä tehtävässä hyödyllinen havainto on, että meidän kannattaa aina
+tarkastella tutkijan \emph{viitatuimpia} julkaisuja.
+Jos tutkijan $h$-indeksi on $x$, voimme tarkastella vain $x$ viitatuinta
+julkaisua, ja kaikissa niissä viittausmäärän on oltava ainakin $x$.
+Tämä havainto johtaa ahneeseen algoritmiin: järjestämme ensin
+viittausmäärät ja etsimme sitten suurimman arvon $x$,
+jolle pätee, että $x$ viitatuimman julkaisun joukossa vähiten viitatussa
+julkaisussa on ainakin $x$ viittausta. Voimme toteuttaa algoritmin seuraavasti:
 
-Esimerkiksi jos asuntojen vuokrat ovat $[600,650,700]$
-ja hakijoiden vuok\-rien ylärajat ovat $[500,600,600,800]$,
-toimimme seuraavasti:
-Koetamme ensin löytää asunnon hakijalle,
-jonka yläraja on $500$.
-Mitään tällaista asuntoa ei ole, joten siirrymme eteenpäin.
-Seuraavaksi vuoroon tulee hakija, jonka yläraja on $600$,
-ja annamme hänelle asunnon, jonka vuokra on $600$.
-Sitten toinen hakija, jonka yläraja on $600$,
-ei saa asuntoa, koska ainoa näin halpa asunto meni jo.
-Lopuksi hakija, jonka yläraja on $800$,
-saa jommankumman jäljellä olevista asunnoista.
+\begin{code}
+sort(viittaukset)
+h_indeksi = 0
+for x = 1 to n
+    if viittaukset[n-x] >= x
+        h_indeksi = x
+\end{code}
 
-Miksi tämä algoritmi toimii?
-Ahneissa algoritmeissa auttaa usein ajatella,
-mitä tapahtuu, jos \emph{emme} tee jotain valintaa.
-Jos saatavilla olisi hakijalle $x$ sopiva asunto,
-mutta emme anna asuntoa hänelle,
-voimme antaa kyseisen asunnon jollekin
-myöhemmin käsiteltävälle hakijalle $y$.
-Lopulta saamme aikaan jonkin ratkaisun, jossa
-hakijalla $x$ ei ole asuntoa ja hakijalla $y$ on asunto.
-Kuitenkin voimme \emph{muuttaa} tätä ratkaisua niin,
-että ratkaisu säilyy muuten samana, mutta hakijalle $y$
-annetun asunnon saakin hakija $x$.
-Tuloksena on ratkaisu, jossa yhtä moni hakija
-saa asunnon kuin alkuperäisessä ratkaisussa.
-Niinpä emme saa koskaan kasvatettua asunnon saajien määrää
-jättämällä hakijan $x$ ilman asuntoa,
-mikä tarkoittaa, että voimme yhtä hyvin antaa asunnon alunperin
-hakijalle $x$ ja ahne algoritmi toimii.
+Taulukon järjestäminen vie aikaa $O(n \log n)$ ja for-silmukka vie aikaa $O(n)$,
+joten algoritmi toimii ajassa $O(n \log n)$.
 
-\subsection{Esimerkki: Tehtävät}
+\subsection{Tietorakenteet}
 
-Meidän tulee suorittaa $n$ tehtävää,
-joista jokaisella on tietty kesto.
-Aloitamme tehtävien suorittamisen hetkellä 0,
-ja saamme valita järjestyksen, jossa suoritamme tehtävät.
-Koska tehtävät tulee suorittaa mahdollisimman nopeasti,
-saamme kustakin tehtävästä sakkoa $x$,
-kun suoritamme sen loppuun ajanhetkellä $x$.
-Miten meidän kannattaa valita tehtävien suoritusjärjestys,
-jotta sakkojen summa on mahdollisimman pieni?
+Olemme tutustuneet kirjassa moniin tietorakenteisiin:
+listoihin, hajautustauluun, binäärihakupuuhun ja kekoon.
+Näissä tietorakenteissa kannattaa kiinnittää erityisesti huomiota siihen,
+mitkä operaatiot toimivat tehokkaasti $O(1)$- tai $O(\log n)$-ajassa.
+Nämä ovat operaatioita, joita voimme käyttää tehokkaissa algoritmeissa.
 
-Esimerkiksi jos tehtävien kestot ovat $[4,3,8]$,
-optimaalinen järjestys suorittaa ne on $[3,4,8]$.
-Tällöin saamme tehtävistä sakkoa $3$, $3+4=7$ ja $3+4+8=15$,
-joten sakkojen summa on $3+7+15=25$.
-Tämä on pienin mahdollinen sakkojen summa.
+Tarkastellaan esimerkkinä tehtävää, jossa haluamme laskea,
+monellako tavalla voimme valita $n$ luvun taulukosta yhtenäisen osataulukon,
+jossa lukujen summa on $x$.
+Voimme ratkaista tehtävän suoraviivaisesti kahdella for-silmukalla
+ajassa $O(n^2)$ käymällä läpi kaikki osataulukot:
 
-Tässä tehtävässä voimme käyttää yksinkertaista ahnetta ideaa:
-suoritamme tehtävät järjestyksessä pienimmästä suurimpaan
-keston mukaan.
-Tuloksena on algoritmi, joka vie aikaa $O(n \log n)$,
-koska meidän riittää järjestää tehtävien kestot.
-Mutta miksi tämä algoritmi antaa oikean ratkaisun?
+\begin{code}
+laskuri = 0
+for i = 0 to n-1
+    summa = 0
+    for j = i to n-1
+        summa += taulu[j]
+        if summa == x:
+            laskuri++
+\end{code}
 
-Voimme ymmärtää algoritmin toiminnan tekemällä \emph{vastaoletuksen}:
-oletamme, että jossakin tapauksessa optimaalinen ratkaisu
-ei olisi suorittaa tehtäviä järjestyksessä keston mukaan.
-Tällöin suoritamme jossakin vaiheessa ensin tehtävän kestoa $a$
-ja sitten tehtävän kestoa $b$ niin, että $a>b$.
-Kun aloitamme tehtävän $a$ suorittamisen hetkellä $x$,
-saamme sakkoa näistä tehtävistä $x+a$ ja $x+a+b$ eli yhteensä $2x+2a+b$.
-Nyt kuitenkin voimme vaihtaa keskenään tehtävien suoritusjärjestyksen
-eli suorittaa ensin tehtävän $b$ ja sitten tehtävän $a$.
-Tällöin sakkoa tulee $x+b$ ja $x+b+a$ eli yhteensä $2x+a+2b$.
-Koska $a>b$, niin $a+2b < 2a+b$ eli uusi järjestys tuottaakin
-vähemmän sakkoa.
-Niinpä vastaoletuksemme on väärä ja ahne algoritmi on toimiva.
+Entä kuinka voisimme ratkaista tehtävän tehokkaasti?
+Tässä auttaa muotoilla hieman toisin, mitä tarkoittaa,
+että osataulukon summa on $x$.
+Merkitään $s(i)$:llä osataulukon summaa taulukon alusta
+kohtaan $i$ asti, ja oletetaan lisäksi, että $s(-1)=0$.
+Tätä merkintää käyttäen osataulukon summa
+kohdasta $a$ kohtaan $b$ on
+\[s(b)-s(a-1),\]
+eli meidän riittää oikeastaan keskittyä vain taulukon alusta
+alkavien osataulukoiden summiin.
 
-\section{Binäärihaun sovellukset}
+Koska haluamme saada tehokkaan algoritmin,
+hyvä tavoite olisi käydä taulukko läpi vain kerran.
+Kun olemme taulukon kohdassa $i$,
+monessako tähän kohtaan päättyvässä osataulukossa
+lukujen summa on $x$?
+Tämä tarkoittaa, että haluamme etsiä kohdat $j<i$,
+joille pätee
+\[s(i)-s(j-1)=x\]
+eli
+\[s(j-1)=s(i)-x.\]
+Tämä onnistuu tehokkaasti, kun pidämme taulukon läpikäynnissä
+kirjaa, montako kertaa mikäkin summa on esiintynyt taulukon alkuosassa.
+Voimme toteuttaa algoritmin seuraavasti:
+
+\begin{code}
+summat[0] = 1
+laskuri = 0
+summa = 0
+for i = 0 to n-1
+    laskuri += summat[taulu[i]-x]
+    summa += taulu[i]
+    summat[summa]++
+\end{code}
+
+Tässä rakenne \texttt{summat} pitää kirjaa,
+montako kertaa mikäkin alkuosan summa on esiintynyt tähän mennessä.
+Koska summat voivat olla suuria, emme voi käyttää tavallista taulukkoa,
+mutta voimme sen sijaan käyttää hajautustaulua tai binäärihakupuuta
+(Javassa rakenteet \texttt{HashMap} ja \texttt{TreeMap}).
+Näin saamme aikaan ratkaisun, joka vie aikaa $O(n)$ tai $O(n \log n)$
+riippuen valitusta tietorakenteesta.
+
+\subsection{Binäärihaku}
 
 Binäärihaun tunnetuin käyttötarkoitus on alkion etsiminen
 järjestetystä taulukosta ajassa $O(\log n)$.
@@ -376,7 +373,7 @@ Niinpä meidän ei tarvitse murehtia siitä,
 kuinka suuria $x_1$ ja $m$ ovat,
 vaan voimme luottaa siihen, että algoritmi on tehokas.
 
-\section{Tasoitettu analyysi}
+\subsection{Tasoitettu analyysi}
 
 Tähän mennessä olemme arvioineet algoritmien tehokkuutta
 lähinnä määrit\-tämällä jokaiselle silmukalle ylärajan,
