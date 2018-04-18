@@ -291,7 +291,7 @@ kutsumme funktiota \texttt{ok} yhteensä $O(\log N)$ kertaa.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
 \draw[->] (-1,1.5) -- (10,1.5);
 \foreach \x in {0,...,8} \draw (\x,1.40) -- (\x,1.60);
 \foreach \x in {0,...,8} \node at (\x,2) {\scriptsize $\x$};
@@ -370,136 +370,63 @@ vaan voimme luottaa siihen, että algoritmi on tehokas.
 
 \subsection{Tasoitettu analyysi}
 
-Tähän mennessä olemme arvioineet algoritmien tehokkuutta
-lähinnä määrit\-tämällä jokaiselle silmukalle ylärajan,
+Voimme yleensä määrittää algoritmin aikavaativuuden
+helposti katsomalla jokaisesta silmukasta,
 montako kertaa siinä olevaa koodia suoritetaan.
-Tämä onkin yleensä hyvä tapa laskea aikavaativuus,
-mutta joskus ongelmaksi voi tulla, että silmukan kierrosten
-määrä vaihtelee algoritmin eri vaiheissa eikä yläraja
-anna oikeaa kuvaa tehokkuudesta.
-
-Seuraavaksi tutustumme tekniikkaan nimeltä
+Joskus näin suoraviivainen analyysi ei anna kuitenkaan
+oikeaa kuvaa algoritmin tehokkuudesta,
+koska silmukan suorituskertojen määrä saattaa vaihdella
+algoritmin eri vaiheissa.
+Tutustumme seuraavaksi tekniikkaan nimeltä
 \emph{tasoitettu analyysi}, jossa koetamme arvioida tarkemmin,
 montako kertaa silmukassa olevaa koodia suoritetaan
 \emph{yhteensä} algoritmin aikana.
-Tämän avulla pystymme joskus huomaamaan, että algoritmi
-toimii tehokkaammin kuin vaikuttaa ensin.
 
-\subsection{Alitaulukot, osa 2}
-
-Palaamme aluksi tehtävään, jossa meille on annettu
-$n$ positiivisen kokonaisluvun taulukko ja haluamme laskea,
-monenko yhtenäisen alitaulukon summa on $x$.
-Olemme jo ratkaisseet tehtävän ajassa $O(n \log n)$
-binäärihaun ja summataulukon avulla,
-mutta nyt ratkaisemme tehtävän vielä tehokkaammin
-ajassa $O(n)$ esimerkkinä tasoitetusta analyysista.
-
-Ideana on, että meillä on kaksi muuttujaa $i$ ja $j$,
-jotka osoittavat taulukkoon.
-Muuttujat aloittavat taulukon alusta,
-ja jokaisella vuorolla $i$ siirtyy askeleen oikealle
-ja $j$ siirtyy oikealle niin kauan, kunnes välin $[i,j]$
-lukujen summa on ainakin $x$.
-Jos lukujen summa on tasan $x$, olemme löytäneet yhden
-alitaulukon, jonka summa on $x$.
-Seuraava koodi toteuttaa algoritmin:
-
-\begin{code}
-int j = -1;
-int summa = 0;
-int laskuri = 0;
-for (int i = 0; i < n; i++) {
-    while (j+1 < n && summa < x) {
-        j++;
-        summa += taulu[j];
-    }
-    if (summa == x) laskuri++;
-    summa -= taulu[i];
-}
-System.out.println(laskuri);
-\end{code}
-
-Tästä koodista on ensin näkemältä vaikeaa määrittää algoritmin
-aikavaativuutta, koska ei ole varmaa, montako kierrosta
-\texttt{while}-silmukkaa suoritetaan milloinkin.
-Saattaa olla, että jollakin kertaa silmukkaa ei suoriteta lainkaan
-mutta toisella kertaa $O(n)$ kierrosta.
-Koska silmukkaa suoritetaan aina enintään $O(n)$ kierrosta,
-saamme algoritmille aikavaativuuden $O(n^2)$,
-mutta antaako tämä hyvän kuvan algoritmista?
-
-Voimme analysoida algoritmia tarkemmin kiinnittämällä huomiota
-siihen, miten muuttujan $j$ arvo muuttuu algoritmissa.
-Muuttujan arvo on aluksi $-1$,
-se kasvaa yhdellä jokaisella \texttt{while}-silmukan kierroksella
-ja silmukkaan mennään vain, jos arvo on enintään $n-1$.
-Niinpä voimme päätellä, että silmukassa oleva koodi suoritetaan \emph{yhteensä}
-$O(n)$ kertaa, mikä tarkoittaa sitä,
-että koko algoritmin aikavaativuus on vain $O(n)$.
-
-\subsection{Lähin pienempi edeltäjä}
-
-Tasoitettuun analyysiin liittyy usein jokin tietorakenne,
+Tasoitettuun analyysiin liittyy yleensä jokin tietorakenne,
 jonka operaatioiden määrää haluamme arvioida.
-Näin on myös seuraavassa tehtävässä:
-
-Annettuna on taulukko, jossa on $n$ kokonaislukua,
+Tarkastellaan esimerkkinä tehtävää,
+jossa meillä on $n$ lukua sisältävä taulukko
 ja haluamme muodostaa toisen taulukon,
 jossa on jokaisen luvun \emph{lähin pienempi edeltäjä}.
-Tämä tarkoittaa, että haluamme löytää jokaiselle taulukon luvulle
-sitä pienemmän luvun, joka on mahdollisimman lähellä aiemmin taulukossa.
+Tämä tarkoittaa, että haluamme löytää jokaiselle luvulle
+pienemmän luvun, joka on mahdollisimman lähellä aiemmin taulukossa.
 Esimerkiksi taulukon $[1,4,5,2,3,2]$
 lähimmät pienemmät edeltäjät ovat $[-,1,4,1,2,1]$.
 Koska luvulla $1$ ei ole pienempää edeltäjää,
 sen kohdalla on merkki $-$.
 
-Seuraavassa on $O(n^2)$-algoritmi, joka etsii
-lähimmät pienemmät edeltäjät:
+Seuraava koodi ratkaisee tehtävän $O(n^2)$-ajassa ja muodostaa
+taulukon \texttt{edeltaja}, jossa on jokaisen luvun lähin pienempi edeltäjä:
 
 \begin{code}
-for (int i = 0; i < n; i++) {
-    for (int j = i-1; j >= 0; j--) {
-        if (taulu[j] < taulu[i]) {
-            edeltaja[i] = taulu[j];
-            break;
-        }
-    }
-}
+for i = 0 to n-1
+    for j = i-1 to 0
+        if taulu[j] < taulu[i]
+            edeltaja[i] = taulu[j]
+            break
 \end{code}
 
-Ratkaisemme tehtävän tehokkaasti pitämällä yllä \emph{pinoa},
-jossa on kasvava lista taulukon lukuja.
-Pino on tietorakenne, jossa voimme lisätä alkion pinon päälle
-ja hakea tai poistaa pinon ylimmän alkion.
-Voisimme toteuttaa pinon listana,
-mutta Javassa on myös erikoistunut tietorakenne \texttt{Stack},
-jota käytämme seuraavassa koodissa:
+Saamme aikaan tehokkaan ratkaisun käymällä läpi taulukon
+vasemmalta oikealle ja pitämällä yllä \emph{pinoa}, jossa on
+kasvava lista taulukon lukuja.
+Jokaisessa kohdassa $i$ poistamme ensin pinon lopusta lukuja
+niin kauan kuin pinon viimeinen luku on suurempi tai yhtä
+suuri kuin kohdan $i$ luku.
+Tämän jälkeen kirjaamme muistiin, että kohdan $i$ luvun
+lähin pienempi edeltäjä on pinon viimeinen luku ja
+lisäämme kohdan $i$ luvun pinon loppuun.
+Tuloksena on seuraava algoritmi:
 
 \begin{code}
-Stack<Integer> pino = new Stack<>();
-for (int i = 0; i < n; i++) {
-    while (!pino.empty() && pino.peek() >= taulu[i]) {
-        pino.pop();
-    }
-    if (!pino.empty()) {
-        edeltaja[i] = pino.peek();
-    }
-    pino.push(taulu[i]);
-}
+pino = []
+for i = 0 to n-1
+    while not pino.empty() and pino.top() >= taulu[i]
+        pino.pop()
+    if not pino.empty()
+        edeltaja[i] = pino.top()
+    pino.push(taulu[i])
 \end{code}
 
-Metodi \texttt{push} lisää alkion pinoon,
-\texttt{peek} hakee ylimmän alkion ja \texttt{pop}
-poistaa ylimmän alkion.
-Ideana on, että säilytämme pinossa kasvavassa järjestyk\-sessä
-ehdokkaita tulevien lukujen lähimmiksi pienimmiksi edeltäjiksi.
-Jokaisessa taulukon kohdassa poistamme
-pinosta lukuja, kunnes pinon ylin luku on pienempi kuin nykyinen luku
-tai pino on tyhjä.
-Jos pino ei ole tämän jälkeen tyhjä, sen ylin luku on nykyisen luvun
-lähin pienempi edeltäjä.
-Lopuksi lisäämme nykyisen luvun pinoon päälle.
 
 Algoritmin tehokkuus riippuu siitä, montako kertaa suoritamme
 \texttt{while}-silmukassa olevan koodin.
@@ -508,4 +435,4 @@ korkeintaan niin monta alkiota kuin olemme lisänneet siihen,
 eli emme voi kutsua \texttt{pop}-metodia useammin kuin \texttt{push}-metodia.
 Koska lisäämme pinoon $n$ alkiota, suoritamme \texttt{while}-silmukkaa
 siis enintään $n$ kierrosta.
-Tämän ansiosta algoritmin aikavaativuus on $O(n)$.
+Tämän ansiosta algoritmin aikavaativuus on vain $O(n)$.
