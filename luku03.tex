@@ -711,55 +711,61 @@ vertailu: 2 3
 vertailu: 2 1
 \end{code}
 
-\section{Esimerkki: Keskiluvut}
+\section{Järjestämisen sovelluksia}
 
-Annettuna on $n$ kokonaisluvun taulukko ja haluamme
-laskea sille mediaanin ja moodin.
-Taulukon \emph{mediaani} on keskimmäinen arvo, kun taulukko järjestetään
-pienimmästä suurimpaan.
-Taulukon \emph{moodi} on puolestaan arvo, joka esiintyy useimmiten taulukossa.
-Esimerkiksi taulukon $[2,1,3,1,5]$ mediaani on 2 ja moodi on 1.
+Järjestämisen merkitys algoritmien suunnittelussa on siinä,
+että voimme ratkaista monia ongelmia tehokkaasti, 
+kunhan aineisto on järjestyksessä.
+Niinpä yleinen tapa luoda tehokas algoritmi on järjestää
+ensin syöte ajassa $O(n \log n)$ ja tehdä sitten tehokas
+käsittely järjestystä hyödyntäen.
 
-Pystymme laskemaan sekä mediaanin että moodin tehokkaasti
-$O(n \log n)$-ajassa järjestämisen avulla.
-Mediaanin laskeminen on erityisen helppoa,
-koska meidän riittää järjestää taulukko ja valita
-sieltä keskimmäinen luku. Seuraava koodi hoitaa asian:
+\subsection{Taulukkoalgoritmeja}
 
-\begin{code}
-Arrays.sort(taulu);
-System.out.println(taulu[n/2]);
-\end{code}
+Järjestämisen avulla voimme vastata tehokkaasti esimerkiksi
+seuraaviin taulukkoa koskeviin kysymyksiin:
 
-Tässä tulkintana on, että kun $n$ on parillinen, mediaani
-on kahdesta keskimmäisestä luvusta pienempi.
+\begin{itemize}
+\item Onko taulukossa kahta samaa alkiota?
+\item Montako eri alkiota taulukossa on?
+\item Mikä alkio esiintyy useimmiten taulukossa?
+\item Mitkä kaksi alkiota ovat lähinnä toisiaan?
+\end{itemize}
 
-Moodin laskemisessa auttaa havainto, että taulukon järjestämisen
-jälkeen kaikki yhtä suuret luvut ovat vierekkäin.
-Niinpä voimme ensin järjestää taulukon ja etsiä sitten siitä
-pisimmän samaa lukua toistavan osuuden.
-Seuraava koodi toimii näin:
+Kaikissa näissä tapauksissa suoraviivainen raa'an voiman
+algoritmi toimii ajassa $O(n^2)$, mutta järjestämisen avulla
+saamme aikaan algoritmin, joka vie aikaa vain $O(n \log n)$.
+Esimerkiksi jos haluamme laskea, montako eri alkiota taulukossa on,
+voimme tehdä sen seuraavasti ajassa $O(n^2)$:
 
 \begin{code}
-Arrays.sort(taulu);
-int moodi = taulu[0];
-int pituus = 1;
-int paras = 1;
-for (int i = 1; i < n; i++) {
-    if (taulu[i-1] != taulu[i]) {
-        pituus = 0;
-    }
-    pituus++;
-    if (pituus > paras) {
-        paras = pituus;
-        moodi = taulu[i];
-    }
-}
+laskuri = 0
+for i = 0 to n-1
+    eka = true
+    for j = 0 to i-1
+        if taulu[i] == taulu[j]
+            eka = false
+    if eka
+        laskuri++
 \end{code}
 
-Algoritmi käy läpi järjestetyn taulukon vasemmalta oikealle
-ja laskee muuttujaan \texttt{pituus}, kuinka pitkä on tällä
-hetkellä meneillään oleva samaa lukua toistava osuus.
-Jos tämä ylittää pisimmän tähän asti havaitun toistojen
-määrän (\texttt{paras}), algoritmi merkitsee pituuden muistiin
-ja päivittää tietoa taulukon moodista (\texttt{moodi}).
+Ideana on tutkia jokaisesta alkiosta, onko se \emph{ensimmäinen}
+kyseinen alkio taulukossa.
+Jos näin on, kasvatamme laskuria yhdellä.
+
+Kun järjestämme taulukon ensin, tehtävämme helpottuu ja
+saamme aikaan algoritmin, joka toimii ajassa $O(n \log n)$:
+
+\begin{code}
+sort(taulu)
+laskuri = 1
+for i = 1 to n-1
+    if taulu[i-1] != taulu[i]
+        laskuri++
+\end{code}
+
+Algoritmin toiminta perustuu siihen, että
+järjestämisen jälkeen kaikki yhtä suuret alkiot ovat vierekkäin.
+Niinpä kasvatamme jokaisen alkion kohdalla laskuria
+tarkalleen silloin, kun alkio ei ole sama kuin edellinen alkio
+taulukossa eli se on ensimmäinen kyseinen alkio taulukossa.
