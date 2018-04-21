@@ -4,7 +4,7 @@ Ohjelmoinnin perustietorakenne on taulukko,
 joka on mainio tietorakenne, mutta siinä on yksi puute.
 Kun luomme taulukon, meidän täytyy antaa sille
 kiinteä koko, emmekä voi muuttaa kokoa myöhemmin.
-Esimerkiksi seuraava koodi luo taulukon,
+Esimerkiksi seuraava Java-koodi luo taulukon,
 jossa on kiinteästi kymmenen alkiota:
 
 \begin{code}
@@ -16,39 +16,23 @@ taulukon luontihetkellä käsitystä, montako alkiota
 haluaisimme tallentaa siihen myöhemmin.
 
 Tämän luvun tavoitteemme on luoda tietorakenne,
-joka muistuttaa taulukkoa, mutta sallii alkioiden
-lisäämisen ja poistamisen.
-Kutsumme tietorakennetta nimellä \emph{lista}.
+jota kutsumme nimellä \emph{lista}.
+Taulukon tavoin lista sisältää joukon alkioita
+tietyssä järjestyk\-sessä,
+mutta voimme lisäksi muuttaa listan kokoa
+lisäämällä ja poistamalla alkioita.
 Tutustumme kahteen tapaan listan toteuttamiseen,
 joissa molemmissa on omat hyvät ja huonot puolensa.
 
 \section{Taulukkolista}
 
 \emph{Taulukkolista} on lista, joka on tallennettu taulukkoon.
-Esimerkiksi seuraava koodi luo taulukon,
-joka vastaa listaa $[3,7,2,5]$:
-
-\begin{code}
-int[] lista = {3,7,2,5};
-\end{code}
-
-Ongelmana on vain, että taulukon koko on kiinteä,
-vaikka haluaisimme pystyä lisäämään ja poistamaan
-alkioita.
+Meidän täytyy vain keksiä, miten voimme lisätä ja poistaa
+alkioita, vaikka taulukon koko on kiinteä.
 Löydämme ongelmaan pian ratkaisun, mutta sitä ennen
 aiheellinen kysymys on:
-miksi ohjelmointikielten suunnittelijat ovat olleet niin keljuja,
-että he eivät ole antaneet meille suoraan mahdollisuutta muuttaa
-taulukon kokoa?
-
-Tähän on hyvä selitys, joka liittyy siihen,
-miten taulukko on tallennettu tietokoneen muistissa.
-Tarkastellaan esimerkkinä seuraavaa koodia:
-
-\begin{code}
-int[] a = {1,4,2};
-int[] b = {5,3,2,5};
-\end{code}
+miksi ohjelmointikielten suunnittelijat eivät ole antaneet meille
+suoraan mahdollisuutta muuttaa taulukon kokoa?
 
 \begin{figure}
 \center
@@ -68,12 +52,12 @@ int[] b = {5,3,2,5};
 \label{fig:taumui}
 \end{figure}
 
+Tähän on hyvä selitys, joka liittyy siihen,
+miten taulukko on tallennettu tietokoneen muistissa.
+Tarkastellaan esimerkkiä, jossa ohjelmassa on käytössä
+taulukot $[1,4,2]$ ja $[5,3,2,5]$.
 Kuva \ref{fig:taumui} näyttää mahdollisen tavan, miten taulukot
-\texttt{a} ja \texttt{b} asettuvat muistissa.
-Taulukossa \texttt{a} on kolme alkiota,
-joten sille on varattu kolme paikkaa muistista,
-ja taulukossa \texttt{b} on neljä alkiota,
-joten sille on varattu neljä paikkaa muistista.
+asettuvat muistissa.
 Taulukolle varataan aina yhtenäinen muistialue,
 minkä ansiosta pääsemme käsiksi sen alkioihin
 helposti ajassa $O(1)$.
@@ -83,8 +67,8 @@ minkä vuoksi emme voi laajentaa taulukon kokoa
 luonnin jälkeen:
 tyypillisesti muistissa on heti taulukon perässä muuta
 tarpeellista tietoa, jota ei saa poistaa.
-Jos lisäisimme taulukon \texttt{a} perään uuden alkion,
-meidän täytyisi tuhota taulukon \texttt{b} ensimmäinen alkio,
+Jos lisäisimme taulukon $[1,4,2]$ perään uuden alkion,
+meidän täytyisi tuhota taulukon $[5,3,2,5]$ ensimmäinen alkio,
 mikä ei tule kysymykseen.
 Ainoa tapa laajentaa taulukkoa onkin varata
 jostain muualta muistista enemmän tilaa ja kopioida
@@ -106,7 +90,7 @@ vapaana oleva kohta taulukosta.
 Kuva \ref{fig:listau} näyttää esimerkin,
 jossa taulukossa on tilaa yhteenä kahdeksalle alkiolle
 ja siihen on tallennettu lista $[3,7,2,5]$.
-Taulukon neljä ensimmäistä alkiota on siis listan käytössä,
+Taulukon neljä ensimmäistä alkiota ovat siis listan käytössä,
 ja muut ovat varalla tulevia alkioita varten.
 Kun lisäämme listan loppuun uuden alkion 6,
 otamme käyttöön taulukosta uuden kohdan, johon alkio sijoitetaan.
@@ -248,9 +232,9 @@ Voimme soveltaa tässä käänteisesti samaa ideaa kuin lisäämisessä:
 jos poistamisen jälkeen vain \emph{neljännes} taulukosta on käytössä,
 puolitamme taulukon koon.
 Kuva \ref{fig:lispoi} näyttää esimerkin tällaisesta tilanteesta.
-Tällä tavalla poistamiset vievät keskimäärin aikaa $O(1)$.
+Tällä tavalla myös poistamiset vievät keskimäärin aikaa $O(1)$.
 
-Miksi sitten emme voisi varata heti aluksi niin suurta taulukkoa,
+Miksi emme voisi varata heti aluksi niin suurta taulukkoa,
 että lopullinen lista mahtuisi siihen varmasti?
 Tässä olisi huonona puolena, että listamme tuhlaisi paljon muistia.
 Ohjelmassa saattaa olla samaan aikaan käytössä monia listoja,
