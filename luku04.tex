@@ -671,8 +671,8 @@ System.out.println(lista.get(1)); // 5
 \end{code}
 
 Luokassa \texttt{Collections} on hyödyllisiä metodeita
-listan käsittelyyn.
-Seuraava koodi järjestää ensin listan,
+\texttt{ArrayList}-rakenteen käsittelyyn.
+Esimerkiksi seuraava koodi järjestää ensin listan,
 muuttaa sitten sen järjestyksen käänteiseksi
 ja sekoittaa lopuksi järjestyksen.
 
@@ -690,7 +690,7 @@ sekä listan alussa että lopussa.
 Alkioita voi lisätä
 metodeilla \texttt{addFirst} ja \texttt{addLast}
 ja poistaa
-metodeilla \texttt{removeFirst} ja \texttt{removeLast}.
+metodeilla \texttt{removeFirst} ja \texttt{removeLast}:
 
 \begin{code}
 ArrayDeque<Integer> lista = new ArrayDeque<>();
@@ -703,7 +703,7 @@ System.out.println(lista); // [1, 3]
 \end{code}
 
 Lisäksi voimme hakea listan ensimmäisen ja viimeisen
-alkion metodeilla \texttt{getFirst} ja \texttt{getLast}.
+alkion metodeilla \texttt{getFirst} ja \texttt{getLast}:
 
 \begin{code}
 ArrayDeque<Integer> lista = new ArrayDeque<>();
@@ -768,11 +768,13 @@ Seuraavaksi vertailemme Javan taulukkolistan
 (\texttt{ArrayList}) ja linkitetyn listan (\texttt{LinkedList})
 käytännön tehokkuutta.
 
-Testissä muodostamme ensin taulukon, joka sisältää luvut $1,2,\dots,n$
-satunnaisessa järjestyksessä.
-Tämän jälkeen luomme tyhjän listan ja käymme taulukon läpi
-vasemmalta oikealle niin, että lisäämme kunkin luvun listalle
-sen oikealle paikalle järjestyksessä.
+Testissä luomme ensin taulukon, joka sisältää luvut $1,2,\dots,n$
+satunnaisessa järjestyksessä, sekä tyhjän listan.
+Tämän jälkeen käymme taulukon läpi vasemmalta oikealle
+ja lisäämme kunkin luvun listalle
+sen oikealle paikalle niin, että lista säilyy järjestettynä.
+Esimerkiksi jos listalla on ennestään alkiot $[2,3,6]$ ja seuraava
+taulukon alkio on $4$, listasta tulee $[2,3,4,6]$.
 Teemme saman testin taulukkolistalle ja linkitetylle listalle.
 
 Taulukkolistan tapauksessa käymme listaa läpi alusta
@@ -806,13 +808,11 @@ for (int i = 0; i < n; i++) {
 }
 \end{code}
 
-Taulukkolistassa sekä oikean kohdan etsiminen että lisääminen
+Taulukkolistassa sekä oikean kohdan etsiminen että alkion lisääminen
 vievät aikaa $O(n)$, kun taas linkitetyssä listassa
-oikean kohdan etsiminen vie aikaa $O(n)$, mutta lisääminen
+oikean kohdan etsiminen vie aikaa $O(n)$, mutta alkion lisääminen
 vie aikaa vain $O(1)$.
 Mutta kuinka nopeasti koodit toimivat käytännössä?
-
-
 
 \begin{table}
 \center
@@ -833,16 +833,17 @@ Taulukko \ref{tab:listes} näyttää testin tulokset.
 Osoittautuu, että taulukkolista on selvästi
 \emph{nopeampi} kuin linkitetty lista.
 Näin käy siitä huolimatta, että taulukkolistassa
-lisääminen vie aikaa $O(n)$, mutta linkitetyssä
+alkion lisääminen vie aikaa $O(n)$, mutta linkitetyssä
 listassa aikaa kuluu $O(1)$.
 Kysymys kuuluukin:
 
 \subsubsection{Milloin kannattaa käyttää linkitettyä listaa?}
 
-Jokaisessa tietorakenteessa on omat hyvät ja huonot puolensa,
-ja kaikille on tietyt käyttötarkoituksensa.
+Tietorakenteiden maailmassa jokaiselle tietorakenteelle
+on yleensä omat tietyt käyttötarkoituksensa,
+joissa se erottuu edukseen muista tietorakenteista.
 Linkitetty lista muodostaa kuitenkin poikkeuksen tähän sääntöön:
-sitä ei kannata käyttää yleensä koskaan.
+\emph{sitä ei kannata käyttää yleensä koskaan}.
 
 \begin{figure}
 \center
