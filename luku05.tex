@@ -1,16 +1,14 @@
 \chapter{Hajautustaulu}
 
-Algoritmien suunnittelussa on usein tarvetta
-tietorakenteelle, joka pitää yllä alkioiden kokoelmaa.
-Kutsumme tällaista tietorakennetta nimellä \emph{joukko}.
+Algoritmiikassa on usein tarvetta
+tietorakenteelle, joka pitää yllä alkioiden \emph{joukkoa}.
 Esimerkiksi $\{2,4,5,7\}$ on joukko, joka sisältää
 alkiot $2$, $4$, $5$ ja $7$.
-Haluamme toteuttaa rakenteen niin,
-että pystymme tarkastamaan, kuuluuko tietty alkio
+Haluamme pystyä tarkastamaan, kuuluuko tietty alkio
 joukkoon, sekä lisäämään ja poistamaan alkioita.
 Lisäksi haluamme,
-että kukin alkio voi esiintyä joukossa vain kerran,
-mikä vastaa tavallista joukon määritelmää matematiikassa.
+että kukin alkio voi esiintyä joukossa enintään kerran,
+kuten matematiikassa.
 
 Helppo tapa toteuttaa joukko on tallentaa
 kaikki joukon alkiot listaan.
@@ -20,7 +18,7 @@ kun haluamme selvittää, kuuluuko tietty alkio joukkoon.
 Joudumme käymään listan läpi myös alkion lisäämisessä ja
 poistamisessa, koska emme halua lisätä samaa alkiota
 uudestaan ja meidän täytyy löytää poistettava alkio.
-Niinpä joukon operaatiot vievät aikaa $O(n)$.
+Niinpä listatoteutuksen operaatiot vievät aikaa $O(n)$.
 
 Tässä ja seuraavassa luvussa käymme läpi kaksi
 tietorakennetta, joiden avulla voimme toteuttaa
