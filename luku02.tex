@@ -224,15 +224,21 @@ että algoritmin osana on \emph{järjes\-tämistä},
 koska tehokkaat järjestämisalgoritmit
 toimivat ajassa $O(n \log n)$.
 Esimerkiksi seuraava $O(n \log n)$-aikainen
-algoritmi laskee, montako eri alkiota taulukko sisältää.
+algoritmi tarkastaa, onko taulukossa kahta samaa alkiota:
 
 \begin{code}
 sort(taulu)
-laskuri = 1
+ok = false
 for i = 1 to n-1
-    if taulu[i] != taulu[i-1]
-        laskuri++
+    if taulu[i] == taulu[i-1]
+        ok = true
 \end{code}
+
+Algoritmi järjestää ensin taulukon, minkä jälkeen yhtä
+suuret alkiot ovat \emph{vierekkäin} ja ne on helppoa löytää.
+Järjestäminen vie aikaa $O(n \log n)$
+ja silmukka vie aikaa $O(n)$, joten algoritmi vie
+yhteensä aikaa $O(n \log n)$.
 
 \subsubsection{$O(n^2)$ (neliöllinen)}
 
