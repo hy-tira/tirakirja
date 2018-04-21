@@ -245,7 +245,7 @@ int summa(int a, int b) {
 \label{tab:psekoo}
 \end{table}
 
-\section{Rekursio}
+\section{Rekursiiviset algoritmit}
 
 Rekursio on hyödyllinen ohjelmointitekniikka,
 joka jää kuitenkin usein sivurooliin ohjelmoinnin perusteiden opiskelussa.
@@ -256,15 +256,14 @@ Tulemme tarvitsemaan rekursiota useassa vaiheessa kurssin aikana.
 \subsection{Johdatus rekursioon}
 
 Tarkastellaan ensimmäisenä esimerkkinä tehtävää,
-jossa haluamme muodostaa kaikki \emph{DNA-ketjut},
+jossa haluamme muodostaa kaikki DNA-ketjut,
 joiden pituus on $n$.
 DNA-ketju on merkkijono, joka muodostuu merkeistä A, C, G ja T.
-Esimerkiksi kun $n=3$, haluttuja ketjuja ovat muiden muassa
-ACA, CGG ja TAG.
+Esimerkiksi kun $n=3$, ketjut ovat AAA, AAC, AAG, $\dots$, TTC, TTG, TTT.
 
 Voimme ratkaista tehtävän helposti kiinteällä $n$:n arvolla
 luomalla $n$ sisäk\-käistä silmukkaa.
-Esimerkiksi seuraava koodi tulostaa ketjut, kun $n=3$:
+Esimerkiksi seuraava koodi vastaa tapausta $n=3$:
 
 \begin{code}
 merkit = ["A","C","G","T"]
@@ -290,17 +289,17 @@ for i = 0 to 3
 Tämä ei ole hyvä ilmiö, vaan haluaisimme saada aikaan \emph{yleisen}
 koodin, joka toimisi suoraan millä tahansa $n$:n arvolla.
 Rekursio tarjoaa helpon ratkaisun juuri tähän:
-pystymme luomaan kätevästi algoritmeja, joissa on
+pystymme toteuttamaan kätevästi algoritmeja, joissa on
 ''vaihteleva määrä silmukoita''.
 
-Seuraavassa on rekursiivinen aliohjelma \texttt{muodosta},
+Seuraavassa on rekursiivinen algoritmi \texttt{muodosta},
 joka muodostaa kaikki DNA-ketjut pituutta $n$.
 Rekursio lähtee käyntiin, kun parametriksi \texttt{ketju}
 annetaan tyhjä merkkijono.
-Aliohjelma tarkastaa ensin, onko annettu ketju valmis
+Algoritmi tarkastaa ensin, onko annettu ketju valmis
 eli onko siinä jo $n$ merkkiä.
-Jos näin on, aliohjelma tulostaa ketjun eikä tee muuta.
-Muussa tapauksessa aliohjelma käy läpi kaikki tavat
+Jos näin on, algoritmi tulostaa ketjun eikä tee muuta.
+Muussa tapauksessa algoritmi käy läpi kaikki tavat
 lisätä ketjun loppuun seuraava merkki (A, C, G tai T)
 ja kutsuu itseään rekursiivisesti jokaisen vaihtoehdon kohdalla.
 
@@ -341,28 +340,27 @@ muodosta(ketju)
 \end{figure}
 
 Kuva \ref{fig:ketjut} havainnollistaa,
-kuinka rekursiivinen aliohjelma lähtee muodostamaan ketjuja.
-Ensin aliohjelma haarautuu neljään osaan sen mukaan,
+kuinka algoritmi lähtee muodostamaan ketjuja tyhjästä ketjusta alkaen.
+Ensin algoritmi haarautuu neljään osaan sen mukaan,
 onko ketjun ensimmäinen merkki A, C, G vai T.
 Tämän jälkeen haarautuminen jatkuu vastaavasti
 jokaisessa kutsussa:
 esimerkiksi jos ketju alkaa merkillä G,
-rekursio haarautuu tapauksiin GA, GC, GG ja GT, jne.
+algoritmi haarautuu tapauksiin GA, GC, GG ja GT, jne.
 
 \subsection{Osajoukot ja permutaatiot}
 
-Yksi rekursion tavallinen käyttötarkoitus on,
-että haluamme käydä läpi kaikki annetun joukon
-osajoukot.
+Yksi tavallinen rekursion käyttötarkoitus on,
+että haluamme käydä läpi kaikki annetun joukon osajoukot.
 Joukon \emph{osajoukko} on jokin tapa valita joukon alkioita.
 Esimerkiksi joukon $\{1,2,3\}$ osajoukot ovat
 $\emptyset$ (tyhjä joukko), $\{1\}$, $\{2\}$, $\{3\}$,
 $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
 Kun joukossa on $n$ alkioita, osa\-joukkoja on yhteensä $2^n$.
 
-Seuraava rekursiivinen aliohjelma muodostaa joukon
+Seuraava rekursiivinen algoritmi muodostaa joukon
 $\{1,2,\dots,n\}$ osajoukot.
-Haku lähtee käyntiin, kun kutsumme aliohjelmaa
+Haku lähtee käyntiin, kun kutsumme algoritmia
 parametrilla $1$.
 
 \begin{code}
@@ -403,7 +401,7 @@ $(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
 Kun joukossa on $n$ alkiota, voimme muodostaa siitä yhteensä $n!$ permutaatiota.
 
 Myös permutaatioiden läpikäynti onnistuu kätevästi rekursiolla.
-Seuraava aliohjelma muodostaa joukon $\{1,2,\dots,n\}$ permutaatiot,
+Seuraava algoritmi muodostaa joukon $\{1,2,\dots,n\}$ permutaatiot,
 kun kutsumme sitä parametrilla $1$.
 
 \begin{code}
@@ -419,10 +417,10 @@ muodosta(k)
                 valittu[i] = false
 \end{code}
 
-Tässä parametri $k$ tarkoittaa, minkä permutaation alkion valitsemme
-seuraavaksi.
-Aluksi valitsemme alkion kohtaan $1$, sitten kohtaan $2$,
-jne., kunnes olemme valinneet kaikki alkiot.
+Tässä parametri $k$ tarkoittaa, mihin permutaation kohtaan
+valitsemme seuraavaksi alkion.
+Aluksi valitsemme alkion kohtaan $1$, sitten
+valitsemme alkion kohtaan $2$, jne., kohtaan $n$ asti.
 Jokaisessa kohdassa käymme läpi silmukalla kaikki mahdolliset alkiot.
 Taulukko \texttt{valittu} kertoo, mitkä alkiot olemme jo valinneet
 permutaatioon.
@@ -430,7 +428,7 @@ Jos alkio $i$ ei ole vielä mukana permutaatiossa, haaraudumme tapaukseen,
 jossa valitsemme sen kohtaan $k$ ja merkitsemme tämän tiedon
 taulukkoon \texttt{permutaatio}.
 Lopulta kun $k=n+1$, olemme saaneet muodostettua jonkin permutaation
-ja rekursio päättyy.
+ja rekursiivinen haarautuminen päättyy.
 Tällöin voimme käsitellä permutaation haluamallamme tavalla,
 esimerkiksi tulostaa alkioiden järjestyksen seuraavasti:
 
@@ -441,16 +439,17 @@ for i = 1 to n
 
 \subsection{Peruuttava haku}
 
-\emph{Peruuttava haku} on yleinen rekursiivinen  menetelmä,
+\emph{Peruuttava haku} on yleinen rekursiivinen menetelmä,
 jota käyttäen voimme muodostaa järjestelmällisesti
-kaikki ratkaisut annettuun tehtävään.
-Siinä on ideana aloittaa tyhjästä ratkaisusta ja käydä
-joka askeleella läpi rekursiivisesti kaikki mahdolliset tavat laajentaa ratkaisua.
+kaikki ratkaisut annettuun ongelmaan.
+Ideana on aloittaa tyhjästä ratkaisusta ja käydä
+joka askeleella läpi rekursiivisesti kaikki mahdolliset tavat,
+kuinka voimme laajentaa ratkaisua.
 
 Peruuttava haku on raa'an voiman menetelmä,
 ja voimme käyttää sitä vain silloin,
 kun ratkaisujen määrä on niin pieni,
-että ehdimme käydä kaikki läpi.
+että ehdimme käydä läpi kaikki ratkaisut.
 Kuitenkin jos voimme käyttää peruuttavaa hakua,
 se on mainio tekniikka,
 koska voimme olla varmoja, että oikein toteutettu
@@ -504,7 +503,7 @@ peruuttava haku löytää kaikki ratkaisut.
 \label{fig:latnel}
 \end{figure}
 
-Tarkastellaan esimerkkinä tehtävää, jossa käydä läpi
+Tarkastellaan esimerkkinä tehtävää, jossa haluamme käydä läpi
 kaikki tietyn kokoiset latinalaiset neliöt.
 \emph{Latinalainen neliö} on ruudukko kokoa $n \times n$, jonka
 kullakin vaaka- ja pystyrivillä esiintyy tarkalleen kerran
@@ -517,7 +516,7 @@ ruudukon kohtaan $(y,x)$ tulevan luvun.
 Numeroimme ruudukon vaaka- ja pystyrivit kokonaisluvuin $1,2,\dots,n$.
 Aloitamme haun ruudukon vasemmasta yläkul\-masta ja etenemme
 rivi kerrallaan alaspäin.
-Seuraava rekursiivinen aliohjelma toteuttaa haun,
+Seuraava rekursiivinen algoritmi toteuttaa haun,
 kun sitä kutsutaan parametreilla $(1,1)$:
 
 \begin{code}
@@ -535,9 +534,9 @@ muodosta(y,x)
                 vaaka[y][i] = pysty[x][i] = false
 \end{code}
 
-Aliohjelman alussa on kaksi erikoistapausta:
-jos $y=n+1$, olemme saaneet ruudukon muodostettua
-ja kasvatamme laskurin arvoa.
+Algoritmin alussa on kaksi erikoistapausta:
+jos $y=n+1$, olemme saaneet muodostettua
+yhden latinalaisen neliön.
 Jos taas $x=n+1$, olemme saaneet jonkin vaakarivin
 valmiiksi ja alamme muodostaa seuraavaa vaakariviä.
 Muuten kyseessä on perustapaus, jossa haluamme
@@ -552,7 +551,7 @@ onko pystyrivillä $x$ jo lukua $i$.
 Jos voimme sijoittaa luvun $i$ kohtaan $(y,x)$,
 merkitsemme tämän taulukkoon $\texttt{nelio}[y][x]$
 ja lisäksi päivitämme taulukoita $\texttt{vaaka}$ ja $\texttt{pysty}$.
-Tämän jälkeen jatkamme rekursiivisesti hakua seuraavaan
+Sitten jatkamme hakua rekursiivisesti seuraavaan
 oikealla olevaan ruutuun.
 
 \begin{table}
@@ -616,10 +615,9 @@ Tämä merkintä on itse asiassa hyvin lähellä ohjelmoinnin
 for-silmukkaa, koska seuraava koodi ajaa saman asian:
 
 \begin{code}
-int summa = 0;
-for (int i = 1; i <= n; i++) {
-    summa += i*i;
-}
+summa = 0
+for i = 1 to n
+    summa += i*i
 \end{code}
 
 \subsection{Logaritmit}
@@ -630,7 +628,7 @@ Esimerkiksi $\log_2(32)=5$, koska $2^5=32$.
 
 Algoritmiikassa logaritmin kantaluku $b$ on usein 2,
 ja voimme ajatella, että logaritmi kertoo, montako kertaa
-meidän tulee \emph{puolittaa} luku $n$, ennen kuin pääsemme lukuun 1.
+meidän täytyy \emph{puolittaa} luku $n$, ennen kuin pääsemme lukuun 1.
 Esimerkiksi $\log_2(32)=5$, koska tarvitsemme 5 puolitusta:
 \[32 \rightarrow 16 \rightarrow 8 \rightarrow 4 \rightarrow 2 \rightarrow 1\]
 
