@@ -588,6 +588,48 @@ voimme muokata kyseistä kohtaa tehokkaasti,
 mutta muuten meidän tulee ensin kulkea haluttuun kohtaan,
 missä kuluu aikaa $O(n)$.
 
+\section{Pino ja jono}
+
+Listan avulla voimme toteuttaa myös kaksi erikoistunutta tietorakennetta,
+pinon ja jonon, jotka sisältävät vain osan listan ominaisuuksista
+eli niiden operaatiot ovat listaa rajoittuneempia.
+
+\emph{Pino} on tietorakenne, jossa on kolme operaatiota:
+alkion lisääminen pinon päälle, ylimmän alkion hakeminen
+sekä ylimmän alkion poistaminen.
+Pystymme siis käsittelemään vain pinon ylintä alkiota.
+Voimme toteuttaa pinon helposti listan avulla niin,
+että kaikki operaatiot vievät aikaa $O(1)$.
+
+\emph{Jono} on puolestaan tietorakenne, jossa voimme lisätä alkioita
+jonon loppuun, poistaa alkioita jonon alusta ja hakea alkioita
+molemmista päistä. Voimme toteuttaa kaikki jonon
+operaatiot ajassa $O(1)$ listan avulla.
+
+Mitä järkeä on luoda uusia tietorakenteita,
+jotka ovat \emph{huonompia} kuin lista?
+Selitys on siinä, että pino ja jono ovat hyödyllisiä 
+käsitteitä algoritmien suunnittelussa.
+Voimme usein ajatella jossakin algoritmissa tarvittavaa
+tietorakennetta pinona tai jonona ja toteuttaa sen sitten listana.
+
+Tarkastellaan esimerkkinä tehtävää, jossa meille on annettu
+\emph{sulkulauseke}, joka muodostuu kaarisulkeista \texttt{()} sekä
+hakasulkeista \texttt{[]}.
+Haluamme selvittää, onko lauseke \emph{oikein muodostettu} eli
+onko jokaiselle aloittavalle sululle vastaava lopettava pari.
+Esimerkiksi lauseke \texttt{[()]()} on oikein muodostettu,
+kun taas lauseke \texttt{[()(])} ei ole.
+Voimme ratkaista tehtävän pinon avulla
+käymällä läpi lausekkeen merkit vasemmalta oikealle.
+Kun vastaan tulee aloittava sulku \texttt{(} tai \texttt{[},
+lisäämme sen pinoon.
+Kun taas vastaan tulee lopettava sulku \texttt{)} tai
+\texttt{]}, varmistamme että pinossa ylimpänä on sitä vastaava
+aloittava sulku, jonka poistamme pinosta.
+Jos lausekkeen läpikäynnissä ei esiinny virheitä ja pino on lopuksi tyhjä,
+lauseke on oikein muodostettu.
+
 \section{Javan toteutukset}
 
 Javan standardikirjastossa on monia listojen toteutuksia,
