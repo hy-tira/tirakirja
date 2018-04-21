@@ -441,7 +441,7 @@ for i = 1 to n
 
 \subsection{Peruuttava haku}
 
-\emph{Peruuttava haku} on yleinen menetelmä,
+\emph{Peruuttava haku} on yleinen rekursiivinen  menetelmä,
 jota käyttäen voimme muodostaa järjestelmällisesti
 kaikki ratkaisut annettuun tehtävään.
 Siinä on ideana aloittaa tyhjästä ratkaisusta ja käydä
@@ -504,60 +504,56 @@ peruuttava haku löytää kaikki ratkaisut.
 \label{fig:latnel}
 \end{figure}
 
-Tarkastelemme esimerkkinä tehtävää, jossa haluamme laskea,
-montako tietyn kokoista latinalaista neliötä on olemassa.
+Tarkastellaan esimerkkinä tehtävää, jossa käydä läpi
+kaikki tietyn kokoiset latinalaiset neliöt.
 \emph{Latinalainen neliö} on ruudukko kokoa $n \times n$, jonka
 kullakin vaaka- ja pystyrivillä esiintyy tarkalleen kerran
 jokainen luku $1,2,\dots,n$.
-Kyseessä on siis yksinkertaisempi muoto tutusta sudoku-tehtävästä.
-Esimerkiksi kuvassa \ref{fig:latnel} on kaikki 12 latinalaista neliötä kokoa $3 \times 3$.
-Kun $n$ kasvaa, niin ratkaisujen määrä kasvaa nopeasti.
+Kyseessä on siis yksinkertaistus tutusta sudoku-tehtävästä.
+Esimerkiksi kuva \ref{fig:latnel} näyttää kaikki 12 latinalaista neliötä kokoa $3 \times 3$.
 
-Hakua varten määrittelemme seuraavat taulukot:
-
-\begin{code}
-int[][] nelio = new int[n][n];
-boolean[][] vaaka = new boolean[n][n];
-boolean[][] pysty = new boolean[n][n];
-\end{code}
-
-Numeroimme ruudukon pysty- ja vaakarivit $0,1,\dots,n-1$.
-Tarkoituksena on, että kohdassa $\texttt{nelio}[y][x]$
-on neliössä ruudussa $(y,x)$ oleva luku.
-Lisäksi $\texttt{vaaka}[y][k]$ kertoo, onko vaakarivillä $y$
-jo lukua $k$, ja vastaavasti $\texttt{pysty}[x][k]$ kertoo,
-onko pystyrivillä $x$ jo lukua $k$.
-Alussa kaikki taulukot ovat tyhjiä ja täytämme niitä
-pikkuhiljaa peruuttavan haun aikana.
-
-Seuraava rekursiivinen metodi toteuttaa haun, kun sille
-annetaan alkuparametreina $y=0$ ja $x=0$.
-Metodi laskee latinalaisten neliöiden määrän muuttujaan 
-\texttt{laskuri}.
+Toteutamme peruuttavan haun niin, että valitsemme joka askeleella
+ruudukon kohtaan $(y,x)$ tulevan luvun.
+Numeroimme ruudukon vaaka- ja pystyrivit kokonaisluvuin $1,2,\dots,n$.
+Aloitamme haun ruudukon vasemmasta yläkul\-masta ja etenemme
+rivi kerrallaan alaspäin.
+Seuraava rekursiivinen aliohjelma toteuttaa haun,
+kun sitä kutsutaan parametreilla $(1,1)$:
 
 \begin{code}
-void muodosta(int y, int x) {
-    if (y == n) laskuri++;
-    else if (x == n) muodosta(y+1,0);
-    else {
-        for (int i = 1; i <= n; i++) {
-            if (!vaaka[y][i] && !pysty[x][i]) {
-                vaaka[y][i] = pysty[x][i] = true;
-                nelio[y][x] = i;
-                muodosta(y,x+1);
-                vaaka[y][i] = pysty[x][i] = false;
-            }
-        }
-    }
-}
+muodosta(y,x)
+    if y == n+1
+        // käsittele ratkaisu
+    else if x == n+1
+        muodosta(y+1,1)
+    else
+        for i = 1 to n
+            if not vaaka[y][i] and not pysty[x][i]
+                vaaka[y][i] = pysty[x][i] = true
+                nelio[y][x] = i
+                muodosta(y,x+1)
+                vaaka[y][i] = pysty[x][i] = false
 \end{code}
 
-Jokaisella askeleella metodi valitsee luvun ruutuun
-$(y,x)$ ja siirtyy seuraavaan ruutuun oikealle.
-Jos $x=n$, vaakarivi on tullut täyteen ja metodi siirtyy
-seuraavalle vaakariville.
-Jos taas $y=n$, koko ruudukko on tullut täyteen ja
-metodi kasvattaa ruudukoiden määrää yhdellä.
+Aliohjelman alussa on kaksi erikoistapausta:
+jos $y=n+1$, olemme saaneet ruudukon muodostettua
+ja kasvatamme laskurin arvoa.
+Jos taas $x=n+1$, olemme saaneet jonkin vaakarivin
+valmiiksi ja alamme muodostaa seuraavaa vaakariviä.
+Muuten kyseessä on perustapaus, jossa haluamme
+valita kohtaan $(y,x)$ tulevan luvun.
+Käymme läpi kaikki mahdolliset tavat for-silmukalla,
+jossa $i$ on valittava luku.
+Koska jokainen luku saa esiintyä vain kerran kullakin
+vaaka- ja pystyrivillä, käytämme kahta aputaulukkoa:
+$\texttt{vaaka}[y][i]$ kertoo, onko vaakarivillä $y$
+jo lukua $i$, ja vastaavasti $\texttt{pysty}[x][i]$ kertoo,
+onko pystyrivillä $x$ jo lukua $i$.
+Jos voimme sijoittaa luvun $i$ kohtaan $(y,x)$,
+merkitsemme tämän taulukkoon $\texttt{nelio}[y][x]$
+ja lisäksi päivitämme taulukoita $\texttt{vaaka}$ ja $\texttt{pysty}$.
+Tämän jälkeen jatkamme rekursiivisesti hakua seuraavaan
+oikealla olevaan ruutuun.
 
 \begin{table}
 \center
@@ -571,16 +567,20 @@ ruudukon koko $n$ & neliöiden määrä \\
 5 & 161280 \\
 6 & 812851200 \\
 \end{tabular}
-\caption{Latinalaisten neliöiden määriä pienille $n$:n arvoille.}
+\caption{Latinalaisten neliöiden määrät, kun $n=1,2,\dots,6$.}
 \label{tab:latnel}
 \end{table}
 
-Tämän koodin avulla voimme laskea latinalaisten neliöiden
-määrät ensimmäisille $n$:n arvoille.
-Taulukko \ref{tab:latnel} näyttää nämä tulokset.
+Kun olemme saaneet muodostettua latinalaisen neliön, voimme käsitellä
+sen haluamallamme tavalla, kuten tulostaa neliön sisältö
+taulukon \texttt{nelio} perusteella
+tai vain laskea, montako neliötä on olemassa.
+Taulukko \ref{tab:latnel} listaa latinalaisten neliöiden
+määrät arvoilla $n=1,2,\dots,6$, jotka pystymme laskemaan
+nopeasti tässä esitetyn algoritmin avulla.
 Suuremmilla $n$:n arvoilla haku alkaa kestää liian kauan
 ja meidän tulisi keksiä keino tehostaa hakua,
-jos haluaisimme laskea tuloksia suuremmissa tapauksissa.
+jos haluaisimme laskea määriä suuremmissa tapauksissa.
 
 \section{Matemaattinen tausta}
 
