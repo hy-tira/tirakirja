@@ -349,111 +349,94 @@ jokaisessa kutsussa:
 esimerkiksi jos ketju alkaa merkillä G,
 rekursio haarautuu tapauksiin GA, GC, GG ja GT, jne.
 
+\subsection{Osajoukot ja permutaatiot}
 
-\subsection{Osajoukkojen läpikäynti}
-
-Joukon osajoukkoja ovat kaikki tavat valita osa joukon alkioista.
+Yksi rekursion tavallinen käyttötarkoitus on,
+että haluamme käydä läpi kaikki annetun joukon
+osajoukot.
+Joukon \emph{osajoukko} on jokin tapa valita joukon alkioita.
 Esimerkiksi joukon $\{1,2,3\}$ osajoukot ovat
 $\emptyset$ (tyhjä joukko), $\{1\}$, $\{2\}$, $\{3\}$,
 $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
-Jos joukossa on $n$ alkioita, osajoukkoja on $2^n$.
+Kun joukossa on $n$ alkioita, osa\-joukkoja on yhteensä $2^n$.
 
-Rekursio tarjoaa kätevän tavan käydä läpi kaikki
-joukon osajoukot. Esimerkiksi seuraava koodi pitää yllä
-rakennetta
-
-\begin{code}
-ArrayDeque<Integer> osajoukko;
-\end{code}
-
-joka sisältää vuorollaan kunkin joukon $\{1,2,\dots,n\}$
-osajoukon.
-Haku läh\-tee käyntiin, kun kutsumme metodia \texttt{muodosta}
+Seuraava rekursiivinen aliohjelma muodostaa joukon
+$\{1,2,\dots,n\}$ osajoukot.
+Haku lähtee käyntiin, kun kutsumme aliohjelmaa
 parametrilla $1$.
 
 \begin{code}
-void muodosta(int x) {
-    if (x == n+1) {
-        System.out.println(osajoukko);
-        return;
-    }
-    muodosta(x+1); // x ei valita osajoukkoon
-    osajoukko.addLast(x);
-    muodosta(x+1); // x valitaan osajoukkoon
-    osajoukko.removeLast();
-}
+muodosta(x)
+    if x == n+1
+        // käsittele osajoukko
+    else
+        valittu[x] = true
+        muodosta(x+1)
+        valittu[x] = false
+        muodosta(x+1)
 \end{code}
 
-Jokaisessa kutsussa metodi käy läpi tapaukset,
-otetaanko luku $x$ mukaan osajoukkoon vai ei.
-Molemmissa tapauksissa metodi kutsuu itseään yhtä
-suuremalla $x$:n arvolla.
-Lopulta kun $x=n+1$, kaikki luvut on käyty läpi
-ja on aika tulostaa osajoukko.
-
-Esimerkiksi tapauksessa $n=3$ koodin tulostus on seuraava:
+Ideana on, että parametri $x$ tarkoittaa, minkä alkion
+''kohtalon'' ratkaisemme seuraavaksi: joko lisäämme alkion
+osajoukkoon tai jätämme sen osa\-joukon ulkopuolelle.
+Ensin päätämme, kuuluuko alkio $1$ osajoukkoon vai ei,
+sitten toimimme vastaavasti alkion $2$ kohdalla, jne.,
+kunnes olemme käsitelleet kaikki $n$ alkiota.
+Jokaisen alkion kohdalla merkitsemme päätöksemme taulukkoon
+\texttt{valittu} ja jatkamme osajoukon muodostamista rekursiivisesti.
+Rekursio päät\-tyy, kun $x=n+1$ eli olemme tehneet valinnan
+jokaiselle alkiolle ja olemme saaneet jonkin osajoukon muodostettua.
+Tällöin voimme käsitellä muodostetun osajoukon haluamallamme tavalla.
+Esimerkiksi voisimme tulostaa osajoukkoon kuuluvat alkiot seuraavasti:
 
 \begin{code}
-[]
-[3]
-[2]
-[2, 3]
-[1]
-[1, 3]
-[1, 2]
-[1, 2, 3]
+for i = 1 to n
+    if valittu[i]
+        print(i)
 \end{code}
 
-\subsection{Permutaatioiden läpikäynti}
-
-Joukon permutaatiot ovat kaikki tavat järjestää joukon alkiot.
+Tarkastellaan sitten toista tilannetta, jossa haluammekin
+muodostaa joukon permutaatiot.
+Joukon \emph{permutaatio} on jokin tapa järjestää joukon alkiot.
 Esimerkiksi joukon $\{1,2,3\}$ permutaatiot ovat
 $(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
-Jos joukossa on $n$ alkiota, permutaatioita on $n!$.
+Kun joukossa on $n$ alkiota, voimme muodostaa siitä yhteensä $n!$ permutaatiota.
 
 Myös permutaatioiden läpikäynti onnistuu kätevästi rekursiolla.
-Seuraava koodi pitää yllä rakennetta
+Seuraava aliohjelma muodostaa joukon $\{1,2,\dots,n\}$ permutaatiot,
+kun kutsumme sitä parametrilla $1$.
 
 \begin{code}
-ArrayDeque<Integer> permutaatio;
+muodosta(k)
+    if k == n+1
+        // käsittele permutaatio
+    else
+        for i = 1 to n
+            if not valittu[i]
+                valittu[i] = true
+                permutaatio[k] = i
+                muodosta(k+1)
+                valittu[i] = false
 \end{code}
 
-joka sisältää vuorollaan kunkin joukon $\{1,2,\dots,n\}$ permutaation.
-Haku lähtee käyntiin, kun kutsumme metodia
-\texttt{muodosta} ilman parametreja.
+Tässä parametri $k$ tarkoittaa, minkä permutaation alkion valitsemme
+seuraavaksi.
+Aluksi valitsemme alkion kohtaan $1$, sitten kohtaan $2$,
+jne., kunnes olemme valinneet kaikki alkiot.
+Jokaisessa kohdassa käymme läpi silmukalla kaikki mahdolliset alkiot.
+Taulukko \texttt{valittu} kertoo, mitkä alkiot olemme jo valinneet
+permutaatioon.
+Jos alkio $i$ ei ole vielä mukana permutaatiossa, haaraudumme tapaukseen,
+jossa valitsemme sen kohtaan $k$ ja merkitsemme tämän tiedon
+taulukkoon \texttt{permutaatio}.
+Lopulta kun $k=n+1$, olemme saaneet muodostettua jonkin permutaation
+ja rekursio päättyy.
+Tällöin voimme käsitellä permutaation haluamallamme tavalla,
+esimerkiksi tulostaa alkioiden järjestyksen seuraavasti:
 
 \begin{code}
-void muodosta() {
-    if (permutaatio.size() == n) {
-        System.out.println(permutaatio);
-        return;
-    }
-    for (int i = 1; i <= n; i++) {
-        if (!permutaatio.contains(i)) {
-            permutaatio.addLast(i);
-            muodosta();
-            permutaatio.removeLast();
-        }
-    }
-}
-\end{code}
-
-Tässä on ideana, että metodi käy joka kutsulla läpi kaikki luvut
-$1,2,\dots,n$ ja aina jos luku ei kuulu vielä permutaatioon,
-koodi haarautuu rekursiivisesti tapaukseen, jossa se lisätään
-seuraavaksi permutaatioon.
-Sitten kun permutaatiossa on $n$ lukua, se on valmis ja
-voimme tulostaa sen.
-
-Esimerkiksi tapauksessa $n=3$ koodin tulostus on seuraava:
-
-\begin{code}
-[1, 2, 3]
-[1, 3, 2]
-[2, 1, 3]
-[2, 3, 1]
-[3, 1, 2]
-[3, 2, 1]
+for i = 1 to n
+    print(permutaatio[i])
 \end{code}
 
 \subsection{Peruuttava haku}
