@@ -253,6 +253,103 @@ Nyt onkin hyvä hetki perehtyä kunnolla siihen,
 mitä hyötyä meille on rekursiosta.
 Tulemme tarvitsemaan rekursiota useassa vaiheessa kurssin aikana.
 
+\subsection{Johdatus rekursioon}
+
+Tarkastellaan ensimmäisenä esimerkkinä tehtävää,
+jossa haluamme muodostaa kaikki \emph{DNA-ketjut},
+joiden pituus on $n$.
+DNA-ketju on merkkijono, joka muodostuu merkeistä A, C, G ja T.
+Esimerkiksi kun $n=3$, haluttuja ketjuja ovat muiden muassa
+ACA, CGG ja TAG.
+
+Voimme ratkaista tehtävän helposti kiinteällä $n$:n arvolla
+luomalla $n$ sisäk\-käistä silmukkaa.
+Esimerkiksi seuraava koodi tulostaa ketjut, kun $n=3$:
+
+\begin{code}
+merkit = ["A","C","G","T"]
+for i = 0 to 3
+    for j = 0 to 3
+        for k = 0 to 3
+            print(merkit[i]+merkit[j]+merkit[k])
+\end{code}
+
+Tämä ratkaisu on toimiva, mutta siinä on yksi ongelma:
+kun $n$ muuttuu, niin meidän täytyy muuttaa myös koodia.
+Esimerkiksi jos $n=4$, koodista tulee seuraavanlainen:
+
+\begin{code}
+merkit = ["A","C","G","T"]
+for i = 0 to 3
+    for j = 0 to 3
+        for k = 0 to 3
+            for l = 0 to 3
+                print(merkit[i]+merkit[j]+merkit[k]+merkit[l])
+\end{code}
+
+Tämä ei ole hyvä ilmiö, vaan haluaisimme saada aikaan \emph{yleisen}
+koodin, joka toimisi suoraan millä tahansa $n$:n arvolla.
+Rekursio tarjoaa helpon ratkaisun juuri tähän:
+pystymme luomaan kätevästi algoritmeja, joissa on
+''vaihteleva määrä silmukoita''.
+
+Seuraavassa on rekursiivinen aliohjelma \texttt{muodosta},
+joka muodostaa kaikki DNA-ketjut pituutta $n$.
+Rekursio lähtee käyntiin, kun parametriksi \texttt{ketju}
+annetaan tyhjä merkkijono.
+Aliohjelma tarkastaa ensin, onko annettu ketju valmis
+eli onko siinä jo $n$ merkkiä.
+Jos näin on, aliohjelma tulostaa ketjun eikä tee muuta.
+Muussa tapauksessa aliohjelma käy läpi kaikki tavat
+lisätä ketjun loppuun seuraava merkki (A, C, G tai T)
+ja kutsuu itseään rekursiivisesti jokaisen vaihtoehdon kohdalla.
+
+\begin{code}
+muodosta(ketju)
+    if ketju.length() == n
+        print(ketju)
+    else
+        merkit = ["A","C","G","T"]
+        for i = 0 to 3
+            muodosta(ketju+merkit[i])
+\end{code}
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\small
+\node at (-0.5,0) {\texttt{muodosta("\hspace{0pt}")}};
+\node at (8.5,3) {\texttt{muodosta("A")} $\cdots$};
+\node at (8.5,1) {\texttt{muodosta("C")} $\cdots$};
+\node at (8.5,-1) {\texttt{muodosta("G")} $\phantom{\cdots}$};
+\node at (8.5,-3) {\texttt{muodosta("T")} $\cdots$};
+\draw[thick,->] (2.3,0) -- (5,3);
+\draw[thick,->] (2.3,0) -- (5,1);
+\draw[thick,->] (2.3,0) -- (5,-1);
+\draw[thick,->] (2.3,0) -- (5,-3);
+\node at (17.5,1.25) {\texttt{muodosta("GA")} $\cdots$};
+\node at (17.5,-0.25) {\texttt{muodosta("GC")} $\cdots$};
+\node at (17.5,-1.75) {\texttt{muodosta("GG")} $\cdots$};
+\node at (17.5,-3.25) {\texttt{muodosta("GT")} $\cdots$};
+\draw[thick,->] (10.8,-1) -- (13.7,1.25);
+\draw[thick,->] (10.8,-1) -- (13.7,-0.25);
+\draw[thick,->] (10.8,-1) -- (13.7,-1.75);
+\draw[thick,->] (10.8,-1) -- (13.7,-3.25);
+\end{tikzpicture}
+\caption{DNA-ketjujen muodostaminen rekursiivisesti.}
+\label{fig:ketjut}
+\end{figure}
+
+Kuva \ref{fig:ketjut} havainnollistaa,
+kuinka rekursiivinen aliohjelma lähtee muodostamaan ketjuja.
+Ensin aliohjelma haarautuu neljään osaan sen mukaan,
+onko ketjun ensimmäinen merkki A, C, G vai T.
+Tämän jälkeen haarautuminen jatkuu vastaavasti
+jokaisessa kutsussa:
+esimerkiksi jos ketju alkaa merkillä G,
+rekursio haarautuu tapauksiin GA, GC, GG ja GT, jne.
+
+
 \subsection{Osajoukkojen läpikäynti}
 
 Joukon osajoukkoja ovat kaikki tavat valita osa joukon alkioista.
