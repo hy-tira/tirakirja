@@ -351,16 +351,29 @@ jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \emph{Linkitetty lista} muodostuu solmuista, joista jokainen sisältää
 yhden listan alkion.
-Yhteen suuntaan linkitetyssä listassa jokaisessa
-solmussa on viittaus listan seuraavaan solmuun.
-Kahteen suuntaan linkitetyssä listassa taas
-solmut viittaavat sekä listan seuraavaan että edelliseen solmuun.
-Viittausten avulla pystymme liikkumaan listassa.
+Linkitetty lista voi olla joko yhteen tai kahteen suuntaan linkitetty.
+Yhteen suuntaan linkitetyssä listassa jokaisesta solmusta
+on viittaus seuraavaan solmuun, ja kahteen suuntaan linkitetyssä
+listassa jokaisesta solmusta on viittaus sekä seuraavaan että edelliseen solmuun.
 
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.7]
 \begin{scope}
+\node[draw, rectangle, minimum size=7mm] (1) at (0,0) {$3$};
+\node[draw, rectangle, minimum size=7mm] (2) at (2,0) {$7$};
+\node[draw, rectangle, minimum size=7mm] (3) at (4,0) {$2$};
+\node[draw, rectangle, minimum size=7mm] (4) at (6,0) {$5$};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (2) -- (3);
+\path[draw,thick,->] (3) -- (4);
+\node at (0,-2) {alku};
+\node at (6,-2) {loppu};
+\path[draw,thick,->] (0,-1.5) -- (0,-0.75);
+\path[draw,thick,->] (6,-1.5) -- (6,-0.75);
+\node at (-2,-1) {(a)};
+\end{scope}
+\begin{scope}[yshift=-4cm]
 \node[draw, rectangle, minimum size=7mm] (1) at (0,0) {$3$};
 \node[draw, rectangle, minimum size=7mm] (2) at (2,0) {$7$};
 \node[draw, rectangle, minimum size=7mm] (3) at (4,0) {$2$};
@@ -375,19 +388,22 @@ Viittausten avulla pystymme liikkumaan listassa.
 \node at (6,-2) {loppu};
 \path[draw,thick,->] (0,-1.5) -- (0,-0.75);
 \path[draw,thick,->] (6,-1.5) -- (6,-0.75);
+\node at (-2,-1) {(b)};
 \end{scope}
 \end{tikzpicture}
-\caption{Kahteen suuntaan linkitetty lista, joka sisältää alkiot $[3,7,2,5]$.}
+\caption{Lista $[3,7,2,5]$ linkitettynä listana.
+(a) Yhteen suuntaan linkitetty lista. (b) Kahteen suuntaan linkitetty lista.}
 \label{fig:linlis}
 \end{figure}
 
-Kuvassa \ref{fig:linlis} on esimerkkinä kahteen suuntaan linkitetty lista,
-joka sisältää alkiot $[3,7,2,5]$.
-Jokainen alkio viittaa seuraavaan ja edelliseen alkioon,
-minkä ansiosta pystymme liikkumaan listassa.
-Lisäksi tiedossamme on viittaukset listan alkuun ja loppuun.
-Voimme esimerkiksi käydä listan läpi aloittamalla alusta
-ja siirtymällä aina seuraavaan solmuun askel kerrallaan.
+Kuva \ref{fig:linlis} näyttää esimerkkinä listan $[3,7,2,5]$
+yhteen ja kahteen suuntaan linkitettynä.
+Molemmissa listoissa meillä on viittaukset listan
+alkuun ja loppuun.
+Yhteen suuntaan linkitetyssä listassa voimme käydä
+läpi listan alkiot alusta loppuun,
+mutta kahteen suuntaan linkitetyssä listassa voimme
+myös kulkea listalla takaperin.
 
 Kaksisuuntainen linkitys on käytännössä järkevä tapa toteuttaa
 linkitetty lista, ja oletamme jatkossa, että listamme on
@@ -525,14 +541,15 @@ että alkio 4 tulee niiden väliin.
 Lopuksi poistamme listasta alkion 2, jolloin yhdistämme
 alkiot 4 ja 5 suoraan toisiinsa.
 
-Koska meillä on muistissa viittaukset listan alkuun ja loppuun,
-pääsemme niihin solmuihin tehokkaasti.
+Pääsemme listan ensimmäiseen ja viimeiseen solmuun tehokkaasti,
+koska meillä on muistissa viittaukset niihin.
 Sen sijaan jos haluamme päästä johonkin muuhun listan kohtaan,
-meidän tulee aloittaa alusta tai lopusta ja kulkea askel
+meidän täytyy aloittaa listan alusta tai lopusta ja kulkea askel
 kerrallaan viittauksia seuraten.
-Niinpä tiettyyn listan kohtaan pääseminen vie aikaa $O(n)$.
-Joudumme tekemään näin, koska listan alkiot ovat muistissa
-sekalaisissa kohdissa eikä meillä ole suoraa keinoa päästä niihin.
+Niinpä listan keskellä olevaan kohtaan pääseminen vie aikaa $O(n)$.
+Joudumme liikkumaan solmuihin linkkejä pitkin, koska solmut on tallennettu
+muistiin sekalaisiin kohtiin eikä meillä ole keinoa tietää,
+mihin mikäkin solmu on tallennettu.
 
 \subsection{Listojen vertailua}
 
