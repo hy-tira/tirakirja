@@ -713,14 +713,12 @@ vertailu: 2 1
 
 \section{Järjestämisen sovelluksia}
 
-Järjestämisen merkitys algoritmien suunnittelussa on siinä,
+Järjestämisen merkitys algoritmiikassa on siinä,
 että voimme ratkaista monia ongelmia tehokkaasti, 
 kunhan aineisto on järjestyksessä.
 Niinpä yleinen tapa luoda tehokas algoritmi on järjestää
 ensin syöte ajassa $O(n \log n)$ ja tehdä sitten tehokas
 käsittely järjestystä hyödyntäen.
-
-\subsection{Taulukkoalgoritmeja}
 
 Järjestämisen avulla voimme vastata tehokkaasti esimerkiksi
 seuraaviin taulukkoa koskeviin kysymyksiin:
@@ -753,8 +751,8 @@ Ideana on tutkia jokaisesta alkiosta, onko se \emph{ensimmäinen}
 kyseinen alkio taulukossa.
 Jos näin on, kasvatamme laskuria yhdellä.
 
-Kun järjestämme taulukon ensin, tehtävämme helpottuu ja
-saamme aikaan algoritmin, joka toimii ajassa $O(n \log n)$:
+Kun kuitenkin järjestämme taulukon ensin, tehtävämme helpottuu ja
+saamme aikaan $O(n \log n)$-aikaisen algoritmin:
 
 \begin{code}
 sort(taulu)
@@ -768,4 +766,4 @@ Algoritmin toiminta perustuu siihen, että
 järjestämisen jälkeen kaikki yhtä suuret alkiot ovat vierekkäin.
 Niinpä kasvatamme jokaisen alkion kohdalla laskuria
 tarkalleen silloin, kun alkio ei ole sama kuin edellinen alkio
-taulukossa eli se on ensimmäinen kyseinen alkio taulukossa.
+eli se on ensimmäinen kyseinen alkio taulukossa.
