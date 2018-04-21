@@ -248,6 +248,7 @@ Esimerkiksi seuraava $O(n^2)$-algoritmi tutkii, onko taulukossa
 kahta lukua, joiden summa on $x$.
 
 \begin{code}
+ok = false
 for i = 0 to n-1
     for j = i+1 to n-1
         if taulu[i]+taulu[j] == x
@@ -262,6 +263,7 @@ Esimerkiksi seuraava $O(n^3)$-algoritmi tutkii, onko taulukossa
 kolmea lukua, joiden summa on $x$.
 
 \begin{code}
+ok = false
 for i = 0 to n-1
     for j = i+1 to n-1
         for k = j+1 to n-1
