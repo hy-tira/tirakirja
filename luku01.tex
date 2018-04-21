@@ -622,15 +622,18 @@ for i = 1 to n
 
 \subsection{Logaritmit}
 
-Logaritmin määritelmän mukaan $\log_b(n)=x$
+Logaritmin määritelmän mukaan $\log_b n =x$
 tarkalleen silloin kun $b^x=n$.
-Esimerkiksi $\log_2(32)=5$, koska $2^5=32$.
+Esimerkiksi $\log_2 32=5$, koska $2^5=32$.
 
 Algoritmiikassa logaritmin kantaluku $b$ on usein 2,
 ja voimme ajatella, että logaritmi kertoo, montako kertaa
 meidän täytyy \emph{puolittaa} luku $n$, ennen kuin pääsemme lukuun 1.
-Esimerkiksi $\log_2(32)=5$, koska tarvitsemme 5 puolitusta:
+Esimerkiksi $\log_2 32 =5$, koska tarvitsemme 5 puolitusta:
 \[32 \rightarrow 16 \rightarrow 8 \rightarrow 4 \rightarrow 2 \rightarrow 1\]
+Tässä kirjassa oletamme, että logaritmin kantaluku on 2,
+jos ei ole toisin mainittu,
+eli voimme kirjoittaa lyhyesti $\log 32 = 5$.
 
 Logaritmeille pätee kaavat
 \[\log_b(x \cdot y) = \log_b(x)+\log_b(y)\]
