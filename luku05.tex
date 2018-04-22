@@ -133,51 +133,37 @@ mikä tarkoittaa, että otamme jakojäännöksen hajautustaulun koolla $N$.
 Tämä on hyvin toimiva hajautusfunktio,
 kunhan aineistossa esiintyy tasaisesti eri jakojäännöksiä.
 Entä jos alkiot ovat jotain muuta tyyppiä kuin kokonaislukuja?
-Tällöin meidän riittää päättää jokin tapa,
+Tällöin meidän riittää päättää ensin jokin järkevä tapa,
 kuinka muutamme alkion kokonaisluvuksi,
 minkä jälkeen otamme jakojäännöksen $N$:llä.
-Tarkastelemme seuraavaksi esimerkkinä hajautusfunktioita,
-jotka laskevat hajautusarvon merkkijonolle.
 
+Tarkastellaan tilannetta, jossa haluamme hajauttaa merkkijonoja
+eli mei\-dän täytyy löytää keino muuttaa merkkijono kokonaisluvuksi.
 Oletamme, että merkkijonossa on $k$ merkkiä,
-joiden merkkikoodit\footnote{Käytämme tässä merkkien ASCII-koodeja.
+joiden merkkikoodit ovat $c_0,c_1,\dots,c_{k-1}$.
+Esimerkiksi jos merkkijono on \texttt{apina},
+merkkikoodit\footnote{Käytämme tässä merkkien ASCII-koodeja.
 Esimerkiksi Javassa char-merkin \texttt{c} koodin saa
 selville kirjoittamalla \texttt{(int)c}, eli esimerkiksi
-\texttt{(int)'a'} on 97.} ovat $c_0,c_1,\dots,c_{k-1}$.
-Esimerkiksi jos merkkijono on \texttt{apina},
-$k=5$ ja merkkikoodit ovat $c_0=97$, $c_1=112$, $c_2=105$,
+\texttt{(int)'a'} on 97.} ovat $c_0=97$, $c_1=112$, $c_2=105$,
 $c_3=110$ ja $c_4=97$.
-Seuraavassa on kolme mahdollista tapaa määritellä hajautusfunktio:
-
-\begin{enumerate}
-\item Hajautusarvo on merkkijonon pituus $k$.
-Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on 5.
-\item Hajautusarvo on merkkikoodien summa
-\[ c_0 + c_1 + \dots + c_{k-1}.\]
-Esimerkiksi merkkijonon \texttt{apina} hajautusarvo on
+Yksi tapa muuttaa merkkijono kokonaisluvuksi
+on laskea merkkikoodien summa
+\[ c_0 + c_1 + \dots + c_{k-1},\]
+jolloin merkkijonon \texttt{apina} hajautusarvo on
 \[97+112+105+110+97=521.\]
-\item Hajautusarvo on summa
+Tämä on sinänsä järkevä tapa, mutta siinä on yksi ongelma:
+kaksi merkkijonoa saavat saman hajautusarvon,
+jos niissä on samat merkit eri järjestyksessä.
+Pystymmekin parantamaan hajautusarvon laskentaa lisäämällä
+summaan \emph{kertoimet} käyttäen kaavaa
 \[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
 missä $A$ on vakio.
-Esimerkiksi jos $A=7$, merkkijonon \texttt{apina} hajautusarvo on
+Esimerkiksi jos $A=7$, saamme merkkijonon \texttt{apina} hajautusarvoksi
 \[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=61235.\]
-\end{enumerate}
-
-Kuinka hyviä nämä hajautusfunktiot ovat?
-Funktio 1 ei ole hyvä, koska kaksi yhtä pitkää
-merkkijonoa saavat aina saman hajautusarvon.
-Funktio 2 on askel parempaan suuntaan,
-mutta sen heikkoutena on, että kaksi merkkijonoa
-saavat saman hajautusarvon, jos niissä on
-samat merkit eri järjestyksessä.
-Funktio 3, jota kutsutaan nimellä \emph{polynominen hajautus},
-on käytännössä hyvä merkkijonon hajautustapa, joka on käytössä esimerkiksi
-Javan standardikirjastossa.
-Vakio $A$ valitaan tyypillisesti niin, että se on jokin alkuluku.
-Koska hajautusarvo lasketaan painotettuna summana,
-kaksi eri merkkijonoa eivät yleensä saa samaa hajautusarvoa.
-Toisaalta pystymme laskemaan hajautusarvon tehokkaasti
-mille tahansa merkkijonolle.
+Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus},
+on käytän\-nössä hyvä merkkijonon hajautustapa,
+joka on käytössä esimerkiksi Javan standardikirjastossa.
 
 \subsection{Hajautuksen tehokkuus}
 
