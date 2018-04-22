@@ -393,12 +393,13 @@ joukko.add(new Piste(1,4));
 joukko.add(new Piste(1,3));
 \end{code}
 
+\newpage
+
 \section{Joukot algoritmiikassa}
 
-Hajautustaulun ansiosta saamme voimakkaita uusia työkaluja
-algoritmien suunnitteluun, koska voimme käyttää algoritmeissamme
-joukkoja ja luottaa siihen, että niiden operaatiot toimivat tehokkaasti.
-Voimme alkajaisiksi toteuttaa \emph{mukavammin} sellaisia algoritmeja,
+Hajautustaulun ansiosta voimme käyttää algoritmeissamme
+mukavasti joukkoja ja luottaa siihen, että niiden operaatiot toimivat tehokkaasti.
+Voimme alkajaisiksi toteuttaa kätevämmin sellaisia algoritmeja,
 joissa olemme aiemmin käyttäneet järjestämistä.
 Esimerkiksi olemme laskeneet järjestämisen avulla seuraavasti,
 montako eri alkiota taulukko sisältää:
@@ -425,30 +426,42 @@ print(alkiot.size())
 \end{code}
 
 Tarkastellaan sitten ongelmaa, jossa haluamme selvittää,
-mikä on suurin jonkin alkion esiintymiskertojen määrä taulukossa.
-Voimme ratkaista ongelman järjestämisen avulla näin:
+mikä on taulukon yleisin alkio.
+Olemme ratkaisseet aiemmin ongelman seuraavasti
+järjestä\-misen avulla:
 
 \begin{code}
 sort(taulu)
-maara = suurin = 1
+maara = 1
+suurin = 1
+yleisin = taulu[0]
 for i = 1 to n-1
     if taulu[i-1] != taulu[i]
         maara = 0
     maara++
-    suurin = max(suurin,maara)
-print(suurin)
+    if maara > suurin
+        suurin = maara
+        yleisin = taulu[i]
+print(yleisin)
 \end{code}
 
-Nyt voimme toteuttaa hajautustaulun avulla rakenteen
-\texttt{laskuri}, joka pitää kirjaa alkioiden esiintymiskerroista:
+Hajautustaulun avulla voimme lähestyä ongelmaa
+toisella tavalla luomalla avain-arvo-rakenteen,
+jonka avaimet ovat taulukon alkioita ja arvot niiden
+esiintymiskertoja.
+Niinpä voimme vain käydä läpi taulukon sisällön ja
+pitää kirjaa, montako kertaa mikäkin alkio esiintyy taulukossa:
 
 \begin{code}
-laskuri = []
-suurin = 0
+kerrat = []
+suurin = 1
+yleisin = taulu[0]
 for i = 0 to n-1
-    laskuri[taulu[i]]++
-    suurin = max(suurin,laskuri[taulu[i]])
-print(suurin)
+    kerrat[taulu[i]]++
+    if kerrat[taulu[i]] > suurin
+        suurin = kerrat[taulu[i]]
+        yleisin = taulu[i]
+print(yleisin)
 \end{code}
 
 Kuten nämä esimerkit osoittavat, voimme toteuttaa algoritmeja
@@ -460,7 +473,7 @@ Antaisivatko joukot meille aitoja uusia mahdollisuuksia
 algoritmien suunnittelussa?
 
 Joukkojen todellinen merkitys on siinä, että voimme sekä
-lisätä että poistaa alkioita tehokkaasti milloin vain haluamme
+\emph{lisätä} että \emph{poistaa} alkioita tehokkaasti milloin vain haluamme
 algoritmin aikana.
 Jos algoritmi vain lisää alkioita joukkoon,
 kuten olemme tehneet tähän mennessä,
