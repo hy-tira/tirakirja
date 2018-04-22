@@ -2,11 +2,12 @@
 
 Binäärihakupuu on tietorakenne, joka pitää yllä
 alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
-Binäärihakupuuta käyttäen joukon operaatiot vievät aikaa $O(\log n)$
+Voimme toteuttaa binäärihakupuun niin,
+että joukon operaatiot vievät aikaa $O(\log n)$
 kaikissa tapauksissa.
-Käytännössä binäärihakupuu toimii yleensä hieman hitaammin
-kuin hajautustaulu, mutta toisaalta siinä ei ole riskinä,
-että operaatiot veisivät koskaan aikaa $O(n)$.
+Käytännössä binäärihakupuu toimii hieman hitaammin
+kuin hajautustaulu, mutta siinä ei ole teoreettista riskiä,
+että operaatiot veisivät aikaa $O(n)$.
 
 Binäärihakupuun tärkein etu hajautustauluun verrattuna on kuitenkin,
 että se säilyttää joukon alkioita \emph{järjestyksessä}.
@@ -40,13 +41,14 @@ Puun \emph{lehtiä} ovat solmut, joilla ei ole lapsia.
 Binääripuun rakenne on rekursiivinen:
 jokainen solmu toimii juurena \emph{alipuulle},
 joka on myös binääripuu.
-Voimme ajatella, että jokaisessa binääripuun
-solmussa vasen ja oikea lapsi on joko tyhjä
-tai toinen binääripuu.
+Solmun $x$ alipuu sisältää solmun $x$ sekä kaikki
+solmut, joihin pääsemme laskeutumalla alaspäin solmusta $x$.
+Voimme myös ajatella asiaa niin, että jokaisen binääripuun
+solmun vasen ja oikea lapsi on toinen (mahdollisesti tyhjä) binääripuu.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.5]
 \node[draw, circle] (1) at (0,0) {$1$};
 \node[draw, circle] (2) at (-2.5,-2) {$2$};
 \node[draw, circle] (3) at (2.5,-2) {$3$};
@@ -83,7 +85,7 @@ koska solmujen 7 ja 8 syvyys on 3.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.5]
 \begin{scope}
 \node[draw, circle] (1) at (0,0) {$1$};
 \node[draw, circle] (2) at (0,-2) {$2$};
@@ -179,7 +181,6 @@ ja oikean alipuun solmut.
 Pystymme laskemaan alipuiden solmut rekursiivisesti
 kutsumalla samaa metodia uudestaan.
 
-
 Seuraava metodi puolestaan selvittää, mikä on puun korkeus.
 Huomaa, että jos puu on tyhjä, tulkitsemme,
 että sen korkeus on $-1$.
@@ -211,7 +212,7 @@ esijärjestys on $[1,2,4,3,5,6,7,8]$,
 sisäjärjes\-tys on $[4,2,1,5,3,7,6,8]$ ja
 jälkijärjestys on $[4,2,5,7,8,6,3,1]$.
 
-Seuraava metodi tulostaa binääripuun solmut
+Seuraava Java-metodi tulostaa binääripuun solmut
 sisäjärjestyksessä, kun sille annetaan parametrina
 puun juuri.
 
@@ -226,7 +227,7 @@ void tulosta(Solmu puu) {
 
 \section{Binäärihakupuun toiminta}
 
-\emph{Binäärihakupuu} on binääripuu, jonka jokaisen solmun
+\emph{Binäärihakupuu} on binääripuu, jonka kunkin solmun
 arvona on yksi joukon alkioista.
 Jokaisessa solmussa
 kaikki alkiot vasemmassa alipuussa ovat pienempiä
@@ -237,7 +238,7 @@ alkion puusta aloittamalla haun puun juuresta.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.5]
 \node[draw, circle] (1) at (0,0) {$5$};
 \node[draw, circle] (2) at (-2.5,-2) {$3$};
 \node[draw, circle] (3) at (2.5,-2) {$8$};
@@ -283,11 +284,11 @@ jos $a>x$, jatkamme hakua solmun vasempaan lapseen,
 ja jos $a<x$, jatkamme hakua solmun oikeaan lapseen.
 Jos kuitenkaan solmulla ei ole lasta,
 johon meidän tulisi edetä, toteamme,
-että joukossa ei ole alkiota $x$.
+ettei joukossa ole alkiota $x$.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.5]
 \node[draw, circle] (1) at (0,0) {$5$};
 \node[draw, circle] (2) at (-2.5,-2) {$3$};
 \node[draw, circle] (3) at (2.5,-2) {$8$};
@@ -326,7 +327,7 @@ sen tähän kohtaan lapseksi.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.5]
 \node[draw, circle] (1) at (0,0) {$5$};
 \node[draw, circle] (2) at (-2.5,-2) {$3$};
 \node[draw, circle] (3) at (2.5,-2) {$8$};
@@ -348,9 +349,10 @@ sen tähän kohtaan lapseksi.
 
 Kuva \ref{fig:bihpu2} näyttää, kuinka lisäämme alkion 4
 joukkoon $\{2,3,5,7,8,9\}$.
-Kun haemme puusta solmua 4, päädymme solmuun 3,
-jolla ei ole oikeaa lasta.
-Niinpä lisäämme solmun 4 solmun 3 oikeaksi lapseksi.
+Kun haemme puusta alkiota 4, päädymme solmuun,
+jossa on alkio 3 ja jolla ei ole oikeaa lasta.
+Niinpä luomme alkiolle 4 uuden solmun, jonka asetamme
+alkion 3 solmun oikeaksi lapseksi.
 
 \subsubsection{Pienin alkio / suurin alkio}
 
@@ -394,12 +396,12 @@ ja vaihdamme keskenään alkiot $x$ ja $y$ puussa.
 Tämän jälkeen meidän on helppoa poistaa solmu,
 jossa on nyt alkio $x$,
 koska sillä ei voi olla kahta lasta
-(koska jos solmulla olisi vasen lapsi,
+(jos solmulla olisi vasen lapsi,
 $y$ ei olisi pienin $x$:ää suurempi alkio).
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.5]
 \begin{scope}
 \node[draw, circle] (1) at (0,0) {$5$};
 \node[draw, circle] (2) at (-2.5,-2) {$3$};
@@ -414,8 +416,9 @@ $y$ ei olisi pienin $x$:ää suurempi alkio).
 \path[draw,thick,-] (3) -- (6);
 \path[draw,thick,red,line width=2pt,->] (1) -- (3);
 \path[draw,thick,red,line width=2pt,->] (3) -- (5);
+\node at (0,-6) {(a)};
 \end{scope}
-\begin{scope}[xshift=10cm]
+\begin{scope}[xshift=12cm]
 \node[draw, circle] (1) at (0,0) {$7$};
 \node[draw, circle] (2) at (-2.5,-2) {$3$};
 \node[draw, circle] (3) at (2.5,-2) {$8$};
@@ -428,6 +431,7 @@ $y$ ei olisi pienin $x$:ää suurempi alkio).
 \path[draw,thick,-] (3) -- (5);
 \path[draw,thick,-] (3) -- (6);
 \path[draw,thick,<->,dashed] (1) -- (5);
+\node at (0,-6) {(b)};
 \end{scope}
 \end{tikzpicture}
 \caption{Alkion 5 poistaminen joukosta $\{2,3,5,7,8,9\}$. (a) Koska alkiolla
@@ -456,7 +460,7 @@ Vasemman puun korkeus on 2, kun taas oikean puun korkeus on 4.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.5]
 \begin{scope}
 \node[draw, circle] (1) at (0,0) {$1$};
 \node[draw, circle] (2) at (1,-2) {$2$};
@@ -519,8 +523,8 @@ että tasapainoehto säilyy voimassa kaikissa solmuissa.
 \subsection{Tasapainoehto}
 
 AVL-puun tasapainoehtona on, että
-jokaisessa solmussa vasemman ja oikean lapsen alipuiden korkeusero 
-on enintään 1.
+\emph{jokaisessa solmussa vasemman ja oikean lapsen
+alipuiden korkeusero on enintään 1}.
 
 Esimerkiksi kuvan \ref{fig:bihkor} vasen puu on
 AVL-puu, kun taas oikea puu ei ole.
@@ -1025,17 +1029,19 @@ System.out.println(haettu); // Pelle Peloton
 
 \section{Tehokkuusvertailu}
 
-Monissa tehtävissä meillä on kaksi mahdollista lähestymistapaa:
+Monissa ongelmissa meillä on kaksi mahdollista lähestymistapaa:
 voimme käyttää joko joukkorakenteita tai sitten taulukoita ja järjestämistä.
 Vaikka molemmat tavat johtavat tehokkaaseen ratkaisuun,
 vakiokertoimissa voi olla merkittäviä eroja, jotka vaikuttavat
 käytännön tehokkuuteen.
 
-Keskitymme seuraavaksi ongelmaan, jossa meille on annettu
+Tarkastelemme seuraavaksi ongelmaa, jossa meille on annettu
 $n$ lukua sisältävä taulukko, ja haluamme selvittää,
-montko eri lukua taulukossa on.
+montako eri lukua taulukossa on.
 Ratkaisemme ongelman kolmella eri tavalla ja tutkimme sitten
 ratkaisujen tehokkuutta.
+
+\subsubsection{Ratkaisu 1: \texttt{TreeSet}}
 
 Ensimmäinen tapa ratkaista tehtävä on luoda \texttt{TreeSet},
 johon lisäämme taulukon luvut.
@@ -1045,30 +1051,30 @@ Tämä ratkaisu vie aikaa $O(n \log n)$, koska jokainen
 \texttt{add}-operaatio vie aikaa $O(\log n)$.
 
 \begin{code}
-int eriLuvut(int[] taulu) {
-    TreeSet<Integer> joukko = new TreeSet<>();
-    for (int i = 0; i < taulu.length; i++) {
-        joukko.add(taulu[i]);
-    }
-    return joukko.size();
+TreeSet<Integer> joukko = new TreeSet<>();
+for (int i = 0; i < taulu.length; i++) {
+    joukko.add(taulu[i]);
 }
+System.out.println(joukko.size());
 \end{code}
 
-Emme tarvitse oikeastaan \texttt{TreeSet}-rakenteen
+\subsubsection{Ratkaisu 2: \texttt{HashSet}}
+
+Emme tarvitse \texttt{TreeSet}-rakenteen
 alkioiden järjestystä, joten saamme toisen ratkaisun
 käyttämällä sen sijaan \texttt{HashSet}-rakennetta.
 Koodi säilyy muuten täysin samanlaisena.
 Tämä ratkaisu vie aikaa $O(n)$ hajautuksen ansiosta.
 
 \begin{code}
-int eriLuvut(int[] taulu) {
-    HashSet<Integer> joukko = new HashSet<>();
-    for (int i = 0; i < taulu.length; i++) {
-        joukko.add(taulu[i]);
-    }
-    return joukko.size();
+HashSet<Integer> joukko = new HashSet<>();
+for (int i = 0; i < taulu.length; i++) {
+    joukko.add(taulu[i]);
 }
+System.out.println(joukko.size());
 \end{code}
+
+\subsubsection{Ratkaisu 3: järjestäminen}
 
 Kolmas tapa ratkaista tehtävä on käyttää järjestämistä:
 kopioimme ensin luvut uuteen taulukkoon, järjestämme tämän taulukon ja
@@ -1077,16 +1083,16 @@ Tämä ratkaisu vie aikaa $O(n \log n)$, koska taulukon järjestäminen
 vie aikaa $O(n \log n)$.
 
 \begin{code}
-int eriLuvut(int[] taulu) {
-    int[] lista = taulu.clone();
-    Arrays.sort(lista);
-    int tulos = 1;
-    for (int i = 1; i < lista.length; i++) {
-        if (lista[i-1] != lista[i]) tulos++;
-    }
-    return tulos;
+int[] lista = taulu.clone();
+Arrays.sort(lista);
+int laskuri = 1;
+for (int i = 1; i < lista.length; i++) {
+    if (lista[i-1] != lista[i]) laskuri++;
 }
+System.out.println(laskuri);
 \end{code}
+
+\subsubsection{Vertailun tulokset}
 
 Taulukko \ref{tab:eriver} esittää tehokkuusvertailun tulokset.
 Jokaisessa testissä taulukossa on satunnaisia lukuja väliltä $1 \dots 10^9$.
@@ -1105,7 +1111,7 @@ Miten on mahdollista, että sekä \texttt{TreeSet}-ratkaisun että
 järjestämisrat\-kaisun aikavaativuus on $O(n \log n)$, mutta
 järjestämisratkaisu on kymmenen kertaa nopeampi?
 Tämä johtuu siitä, että taulukon järjestäminen on hyvin kevyt
-operaatio, ja se tehdään vain kerran.
+operaatio ja se tehdään vain kerran.
 Binäärihakupuussa jokaisen lisäyksen jälkeen täytyy muuttaa
 puun rakennetta, mikä on hidasta ja aiheuttaa suuret vakiokertoimet.
 
