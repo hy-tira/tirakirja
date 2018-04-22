@@ -60,10 +60,10 @@ koska niissä viimeinen numero on $2$,
 ja alkiot $15$ ja $7$ ovat vastaavasti kohdissa $5$ ja $7$.
 Kaikki muut hajautustaulun listat ovat tällä hetkellä tyhjiä.
 
-Kun haluamme tarkistaa, onko joukossa alkiota $x$,
+Kun haluamme tarkastaa, onko joukossa alkiota $x$,
 laskemme ensin sen hajautusarvon $f(x)$.
 Tämän jälkeen käymme läpi kaikki kohdan $f(x)$
-listassa olevat alkiot ja tarkistamme,
+listassa olevat alkiot ja tarkastamme,
 onko jokin niistä alkio $x$.
 Vastaavasti kun haluamme lisätä alkion $x$ joukkoon
 tai poistaa alkion $x$ joukosta,
@@ -152,10 +152,11 @@ on laskea merkkikoodien summa
 \[ c_0 + c_1 + \dots + c_{k-1},\]
 jolloin merkkijonon \texttt{apina} hajautusarvo on
 \[97+112+105+110+97=521.\]
+
 Tämä on sinänsä järkevä tapa, mutta siinä on yksi ongelma:
-kaksi merkkijonoa saavat saman hajautusarvon,
+kaksi merkkijonoa saavat aina saman hajautusarvon,
 jos niissä on samat merkit eri järjestyksessä.
-Pystymmekin parantamaan hajautusarvon laskentaa lisäämällä
+Pystymme parantamaan hajautusarvon laskentaa lisäämällä
 summaan \emph{kertoimet} käyttäen kaavaa
 \[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
 missä $A$ on vakio.
@@ -210,11 +211,11 @@ siitä käytännössä.
 
 Voimme luoda hajautustaulun avulla myös tietorakenteen
 \emph{hakemisto}, joka sisältää joukon avain-arvo-pareja.
-Avaimen hajautusarvo ratkaisee, mihin hajautustaulun
-listaan pari sijoitetaan.
 Voimme ajatella hakemistoa taulukon yleistyksenä:
 taulukossa avaimet ovat kokonaisluvut $0,1,\dots,n-1$,
 mutta hakemistossa ne voivat olla mitä tahansa.
+Avaimen hajautusarvo ratkaisee, mihin hajautustaulun
+listaan pari sijoitetaan.
 
 Kuvassa \ref{fig:hajhak} on esimerkkinä hajautustauluun
 tallennettu hakemisto, joka vastaa seuraavaa ''taulukkoa'':
@@ -370,25 +371,16 @@ antavat oliot todella samat.
 \section{Joukot algoritmiikassa}
 
 Hajautustaulun ansiosta voimme käyttää algoritmeissamme
-joukkoja ja hakemistoja, joiden operaatiot ovat tehokkaita.
-Voimme alkajaisiksi ratkaista \emph{suoraviivaisemmin} sellaisia ongelmia,
-joissa olemme käyttäneet aiemmin taulukon järjestämistä.
+joukkoja ja hakemistoja, joiden operaatiot toimivat tehokkaasti.
+Voimme alkajaisiksi ratkaista mukavammin ajassa $O(n)$ sellaisia ongelmia,
+jotka olemme ratkoneet aiemmin luvussa 3.5
+järjestämisen avulla ajassa $O(n \log n)$
 
-Esimerkiksi olemme laskeneet järjestämisen avulla seuraavasti,
-montako eri alkiota taulukko sisältää:
-
-\begin{code}
-sort(taulu)
-laskuri = 1
-for i = 1 to n-1
-    if taulu[i-1] != taulu[i]
-        laskuri++
-print(laskuri)
-\end{code}
-
+Aloitamme ongelmasta, jossa haluamme selvittää,
+montako eri alkiota taulukko sisältää.
 Nyt kun käytössämme on hajautustaulu, voimme vain lisätä
 kaikki alkiot joukkoon ja hakea lopuksi joukon koon.
-Näin saamme aikaan lyhyen algoritmin, joka toimii ajassa $O(n)$:
+Näin saamme aikaan seuraavan algoritmin:
 
 \begin{code}
 alkiot = []
@@ -397,28 +389,9 @@ for i = 0 to n-1
 print(alkiot.size())
 \end{code}
 
-Tarkastellaan sitten toista ongelmaa, jossa haluamme selvittää,
-mikä on taulukon yleisin alkio.
-Olemme ratkaisseet aiemmin ongelman seuraavasti
-järjestä\-misen avulla:
-
-\begin{code}
-sort(taulu)
-maara = 1
-suurin = 1
-yleisin = taulu[0]
-for i = 1 to n-1
-    if taulu[i-1] != taulu[i]
-        maara = 0
-    maara++
-    if maara > suurin
-        suurin = maara
-        yleisin = taulu[i]
-print(yleisin)
-\end{code}
-
+Entä jos haluamme selvittää, mikä on taulukon yleisin alkio?
 Hajautustaulun avulla voimme lähestyä ongelmaa
-toisella tavalla luomalla hakemiston,
+luomalla hakemiston,
 jonka avaimet ovat taulukon alkioita ja arvot niiden
 esiintymiskertoja.
 Nyt voimme vain käydä läpi taulukon sisällön ja
@@ -436,10 +409,10 @@ for i = 0 to n-1
 print(yleisin)
 \end{code}
 
-Kuten nämä esimerkit osoittavat, voimme toteuttaa
-hajautustaulun avulla algoritmeja helpommin
-eikä meidän tarvitse kikkailla järjestämisen kanssa.
-Mutta nythän olemme vain ratkoneet uudestaan tehtäviä,
+Kuten nämä esimerkit osoittavat, hajautustaulu
+helpottaa algoritmien luomista,
+koska meidän ei tarvitse kikkailla järjestämisen kanssa.
+Mutta nyt\-hän olemme vain ratkoneet uudestaan tehtäviä,
 jotka hoituvat mainiosti myös järjestämisen avulla.
 Antaisiko hajautustaulu meille aitoja uusia mahdollisuuksia
 algoritmien suunnittelussa?
