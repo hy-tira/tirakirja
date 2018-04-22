@@ -78,8 +78,9 @@ Solmun 3 alipuu sisältää solmut 3, 5, 6, 7 ja 8.
 
 Binääripuun juuren \emph{syvyys} on 0 ja jokaisen muun solmun syvyys on yhtä
 suurempi kuin sen vanhemman syvyys.
-Binääripuun \emph{korkeus} on puolestaan suurin puun solmussa
-esiintyvä syvyys.
+Binääripuun \emph{korkeus} on puolestaan suurin
+askelten määrä juuresta alaspäin lehteen
+eli toisin sanoen suurin puun solmussa esiintyvä syvyys.
 Esimerkiksi kuvan \ref{fig:binpuu} puun korkeus on 3,
 koska solmujen 7 ja 8 syvyys on 3.
 
@@ -890,8 +891,7 @@ ja teemme enintään kaksi kiertoa.
 Poistamisen jälkeen taas kuljemme puuta ylöspäin $O(\log n)$ askelta
 ja teemme enintään $O(\log n)$ kiertoa.
 
-
-\section{Javan rakenteet}
+\section{Javan toteutukset}
 
 Javan tietorakenteet \texttt{TreeSet} ja \texttt{TreeMap}
 pohjautuvat punamustaan puuhun,
