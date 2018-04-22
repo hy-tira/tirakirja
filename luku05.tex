@@ -1,49 +1,26 @@
 \chapter{Hajautustaulu}
 
-Algoritmiikassa on usein tarvetta
-tietorakenteelle, joka pitää yllä alkioiden \emph{joukkoa}.
-Esimerkiksi $\{2,4,5,7\}$ on joukko, joka sisältää
-alkiot $2$, $4$, $5$ ja $7$.
-Haluamme pystyä tarkastamaan, kuuluuko tietty alkio
-joukkoon, sekä lisäämään ja poistamaan alkioita.
-Lisäksi haluamme,
-että tietty alkio voi esiintyä joukossa enintään kerran,
-kuten matematiikassa.
+\emph{Hajautustaulu} on tietorakenne,
+joka pitää yllä alkioiden joukkoa ja tarjoaa
+seuraavat operaatiot:
 
-Helppo tapa toteuttaa joukko on tallentaa
-kaikki joukon alkiot listaan.
-Tällaisen toteutuksen heikkoutena on kuitenkin,
-että meidän täytyy käydä koko lista läpi,
-kun haluamme selvittää, kuuluuko tietty alkio joukkoon.
-Joudumme käymään listan läpi myös alkion lisäämisessä ja
-poistamisessa, koska emme halua lisätä samaa alkiota
-uudestaan ja meidän täytyy löytää poistettava alkio.
-Niinpä listatoteutuksen operaatiot vievät aikaa $O(n)$.
+\begin{itemize}
+\item lisää alkio joukkoon
+\item tarkasta, onko alkio joukossa
+\item poista alkio joukosta
+\end{itemize}
 
-Tässä ja seuraavassa luvussa käymme läpi kaksi
-tietorakennetta, joiden avulla voimme toteuttaa
-joukon operaatiot \emph{tehokkaasti}.
-Tämän luvun aiheena on hajautustaulu,
-jonka avulla pystymme toteuttamaan operaatiot ajassa $O(1)$.
-Seuraavassa luvussa tutustumme binäärihaku\-puuhun,
-jonka operaatiot toimivat ajassa $O(\log n)$
-ja johon voimme toteuttaa lisäksi alkioiden järjestykseen
-liittyviä operaatioita.
+Hajautustaulun hienoutena on, että saamme toteutettua
+kaikki yllä olevat operaatiot \emph{tehokkaasti},
+minkä ansiosta voimme käyttää hajautustaulua tehokkaiden
+algoritmien luomisessa.
+Mutta ennen kuin alamme käyttää hajautustaulua,
+on paikallaan ottaa selvää, miten se toimii.
 
 \section{Hajautustaulun toiminta}
 
-\emph{Hajautustaulu} on $N$-alkioinen taulukko,
-jonka jokaisessa kohdassa on lista joukkoon kuuluvia alkioita.
-Jotta voimme käyttää hajautustaulua,
-meillä täytyy olla \emph{hajautusfunktio} $f$,
-joka antaa \emph{hajautusarvon}
-$f(x)$ mille tahansa joukon alkiolle $x$.
-Hajautusarvo on kokonaisluku väliltä
-$0,1,\dots,N-1$, missä $N$ on hajautustaulun koko.
-Tallennamme hajautustaulun kohdassa $k$ olevaan listaan
-kaikki ne joukon alkiot, joiden hajautusarvo on $k$.
-
 \begin{figure}
+\center
 \begin{tikzpicture}[scale=0.5]
 \draw (0,0) grid (10,1);
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
@@ -60,6 +37,17 @@ kaikki ne joukon alkiot, joiden hajautusarvo on $k$.
 Hajautusfunktiona on $f(x)=x \bmod 10$.}
 \label{fig:hajtau}
 \end{figure}
+
+Toteutamme hajautustaulun taulukkona,
+jonka jokaisessa kohdassa on lista joukkoon kuuluvia alkioita.
+Jotta voimme käyttää hajautustaulua,
+tarvitsemme \emph{hajautusfunktion} $f$,
+joka antaa \emph{hajautusarvon}
+$f(x)$ mille tahansa joukon alkiolle $x$.
+Hajautusarvo on kokonaisluku väliltä
+$0,1,\dots,N-1$, missä $N$ on hajautustaulun koko.
+Tallennamme hajautustaulun kohdassa $k$ olevaan listaan
+kaikki ne joukon alkiot, joiden hajautusarvo on $k$.
 
 Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu,
 jonka kokona on $N=10$.
@@ -97,6 +85,7 @@ hajautusfunktion suunnitteluun.
 Mutta millainen olisi hyvä hajautusfunktio?
 
 \begin{figure}
+\center
 \begin{tikzpicture}[scale=0.5]
 \begin{scope}
 \draw (0,0) grid (10,1);
@@ -108,7 +97,7 @@ Mutta millainen olisi hyvä hajautusfunktio?
 \node at (4.5,-1.5) {$b$};
 \node at (8.5,-1.5) {$c$};
 \end{scope}
-\begin{scope}[xshift=15cm]
+\begin{scope}[xshift=12cm]
 \draw (0,0) grid (10,1);
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
 \draw[->,thick] (3.5,0) -- (3.5,-1);
@@ -128,14 +117,14 @@ huonoin mahdollinen.}
 Haluamme, että hajautusfunktio jakaa alkioita \emph{tasaisesti}
 hajautustaulun eri puolille.
 Jos onnistumme tässä, kaikki listat ovat lyhyitä ja
-joukon operaatiot ovat tehokkaita.
+hajautustaulun operaatiot ovat tehokkaita.
 Kuva \ref{fig:hajjak} näyttää kaksi hajautustaulua, jotka vastaavat
 joukkoa $\{a,b,c\}$ kahdella eri hajautusfunktiolla.
 Vasemmassa taulussa hajautus on onnistunut täydellisesti
 ja jokainen alkio on omassa listassaan.
 Oikeassa taulussa taas kaikki alkiot ovat joutuneet samaan
 listaan eikä hajautuksesta ole mitään hyötyä.
-Tavoitteemme on, että saisimme aikaan hajautusfunktion,
+Tavoitteemme on saada aikaan hajautusfunktio,
 jonka toiminta on lähempänä vasenta tilannetta.
 
 Jos hajautettavat alkiot ovat kokonaislukuja,
