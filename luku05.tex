@@ -12,8 +12,8 @@ seuraavat operaatiot:
 
 Hajautustaulun hienoutena on, että saamme toteutettua
 kaikki yllä olevat operaatiot \emph{tehokkaasti},
-minkä ansiosta voimme käyttää hajautustaulua tehokkaiden
-algoritmien luomisessa.
+minkä ansiosta voimme luoda hajautustaulun avulla
+tehokkaita algoritmeja.
 Mutta ennen kuin alamme käyttää hajautustaulua,
 on paikallaan ottaa selvää, miten se toimii.
 
@@ -211,8 +211,8 @@ siitä käytännössä.
 Voimme luoda hajautustaulun avulla myös tietorakenteen
 \emph{hakemisto}, joka sisältää joukon avain-arvo-pareja.
 Avaimen hajautusarvo ratkaisee, mihin hajautustaulun
-listaan hakemistoon kuuluva pari sijoitetaan.
-Voimme myös ajatella hakemistoa taulukon yleistyksenä:
+listaan pari sijoitetaan.
+Voimme ajatella hakemistoa taulukon yleistyksenä:
 taulukossa avaimet ovat kokonaisluvut $0,1,\dots,n-1$,
 mutta hakemistossa ne voivat olla mitä tahansa.
 
@@ -367,46 +367,13 @@ Metodi \texttt{equals} on tarpeen,
 jotta Java pystyy varmistamaan, ovatko saman hajautusarvon
 antavat oliot todella samat.
 
-Esimerkiksi jos meillä on luokka \texttt{Piste},
-jossa on kenttinä kokonaisluvut \texttt{x} ja \texttt{y},
-voisimme toteuttaa metodit seuraavasti:
-
-\begin{code}
-class Piste {
-    public int x, y;
-
-    public int hashCode() {
-        return 97*x+y;
-    }
-    
-    public boolean equals(Object o) {
-        Piste p = (Piste)o;
-        return x == p.x && y == p.y;
-    }
-
-    // ...
-}
-\end{code}
-
-Tässä toteutuksessa siis pisteen $(x,y)$ hajautusarvo lasketaan
-kaavalla $97x+y$, missä 97 on valitsemamme vakio, jolla ei ole
-syvällistä merkitystä.
-Nyt kun hajautusfunktio on kunnossa,
-voimme luoda vaikkapa \texttt{HashSet}-rakenteen, jossa on pisteitä:
-
-\begin{code}
-HashSet<Piste> joukko = new HashSet<Piste>();
-joukko.add(new Piste(3,2));
-joukko.add(new Piste(1,4));
-joukko.add(new Piste(1,3));
-\end{code}
-
 \section{Joukot algoritmiikassa}
 
 Hajautustaulun ansiosta voimme käyttää algoritmeissamme
-mukavasti joukkoja ja luottaa siihen, että niiden operaatiot toimivat tehokkaasti.
-Voimme alkajaisiksi toteuttaa kätevämmin sellaisia algoritmeja,
-joissa olemme aiemmin käyttäneet järjestämistä.
+joukkoja ja hakemistoja, joiden operaatiot ovat tehokkaita.
+Voimme alkajaisiksi ratkaista \emph{suoraviivaisemmin} sellaisia ongelmia,
+joissa olemme käyttäneet aiemmin taulukon järjestämistä.
+
 Esimerkiksi olemme laskeneet järjestämisen avulla seuraavasti,
 montako eri alkiota taulukko sisältää:
 
@@ -419,10 +386,9 @@ for i = 1 to n-1
 print(laskuri)
 \end{code}
 
-Nyt kun käytössämme on tehokas joukkorakenne, voimme vain lisätä
-kaikki alkiot joukkoon ja hakea joukon koon.
-Näin saamme lyhyen algoritmin, joka toimii ajassa $O(n)$
-hajautustaulun ansiosta:
+Nyt kun käytössämme on hajautustaulu, voimme vain lisätä
+kaikki alkiot joukkoon ja hakea lopuksi joukon koon.
+Näin saamme aikaan lyhyen algoritmin, joka toimii ajassa $O(n)$:
 
 \begin{code}
 alkiot = []
@@ -431,7 +397,7 @@ for i = 0 to n-1
 print(alkiot.size())
 \end{code}
 
-Tarkastellaan sitten ongelmaa, jossa haluamme selvittää,
+Tarkastellaan sitten toista ongelmaa, jossa haluamme selvittää,
 mikä on taulukon yleisin alkio.
 Olemme ratkaisseet aiemmin ongelman seuraavasti
 järjestä\-misen avulla:
@@ -452,10 +418,10 @@ print(yleisin)
 \end{code}
 
 Hajautustaulun avulla voimme lähestyä ongelmaa
-toisella tavalla luomalla avain-arvo-rakenteen,
+toisella tavalla luomalla hakemiston,
 jonka avaimet ovat taulukon alkioita ja arvot niiden
 esiintymiskertoja.
-Niinpä voimme vain käydä läpi taulukon sisällön ja
+Nyt voimme vain käydä läpi taulukon sisällön ja
 pitää kirjaa, montako kertaa mikäkin alkio esiintyy taulukossa:
 
 \begin{code}
@@ -470,20 +436,20 @@ for i = 0 to n-1
 print(yleisin)
 \end{code}
 
-Kuten nämä esimerkit osoittavat, voimme toteuttaa algoritmeja
-joukkojen avulla suoraviivaisemmin eikä meidän tarvitse kikkailla
-järjestämisen kanssa.
+Kuten nämä esimerkit osoittavat, voimme toteuttaa
+hajautustaulun avulla algoritmeja helpommin
+eikä meidän tarvitse kikkailla järjestämisen kanssa.
 Mutta nythän olemme vain ratkoneet uudestaan tehtäviä,
 jotka hoituvat mainiosti myös järjestämisen avulla.
-Antaisivatko joukot meille aitoja uusia mahdollisuuksia
+Antaisiko hajautustaulu meille aitoja uusia mahdollisuuksia
 algoritmien suunnittelussa?
 
-Joukkojen todellinen merkitys on siinä, että voimme sekä
+Hajautustaulun todellinen merkitys on siinä, että voimme sekä
 \emph{lisätä} että \emph{poistaa} alkioita tehokkaasti milloin vain haluamme
 algoritmin aikana.
-Jos algoritmi vain lisää alkioita joukkoon,
+Jos algoritmi vain lisää alkioita,
 kuten olemme tehneet tähän mennessä,
 voimme yleensä tavalla tai toisella keksiä korvaavan algoritmin,
-joka käyttää joukon sijasta järjestämistä.
+joka käyttää hajautustaulun sijasta järjestämistä.
 Mutta jos algoritmissa esiintyy sekä lisäyksiä että poistoja,
-emme ehkä löydä enää vaihtoehtoja joukolle.
+emme ehkä löydä enää vaihtoehtoja hajautustaululle.
