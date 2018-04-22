@@ -193,9 +193,6 @@ Itse asiassa emme voi olla koskaan varmoja tästä.
 Vaikka meillä olisi erittäin hyvä hajautusfunktio,
 \emph{ilkeä vastustaja} voi kuitenkin antaa
 meille joukon alkioita, jotka kaikki saavat saman hajautusarvon.
-Ilkeä vastustaja on todellinen tai kuvitteellinen vihollinen,
-joka haluaa laatia varta vasten aineiston,
-jossa hajautusfunktiomme toimii huonosti.
 Tämä riski on aina hajautuksessa, koska mahdollisten
 hajautusarvojen määrä on paljon pienempi kuin mahdollisten alkioiden määrä.
 Tämän vuoksi emme voi mitenkään suunnitella hajautusfunktiota niin,
@@ -209,19 +206,59 @@ Vaikka on mahdollista, että hajautus epäonnistuu,
 tämän riski on niin pieni, että meidän ei tarvitse murehtia
 siitä käytännössä.
 
+\subsection{Joukosta hakemistoksi}
+
+Voimme luoda hajautustaulun avulla myös tietorakenteen
+\emph{hakemisto}, joka sisältää joukon avain-arvo-pareja.
+Avaimen hajautusarvo ratkaisee, mihin hajautustaulun
+listaan hakemistoon kuuluva pari sijoitetaan.
+Voimme myös ajatella hakemistoa taulukon yleistyksenä:
+taulukossa avaimet ovat kokonaisluvut $0,1,\dots,n-1$,
+mutta hakemistossa ne voivat olla mitä tahansa.
+
+Kuvassa \ref{fig:hajhak} on esimerkkinä hajautustauluun
+tallennettu hakemisto, joka vastaa seuraavaa ''taulukkoa'':
+
+\begin{code}
+taulu["abc"] = 5
+taulu["xyz"] = 1
+taulu["aaa"] = 8
+\end{code}
+
+Tässä tapauksessa hakemiston avaimet ovat merkkijonoja
+ja avaimet ovat kokonaislukuja.
+Hajautustaulun ansiosta voimme käsitellä hakemistoa
+taulukon tavoin niin, että operaatiot vievät aikaa $O(1)$.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw (0,0) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\draw[->,thick] (2.5,0) -- (2.5,-1);
+\draw[->,thick] (6.5,0) -- (6.5,-1);
+\draw[->,thick] (2.5,-2) -- (2.5,-3);
+\node at (2.5,-1.5) {$\texttt{aaa}/8$};
+\node at (2.5,-3.5) {$\texttt{xyz}/1$};
+\node at (6.5,-1.5) {$\texttt{abc}/5$};
+\end{tikzpicture}
+\caption{Hakemiston tallentaminen hajautustauluun.}
+\label{fig:hajhak}
+\end{figure}
+
 \section{Javan toteutukset}
 
 Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
 \texttt{HashSet} pitää yllä alkioiden joukkoa
-hajautustaulun avulla, ja \texttt{HashMap} säilyttää
-joukkoa avain-arvo-pareja, mitä voi ajatella taulukon yleistyksenä.
+ja \texttt{HashMap} toteuttaa
+hakemiston, jossa on avain-arvo-pareja.
 Seuraavaksi tutustumme tarkemmin näihin rakenteisiin.
 
 \subsection{\texttt{HashSet}-rakenne}
 
-\texttt{HashSet}-rakenne pitää yllä alkioiden joukkoa.
-Joukkoon voi lisätä alkion metodilla \texttt{add},
-ja siitä voi poistaa alkion metodilla \texttt{remove}.
+\texttt{HashSet} on alkioiden joukko,
+johon voi lisätä alkion metodilla \texttt{add}
+ja josta voi poistaa alkion metodilla \texttt{remove}.
 Esimerkiksi seuraava koodi luo joukon, jossa voi olla
 kokonaislukuja, ja lisää siihen luvut 3, 5 ja 8.
 Tämän jälkeen koodi poistaa luvun 5 joukosta.
@@ -264,21 +301,17 @@ sen operaatiot toimivat ajassa $O(1)$.
 
 \subsection{\texttt{HashMap}-rakenne}
 
-\texttt{HashMap}-rakenne pitää yllä joukkoa avain-arvo-pareja.
-Rakennetta voi ajatella taulukon yleistyksenä:
-$n$ alkion taulukossa avaimet ovat aina kokonaisluvut
-$0,1,\ldots,n-1$, mutta \texttt{HashMap} sallii
-avaimina minkä tahansa tyyppisiä alkioita eikä niiden
-tarvitse olla peräkkäin.
-
-\texttt{HashMap}-rakenteen määrittelyssä tulee antaa
+\texttt{HashMap} luo hakemiston,
+jossa on avain-arvo-pareja.
+Hakemiston määrit\-telyssä tulee antaa
 avaimen ja arvon tyyppi.
+Metodi \texttt{put} lisää uuden avain-arvo-parin,
+ja metodi \texttt{get} hakee arvon avaimen perusteella.
+
 Esimerkiksi seuraava koodi luo sanakirjan, jossa sekä
 avaimet että arvot ovat merkkijonoja.
 Syötämme sanakirjaan merkkijonopareja, jotka kertovat
 sanan käännöksen suomesta englanniksi.
-Metodi \texttt{put} lisää uuden avain-arvo-parin,
-ja metodi \texttt{get} hakee arvon avaimen perusteella.
 
 \begin{code}
 HashMap<String,String> sanakirja = new HashMap<>();
@@ -367,8 +400,6 @@ joukko.add(new Piste(3,2));
 joukko.add(new Piste(1,4));
 joukko.add(new Piste(1,3));
 \end{code}
-
-\newpage
 
 \section{Joukot algoritmiikassa}
 
