@@ -229,8 +229,8 @@ että se jakaisi alkiot \emph{varmasti} tasaisesti hajautustauluun.
 Kaikeksi onneksi hajautus toimii yleensä aina \emph{käytännössä}
 hyvin ja voimme ajatella, että hajautustaulun operaatiot ovat
 $O(1)$-aikaisia, kunhan hajautustaulun koko on riittävän suuri ja
-hajautusfunktio toimii järkevästi.
-Vaikka onkin mahdollista, että hajautus epäonnistuu,
+hajautusfunktio on toteutettu järke\-västi.
+Vaikka on mahdollista, että hajautus epäonnistuu,
 tämän riski on niin pieni, että meidän ei tarvitse murehtia
 siitä käytännössä.
 
@@ -393,63 +393,78 @@ joukko.add(new Piste(1,4));
 joukko.add(new Piste(1,3));
 \end{code}
 
-\section{Esimerkki: Anagrammit}
+\section{Joukot algoritmiikassa}
 
-Annettuna on lista sanoja ja haluamme jakaa sanat ryhmiin niin,
-että kukin ryhmä sisältää sanat, jotka ovat keskenään anagrammeja.
-Kaksi sanaa ovat anagrammit, jos ne on mahdollista muuttaa toisikseen
-muuttamalla niiden kirjainten järjestystä.
-Esimerkiksi jos sanat ovat ''abc'', ''iines'', ''bac'', ''cba'' ja ''sieni'',
-niistä muodostuu kaksi ryhmää.
-Ensimmäisessä ryhmässä on sanat ''abc'', ''bac'' ja ''cba'',
-ja toisessa ryhmässä on sanat ''iines'' ja ''sieni''.
-
-Voimme ratkaista tehtävän tehokkaasti seuraavan havainnon avulla:
-jos kaksi sanaa ovat anagrammit ja järjestämme niiden kirjaimet,
-ne muuttuvat samoiksi.
-Esimerkiksi sanoissa ''iines'' ja ''sieni'' kirjaimet
-järjestettyinä ovat ''eiins''.
-Tämän havainnon ansiosta voimme käyttää kunkin anagrammiryhmän
-\emph{tunnuksena} sen kirjainten järjestettyä muotoa.
-
-Luomme ryhmiä varten rakenteen
+Hajautustaulun ansiosta saamme voimakkaita uusia työkaluja
+algoritmien suunnitteluun, koska voimme käyttää algoritmeissamme
+joukkoja ja luottaa siihen, että niiden operaatiot toimivat tehokkaasti.
+Voimme alkajaisiksi toteuttaa \emph{mukavammin} sellaisia algoritmeja,
+joissa olemme aiemmin käyttäneet järjestämistä.
+Esimerkiksi olemme laskeneet järjestämisen avulla seuraavasti,
+montako eri alkiota taulukko sisältää:
 
 \begin{code}
-HashMap<String,ArrayList<String>> ryhmat = new HashMap<>();
+sort(taulu)
+laskuri = 1
+for i = 1 to n-1
+    if taulu[i-1] != taulu[i]
+        laskuri++
+print(laskuri)
 \end{code}
 
-jossa avaimena on anagrammiryhmän tunnus ja arvona on lista,
-joka sisältää kaikki listaan kuuluvat sanat.
-Algoritmin runko näyttää seuraavalta, kun oletamme,
-että sanat on tallennettu listaan \texttt{sanat}:
+Nyt kun käytössämme on tehokas joukkorakenne, voimme vain lisätä
+kaikki alkiot joukkoon ja hakea joukon koon.
+Näin saamme lyhyen algoritmin, joka toimii ajassa $O(n)$
+hajautustaulun ansiosta:
 
 \begin{code}
-for (String sana : sanat) {
-    String avain = tunnus(sana);
-    if (!ryhmat.containsKey(avain)) {
-        ryhmat.put(avain,new ArrayList<>());
-    }
-    ryhmat.get(avain).add(sana);
-}
-System.out.println(ryhmat);
+alkiot = []
+for i = 0 to n-1
+    alkiot.add(taulu[i])
+print(alkiot.size())
 \end{code}
 
-Tarvitsemme vielä metodin \texttt{tunnus}, joka järjestää
-sanan kirjaimet aakkosjärjestykseen.
-Jotta voimme järjestää sanan, muutamme sen merkkitaulukoksi,
-järjestämme taulukon, ja palautamme sitten uuden merkkijonon,
-joka on muodostettu taulukosta.
+Tarkastellaan sitten ongelmaa, jossa haluamme selvittää,
+mikä on suurin jonkin alkion esiintymiskertojen määrä taulukossa.
+Voimme ratkaista ongelman järjestämisen avulla näin:
 
 \begin{code}
-String tunnus(String sana) {
-    char[] taulu = sana.toCharArray();
-    Arrays.sort(taulu);
-    return new String(taulu);
-}
+sort(taulu)
+maara = suurin = 1
+for i = 1 to n-1
+    if taulu[i-1] != taulu[i]
+        maara = 0
+    maara++
+    suurin = max(suurin,maara)
+print(suurin)
 \end{code}
 
-Esimerkin tapauksessa ohjelmamme tulostus on seuraava:
+Nyt voimme toteuttaa hajautustaulun avulla rakenteen
+\texttt{laskuri}, joka pitää kirjaa alkioiden esiintymiskerroista:
 
 \begin{code}
-{abc=[abc, bac, cba], eiins=[iines, sieni]}
+laskuri = []
+suurin = 0
+for i = 0 to n-1
+    laskuri[taulu[i]]++
+    suurin = max(suurin,laskuri[taulu[i]])
+print(suurin)
 \end{code}
+
+Kuten nämä esimerkit osoittavat, voimme toteuttaa algoritmeja
+joukkojen avulla suoraviivaisemmin eikä meidän tarvitse kikkailla
+järjestämisen kanssa.
+Mutta nythän olemme vain ratkoneet uudestaan tehtäviä,
+jotka hoituvat mainiosti myös järjestämisen avulla.
+Antaisivatko joukot meille aitoja uusia mahdollisuuksia
+algoritmien suunnittelussa?
+
+Joukkojen todellinen merkitys on siinä, että voimme sekä
+lisätä että poistaa alkioita tehokkaasti milloin vain haluamme
+algoritmin aikana.
+Jos algoritmi vain lisää alkioita joukkoon,
+kuten olemme tehneet tähän mennessä,
+voimme yleensä tavalla tai toisella keksiä korvaavan algoritmin,
+joka käyttää joukon sijasta järjestämistä.
+Mutta jos algoritmissa esiintyy sekä lisäyksiä että poistoja,
+emme ehkä löydä enää vaihtoehtoja joukolle.
