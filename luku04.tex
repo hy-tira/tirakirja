@@ -1,84 +1,40 @@
 \chapter{Lista}
 
-Ohjelmoinnin perustietorakenne on taulukko,
-joka on mainio tietorakenne, mutta siinä on yksi puute.
-Kun luomme taulukon, meidän täytyy antaa sille
-kiinteä koko, emmekä voi muuttaa kokoa myöhemmin.
-Esimerkiksi seuraava Java-koodi luo taulukon,
-jossa on kiinteästi kymmenen alkiota:
+\emph{Lista} on tietorakenne,
+joka muodostuu peräkkäin olevista alkioista.
+Esimerkiksi $[3,7,2,5]$ on lista,
+joka sisältää neljä alkiota.
+Merkitsemme listan alkioiden määrää
+kirjaimella $n$ ja indeksoimme alkiot
+$0,1,\dots,n-1$.
+Haluamme toteuttaa listan niin,
+että pääsemme käsiksi tietyssä kohdassa
+olevaan alkioon sekä pystymme
+lisäämään ja poistamaan alkioita.
 
-\begin{code}
-int[] taulu = new int[10];
-\end{code}
-
-Tämä on ongelma, koska meillä ei välttämättä ole
-taulukon luontihetkellä käsitystä, montako alkiota
-haluaisimme tallentaa siihen myöhemmin.
-
-Tämän luvun tavoitteemme on luoda tietorakenne,
-jota kutsumme nimellä \emph{lista}.
-Taulukon tavoin lista sisältää joukon alkioita
-tietyssä järjestyk\-sessä,
-mutta voimme lisäksi muuttaa listan kokoa
-lisäämällä ja poistamalla alkioita.
-Tutustumme kahteen tapaan listan toteuttamiseen,
-joissa molemmissa on omat hyvät ja huonot puolensa.
+Tässä luvussa tutustumme kahteen
+tapaan listan luomiseen.
+Ensin toteutamme taulukkolistan,
+jossa listan alkiot tallennetaan taulukkoon.
+Tämän jälkeen toteutamme linkitetyn listan,
+joka muodostuu toisiinsa viittaavista solmuista.
+Kuten tulemme huomaamaan, molemmissa listan toteutuksissa on omat
+hyvät ja huonot puolensa.
 
 \section{Taulukkolista}
 
-\emph{Taulukkolista} on lista, joka on tallennettu taulukkoon.
-Meidän täytyy vain keksiä, miten voimme lisätä ja poistaa
-alkioita, vaikka taulukon koko on kiinteä.
-Löydämme ongelmaan pian ratkaisun, mutta sitä ennen
-aiheellinen kysymys on:
-miksi ohjelmointikielten suunnittelijat eivät ole antaneet meille
-suoraan mahdollisuutta muuttaa taulukon kokoa?
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.7]
-\draw (0,0) grid (9,1);
-\node at (0.5,0.5) {$-$};
-\node at (1.5,0.5) {$1$};
-\node at (2.5,0.5) {$4$};
-\node at (3.5,0.5) {$2$};
-\node at (4.5,0.5) {$5$};
-\node at (5.5,0.5) {$3$};
-\node at (6.5,0.5) {$2$};
-\node at (7.5,0.5) {$5$};
-\node at (8.5,0.5) {$-$};
-\end{tikzpicture}
-\caption{Taulukot $[1,4,2]$ ja $[5,3,2,5]$ tietokoneen muistissa.}
-\label{fig:taumui}
-\end{figure}
-
-Tähän on hyvä selitys, joka liittyy siihen,
-miten taulukko on tallennettu tietokoneen muistissa.
-Tarkastellaan esimerkkiä, jossa ohjelmassa on käytössä
-taulukot $[1,4,2]$ ja $[5,3,2,5]$.
-Kuva \ref{fig:taumui} näyttää mahdollisen tavan, miten taulukot
-asettuvat muistissa.
-Taulukolle varataan aina yhtenäinen muistialue,
-minkä ansiosta pääsemme käsiksi sen alkioihin
-helposti ajassa $O(1)$.
-
-Kuvassa näkyy ilmeinen syy,
-minkä vuoksi emme voi laajentaa taulukon kokoa
-luonnin jälkeen:
-tyypillisesti muistissa on heti taulukon perässä muuta
-tarpeellista tietoa, jota ei saa poistaa.
-Jos lisäisimme taulukon $[1,4,2]$ perään uuden alkion,
-meidän täytyisi tuhota taulukon $[5,3,2,5]$ ensimmäinen alkio,
-mikä ei tule kysymykseen.
-Ainoa tapa laajentaa taulukkoa onkin varata
-jostain muualta muistista enemmän tilaa ja kopioida
-taulukon sisältö sinne.
-Juuri näin joudumme tekemään, kun toteutamme listan taulukkona.
+\emph{Taulukkolista} on lista, joka on tallennettu taulukkona.
+Koska taulukon alkiot sijaitsevat aina peräkkäin muistissa,
+pääsemme käsiksi mihin tahansa listan alkioon ajassa $O(1)$.
+Toisaalta haasteena toteutuksessa on,
+että taulukon koko on \emph{kiinteä} ja jos haluamme
+muuttaa kokoa, meidän täytyy varata uusi taulukko
+ja kopioida sinne vanhan taulukon sisältö.
 
 \subsection{Muutokset lopussa}
 
-Toteutamme ensin taulukkolistan, jossa voimme
-lisätä ja poistaa alkioita listan lopussa.
+Toteutamme ensin taulukkolistan, jossa alkioiden
+lisäykset ja poistot tapahtuvat listan lopussa.
 Tallennamme listan taulukkona niin,
 että tietty määrä alkioita taulukon alussa on listan käytössä
 ja loput tyhjät kohdat on varattu tuleville alkioille.
@@ -90,7 +46,7 @@ vapaana oleva kohta taulukosta.
 Kuva \ref{fig:listau} näyttää esimerkin,
 jossa taulukossa on tilaa yhteenä kahdeksalle alkiolle
 ja siihen on tallennettu lista $[3,7,2,5]$.
-Taulukon neljä ensimmäistä alkiota ovat siis listan käytössä,
+Taulukon neljä ensimmäistä alkiota ovat siis listan käytössä
 ja muut ovat varalla tulevia alkioita varten.
 Kun lisäämme listan loppuun uuden alkion 6,
 otamme käyttöön taulukosta uuden kohdan, johon alkio sijoitetaan.
@@ -226,8 +182,8 @@ ja puolitamme taulukon koon.}
 
 Voimme poistaa alkion listan lopusta aina $O(1)$-ajassa,
 koska taulukon kokoa ei tarvitse koskaan suurentaa.
-Tässä voi kuitenkin tulla ongelmaksi, että monien poistojen
-jälkeen taulukossa on turhan paljon tyhjää tilaa lopussa.
+Tässä voisi kuitenkin tulla ongelmaksi, että monien poistojen
+jälkeen taulukossa olisi turhan paljon tyhjää tilaa lopussa.
 Voimme soveltaa tässä käänteisesti samaa ideaa kuin lisäämisessä:
 jos poistamisen jälkeen vain \emph{neljännes} taulukosta on käytössä,
 puolitamme taulukon koon.
@@ -237,7 +193,7 @@ Tällä tavalla myös poistamiset vievät keskimäärin aikaa $O(1)$.
 Miksi emme voisi varata heti aluksi niin suurta taulukkoa,
 että lopullinen lista mahtuisi siihen varmasti?
 Tässä olisi huonona puolena, että listamme tuhlaisi paljon muistia.
-Ohjelmassa saattaa olla samaan aikaan käytössä monia listoja,
+Algoritmissa saattaa olla samaan aikaan käytössä monia listoja,
 ja haluamme, että listalle varattu taulukko on samaa kokoluokkaa
 kuin listan todellinen sisältö.
 
@@ -248,9 +204,7 @@ joka sallii tehokkaat alkioiden lisäykset ja poistot
 sekä listan alussa että lopussa.
 Jotta tämä onnistuisi, muutamme listan tallennustapaa niin,
 että lista voi alkaa ja päättyä missä tahansa taulukon
-kohdassa ja listan sisältö voi jatkua taulukon lopusta alkuun.
-Tämän ansiosta pystymme tekemään lisäyksiä ja poistoja
-listan molemmissa päissä.
+kohdassa ja listan sisältö voi tarvittaessa jatkua taulukon lopusta alkuun.
 
 \begin{figure}
 \center
@@ -351,7 +305,7 @@ jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \emph{Linkitetty lista} muodostuu solmuista, joista jokainen sisältää
 yhden listan alkion.
-Linkitetty lista voi olla joko yhteen tai kahteen suuntaan linkitetty.
+Linkitetty lista voi olla yhteen tai kahteen suuntaan linkitetty.
 Yhteen suuntaan linkitetyssä listassa jokaisesta solmusta
 on viittaus seuraavaan solmuun, ja kahteen suuntaan linkitetyssä
 listassa jokaisesta solmusta on viittaus sekä seuraavaan että edelliseen solmuun.
@@ -398,12 +352,12 @@ listassa jokaisesta solmusta on viittaus sekä seuraavaan että edelliseen solmu
 
 Kuva \ref{fig:linlis} näyttää esimerkkinä listan $[3,7,2,5]$
 yhteen ja kahteen suuntaan linkitettynä.
-Molemmissa listoissa meillä on viittaukset listan
+Molemmissa listoissa tiedossamme on viittaukset listan
 alkuun ja loppuun.
 Yhteen suuntaan linkitetyssä listassa voimme käydä
 läpi listan alkiot alusta loppuun,
-mutta kahteen suuntaan linkitetyssä listassa voimme
-myös kulkea listalla takaperin.
+kun taas kahteen suuntaan linkitetyssä listassa
+voimme liikkua sekä alusta loppuun että lopusta alkuun.
 
 Kaksisuuntainen linkitys on käytännössä järkevä tapa toteuttaa
 linkitetty lista, ja oletamme jatkossa, että listamme on
@@ -433,7 +387,7 @@ public class Solmu {
 }
 \end{code}
 
-Tässä kenttä \texttt{arvo} kertoo solmun arvon,
+Kenttä \texttt{arvo} kertoo solmun arvon,
 kenttä \texttt{seuraava} osoittaa seuraavaan solmuun
 ja kenttä \texttt{edellinen} osoittaa edelliseen solmuun.
 Jos seuraavaa tai edellistä solmua ei ole,
@@ -547,8 +501,8 @@ Sen sijaan jos haluamme päästä johonkin muuhun listan kohtaan,
 meidän täytyy aloittaa listan alusta tai lopusta ja kulkea askel
 kerrallaan viittauksia seuraten.
 Niinpä listan keskellä olevaan kohtaan pääseminen vie aikaa $O(n)$.
-Joudumme liikkumaan solmuihin linkkejä pitkin, koska solmut on tallennettu
-muistiin sekalaisiin kohtiin eikä meillä ole keinoa tietää,
+Joudumme liikkumaan solmuihin linkkejä pitkin, koska solmut voivat
+olla eri puolilla muistia eikä meillä ole keinoa tietää suoraan,
 mihin mikäkin solmu on tallennettu.
 
 \subsection{Listojen vertailua}
@@ -620,6 +574,7 @@ Haluamme selvittää, onko lauseke \emph{oikein muodostettu} eli
 onko jokaiselle aloittavalle sululle vastaava lopettava pari.
 Esimerkiksi lauseke \texttt{[()]()} on oikein muodostettu,
 kun taas lauseke \texttt{[()(])} ei ole.
+
 Voimme ratkaista tehtävän pinon avulla
 käymällä läpi lausekkeen merkit vasemmalta oikealle.
 Kun vastaan tulee aloittava sulku \texttt{(} tai \texttt{[},
