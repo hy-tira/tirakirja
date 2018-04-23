@@ -6,8 +6,8 @@ Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
 tai säveltää hyvää musiikkia.
 Algoritmien suunnittelu on taito, jonka oppiminen vie aikaa.
 
-Hyvä tavoite algoritmien suunnittelussa on saada aikaan
-algoritmi, joka toimii ajassa $O(n)$ tai $O(n \log n)$.
+Tässä luvussa keskitymme erityisesti tavoitteeseen
+saada aikaan algoritmi, jonka aikavaativuus on $O(n)$ tai $O(n \log n)$.
 Tällaisen algoritmin etuna on, että se toimii tehokkaasti
 myös silloin, kun syötteen koko $n$ on suuri.
 Tavoitteen asettaminen etukäteen on hyödyllistä,
@@ -43,7 +43,7 @@ kun vaihtoehtojen määrä on pienempi.
 Tavallinen tilanne algoritmien suunnittelussa on,
 että pystymme ratkaisemaan annetun ongelman
 helposti $O(n^2)$-ajassa ensimmäisellä mieleen tulevalla algoritmilla,
-mutta tarvitsisimme tehokkaamman algoritmin,
+mutta haluaisimme tehokkaamman algoritmin,
 joka toimisi ajassa $O(n)$ tai $O(n \log n)$.
 Kokemus on osoittanut, että tämä on hyvä tilanne:
 yleensä \emph{pystymme} tehostamaan
@@ -64,8 +64,8 @@ reducible to $O(n)$.
 Tarkastellaan esimerkkinä seuraavaa tehtävää:
 Annettuna on taulukko, joka sisältää luvut $1,2,\dots,n$
 jossakin järjestyksessä,
-ja haluamme kerätä taulukon luvut järjestyksessä pienimmästä suurimpaan.
-Joka kierroksella käym\-me läpi taulukon vasemmalta
+ja haluamme kerätä luvut järjestyksessä pienimmästä suurimpaan.
+Joka kierroksella käym\-me läpi taulukon sisällön vasemmalta
 oikealle ja keräämme mahdollisimman monta seuraavaa lukua.
 Montako kierrosta tarvitsemme yhteensä?
 Esimerkiksi taulukossa $[4,3,1,5,2]$
@@ -113,7 +113,7 @@ for i = 0 to n-1
 \end{code}
 
 Tämän taulukon avulla saamme selville $O(1)$-ajassa,
-missä kohdassa taulukossa on seuraava kerättävä luku.
+missä kohdassa taulukkoa on seuraava kerättävä luku.
 Entä mistä tiedämme, montako kierrosta tarvitsemme?
 Meidän täytyy aloittaa uusi kierros aina silloin,
 kun viimeksi keräämämme luku on myöhemmin taulukossa
@@ -138,7 +138,7 @@ eli olemme saavuttaneet tavoitteemme.
 Seuraavaksi käymme läpi tarkemmin \emph{aineksia},
 joita näkee usein tehokkaissa algoritmeissa.
 Nämä ainekset muodostavat hyvän perustan algoritmien
-suunnitteluun: kun saamme vastaamme uuden ongelman,
+suunnittelemiseen: kun saamme vastaamme uuden ongelman,
 voimme miettiä, voisimmeko hyödyntää aineksia jotenkin
 ongelman ratkaisemisessa.
 
@@ -153,16 +153,16 @@ huoletta tehokkaassa algoritmissa.
 Jotta voimme käyttää järjestämistä, meidän täytyy usein havaita
 ongelmasta jokin ominaisuus, jonka ansiosta voimme ratkaista
 ongelman \emph{ahneella} algoritmilla.
-Tyypillinen ahne algoritmi käy syötteen läpi järjestyksessä ja
-muodostaa ratkaisun suoraan tämän järjestyksen perusteella.
+Ahne algoritmi valitsee joka askeleella parhaalta tuntuvan
+vaihtoehdon eikä tutki muita vaihtoehtoja.
 Meidän täytyy kuitenkin olla varmoja, että saamme oikean ratkaisun tällä tavalla.
 
 Tarkastellaan esimerkkinä tehtävää, jossa haluamme laskea
 tutkijan \emph{$h$-indeksin}. Tämä on suurin luku $x$, jolle pätee,
 että tutkijalla on $x$ julkaisua, joihin on viitattu ainakin $x$ kertaa.
 Esimerkiksi jos tutkijalla on kolme julkaisua,
-joiden viittausmäärät ovat $[5,1,3]$, hänen $h$-indeksinsä on $2$,
-koska hänellä on kaksi julkaisua, joihin on viitattu ainakin kahdesti.
+joiden viittausmäärät ovat $[5,1,3]$, hänen $h$-indeksinsä on $2$:
+hänellä on kaksi julkaisua, joihin on viitattu ainakin kahdesti.
 
 Tässä tehtävässä hyödyllinen havainto on, että meidän kannattaa aina
 tarkastella tutkijan \emph{viitatuimpia} julkaisuja.
@@ -186,17 +186,17 @@ joten algoritmi toimii ajassa $O(n \log n)$.
 
 \subsection{Tietorakenteet}
 
-Olemme tutustuneet kirjassa moniin tietorakenteisiin:
+Olemme tutustuneet jo kirjassa moniin tietorakenteisiin:
 listoihin, hajautustauluun, binäärihakupuuhun ja kekoon.
 Näissä tietorakenteissa kannattaa kiinnittää erityisesti huomiota siihen,
 mitkä operaatiot toimivat tehokkaasti $O(1)$- tai $O(\log n)$-ajassa.
 Nämä ovat operaatioita, joita voimme käyttää tehokkaissa algoritmeissa.
 
 Tarkastellaan esimerkkinä tehtävää, jossa haluamme laskea,
-monellako tavalla voimme valita $n$ luvun taulukosta yhtenäisen osataulukon,
+monellako tavalla voimme valita taulukosta yhtenäisen osataulukon,
 jossa lukujen summa on $x$.
-Voimme ratkaista tehtävän suoraviivaisesti kahdella for-silmukalla
-ajassa $O(n^2)$ käymällä läpi kaikki osataulukot:
+Voimme alkajaisiksi ratkaista tehtävän suoraviivaisesti ajassa $O(n^2)$
+käymällä läpi kaikki osataulukot kahdella silmukalla:
 
 \begin{code}
 laskuri = 0
@@ -209,14 +209,14 @@ for i = 0 to n-1
 \end{code}
 
 Entä kuinka voisimme ratkaista tehtävän tehokkaasti?
-Tässä auttaa muotoilla hieman toisin, mitä tarkoittaa,
+Tässä meitä auttaa muotoilla hieman toisin, mitä tarkoittaa,
 että osataulukon summa on $x$.
 Merkitään $s(i)$:llä osataulukon summaa taulukon alusta
 kohtaan $i$ asti, ja oletetaan lisäksi, että $s(-1)=0$.
 Tätä merkintää käyttäen osataulukon summa
 kohdasta $a$ kohtaan $b$ on
 \[s(b)-s(a-1),\]
-eli meidän riittää oikeastaan keskittyä vain taulukon alusta
+eli meidän riittää itse asiassa keskittyä vain taulukon alusta
 alkavien osataulukoiden summiin.
 
 Koska haluamme saada tehokkaan algoritmin,
@@ -246,8 +246,8 @@ for i = 0 to n-1
 Tässä rakenne \texttt{summat} pitää kirjaa,
 montako kertaa mikäkin alkuosan summa on esiintynyt tähän mennessä.
 Koska summat voivat olla suuria, emme voi käyttää tavallista taulukkoa,
-mutta voimme sen sijaan käyttää hajautustaulua tai binäärihakupuuta
-(Javassa rakenteet \texttt{HashMap} ja \texttt{TreeMap}).
+mutta voimme sen sijaan käyttää hajautustauluun tai binäärihakupuuhun
+perustuvaa hakemistoa.
 Näin saamme aikaan ratkaisun, joka vie aikaa $O(n)$ tai $O(n \log n)$
 riippuen valitusta tietorakenteesta.
 
@@ -257,8 +257,8 @@ Binäärihaun tunnetuin käyttötarkoitus on alkion etsiminen
 järjestetystä taulukosta ajassa $O(\log n)$.
 Tämä on kuitenkin vain alkusoittoa sille,
 mitä binää\-rihaulla pystyy tekemään ja mikä on sen
-merkitys algoritmiikassa.
-Binääri\-haun todellinen hyöty algoritmien suunnittelussa on,
+merkitys algoritmien suunnittelussa.
+Binääri\-haun todellinen hyöty piilee siinä,
 että pystymme etsimään sen avulla tehokkaasti funktion \emph{muutoskohdan}.
 
 Oletetaan, että meillä on funktio $\texttt{ok}(x)$,
@@ -306,7 +306,7 @@ kutsumme funktiota \texttt{ok} yhteensä $O(\log N)$ kertaa.
 \node at (-2,-3) {kone $3$};
 \draw[|-|] (0.05,-3) -- (6.95,-3);
 \end{tikzpicture}
-\caption{Optimaalinen tapa valmistaa 7 tavaraa vie 8 sekuntia,
+\caption{Optimaalinen tapa valmistaa 7 tavaraa vie 8 minuuttia,
 kun koneiden nopeudet ovat $[2,3,7]$.}
 \label{fig:optkon}
 \end{figure}
@@ -343,7 +343,7 @@ tavaraa. Niinpä $\texttt{ok}(u)=\texttt{false}$, jos $s<m$,
 ja $\texttt{ok}(u)=\texttt{true}$, jos $s \ge m$. Voimme toteuttaa tämän seuraavasti:
 
 \begin{code}
-function ok(u)
+ok(u)
     s = 0
     for i = 1 to n
         s += u/x[i]
@@ -496,7 +496,7 @@ for i = 0 to n-1
 \end{figure}
 
 Kuva \ref{fig:pielah} näyttää, kuinka algoritmi käsittelee taulukon $[1,4,5,2,3,2]$.
-Alussa pino on tyhjä, joten totemme, että luvulla 1 ei
+Alussa pino on tyhjä, joten toteamme, ettei luvulla 1
 ole lähintä pienintä edeltäjää ja lisäämme sen pinoon.
 Sitten vuoroon tulee luku 4, jonka lähin pienin edeltäjä
 on pinon päällä oleva luku 1. Tämän jälkeen lisäämme luvun 4 pinoon.
