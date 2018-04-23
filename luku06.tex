@@ -1,18 +1,10 @@
 \chapter{Binäärihakupuu}
 
-Binäärihakupuu on tietorakenne, joka pitää yllä
+\emph{Binäärihakupuu} on tietorakenne, joka pitää yllä
 alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
-Voimme toteuttaa binäärihakupuun niin,
-että joukon operaatiot vievät aikaa $O(\log n)$
-kaikissa tapauksissa.
-Käytännössä binäärihakupuu toimii hieman hitaammin
-kuin hajautustaulu, mutta siinä ei ole teoreettista riskiä,
-että operaatiot veisivät aikaa $O(n)$.
-
-Binäärihakupuun tärkein etu hajautustauluun verrattuna on kuitenkin,
-että se säilyttää joukon alkioita \emph{järjestyksessä}.
-Tämän ansiosta voimme toteuttaa tehokkaasti
-esimerkiksi seuraavat operaatiot:
+Binäärihakupuu eroaa hajautustaulusta kuitenkin siinä,
+että se säilyttää alkioita \emph{järjestyksessä}.
+Tämän ansiosta voimme toteuttaa myös esimerkiksi seuraavat operaatiot:
 
 \begin{itemize}
 \item etsi joukon pienin/suurin alkio
@@ -20,10 +12,17 @@ esimerkiksi seuraavat operaatiot:
 \item etsi joukon suurin alkio, joka on enintään $x$
 \end{itemize}
 
-Hajautustaulu \emph{ei} pysty tarjoamaan näitä operaatioita tehokkaasti,
+Hajautustaulu \emph{ei} pysty tarjoamaan näitä operaatioita,
 koska alkiot ovat siinä sekalaisessa järjestyksessä.
-Jos tarvitsemme näitä operaatioita,
-meidän tuleekin käyttää binäärihakupuuta hajautustaulun sijasta.
+
+Jotta binäärihakupuu toimii tehokkaasti,
+meidän täytyy varmistaa,
+että puu on tasapainoinen eli alkiot jakautuvat
+tasaisesti sen eri puolille.
+Tällöin kaikki puun operaatiot toimivat ajassa $O(\log n)$.
+Tässä luvussa tutustumme esimerkkinä AVL-puuhun,
+joka on varhaisin tunnettu tapa luoda tasapainoinen
+binäärihakupuu.
 
 \section{Taustaa binääripuista}
 
@@ -265,12 +264,12 @@ Oikeassa alipuussa taas on kaikki alkiota 5
 suuremmat alkiot, eli se vastaa joukkoa $\{7,8,9\}$.
 Huomaa, että tämä on yksi monista tavoista muodostaa
 binäärihakupuu joukolle ja voisimme valita myös
-minkä tahansa toisen alkion puun juureksi.
+minkä tahansa muun alkion puun juureksi.
 
 \subsection{Operaatioiden toteutus}
 
 Seuraavaksi käymme läpi, kuinka voimme toteuttaa
-joukko-operaatioita bi\-näärihakupuun avulla.
+binäärihakupuun avulla operaatioita joukon alkioiden käsittelemiseen.
 Osoittautuu, että voimme toteuttaa kaikki
 operaatiot ajassa $O(h)$, missä $h$ on puun korkeus.
 
@@ -453,8 +452,8 @@ minkä jälkeen meidän on helppoa poistaa alkio 5.
 Binäärihakupuun operaatiot vievät aikaa $O(h)$,
 missä $h$ on puun korkeus, joten operaatioiden tehokkuus
 riippuu puun korkeudesta.
-Niinpä operaatioiden tehokkuuteen vaikuttaa, miten olemme
-rakentaneet puun.
+Operaatioiden tehokkuuteen vaikuttaa siis,
+miten olemme rakentaneet puun.
 Esimerkiksi kuvassa \ref{fig:bihkor} on kaksi mahdollista
 binäärihakupuuta joukolle $\{1,2,3,4,5\}$.
 Vasemman puun korkeus on 2, kun taas oikean puun korkeus on 4.
@@ -1112,15 +1111,14 @@ järjestämisrat\-kaisun aikavaativuus on $O(n \log n)$, mutta
 järjestämisratkaisu on kymmenen kertaa nopeampi?
 Tämä johtuu siitä, että taulukon järjestäminen on hyvin kevyt
 operaatio ja se tehdään vain kerran.
-Binäärihakupuussa jokaisen lisäyksen jälkeen täytyy muuttaa
-puun rakennetta, mikä on hidasta ja aiheuttaa suuret vakiokertoimet.
+Binäärihakupuussa jokainen lisäys muuttaa puun rakennetta,
+mikä aiheuttaa suuret vakiokertoimet.
 
-Vaikka joukkorakenteet ovat käteviä, niitä ei siis kannata
+Vaikka joukot ovat käteviä, niitä ei siis kannata
 käyttää turhaan.
-Joukkorakenteiden etuna on, että alkioiden lisääminen ja poistaminen
-toimivat tehokkaasti.
-Jos tällaiselle ei ole tarvetta, järjestämiseen perustuva ratkaisu
-on usein parempi valinta.
+Jos haluamme ratkaista ongelman todella tehokkaasti,
+kannattaa miettiä, voisimmeko käyttää järjestämistä
+tavalla tai toisella joukkojen sijaan.
 
 \begin{table}
 \center
