@@ -10,7 +10,7 @@ seuraavat operaatiot:
 \item poista alkio joukosta
 \end{itemize}
 
-Hajautustaulun hienoutena on, että saamme toteutettua
+Hajautustaulun hienoutena on, että se toteuttaa
 kaikki yllä olevat operaatiot \emph{tehokkaasti},
 minkä ansiosta voimme luoda hajautustaulun avulla
 tehokkaita algoritmeja.
@@ -209,13 +209,14 @@ siitä käytännössä.
 
 \subsection{Joukosta hakemistoksi}
 
-Voimme luoda hajautustaulun avulla myös tietorakenteen
-\emph{hakemisto}, joka sisältää joukon avain-arvo-pareja.
+Voimme luoda hajautustaulun avulla myös
+\emph{hakemiston}, joka sisältää joukon avain-arvo-pareja.
 Voimme ajatella hakemistoa taulukon yleistyksenä:
 taulukossa avaimet ovat kokonaisluvut $0,1,\dots,n-1$,
-mutta hakemistossa ne voivat olla mitä tahansa.
-Avaimen hajautusarvo ratkaisee, mihin hajautustaulun
-listaan pari sijoitetaan.
+mutta hakemistossa ne voivat olla mitä tahansa alkioita.
+Avaimen hajautusarvo määrittää, mihin hajautustaulun
+listaan pari sijoitetaan, joten voimme etsiä avaimen
+perusteella sitä vastaavaa arvoa.
 
 Kuvassa \ref{fig:hajhak} on esimerkkinä hajautustauluun
 tallennettu hakemisto, joka vastaa seuraavaa ''taulukkoa'':
@@ -372,13 +373,15 @@ antavat oliot todella samat.
 
 Hajautustaulun ansiosta voimme käyttää algoritmeissamme
 joukkoja ja hakemistoja, joiden operaatiot toimivat tehokkaasti.
-Voimme alkajaisiksi ratkaista mukavammin ajassa $O(n)$ sellaisia ongelmia,
-jotka olemme ratkoneet aiemmin luvussa 3.5
-järjestämisen avulla ajassa $O(n \log n)$
+Voimme alkajaisiksi ratkoa mukavammin ajassa $O(n)$ sellaisia ongelmia,
+jotka olemme ratkoneet aiemmin järjestämisen avulla ajassa $O(n \log n)$.
 
-Aloitamme ongelmasta, jossa haluamme selvittää,
+Tarkastellaan ongelmaa, jossa haluamme laskea,
 montako eri alkiota taulukko sisältää.
-Nyt kun käytössämme on hajautustaulu, voimme vain lisätä
+Aiemmin olemme ratkaisseet ongelman
+järjestämällä taulukon ja tutkimalla sen jälkeen
+taulukossa vierekkäin olevia alkioita.
+Nyt kun käytös\-sämme on hajautustaulu, voimme vain lisätä
 kaikki alkiot joukkoon ja hakea lopuksi joukon koon.
 Näin saamme aikaan seuraavan algoritmin:
 
@@ -389,9 +392,12 @@ for i = 0 to n-1
 print(alkiot.size())
 \end{code}
 
-Entä jos haluamme selvittää, mikä on taulukon yleisin alkio?
-Hajautustaulun avulla voimme lähestyä ongelmaa
-luomalla hakemiston,
+Tarkastellaan sitten ongelmaa, jossa haluamme selvittää
+taulukon yleisimmän alkion.
+Olemme ratkaisseet tämänkin ongelman aiemmin
+järjestä\-mällä taulukon, mutta
+hajautustaulun avulla voimme lähestyä ongelmaa
+toisella tavalla luomalla hakemiston,
 jonka avaimet ovat taulukon alkioita ja arvot niiden
 esiintymiskertoja.
 Nyt voimme vain käydä läpi taulukon sisällön ja
@@ -411,18 +417,18 @@ print(yleisin)
 
 Kuten nämä esimerkit osoittavat, hajautustaulu
 helpottaa algoritmien luomista,
-koska meidän ei tarvitse kikkailla järjestämisen kanssa.
-Mutta nyt\-hän olemme vain ratkoneet uudestaan tehtäviä,
-jotka hoituvat mainiosti myös järjestämisen avulla.
-Antaisiko hajautustaulu meille aitoja uusia mahdollisuuksia
-algoritmien suunnittelussa?
+koska meidän ei tarvitse pukea ongelmia järjestämisen muotoon
+vaan voimme käsitellä niitä suoremmin.
+Mutta toisaalta olemme ratkoneet vain uudestaan tehtäviä,
+jotka ovat hoituneet mainiosti myös järjestämisen avulla.
+Antaisiko hajautustaulu meille jotain todellisia uusia
+mahdollisuuksia algoritmien suunnittelussa?
 
-Hajautustaulun todellinen merkitys on siinä, että voimme sekä
-\emph{lisätä} että \emph{poistaa} alkioita tehokkaasti milloin vain haluamme
-algoritmin aikana.
-Jos algoritmi vain lisää alkioita,
-kuten olemme tehneet tähän mennessä,
-voimme yleensä tavalla tai toisella keksiä korvaavan algoritmin,
-joka käyttää hajautustaulun sijasta järjestämistä.
-Mutta jos algoritmissa esiintyy sekä lisäyksiä että poistoja,
-emme ehkä löydä enää vaihtoehtoja hajautustaululle.
+Hajautustaulu osoittaa kyntensä silloin,
+kun haluamme pitää yllä aidosti \emph{dynaamista}
+joukkoa algoritmin aikana eli haluamme pystyä
+lisäämään, poistamaan ja hakemaan alkioita sekalaisessa järjestyksessä.
+Tällaisessa tilanteessa emme voi enää korvata hajautustaulua
+järjestämisellä, koska joukon sisältö muuttuu jatkuvasti
+emmekä voi järjestää alkioita yhtenä kokonaisuutena
+missään vaiheessa algoritmia.
