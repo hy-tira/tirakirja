@@ -95,7 +95,7 @@ Esimerkiksi tallennamme kuvan \ref{fig:minkek}
 keon taulukkona seuraavasti:
 
 \begin{code}
-int[] keko = {0,1,3,5,4,5,8,9,7,8,5};
+keko = [0,1,3,5,4,5,8,9,7,8,5]
 \end{code}
 
 Huomaa, että taulukon ensimmäinen alkio on $0$,
@@ -116,7 +116,7 @@ oikea lapsi on kohdassa $9$ ja
 vanhempi on kohdassa $2$.
 
 Käytännössä haluamme yleensä, että pystymme lisäämään kekoon uusia alkioita,
-jolloin varaamme suuren taulukon,
+jolloin varaamme riittävän suuren taulukon,
 jonka alkuosa on keon käytössä ja loppuosassa
 on tilaa myöhemmin lisättäville alkioille.
 
@@ -257,7 +257,7 @@ Nyt kekoehto on voimassa eikä meidän tarvitse enää
 tehdä muutoksia kekoon.
 
 Alkion lisääminen kekoon vie aikaa $O(\log n)$,
-koska keossa on $O(\log n)$ tasoa ja kuljemme aina polkua
+koska keossa on $O(\log n)$ tasoa ja kuljemme aina
 ylöspäin keon pohjalta huippua kohden,
 kunnes olemme löytäneet alkiolle sopivan paikan keosta.
 
@@ -446,7 +446,7 @@ ratkaisu käyttää kekoa binäärihakupuun sijasta.
 Mutta kuinka suuria erot ovat käytännössä?
 
 Teemme seuraavaksi testin, jossa vertailemme keskenään
-Javan rakenteita
+Javan tietorakenteita
 \texttt{PriorityQueue} ja \texttt{TreeSet}.
 Testissä meillä on taulukko,
 jossa on satunnaisessa järjestyksessä luvut $1,2,\dots,n$.
@@ -513,11 +513,11 @@ Suoraviivainen tapa on luoda tyhjä keko ja
 lisätä jokainen taulukon alkio siihen erikseen $O(\log n)$-ajassa.
 Tällä tavalla saamme rakennettua keon $O(n \log n)$-ajassa.
 Osoittautuu kuitenkin, että pystymme myös muuttamaan taulukon
-suoraan keoksi tehokkaammin ajassa $O(n)$.
+\emph{suoraan} keoksi tehokkaammin ajassa $O(n)$.
 
-Ideana on järjestää taulukon alkioita uudestaan niin,
+Ideana on järjestää alkuperäisen taulukon alkioita uudestaan niin,
 että kekoehto tulee voimaan taulukon jokaiseen kohtaan --
-jolloin taulukko on keko.
+jolloin taulukko on muuttunut keoksi.
 Käymme läpi taulukon alkiot lopusta alkuun ja varmistamme
 jokaisessa kohdassa, että kekoehto on voimassa kyseisestä
 kohdasta alkavassa alipuussa.
