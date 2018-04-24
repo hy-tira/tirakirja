@@ -391,6 +391,12 @@ for (Integer s : verkko[x]) {
 }
 \end{code}
 
+Jos verkko on suuntaamaton, eli voimme kulkea kaaria molempiin suuntiin,
+voimme tallentaa verkon vastaavalla tavalla,
+kunhan tallennamme kunkin kaaren molempiin suuntiin.
+Jos taas verkko on painotettu, voimme tallentaa jokaisesta
+kaaresta sekä kohdesolmun että painon.
+
 \subsection{Kaarilistaesitys}
 
 Kaarilistaesityksessä luomme listan,
@@ -477,7 +483,9 @@ $a$ solmuun $b$,
 niin matriisin rivin $a$ sarakkeessa $b$
 on sitä vastaava merkintä.
 Kuvassa \ref{fig:vervim} on esimerkki
-verkon vierusmatriisiesityksestä.
+verkon vierusmatriisiesityksestä,
+Jokaisessa matriisin kohdassa on luku ''0'' tai ''1''
+sen mukaan, onko verkossa kyseistä kaarta.
 
 Javassa voimme määritellä vierusmatriisin seuraavasti:
 
@@ -503,13 +511,15 @@ onko tietty kaari verkossa.
 Esitystapa kuluttaa kuitenkin paljon muistia,
 eikä sitä voi käyttää, jos verkon solmujen määrä on suuri.
 
-\section{Syvyyshaku}
+\section{Verkon läpikäynti}
 
-\emph{Syvyyshaku} on verkkojen käsittelyn perusalgoritmi,
-joka etsii kaikki solmut, jotka ovat saavutettavissa
-annetusta lähtösolmusta.
-Voimme selvittää syvyyshaun avulla monia asioita
-verkon rakenteesta.
+Tutustumme seuraavaksi kahteen keskeiseen verkkoalgoritmiin,
+jotka käyvät läpi verkossa olevia solmuja ja kaaria.
+Ensin käsittelemme syvyyshakua, joka on yleiskäyttöinen algoritmi
+verkon läpikäyntiin, ja sen jälkeen leveyshakua,
+jonka avulla voimme löytää lyhimpiä polkuja verkossa.
+
+\subsection{Syvyyshaku}
 
 Syvyyshaku lähtee liikkeelle tietystä verkon solmusta
 ja alkaa tutkia verkkoa siitä käsin.
@@ -596,6 +606,27 @@ samaa polkua kuin tuli solmuun.
 \label{fig:syvhak}
 \end{figure}
 
+Syvyyshaku on mukavaa toteuttaa rekursiivisesti seuraavaan tapaan:
+
+\begin{code}
+function haku(solmu)
+    if vierailtu[solmu]
+        return
+    vierailtu[solmu] = true
+    for naapuri in verkko[solmu]
+        haku(naapuri)
+\end{code}
+
+Haku käynnistyy, kun kutsumme funktiota
+\texttt{haku} parametrina haun lähtö\-solmu.
+Jokaisessa kutsussa funktio tarkistaa ensin,
+olemmeko jo käyneet parametrina annetussa solmussa,
+ja päättyy heti tässä tilanteessa.
+Muuten funktio merkitsee, että olemme nyt käyneet solmussa
+ja etenee rekursiivisesti kaikkiin sen naapureihin.
+Haku vie aikaa $O(n+m)$, koska käsittelemme jokaisen
+solmun ja kaaren enintään kerran.
+
 Kuvassa \ref{fig:syvhak} on esimerkki syvyyshaun toiminnasta.
 Jokaisessa vaiheessa harmaat solmut ovat solmuja,
 joissa haku on jo vieraillut.
@@ -609,49 +640,8 @@ Tämän jälkeen haku käy vielä solmussa 3,
 minkä jälkeen se on käynyt läpi kaikki solmut,
 joihin pääsee solmusta 1.
 
-\subsection{Algoritmin toteutus}
-
-Syvyyshaku on mukavaa toteuttaa rekursiivisesti.
-Tarvitsemme ensinnäkin taulukon, joka kertoo,
-missä solmuissa olemme käyneet:
-
-\begin{code}
-boolean[] vierailtu = new boolean[n+1];
-\end{code}
-
-Tämän jälkeen voimme toteuttaa syvyyshaun näin
-käyttäen verkon vieruslistaesitystä:
-
-\begin{code}
-void syvyyshaku(int solmu) {
-    if (vierailtu[solmu]) return;
-    vierailtu[solmu] = true;
-    for (Integer naapuri : verkko[solmu]) {
-        syvyyshaku(naapuri);
-    }
-}
-\end{code}
-
-Syvyyshaku käynnistyy, kun kutsumme metodia
-\texttt{syvyyshaku} parametrina lähtösolmu.
-Jokaisella kutsulla metodi tarkistaa ensin,
-olemmeko jo käyneet parametrina annetussa solmussa,
-ja päättyy heti tässä tilanteessa.
-Muuten metodi merkitsee, että olemme nyt käyneet solmussa
-ja etenee rekursiivisesti kaikkiin solmun naapureihin.
-
-Syvyyshaku käsittelee kerran jokaisen solmun,
-johon pääsee lähtösolmusta,
-käymällä läpi siitä lähtevät kaaret.
-Niinpä syvyyshaku vie aikaa $O(n+m)$, missä $n$ on
-verkon solmujen määrä ja $m$ on verkon kaarten määrä.
-
-\subsection{Sovelluksia}
-
 Syvyyshaku on yleistyökalu verkko-ongelmien ratkaisemiseen.
-Seuraavassa on joitakin esimerkkejä syvyyshaun käyttökohteista.
-Oletamme, että verkko on suuntaamaton, eli voimme kulkea
-kaikkia kaaria kumpaankin suuntaan.
+Seuraavassa on joitakin esimerkkejä syvyyshaun käyttökohteista:
 
 \subsubsection{Polun etsiminen}
 
@@ -664,8 +654,8 @@ riippuen solmujen käsittelyjärjestyksestä.
 
 \subsubsection{Yhtenäisyys ja komponentit}
 
-Verkko on yhtenäinen, jos kaikki solmut ovat yhteydessä
-toisiinsa.
+Suuntaamaton verkko on yhtenäinen, 
+jos kaikki solmut ovat yhteydessä toisiinsa.
 Voimmekin tarkastaa verkon yhtenäisyyden aloittamalla
 syvyyshaun mielivaltaisesta solmusta ja tutkimalla,
 saavuttaako haku kaikki verkon solmut.
@@ -676,20 +666,14 @@ Jokainen syvyyshaku muodostaa yhden komponentin.
 
 \subsubsection{Syklin etsiminen}
 
-Jos verkossa on sykli, huomaamme sen syvyyshaun aikana siitä,
+Jos suuntaamaton verkko sisältää syklin,
+huomaamme tämän syvyyshaun aikana siitä,
 että tulemme tulemme toista kautta johonkin solmuun,
 jossa olemme käyneet jo aiemmin.
 Niinpä löydämme syvyyshaun avulla jonkin verkossa olevan
 syklin, jos sellainen on olemassa.
 
-\section{Leveyshaku}
-
-\emph{Leveyshaku} on algoritmi, joka selvittää \emph{lyhimmän} polun
-lähtösolmusta kaikkiin solmuihin, jotka ovat saavutettavissa siitä.
-Lyhin polku tarkoittaa tässä polkua, jossa on mahdollisimman vähän kaaria.
-Ideana on käsitellä solmut kerroksittain lähtösolmusta alkaen
-siinä järjestyksessä kuin olemme löytäneet ne.
-Jokaisen solmun kohdalla käymme läpi kaikki siitä lähtevät kaaret.
+\subsection{Leveyshaku}
 
 \begin{figure}
 \center
@@ -758,6 +742,45 @@ Jokaisen solmun kohdalla käymme läpi kaikki siitä lähtevät kaaret.
 \label{fig:levhak}
 \end{figure}
 
+Leveyshaku laskee jokaiselle verkon solmulle,
+mikä on sen \emph{etäisyys} lähtösol\-musta eli kuinka pitkä on
+\emph{lyhin polku} lähtösolmusta solmuun.
+Lyhin polku tarkoittaa tässä polkua, jossa on pienin määrä kaaria.
+Haku käsittelee solmut kerroksittain lähtösolmusta alkaen
+siinä järjestyksessä kuin se löytää ne ja käy läpi
+jokaisen solmun kohdalla kaikki siitä lähtevät kaaret.
+
+Toteutamme leveyshaun käyttäen \emph{jonoa}, jossa on vierailtavia solmuja.
+Jonon ansiosta pystymme käymään läpi solmut siinä
+järjestyksessä kuin olemme löytäneet ne.
+Oletamme, että jonossa on metodi \texttt{add},
+joka lisää alkion jonon loppuun, sekä metodi \texttt{poll},
+joka hakee ja poistaa jonon ensimmäisen alkion.
+Seuraava koodi suorittaa leveyshaun lähtösolmusta \texttt{alku} alkaen:
+
+\begin{code}
+jono.add(alku)
+vierailtu[alku] = true
+etaisyys[alku] = 0
+while jono.size() > 0
+    solmu = jono.poll()
+    for naapuri in verkko[solmu]
+        if vierailtu[naapuri]
+            continue
+        jono.add(naapuri)
+        vierailtu[naapuri] = true
+        etaisyys[naapuri] = etaisyys[solmu]+1
+\end{code}
+
+Lisäämme ensin jonoon lähtösolmun ja merkitsemme,
+että olemme vierailleet siinä ja että etäisyys siihen on $0$.
+Tämän jälkeen alamme käydä läpi solmuja jonon järjestyksessä.
+Käsittelemme solmun käymällä läpi sen naapurit.
+Jos emme ole aiemmin käyneet naapurissa, lisäämme sen jonoon
+ja päivitämme taulukoita.
+Haku vie aikaa $O(n+m)$, koska käsittelemme jokaisen
+solmun ja kaaren enintään kerran.
+
 Kuvassa \ref{fig:levhak} on esimerkki leveyshaun toiminnasta,
 kun etsimme polkuja solmusta 1 aloittaen.
 Käsittelemme ensin solmun 1, josta pääsemme uusiin solmuihin 2 ja 3.
@@ -769,105 +792,7 @@ ovat $1 \rightarrow 2 \rightarrow 4$ ja $1 \rightarrow 2 \rightarrow 5$.
 Lopuksi käsittelemme vielä solmut 3, 4 ja 5,
 joista emme kuitenkaan pääse enää uusiin solmuihin.
 
-\subsection{Algoritmin toteutus}
-
-Leveyshaku on vaikeampi toteuttaa kuin syvyyshaku,
-koska meidän täytyy pystyä edistämään hakua vuorotellen verkon eri puolilta.
-Tätä varten luomme \emph{jonon}, joka sisältää läpikäyntiä odottavia solmuja.
-Valitsemme aina seuraavaksi käsiteltävän solmun jonon alusta,
-ja lisämme uudet vieraillut solmut jonon loppuun.
-Voimme luoda jonon näin:
-
-\begin{code}
-ArrayDeque<Integer> jono = new ArrayDeque<>();
-\end{code}
-
-Lisäksi määrittelemme syvyyshaun tapaan taulukon, jossa pidämme kirjaa,
-missä solmuissa olemme käyneet:
-
-\begin{code}
-boolean[] vierailtu = new boolean[n+1];
-\end{code}
-
-Oletamme seuraavassa koodissa, että aloitamme leveyshaun solmusta \texttt{alku} alkaen.
-Voimme toteuttaa haun seuraavasti:
-
-\begin{code}
-vierailtu[alku] = true;
-jono.addLast(alku);
-while (jono.size() > 0) {
-    int solmu = jono.pollFirst();
-    for (int naapuri : verkko[solmu]) {
-        if (vierailtu[naapuri]) continue;
-        vierailtu[naapuri] = true;
-        jono.addLast(naapuri);
-    }
-}
-\end{code}
-
-Koodi merkitsee aluksi, että olemme käyneet lähtösolmussa
-sekä lisää lähtösolmun jonoon.
-Tämän jälkeen joka askeleella haku valitsee
-jonon ensimmäisen solmun ja tarkastaa siitä lähtevät kaaret.
-Jos pääsemme uuteen solmuun, merkitsemme uuden solmun
-vierailluksi ja lisäämme sen jonoon.
-Haku jatkuu niin kauan kuin jonossa on solmuja.
-
-Syvyyshaun tavoin leveyshaku vie aikaa $O(n+m)$,
-koska käymme läpi kerran jokaisesta solmusta lähtevät kaaret.
-
-\subsection{Polkujen etsiminen}
-
-Vaikka leveyshakua voi käyttää yleisalgoritmina verkon läpikäyntiin,
-yleensä tavoitteena on nimenomaan löytää lyhimmät polut lähtösolmusta
-muihin solmuihin. Tätä varten määrittelemme kaksi uutta taulukkoa:
-
-\begin{code}
-int[] etaisyys = new int[n+1];
-int[] aiempi = new int[n+1];
-\end{code}
-
-Taulukko \texttt{etaisyys} kertoo, mikä on etäisyys
-(eli lyhimmän polun pituus) lähtösolmusta kyseiseen solmuun,
-ja taulukko \texttt{aiempi} viittaa edelliseen solmuun lyhimmällä polulla.
-Näiden taulukoiden avulla voimme leveyshaun jälkeen muodostaa
-lyhimmän polun lähtösolmusta mihin tahansa solmuun.
-Päivitäm\-me taulukoita seuraavasti haun aikana:
-
-\begin{code}
-vierailtu[alku] = true;
-etaisyys[alku] = 0;
-aiempi[alku] = 0;
-jono.addLast(alku);
-while (jono.size() > 0) {
-    int solmu = jono.pollFirst();
-    for (int naapuri : verkko[solmu]) {
-        if (vierailtu[naapuri]) continue;
-        vierailtu[naapuri] = true;
-        etaisyys[naapuri] = etaisyys[solmu]+1;
-        aiempi[naapuri] = solmu;
-        jono.addLast(naapuri);
-    }
-}
-\end{code}
-
-Haun alussa merkitsemme, että etäisyys lähtösolmuun on 0
-ja sillä ei ole edellistä solmua.
-Sitten kun löydämme uuden solmun, päivitämme sen etäisyyden
-ja edellisen solmun polulla.
-
-Nyt leveyshaun jälkeen lyhimmän polun pituus lähtösolmusta
-solmuun $x$ on $\texttt{etaisyys}[x]$ ja voimme käydä läpi polulla
-olevat solmut seuraavasti (käänteisessä järjestyksessä):
-
-\begin{code}
-while (x != 0) {
-    System.out.println(x);
-    x = aiempi[x];
-}
-\end{code}
-
-\section{Esimerkki: Labyrintti}
+\subsection{Esimerkki: Labyrintti}
 
 Olemme labyrintissa ja haluamme päästä ruudusta $A$ ruutuun $B$.
 Joka askeleella voimme siirtyä yhden ruudun verran ylöspäin, alaspäin,
@@ -880,7 +805,7 @@ ruudusta $A$ ruutuun $B$ muodostuu 9 askeleesta.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
 \begin{scope}
 \draw[fill=gray] (1,1) rectangle (2,2);
 \draw[fill=gray] (1,3) rectangle (2,4);
