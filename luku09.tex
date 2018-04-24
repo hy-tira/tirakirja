@@ -6,13 +6,13 @@ algoritmiikan ongelmia.
 Ideana on muotoilla ongelma rekursiivisesti niin,
 että ratkaisu ongelmaan palautuu saman ongelman
 pienempiin osaongelmiin.
-Saamme aikaan tehokkaan ratkaisun kirjaamalla
-kunkin osaongelman ratkaisun muistiin myöhempää käyttöä varten.
+Tämän jälkeen saamme aikaan tehokkaan ratkaisun,
+kun laskemme jokaisen osaongelman ratkaisun vain kerran.
 
 Tässä luvussa tutustumme ensin dynaamisen ohjelmoinnin perusteisiin
 käyttäen esimerkkinä tehtävää, jossa rakennamme torneja palikoista.
 Tämän jälkeen käymme läpi kokoelman muita tehtäviä, jotka esittelevät
-dynaamisen ohjelmoinnin mahdollisuuksia.
+lisää dynaamisen ohjelmoinnin mahdollisuuksia.
 
 \section{Perustekniikat}
 
@@ -42,12 +42,8 @@ joiden korkeudet ovat 1, 2 ja 3.}
 \label{fig:dyntor}
 \end{figure}
 
-Kuva \ref{fig:dyntor} näyttää esimerkin, jossa $n=4$.
-Tässä esimerkissä meillä on 7 tapaa rakentaa torni palikoista.
-Voimme luonnehtia torneja myös summina luvuista 1, 2 ja 3.
-Tässä tapauksessa vasen torni vastaa summaa $1+1+1+1$,
-seuraava torni vastaa summaa $1+1+2$, jne.
-
+Kuva \ref{fig:dyntor} näyttää esimerkin, jossa $n=4$
+ja meillä on 7 tapaa rakentaa torni palikoista.
 Jos $n$ on pieni, voimme laskea tornien määrän helposti
 käymällä läpi kaikki tavat, mutta tornien määrä kasvaa
 nopeasti emmekä voi käyttää raakaa voimaa suuremmilla
@@ -58,7 +54,7 @@ dynaamisen ohjelmoinnin avulla.
 \subsection{Rekursiivinen esitys}
 
 Jotta voimme käyttää dynaamista ohjelmointia,
-meidän täytyy esittää ongelma rekursiivisesti
+meidän täytyy pystyä esit\-tämään ongelma rekursiivisesti
 niin, että saamme laskettua ongelman ratkaisun
 käyttäen osaongelmina pienempiä vastaavia ongelmia.
 Tässä tehtävässä luonteva rekursiivinen funktio on
@@ -72,7 +68,7 @@ Ensinnäkin $\texttt{tornit}(0)=1$, koska voimme
 muodostaa tyhjän tornin yhdellä tavalla:
 siinä ei ole mitään palikoita.
 Sitten $\texttt{tornit}(1)=1$, koska ainoa mahdollisuus
-on valita korkeuden 1 palikka,
+rakentaa torni on valita korkeuden 1 palikka,
 ja $\texttt{tornit}(2)=2$, koska voimme joko valita
 kaksi korkeuden 1 palikkaa tai yhden korkeuden 2 palikan.
 
@@ -93,7 +89,6 @@ kaksi korkeuden 1 palikkaa tai yhden korkeuden 2 palikan.
 korkeuden 1, 2 tai 3 palikan.}
 \label{fig:dynrek}
 \end{figure}
-
 
 Kuinka voisimme sitten laskea funktion arvon yleisessä tapauksessa,
 kun tornin korkeus on $n$?
@@ -156,12 +151,11 @@ Nyt kun olemme saaneet aikaan rekursiivisen funktion,
 voimme toteuttaa sen ohjelmoimalla seuraavasti:
 
 \begin{code}
-long tornit(int n) {
-    if (n == 0) return 1;
-    if (n == 1) return 1;
-    if (n == 2) return 2;
-    return tornit(n-1)+tornit(n-2)+tornit(n-3);
-}
+function tornit(n)
+    if (n == 0) return 1
+    if (n == 1) return 1
+    if (n == 2) return 2
+    return tornit(n-1)+tornit(n-2)+tornit(n-3)
 \end{code}
 
 Tämä on toimiva ratkaisu, mutta siinä on yksi ongelma:
@@ -172,7 +166,7 @@ Esimerkiksi arvon $\texttt{tornit}(40)$ laskeminen vie aikaa
 noin minuutin ja arvon $\texttt{tornit}(50)$ vie aikaa niin kauan,
 että emme jaksa odottaa laskennan valmistumista.
 
-Syynä laskennan hitauteen on, että metodia $\texttt{tornit}$
+Syynä laskennan hitauteen on, että funktiota $\texttt{tornit}$
 kutsutaan uudestaan ja uudestaan samoilla parametreilla
 ja tornien määrä lasketaan loppujen lopuksi summana
 luvuista 1 ja 2 pohjatapauksista.
@@ -192,13 +186,11 @@ täytämme taulukon kohdat $0,1,\dots,n$.
 Seuraava koodi toteuttaa laskennan:
 
 \begin{code}
-long[] tornit = new long[n+1];
-tornit[0] = 1;
-tornit[1] = 1;
-tornit[2] = 2;
-for (int i = 3; i <= n; i++) {
-    tornit[i] = tornit[i-1]+tornit[i-2]+tornit[i-3];
-}
+tornit[0] = 1
+tornit[1] = 1
+tornit[2] = 2
+for i = 3 to n
+    tornit[i] = tornit[i-1]+tornit[i-2]+tornit[i-3]
 \end{code}
 
 Koodin suorituksen jälkeen taulukon arvo $\texttt{tornit}[n]$
@@ -214,7 +206,7 @@ Esimerkiksi voimme nyt laskea salamannopeasti, että
 \[
 \texttt{tornit}(50) = 10562230626642,
 \]
-eli meillä on yli 10562 miljardia tapaa rakentaa korkeuden 50 torni.
+eli on yli 10562 miljardia tapaa rakentaa korkeuden 50 torni.
 
 \section{Esimerkkejä}
 
@@ -294,20 +286,17 @@ ja se muodostaa taulukon \texttt{pisin}, jossa on pisimpien
 alijonojen pituudet.
 
 \begin{code}
-for (int k = 0; k < n; k++) {
-    pisin[k] = 1;
-    for (int x = 0; x < k; x++) {
-        if (taulu[x] < taulu[k] && pisin[x]+1 > pisin[k]) {
-            pisin[k] = pisin[x]+1;
-        }
-    }
-}
+for k = 0 to n-1
+    pisin[k] = 1
+    for x = 0 to k-1
+        if taulu[x] < taulu[k] and pisin[x]+1 > pisin[k]
+            pisin[k] = pisin[x]+1
 \end{code}
 
 Koodin suorituksen jälkeen pisimmän nousevan alijonon pituus on
 siis suurin taulukon \texttt{pisin} arvoista.
 Tämä algoritmi vie aikaa $O(n^2)$, koska käym\-me jokaisessa
-kohdassa $k$ läpi taulukon alkuosan siihen asti.
+kohdassa $k$ läpi kaikki taulukon edelliset kohdat.
 
 Mitä jos haluaisimme selvittää pisimmän nousevan alijonon
 pituuden lisäksi, mistä alkioista se muodostuu?
@@ -318,16 +307,13 @@ päättyvän pisimmän alijonon edellinen alkio.
 Voimme muodostaa taulukon seuraavasti:
 
 \begin{code}
-for (int k = 0; k < n; k++) {
-    pisin[k] = 1;
-    aiempi[k] = -1;
-    for (int x = 0; x < k; x++) {
-        if (taulu[x] < taulu[k] && pisin[x]+1 > pisin[k]) {
-            pisin[k] = pisin[x]+1;
-            aiempi[k] = x;
-        }
-    }
-}
+for k = 0 to n-1
+    pisin[k] = 1
+    aiempi[k] = -1
+    for x = 0 to k-1
+        if taulu[x] < taulu[k] and pisin[x]+1 > pisin[k]
+            pisin[k] = pisin[x]+1
+            aiempi[k] = x
 \end{code}
 
 Tämän jälkeen jokaisessa kohdassa $k$ arvo $\texttt{aiempi}[k]$
@@ -337,10 +323,9 @@ Voimme nyt selvittää kohtaan $k$ päättyvän alijonon alkiot
 käänteisesti seuraavasti:
 
 \begin{code}
-while (k != -1) {
-    System.out.println(taulu[k]);
-    k = aiempi[k];
-}
+while k != -1
+    print(taulu[k])
+    k = aiempi[k]
 \end{code}
 
 Voimme käyttää vastaavaa tekniikkaa
@@ -405,14 +390,13 @@ määrä on aina nolla.
 Seuraava koodi toteuttaa dynaamisen ohjelmoinnin:
 
 \begin{code}
-reitit[1][1] = 1;
-for (int y = 1; y <= n; y++) {
-    for (int x = 1; x <= n; x++) {
-        if (este[y][x]) continue;
-        reitit[y][x] += reitit[y-1][x];
-        reitit[y][x] += reitit[y][x-1];
-    }
-}
+reitit[1][1] = 1
+for y = 1 to n
+    for x = 1 to n
+        if este[y][x]
+            continue
+        reitit[y][x] += reitit[y-1][x]
+        reitit[y][x] += reitit[y][x-1]
 \end{code}
 
 Aluksi merkitsemme muistiin, että vasempaan yläkulmaan on yksi reitti,
@@ -504,24 +488,20 @@ Tämän jälkeen päivitämme taulukkoa lisäämällä mukaan
 painoja yksi kerrallaan.
 
 \begin{code}
-boolean[] reppu = new boolean[s+1];
-reppu[0] = true;
-for (int i = 1; i <= n; i++) {
-    for (int j = s; j >= 0; j--) {
-        if (reppu[j]) reppu[j+p[i]] = true;
-    }
-}
+reppu[0] = true
+for i = 1 to n
+    for j = s to 0
+        if reppu[j]
+            reppu[j+p[i]] = true
 \end{code}
 
 Laskennan jälkeen voimme tulostaa kaikki
 mahdolliset yhteispainot näin:
 
 \begin{code}
-for (int i = 0; i <= s; i++) {
-    if (reppu[i]) {
-        System.out.println(i);
-    }
-}
+for i = 0 to s
+    if reppu[i]
+        print(i)
 \end{code}
 
 Tuloksena olevan algoritmin aikavaativuus on $O(ns)$.
@@ -573,12 +553,10 @@ binomikertoimia dynaamisen ohjelmoinnin avulla.
 Voimme toteuttaa laskennan seuraavasti:
 
 \begin{code}
-for (int i = 1; i <= n; i++) {
-    binom[i][0] = 1;
-    for (int j = 1; j <= k; j++) {
-        binom[i][j] = binom[i-1][j-1]+binom[i-1][j];
-    }
-}
+for i = 1 to n
+    binom[i][0] = 1
+    for j = 1 to k
+        binom[i][j] = binom[i-1][j-1]+binom[i-1][j]
 \end{code}
 
 Koodin suorituksen jälkeen taulukon kohdassa
