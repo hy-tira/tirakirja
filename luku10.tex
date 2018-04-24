@@ -750,17 +750,40 @@ syklin, jos sellainen on olemassa.
 \label{fig:levhak}
 \end{figure}
 
-Leveyshaku laskee jokaiselle verkon solmulle,
-mikä on sen \emph{etäisyys} lähtösol\-musta eli kuinka pitkä on
-\emph{lyhin polku} lähtösolmusta solmuun.
-Lyhin polku tarkoittaa tässä polkua, jossa on pienin määrä kaaria.
-Haku käsittelee solmut kerroksittain lähtösolmusta alkaen
-siinä järjestyksessä kuin se löytää ne ja käy läpi
-jokaisen solmun kohdalla kaikki siitä lähtevät kaaret.
+Leveyshaku käy syvyyshaun tavoin läpi kaikki verkon solmut,
+joihin pääsee kulkemaan kaaria pitkin annetusta lähtösolmusta.
+Erona on kuitenkin, missä järjestyksessä solmut käydään läpi.
+Leveyshaku käy solmuja läpi \emph{kerroksittain} niin,
+että se käsittelee solmut siinä järjestyksessä kuin ne
+ovat tulleet ensimmäistä kertaa vastaan haun aikana.
 
-Toteutamme leveyshaun käyttäen \emph{jonoa}, jossa on vierailtavia solmuja.
+Vaikka voisimme käyttää leveyshakua yleisenä
+algoritmina verkon läpi\-käyntiin syvyyshaun tavoin,
+käytämme sitä tavallisesti silloin,
+kun olemme kiinnostuneita verkon \emph{lyhimmistä poluista}.
+Leveyshaun avulla pystymme nimittäin määrit\-tämään
+lyhimmän polun pituuden eli \emph{etäisyyden} lähtösolmusta
+kuhunkin haun aikana kohtaamaamme solmuun.
+Tässä oletamme, että polun pituus tarkoittaa sen
+kaarten määrää eli lyhin polku on mahdollisimman vähän
+kaaria sisältävä polku.
+
+Kuvassa \ref{fig:levhak} on esimerkki leveyshaun toiminnasta,
+kun aloitamme haun solmusta 1 lähtien.
+Käsittelemme ensin solmun 1, josta pääsemme uusiin solmuihin 2 ja 3.
+Tämä tarkoittaa, että lyhimmät polut solmuihin 2 ja 3
+ovat $1 \rightarrow 2$ ja $1 \rightarrow 3$ eli etäisyys näihin solmuihin on 1.
+Sitten käsittelemme solmun 2, josta pääsemme uusiin solmuihin 4 ja 5.
+Tämä tarkoittaa, että lyhimmät polut solmuihin 4 ja 5
+ovat $1 \rightarrow 2 \rightarrow 4$ ja $1 \rightarrow 2 \rightarrow 5$
+eli etäisyys näihin solmuihin on 2.
+Lopuksi käsittelemme vielä solmut 3, 4 ja 5,
+joista emme kuitenkaan pääse enää uusiin solmuihin.
+
+Tavallinen tapa toteuttaa leveyshaku on käyttää \emph{jonoa},
+jossa on käsittelyä odottavia solmuja.
 Jonon ansiosta pystymme käymään läpi solmut siinä
-järjestyksessä kuin olemme löytäneet ne.
+jär\-jestyksessä kuin olemme löytäneet ne leveyshaun aikana.
 Oletamme, että jonossa on metodi \texttt{add},
 joka lisää alkion jonon loppuun, sekä metodi \texttt{poll},
 joka hakee ja poistaa jonon ensimmäisen alkion.
@@ -782,23 +805,12 @@ while jono.size() > 0
 
 Lisäämme ensin jonoon lähtösolmun ja merkitsemme,
 että olemme vierailleet siinä ja että etäisyys siihen on $0$.
-Tämän jälkeen alamme käydä läpi solmuja jonon järjestyksessä.
+Tämän jälkeen alamme käsitellä solmuja siinä järjestyksessä kuin ne ovat jonossa.
 Käsittelemme solmun käymällä läpi sen naapurit.
 Jos emme ole aiemmin käyneet naapurissa, lisäämme sen jonoon
 ja päivitämme taulukoita.
 Haku vie aikaa $O(n+m)$, koska käsittelemme jokaisen
 solmun ja kaaren enintään kerran.
-
-Kuvassa \ref{fig:levhak} on esimerkki leveyshaun toiminnasta,
-kun etsimme polkuja solmusta 1 aloittaen.
-Käsittelemme ensin solmun 1, josta pääsemme uusiin solmuihin 2 ja 3.
-Tämä tarkoittaa, että lyhimmät polut solmuihin 2 ja 3
-ovat $1 \rightarrow 2$ ja $1 \rightarrow 3$.
-Sitten käsittelemme solmun 2, josta pääsemme uusiin solmuihin 4 ja 5.
-Tämä tarkoittaa, että lyhimmät polut solmuihin 4 ja 5
-ovat $1 \rightarrow 2 \rightarrow 4$ ja $1 \rightarrow 2 \rightarrow 5$.
-Lopuksi käsittelemme vielä solmut 3, 4 ja 5,
-joista emme kuitenkaan pääse enää uusiin solmuihin.
 
 \subsection{Esimerkki: Labyrintti}
 
@@ -849,15 +861,15 @@ Labyrintin esittäminen verkkona.}
 \end{figure}
 
 Voimme esittää ongelman verkkona niin,
-että jokainen labyrintin ruutu on yksi verkon solmuista,
+että jokainen labyrintin ruutu on yksi verkon solmuista
 ja kahden solmun välillä on kaari,
 jos vastaavat ruudut ovat vierekkäin labyrintissa.
 Kuva \ref{fig:labrei}(b) näyttää esimerkkilabyrinttimme verkkona.
-Nyt ruudusta $A$ on reitti ruutuun $B$ tarkalleen silloin,
-kun vastaavat verkon solmut kuuluvat samaan yhtenäiseen komponenttiin,
-minkä voimme tarkastaa syvyyshaulla.
-Lyhin reitti ruudusta $A$ ruutuun $B$ löytyy puolestaan leveyshaulla,
-joka lähtee liikkeelle ruudusta $A$.
+Tätä esitystapaa käyttäen ruudusta $A$ on reitti ruutuun $B$ tarkalleen silloin,
+kun vastaavat verkon solmut kuuluvat samaan yhtenäiseen komponenttiin.
+Voimme siis tarkastaa syvyyshaulla, onko ruudusta $A$ reittiä ruutuun $B$.
+Jos haluamme löytää \emph{lyhimmän} reitin ruudusta $A$ ruutuun $B$,
+voimme puolestaan käyttää leveyshakua, joka lähtee liikkeelle ruudusta $A$.
 
 Huomaa, että meidän ei tarvitse erikseen muuttaa labyrinttia
 verkoksi, vaan voimme toteuttaa haut \emph{implisiittiseen} verkkoon.
@@ -867,13 +879,14 @@ taulukkona, joka kertoo, mitkä ruudut ovat seinäruutuja.
 Tällöin voimme toteuttaa esimerkiksi syvyyshaun seuraavan tyylisesti:
 
 \begin{code}
-void syvyyshaku(int y, int x) {
-    if (y < 0 || x < 0 || y >= n || x >= n) return;
-    if (seina[y][x] || vierailtu[y][x]) return;
-    vierailtu[y][x] = true;
-    syvyyshaku(y+1,x);
-    syvyyshaku(y-1,x);
-    syvyyshaku(y,x+1);
-    syvyyshaku(y,x-1);
-}
+function haku(y,x)
+    if y < 0 or x < 0 or y >= n or x >= n
+        return
+    if seina[y][x] or vierailtu[y][x]
+        return
+    vierailtu[y][x] = true
+    haku(y+1,x)
+    haku(y-1,x)
+    haku(y,x+1)
+    haku(y,x-1)
 \end{code}
