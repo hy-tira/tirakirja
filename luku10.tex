@@ -65,21 +65,97 @@ tai $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 
 \subsubsection{Polku ja sykli}
 
-Verkossa oleva \emph{polku} solmusta $a$ solmuun $b$
-on reitti solmusta $a$ solmuun $b$ kaaria pitkin.
-Kuvassa \ref{fig:veresi}
-voimme kulkea solmusta $1$ solmuun $5$
-vaikkapa polkua $1 \rightarrow 2 \rightarrow 5$
-tai polkua
-$1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\small
+\begin{scope}
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (1) -- (4);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (4) -- (5);
+
+\path[draw,thick,->,red,line width=2pt] (1) -- (2);
+\path[draw,thick,->,red,line width=2pt] (2) -- (5);
+\end{scope}
+\begin{scope}[xshift=8cm]
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (1) -- (4);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (4) -- (5);
+
+\path[draw,thick,->,red,line width=2pt] (1) -- (3);
+\path[draw,thick,->,red,line width=2pt] (3) -- (4);
+\path[draw,thick,->,red,line width=2pt] (4) -- (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Kaksi polkua solmusta $1$ solmuun $5$.}
+\label{fig:verpoe}
+\end{figure}
+
+Verkossa oleva \emph{polku} on kaaria pitkin kulkeva reitti
+lähtösolmusta kohdesolmuun.
+Kuva \ref{fig:verpoe} näyttää kaksi
+mahdollista polkua solmusta $1$ solmuun $5$ esimerkkiverkossamme.
+Ensimmäinen polku on $1 \rightarrow 2 \rightarrow 5$
+ja toinen polku on $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\small
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (1) -- (4);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (4) -- (5);
+
+\path[draw,thick,->,red,line width=2pt] (2) -- (4);
+\path[draw,thick,->,red,line width=2pt] (4) -- (5);
+\path[draw,thick,->,red,line width=2pt] (5) -- (2);
+\end{tikzpicture}
+\end{center}
+\caption{Verkossa on sykli $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$.}
+\label{fig:versyk}
+\end{figure}
+
 
 Polku on \emph{sykli},
 jos se alkaa ja päättyy samassa solmussa,
 kulkee ainakin yhden toisen solmun kautta
 eikä kulje kahta kertaa saman solmun tai kaaren kautta.
-Kuvassa \ref{fig:veresi} on esimerkiksi sykli
+Kuvassa \ref{fig:versyk} on esimerkkinä sykli
 $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$.
-Jos verkossa ei ole yhtään sykliä, verkko on \emph{syklitön}.
+Jos verkossa ei ole yhtään sykliä, sanomme, että verkko on \emph{syklitön}.
 
 \subsubsection{Yhtenäisyys ja komponentit}
 
@@ -114,8 +190,6 @@ ovat $\{1,3\}$ ja $\{2,4,5\}$.
 \label{fig:veryht}
 \end{figure}
 
-\subsubsection{Puu}
-
 Verkko on \emph{puu}, jos se on sekä yhtenäinen
 että syklitön.
 Puussa kaarten määrä on aina yhden pienempi
@@ -147,16 +221,15 @@ jossa on viisi solmua ja neljä kaarta.
 
 \subsubsection{Suunnattu verkko}
 
-Kun verkko on \emph{suunnattu},
+\emph{Suunnatussa} verkossa
 jokaisella kaarella on tietty suunta,
 jonka mukaisesti meidän täytyy kulkea kaarta pitkin.
-Suunnat rajoittavat siis liikkumistamme verkossa.
-
+Suunnat rajoittavat siis kulkemistamme verkossa.
 Kuvassa \ref{fig:versuu} on esimerkkinä
-suunnattu verkko.
-Tässä verkossa voimme kulkea solmusta $1$ solmuun $5$
+suunnattu verkko, jossa
+voimme kulkea solmusta $1$ solmuun $5$
 polkua $1 \rightarrow 2 \rightarrow 5$,
-mutta verkossa ei ole mitään polkua solmusta $5$ solmuun $1$.
+mutta emme voi kulkea mitenkään solmusta $5$ solmuun $1$.
 
 \begin{figure}
 \center
@@ -184,13 +257,12 @@ mutta verkossa ei ole mitään polkua solmusta $5$ solmuun $1$.
 
 \subsubsection{Painotettu verkko}
 
-Kun verkko on \emph{painotettu},
+\emph{Painotetussa} verkossa
 jokaiseen kaareen liittyy jokin paino,
-joka kuvaa usein kaaren pituutta.
+joka kuvaa tyypillisesti kaaren pituutta.
 Kun kuljemme polkua painotetussa verkossa,
 polun pituus on kaarten painojen summa.
-
-Kuvassa \ref{fig:verpai} on esimerkkinä painotettu verkko.
+Kuvassa \ref{fig:verpae} on esimerkkinä painotettu verkko.
 Tässä verkossa polun $1 \rightarrow 2 \rightarrow 5$
 paino on $5+8=13$ ja polun
 $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$
@@ -217,7 +289,7 @@ paino on $2+4+3=9$.
 \end{tikzpicture}
 \end{center}
 \caption{Painotettu verkko.}
-\label{fig:verpai}
+\label{fig:verpae}
 \end{figure}
 
 
