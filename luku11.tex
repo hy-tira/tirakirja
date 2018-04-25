@@ -704,3 +704,50 @@ Jos taas solmu $i$ ei ole välisolmuna, olemme käsitelleet
 polun jo aiemmin.
 Algoritmin päätteeksi välisolmuina voi olla solmuja $1,2,\dots,n$,
 eli mikä tahansa verkon solmu voi olla välisolmu.
+
+\subsection{Algoritmien vertailua}
+
+Taulukko \ref{tab:reiver} näyttää yhteenvedon algoritmeista
+lyhimpien polkujen etsimiseen.
+Käytännössä leveyshaku ja Dijkstran algoritmi ovat
+tavallisimmin käytettävät algoritmit:
+jos kaarilla ei ole painoja, käytämme leveyshakua,
+ja muuten Dijkstran algoritmia.
+Dijkstran algoritmin rajoituksena on,
+että verkossa ei saa olla negatiivisia kaaria,
+mutta tämä ei yleensä ole ongelma käytännössä.
+Esimerkiksi tien pituus ei voi olla negatiivinen
+eikä lennon hinta voi olla negatiivinen.
+Jos kuitenkin verkossa voi olla negatiivisia kaaria,
+voimme turvautua Bellman–Fordin algoritmiin.
+
+\begin{table}
+\center
+\begin{tabular}{lll}
+algoritmi $n$ & aikavaativuus & erityistä \\
+\hline
+leveyshaku & $O(n+m)$ & ei salli painoja kaarissa \\
+Bellman–Fordin algoritmi & $O(nm)$ & \\
+Dijkstran algoritmi & $O(n+m \log n)$ & ei salli negatiivisia kaaria \\
+Floyd–Warshallin algoritmi & $O(n^3)$ & etsii kaikki polut \\
+\end{tabular}
+\caption{Algoritmit lyhimpien polkujen etsimiseen.}
+\label{tab:reiver}
+\end{table}
+
+Miten sitten Floyd–Warshallin algoritmi vertautuu muihin algoritmeihin?
+Tämä riippuu siitä, onko verkko \emph{harva} vai \emph{tiheä}.
+Harvassa verkossa on vähän kaaria ja $m \approx n$,
+kun taas tiheässä verkossa on paljon kaaria ja $m \approx n^2$.
+Floyd–Warshallin algoritmi on parhaimmillaan silloin,
+kun verkko on tiheä, koska sen aikavaativuus ei riipu
+kaarten määrästä.
+Esimerkiksi jos etsimme kaikki lyhimmät polut
+suorittamalla $n$ kertaa Dijkstran algoritmin,
+harvassa verkossa aikaa kuluu $O(n^2 \log n)$,
+mutta tiheässä verkossa aikaa kuluu $O(n^3 \log n)$.
+Siis harvassa verkossa aikavaativuus on parempi
+kuin Floyd–Warshallin algoritmissa,
+mutta tiheässä verkossa se on huonompi.
+Toisaalta Floyd–Warshallin algoritmin vakiokertoimet
+ovat hyvin pienet sen yksinkertaisen rakenteen ansiosta.
