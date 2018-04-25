@@ -294,7 +294,7 @@ Erona on kuitenkin tapa, miten Dijkstran algoritmi parantaa etäisyyksiä.
 Dijkstran algoritmissa verkon solmut kuuluvat kahteen luokkaan:
 käsitte\-lemättömiin ja käsiteltyihin.
 Aluksi kaikki solmut ovat käsittelemättömiä.
-Algoritmi etsii jokaisessa vaiheessa käsittelemättömän solmun,
+Algoritmi etsii joka askeleella käsittelemättömän solmun,
 jonka etäisyys\-arvio on pienin.
 Sitten algoritmi käy läpi kaikki solmusta lähtevät kaaret ja
 koettaa parantaa etäisyyksiä niiden avulla.
@@ -387,8 +387,8 @@ meidän täytyy pystyä löytämään solmut nopeasti.
 Tavallinen tapa toteuttaa Dijkstran algoritmi on käyttää \emph{kekoa},
 jonka avulla löydämme joka vaiheessa pienimmän etäisyyden solmun
 logaritmisessa ajassa.
-Tallennamme kekoon pareja, joissa on solmun etäisyys ja tunnus,
-järjestettynä etäisyyden mukaan pienimmästä suurimpaan.
+Tallennamme kekoon pareja, joissa on solmun etäisyys ja tunnus
+ja jotka järjestetään etäisyyden mukaan pienimmästä suurimpaan.
 Aluksi keossa on vain lähtösolmua vastaava solmu,
 jonka etäisyys on $0$.
 Tämän jälkeen haemme joka askeleella keosta solmun,
@@ -400,14 +400,15 @@ niiden avulla.
 Aina kun voimme parantaa etäisyyttä,
 lisäämme uuden etäisyyden kekoon.
 
-Voimme toteuttaa algoritmin seuraavasti olettaen,
-että käytössä on verkon vieruslistaesitys:
+Dijkstran algoritmi on mukavaa toteuttaa käyttäen
+verkon vieruslistaesitystä.
+Voimme toteuttaa algoritmin seuraavasti:
 
 \begin{code}
 keko.push({0,alku})
 while not keko.empty()
     solmu = keko.pop()
-    if (kasitelty[solmu.id])
+    if kasitelty[solmu.id]
         continue
     kasitelty[solmu.id] = true
     for kaari in verkko[solmu]
@@ -465,7 +466,7 @@ solmun ja kiinnittää sen etäisyyden.
 Dijkstran algoritmi toimii siis oikein,
 jos verkossa ei ole negatiivisia kaaria,
 mutta kuinka nopeasti algoritmi toimii?
-Algoritmi käy läpi verkon solmut
+Ensinnäkin algoritmi käy läpi verkon solmut
 ja kaaret, missä kuluu aikaa $O(n+m)$.
 Lisäksi algoritmissa on joukko kekoon liittyviä operaatioita,
 jotka vaikuttavat tehokkuuteen.
@@ -478,9 +479,7 @@ Algoritmin kokonaisaikavaativuus on siis $O(n + m \log m)$.
 Voimme vielä hieman siistiä aikavaativuutta, kun oletamme,
 että verkossa ei ole kahta kaarta, joiden alku- ja loppusolmu on sama.
 Tällöin $m \le n^2$, jolloin $\log m = \log (n^2) = 2 \log n$
-eli aikavaativuudeksi tulee $O(n+m \log n)$.
-Lisäksi jos oletamme, että pääsemme lähtösolmusta kaikkiin solmuihin,
-niin $n=O(m)$ ja aikavaativuus on yksinkertaisesti $O(m \log n)$.
+ja voimme ilmoittaa algoritmin aikavaativuudeksi muodossa $O(n+m \log n)$.
 
 Entä mitä tapahtuu, jos verkossa on kuitenkin negatiivinen kaari?
 Tällöin Dijkstran algoritmi ei toimi välttämättä oikein.
