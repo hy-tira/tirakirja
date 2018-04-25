@@ -210,10 +210,11 @@ että algoritmi löytää kaikissa tilanteissa lyhimmät polut $n-1$ kierroksen 
 Jotta voimme vastata tähän kysymykseen,
 tarvitsemme kaksi havaintoa koskien verkon lyhimpiä polkuja.
 
-Ensimmäinen havainto on, että jos lyhin polku solmusta $s_1$ solmuun $s_k$ on
-$s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k$,
-niin myös lyhin polku solmusta $s_1$ solmuun $s_2$ on $s_1 \rightarrow s_2$,
-lyhin polku solmusta $s_1$ solmuun $s_3$ on $s_1 \rightarrow s_2 \rightarrow s_3$, jne.,
+Ensimmäinen havainto on, että jos
+$s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k$ on
+lyhin polku solmusta $s_1$ solmuun $s_k$,
+niin myös $s_1 \rightarrow s_2$ on lyhin polku solmusta $s_1$ solmuun $s_2$,
+$s_1 \rightarrow s_2 \rightarrow s_3$ on lyhin polku solmusta $s_1$ solmuun $s_3$, jne.,
 eli jokainen polun alkuosa on myös lyhin polku vastaavaan solmuun.
 Jos näin ei olisi, voisimme parantaa lyhintä polkua solmusta $s_1$ solmuun $s_k$
 parantamalla jotain polun alkuosaa, mikä aiheuttaisi ristiriidan.
@@ -405,18 +406,18 @@ verkon vieruslistaesitystä.
 Voimme toteuttaa algoritmin seuraavasti:
 
 \begin{code}
-keko.push({0,alku})
+keko.push([0,alku])
 while not keko.empty()
-    solmu = keko.pop()
-    if kasitelty[solmu.id]
+    solmu = keko.pop()[1]
+    if kasitelty[solmu]
         continue
-    kasitelty[solmu.id] = true
+    kasitelty[solmu] = true
     for kaari in verkko[solmu]
         nyky = etaisyys[kaari.loppu]
         uusi = etaisyys[solmu]+kaari.paino
         if uusi < nyky
             etaisyys[kaari.loppu] = uusi
-            keko.push({uusi,kaari.loppu})
+            keko.push([uusi,kaari.loppu])
 \end{code}
 
 Huomaa, että keossa voi olla samaan aikaan \emph{useita} etäisyyksiä
@@ -491,10 +492,10 @@ jolloin polun pituus on vain 5.
 
 \section{Kaikki lyhimmät polut}
 
-Tarkastellaan sitten tilannetta, jossa haluamme etsiä
-lyhimmät polut verkon \emph{kaikista} solmuista
-\emph{kaikkiin} solmuihin.
-Yksi mahdollisuus ratkaista tehtävä olisi suorittaa Bellman–Fordin algoritmi
+Muutamme nyt ongelman asettelua niin,
+että haluamme etsiä lyhimmät polut verkon
+\emph{kaikista} solmuista \emph{kaikkiin} solmuihin.
+Yksi tapa ratkaista tehtävä olisi suorittaa Bellman–Fordin
 tai Dijkstran algoritmi jokaisesta verkon solmusta alkaen.
 Voimme kuitenkin ratkaista tehtävän suoremmin
 etsimällä kaikki polut \emph{samanaikaisesti}
@@ -502,7 +503,8 @@ Floyd–Warshallin algoritmilla.
 
 \subsection{Floyd–Warshallin algoritmi}
 
-Floyd-Warshallin algoritmi muodostaa verkolle \emph{etäisyysmatriisin},
+Floyd-Warshallin algoritmi muodostaa $n \times n$ -kokoisen
+\emph{etäisyysmatriisin},
 jossa rivin $a$ sarakkeessa $b$ on lyhimmän polun pituus
 solmusta $a$ solmuun $b$.
 Algoritmi alustaa ensin etäisyysmatriisin niin,
@@ -644,15 +646,15 @@ eli mikä tahansa verkon solmu voi olla välisolmu.
 
 \subsection{Algoritmien vertailua}
 
-Taulukko \ref{tab:reiver} näyttää yhteenvedon algoritmeista
-lyhimpien polkujen etsimiseen.
+Taulukko \ref{tab:reiver} näyttää yhteenvedon
+lyhimmät polut etsivistä algoritmeista.
 Käytännössä leveyshaku ja Dijkstran algoritmi ovat
-tavallisimmin käytettävät algoritmit:
+yleisimmin tarvittavat algoritmit:
 jos kaarilla ei ole painoja, käytämme leveyshakua,
 ja muuten Dijkstran algoritmia.
 Dijkstran algoritmin rajoituksena on,
 että verkossa ei saa olla negatiivisia kaaria,
-mutta tämä ei yleensä ole ongelma käytännössä.
+mutta tämä ei yleensä aiheuta vaikeuksia käytännön ongelmissa.
 Esimerkiksi tien pituus ei voi olla negatiivinen
 eikä lennon hinta voi olla negatiivinen.
 Jos kuitenkin verkossa voi olla negatiivisia kaaria,
