@@ -308,7 +308,8 @@ Niinpä algoritmi löytää kaikki lyhimmät polut ajassa $O(nm)$.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\small
 \node[draw, circle] (1) at (1,3) {$1$};
 \node[draw, circle] (2) at (4,3) {$2$};
 \node[draw, circle] (3) at (1,1) {$3$};
@@ -366,8 +367,8 @@ olemme saaneet selville sen lopullisen etäisyyden.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
-\scriptsize
+\begin{tikzpicture}[scale=0.65,label distance=-1.5mm]
+\footnotesize
 \newcommand\verkko[6]{
 \node[draw, circle] (1) at (0,-1) {$1$};
 \node[draw, circle] (2) at (2,0) {$2$};
@@ -441,8 +442,6 @@ Tämän jälkeen valitsemme käsittelyyn solmun 2,
 jonka etäisyys on 6.
 Sama jatkuu, kunnes olemme käsitelleet kaikki verkon solmut.
 
-\subsubsection{Algoritmin toteutus}
-
 Dijkstran algoritmissa etsimme $n$ kertaa
 käsittelemättömän solmun, jonka etäisyysarvio on pienin.
 Koska haluamme saada algoritmista tehokkaan,
@@ -450,25 +449,10 @@ meidän täytyy pystyä löytämään solmut nopeasti.
 Tavallinen tapa toteuttaa Dijkstran algoritmi on käyttää \emph{kekoa},
 jonka avulla löydämme joka vaiheessa pienimmän etäisyyden solmun
 logaritmisessa ajassa.
-
-Oletamme seuraavaksi, että haluamme muodostaa lyhimmät
-polut lähtö\-solmusta \texttt{alku} alkaen.
-Tallennamme kekoon solmuja, joista on tiedossa
-etäi\-syys ja solmun tunnus,
+Tallennamme kekoon pareja, joissa on solmun etäisyys ja tunnus,
 järjestettynä etäisyyden mukaan pienimmästä suurimpaan.
-Merkitsemme aluksi taulukkoon, että lähtösolmun etäisyys on $0$
-ja lisäämme sitä vastaavan solmun kekoon.
-Lisäksi merkitsemme taulukkoon, että kaikkien muiden
-solmujen etäisyys on ääretön.
-
-\begin{code}
-for (int i = 1; i <= n; i++) {
-    if (i == alku) etaisyys[i] = 0;
-    else etaisyys[i] = INF;
-}
-keko.push(new Solmu(0,alku));
-\end{code}
-
+Aluksi keossa on vain lähtösolmua vastaava solmu,
+jonka etäisyys on $0$.
 Tämän jälkeen haemme joka askeleella keosta solmun,
 jonka etäisyys on pienin.
 Jos solmu on jo käsitelty, emme tee mitään.
@@ -478,43 +462,44 @@ niiden avulla.
 Aina kun voimme parantaa etäisyyttä,
 lisäämme uuden etäisyyden kekoon.
 
+Voimme toteuttaa algoritmin seuraavasti olettaen,
+että käytössä on verkon vieruslistaesitys:
+
 \begin{code}
-while (!keko.empty()) {
-    Solmu solmu = keko.pop();
-    if (kasitelty[solmu.id]) continue;
-    kasitelty[solmu.id] = true;
-    for (Kaari kaari : verkko[solmu]) {
-        int vanha = etaisyys[kaari.kohde];
-        int uusi = etaisyys[solmu]+kaari.paino;
-        if (vanha < uusi) {
-            etaisyys[kaari.kohde] = uusi;
-            keko.push(new Solmu(uusi,kaari.kohde));
-        }
-    }
-}
+keko.push({0,alku})
+while not keko.empty()
+    solmu = keko.pop()
+    if (kasitelty[solmu.id])
+        continue
+    kasitelty[solmu.id] = true
+    for kaari in verkko[solmu]
+        nyky = etaisyys[kaari.loppu]
+        uusi = etaisyys[solmu]+kaari.paino
+        if uusi < nyky
+            etaisyys[kaari.loppu] = uusi
+            keko.push({uusi,kaari.loppu})
 \end{code}
 
-Huomaa, että keossa voi olla \emph{useita} etäisyyksiä
+Huomaa, että keossa voi olla samaan aikaan \emph{useita} etäisyyksiä
 samalle solmulle, koska lisäämme kekoon uuden solmun
 aina etäisyyden parantuessa.
-Käsittelemme näistä kuitenkin vain pienimmän etäisyyden solmun.
-
-\subsubsection{Algoritmin analyysi}
+Käsittelemme kuitenkin jokaisen solmun vain kerran,
+koska aina kun olemme hakeneet uuden solmun keosta käsittelyä varten,
+varmistamme ensin, että emme ole käsitelleet sitä aiemmin.
 
 Dijkstran algoritmi on ahne algoritmi,
-koska se valitsee joka vaiheessa käsitte\-lyyn solmun,
+koska se valitsee joka vaiheessa käsittelyyn solmun,
 jonka etäisyys on pienin.
 Miten voimme olla varmoja, että algoritmi löytää lyhimmät
 polut kaikissa tilanteissa?
 
-Algoritmin toiminta perustuu oletukseemme,
-että verkossa ei ole negatiivisen painoisia kaaria.
-Voimme ajatella asiaa käänteisesti: jos pienimmän etäisyyden
-käsittelemättömän solmun
-etäisyys ei olisi lopullinen, pystyisimme parantamaan
-sitä kulkemalla solmuun jonkin toisen käsittelemättömän solmun kautta.
-Kuitenkin kaikkien muiden tarjolla olevien solmujen etäisyy\-det
-ovat suurempia tai yhtä suuria eivätkä etäisyydet voi lyhentyä,
+Voimme ajatella asiaa käänteisesti:
+olisiko mahdollista, että algoritmi valitsisi
+käsittelyyn solmuun ennen kuin sen pienin etäisyys on löytynyt?
+Tällöin verkossa olisi oltava jokin toinen vielä
+käsittelemätön solmu, jonka kautta voisimme muodostaa lyhemmän polun.
+Kuitenkin tiedämme, että kaikkien muiden tarjolla olevien solmujen
+etäisyydet ovat suurempia tai yhtä suuria eivätkä etäisyydet voi lyhentyä,
 koska verkossa ei ole negatiivisen painoisia kaaria.
 Tästä syystä voimme turvallisesti valita pienimmän etäisyyden
 solmun ja käsitellä sen.
@@ -522,14 +507,15 @@ solmun ja käsitellä sen.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\small
 \node[draw, circle] (1) at (0,1) {$1$};
-\node[draw, circle] (2) at (2.5,2) {$2$};
-\node[draw, circle] (3) at (2.5,0) {$3$};
+\node[draw, circle] (2) at (2.5,2.5) {$2$};
+\node[draw, circle] (3) at (2.5,-0.5) {$3$};
 \node[draw, circle] (4) at (5,1) {$4$};
 
 \path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
-\path[draw,thick,->] (1) -- node[font=\small,label=below:7] {} (3);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:9] {} (3);
 \path[draw,thick,->] (2) -- node[font=\small,label=above:3] {} (4);
 \path[draw,thick,->] (3) -- node[font=\small,label=below:$-4$] {} (4);
 \end{tikzpicture}
@@ -544,7 +530,7 @@ Kuva \ref{fig:dijneg} näyttää esimerkin tällaisesta verkosta.
 Dijkstran algoritmi seuraa ahneesti ylempää polkua ja toteaa,
 että pienin etäisyys solmusta 1 solmuun 4 on 8.
 Kuitenkin parempi tapa olisi kulkea alempaa polkua,
-jolloin negatiivisen kaaren asiosta pienin etäisyys on vain 3.
+jolloin negatiivisen kaaren asiosta pienin etäisyys on vain 5.
 
 Dijkstran algoritmi toimii siis oikein,
 jos verkossa ei ole negatiivisia kaaria,
