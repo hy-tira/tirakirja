@@ -1,86 +1,31 @@
-\chapter{Reitinhaku}
+\chapter{Lyhimmät polut}
 
-Monissa verkkotehtävissä on kysymys siitä,
-että haluamme löytää parhaan reitin paikasta toiseen
-eli \emph{lyhimmän polun} verkon solmusta toiseen.
+Monissa verkkoihin liittyvissä ongelmissa on kysymys siitä,
+että haluamme löytää \emph{lyhimmän polun} verkon solmusta toiseen.
 Esimerkiksi voimme haluta selvittää,
 mikä on nopein reitti kahden katuosoitteen välillä
 tai mikä on halvin tapa lentää kaupungista toiseen.
 Näissä ja muissa sovelluksissa on tärkeää,
 että löydämme lyhimmän polun tehokkaasti.
 
-Olemme käyttäneet aiemmin leveyshakua lyhimmän
-polun etsimiseen.
-Tämä onkin hyvä ratkaisu, kun haluamme löytää polun,
-jonka kaarten määrä on pienin.
+Olemme käyttäneet aiemmin leveyshakua lyhimpien
+polkujen etsimiseen.
+Tämä onkin hyvä ratkaisu, kun haluamme löytää polut,
+joiden kaarten määrä on pienin.
 Tässä luvussa keskitymme kuitenkin vaikeampaan
 tilanteeseen, jossa verkko on \emph{painotettu}
-ja haluamme löytää polun,
-jossa painojen summa on pienin.
-Esimerkiksi kuvassa \ref{fig:verpai}
-lyhin polku solmusta $1$ solmuun $5$ on
-$1 \rightarrow 3 \rightarrow 4 \rightarrow 5$,
-jonka pituus on $2+4+3=9$.
+ja haluamme löytää polut,
+joissa painojen summa on pienin.
+Tällöin emme voi enää käyttää leveyshakua vaan
+tarvitsemme kehittyneempiä menetelmiä.
 
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
-\small
-\begin{scope}
-\node[draw, circle] (1) at (1,3) {$1$};
-\node[draw, circle] (2) at (4,3) {$2$};
-\node[draw, circle] (3) at (1,1) {$3$};
-\node[draw, circle] (4) at (4,1) {$4$};
-\node[draw, circle] (5) at (6,2) {$5$};
-
-\path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
-\path[draw,thick,->] (1) -- node[font=\small,label=left:2] {} (3);
-\path[draw,thick,->] (1) -- node[font=\small,label=above:9] {} (4);
-\path[draw,thick,->] (3) -- node[font=\small,label=below:4] {} (4);
-\path[draw,thick,->] (2) -- node[font=\small,label=above:8] {} (5);
-\path[draw,thick,->] (4) -- node[font=\small,label=right:2] {} (2);
-\path[draw,thick,->] (4) -- node[font=\small,label=below:3] {} (5);
-
-\node at (3,-1) {(a)};
-\end{scope}
-\begin{scope}[xshift=8cm]
-\node[draw, circle] (1) at (1,3) {$1$};
-\node[draw, circle] (2) at (4,3) {$2$};
-\node[draw, circle] (3) at (1,1) {$3$};
-\node[draw, circle] (4) at (4,1) {$4$};
-\node[draw, circle] (5) at (6,2) {$5$};
-
-\path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
-\path[draw,thick,->] (1) -- node[font=\small,label=left:2] {} (3);
-\path[draw,thick,->] (1) -- node[font=\small,label=above:9] {} (4);
-\path[draw,thick,->] (3) -- node[font=\small,label=below:4] {} (4);
-\path[draw,thick,->] (2) -- node[font=\small,label=above:8] {} (5);
-\path[draw,thick,->] (4) -- node[font=\small,label=right:2] {} (2);
-\path[draw,thick,->] (4) -- node[font=\small,label=below:3] {} (5);
-
-\path[draw,thick,->,red,line width=1.5pt] (1) -- (3);
-\path[draw,thick,->,red,line width=1.5pt] (3) -- (4);
-\path[draw,thick,->,red,line width=1.5pt] (4) -- (5);
-
-\node at (3,-1) {(b)};
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{(a) Painotettu verkko. (b) Lyhin polku solmusta $1$ solmuun $5$.
-}
-\label{fig:verpai}
-\end{figure}
-
-Painotetussa verkossa lyhimmän polun etsimiseen
+Lyhimpien polkujen etsimiseen painotetussa verkossa
 on monia algoritmeja, joilla on erilaisia ominaisuuksia.
-Tutustumme ensin Bellman–Fordin algoritmiin,
-joka etsii lyhimmät polut annetusta lähtösolmusta
+Tässä luvussa käymme läpi ensin Bellman–Fordin algoritmin ja
+Dijkstran algoritmin,
+jotka etsivät lyhimmät polut annetusta lähtösolmusta
 kaikkiin verkon solmuihin.
-Tämän jälkeen käymme läpi Dijkstran algoritmin,
-joka tekee saman tehokkaammin
-olettaen, ettei verkossa ole negatiivisen painoisia kaaria.
-Lopuksi käsitte\-lemme Floyd–Warshallin algoritmin,
+Tämän jälkeen tutustumme Floyd–Warshallin algoritmiin,
 joka etsii samanaikaisesti lyhimmät polut kaikkien
 verkon solmujen välillä.
 
@@ -113,31 +58,31 @@ verkon solmujen välillä.
 \label{fig:lypola}
 \end{figure}
 
-Lähdemme liikkeelle tilanteesta, jossa olemme valinneet yhden verkon
-solmuista lähtösolmuksi ja haluamme määrittää
-jokaiselle solmulle sen etäisyy\-den
-eli lyhimmän polun pituuden lähtösolmusta.
+Tavallisin tilanne käytännön verkko-ongelmissa on,
+että haluamme löytää lyhimmän polun verkon solmusta toiseen.
+Yksittäisen lyhimmän polun etsiminen vaatii usein kuitenkin,
+että etsimme sitä ennen muitakin lyhimpiä polkuja.
+Niinpä keskitymme alusta asti yleisempään ongelmaan,
+jossa olemme valinneet jonkin solmun lähtösolmuksi
+ja haluamme määrittää \emph{jokaiselle} verkon solmulle,
+kuinka pitkä on lyhin polku lähtösol\-musta solmuun
+eli mikä on solmun etäisyys lähtösolmusta.
+
 Kuvassa \ref{fig:lypola} on esimerkkinä verkko,
 jossa lähtösolmuna on solmu $1$ ja jokaisen solmun
 viereen on merkitty sen etäisyys.
 Esimerkiksi solmun $5$ etäisyys on $9$,
-koska lyhimmän polun $1 \rightarrow 3 \rightarrow 5$ pituus on $2+7=9$.
-
-Miksi alamme etsiä heti lyhimpiä polkuja lähtösolmusta
-\emph{kaikkiin} solmuihin, vaikka käytännössä haluamme yleensä
-löytää lyhimmän polun lähtö\-solmusta \emph{tiettyyn} kohdesolmuun?
-Syynä tähän on, että yksittäinen lyhin polku voi olla
-yhtä vaikeaa löytää kuin kaikki lyhimmät polut,
-jos kohdesolmu sijaitsee toisella puolella verkkoa.
-Niinpä voimme samalla vaivalla keskittyä kaikkien lyhimpien
-polkujen etsimiseen.
+koska lyhin polku solmusta $1$ solmuun $5$ on
+$1 \rightarrow 3 \rightarrow 5$, jonka pituus on $2+7=9$.
+Käytämme tätä verkkoa esimerkkinä, kun tutustumme
+seuraavaksi kahteen algoritmiin lyhimpien polkujen etsimiseen.
 
 \subsection{Bellman–Fordin algoritmi}
 
 Bellman–Fordin algoritmi etsii lyhimmät polut
 annetusta lähtösolmusta kaikkiin verkon solmuihin.
 Algoritmi muodostaa taulukon, joka kertoo jokaiselle
-solmulle sen \emph{etäisyyden} eli lyhimmän polun pituuden lähtösolmusta.
+verkon solmulle sen etäisyyden lähtösolmusta.
 Algoritmi toimii missä tahansa verkossa,
 kunhan verkossa ei ole negatiivista sykliä eli sykliä,
 jonka painojen summa on negatiivinen.
@@ -149,29 +94,14 @@ kaikkiin muihin solmuihin on ääretön.
 Tämän jälkeen algoritmi alkaa parantaa etäisyyksiä
 etsimällä verkosta kaaria, joiden kautta kulkeminen
 lyhentää polkuja.
-Jokaisessa vaiheessa algoritmi etsii kaaren $a \rightarrow b$,
-jolle pätee, että pääsemme solmuun $b$ lyhempää polkua
+Jokaisella askeleella algoritmi etsii kaaren $a \rightarrow b$,
+jolle pätee, että pääsemme solmuun $b$ aiempaa lyhempää polkua
 kulkemalla kaarella solmusta $a$.
 Kun mitään etäisyysarviota ei voi enää parantaa,
 algoritmi päättyy ja kaikki etäisyydet vastaavat
 todellisia lyhimpien polkujen pituuksia.
 
-Kuva \ref{fig:belfor} näyttää esimerkin Bellman–Fordin algoritmin toiminnasta,
-kun lähtösolmuna on solmu $1$.
-Jokaisen solmun vieressä on ilmoitettu sen etäisyysarvio:
-aluksi etäisyys solmuun 1 on 0 ja etäisyys kaikkiin muihin solmuihin on ääretön.
-Jokainen etäisyyden muutos näkyy kuvassa omana vaiheenaan.
-Ensin parannamme etäisyyttä solmuun 2
-kulkemalla kaarta $1 \rightarrow 2$,
-jolloin etäisyydeksi tulee $8$.
-Sitten parannamme etäisyyttä solmuun $3$
-kulkemalla kaarta $1 \rightarrow 3$,
-jolloin solmun uudeksi etäisyydeksi tulee $2$.
-Jatkamme samalla tavalla, kunnes emme voi enää parantaa
-mitään etäisyyttä ja kaikki etäisyydet
-vastaavat lyhimpien polkujen pituuksia.
-
-\begin{figure}
+\begin{figure}[ht]
 \center
 \begin{center}
 \begin{tikzpicture}[scale=0.65,label distance=-1.5mm]
@@ -232,42 +162,47 @@ vastaavat lyhimpien polkujen pituuksia.
 \label{fig:belfor}
 \end{figure}
 
-Toteutamme Bellman–Fordin algoritmin käytännössä niin,
+Kuva \ref{fig:belfor} näyttää esimerkin Bellman–Fordin algoritmin toiminnasta,
+kun lähtösolmuna on solmu $1$.
+Jokaisen solmun vieressä on ilmoitettu sen etäisyysarvio:
+aluksi etäisyys solmuun 1 on 0 ja etäisyys kaikkiin muihin solmuihin on ääretön.
+Jokainen etäisyyden muutos näkyy kuvassa omana vaiheenaan.
+Ensin parannamme etäisyyttä solmuun 2
+kulkemalla kaarta $1 \rightarrow 2$,
+jolloin etäisyydeksi tulee $8$.
+Sitten parannamme etäisyyttä solmuun $3$
+kulkemalla kaarta $1 \rightarrow 3$,
+jolloin solmun uudeksi etäisyydeksi tulee $2$.
+Jatkamme samalla tavalla, kunnes emme voi enää parantaa
+mitään etäisyyttä ja kaikki etäisyydet
+vastaavat lyhimpien polkujen pituuksia.
+
+Bellman–Fordin algoritmi on mukavaa toteuttaa
+käyttäen verkon kaarilistaesitystä,
+jossa jokaisesta kaaresta on tallennettu alku- ja loppusolmu sekä paino.
+Toteutamme algoritmin niin,
 että se muodostuu \emph{kierroksista},
 joista jokainen käy läpi kaikki verkon kaaret
-ja koettaa parantaa etäisyys\-arvioita niiden avulla.
-Algoritmi pitää kirjaa taulukossa solmujen
-etäisyyksistä ja päivittää joka kierroksella yhtä
-tai useampaa etäisyyttä.
-Algoritmi päättyy, kun se havaitsee, että jonkin kierroksen
-aikana mikään etäisyys ei muuttunut.
-Jotta voimme toteuttaa algoritmin mukavasti,
-oletamme, että verkko on tallennettu kaarilistana,
-jossa jokaisesta kaaresta on tiedossa sen alku- ja loppusolmu sekä paino.
-
-Voimme toteuttaa algoritmin seuraavasti:
+ja koettaa parantaa etäisyysarvioita niiden avulla.
+Kuten pian huomaamme, algoritmin riittää suorittaa $n-1$
+kierrosta, minkä jälkeen se on varmasti löytänyt
+kaikki lyhimmät polut. Voimme siis toteuttaa algoritmin seuraavasti:
 
 \begin{code}
-while true
-    muutos = false
+for i = 1 to n-1
     for kaari in kaaret
         nyky = etaisyys[kaari.loppu]
         uusi = etaisyys[kaari.alku]+kaari.paino
         if uusi < nyky
             etaisyys[kaari.loppu] = uusi
-            muutos = true
-    if not muutos
-        break
 \end{code}
 
 Algoritmi käy jokaisella kierroksella läpi verkon kaaret
-ja laskee kunkin kaaren kohdalla muuttujaan
-\texttt{nyky}, mikä on nykyinen etäisyys kaaren
-kohdesolmuun, sekä muuttujaan \texttt{uusi}, mikä on uusi etäisyys,
-jos kuljemme kaaren kautta.
-Jos uusi etäisyys on pienempi, merkitsemme sen muistiin
-ja lisäksi tiedon, että olemme muuttaneet jotain
-etäisyyttä kierroksen aikana.
+ja tutkii kunkin kaaren kohdalla,
+mikä on nykyinen etäisyys kaaren kohdesolmuun
+sekä mikä on uusi etäisyys, jos kuljemme kaaren kautta.
+Jos uusi etäisyys on pienempi, päivitämme
+sen solmun etäisyysarvioksi.
 
 Olemme nyt kuvailleet ja toteuttaneet algoritmin,
 mutta miksi algoritmi toimii ja miten tehokas se on?
