@@ -184,7 +184,7 @@ Toteutamme algoritmin niin,
 että se muodostuu \emph{kierroksista},
 joista jokainen käy läpi kaikki verkon kaaret
 ja koettaa parantaa etäisyysarvioita niiden avulla.
-Kuten pian huomaamme, algoritmin riittää suorittaa $n-1$
+Kuten pian huomaamme, algoritmia riittää suorittaa $n-1$
 kierrosta, minkä jälkeen se on varmasti löytänyt
 kaikki lyhimmät polut. Voimme siis toteuttaa algoritmin seuraavasti:
 
@@ -200,13 +200,14 @@ for i = 1 to n-1
 Algoritmi käy jokaisella kierroksella läpi verkon kaaret
 ja tutkii kunkin kaaren kohdalla,
 mikä on nykyinen etäisyys kaaren kohdesolmuun
-sekä mikä on uusi etäisyys, jos kuljemme kaaren kautta.
+sekä mikä on uusi etäisyys, jos kuljemmekin solmuun kaaren kautta.
 Jos uusi etäisyys on pienempi, päivitämme
 sen solmun etäisyysarvioksi.
 
 Olemme nyt kuvailleet ja toteuttaneet algoritmin,
-mutta miksi algoritmi toimii ja miten tehokas se on?
-Jotta voimme vastata näihin kysymyksiin,
+mutta miten voimme olla varmoja,
+että algoritmi löytää kaikissa tilanteissa lyhimmät polut $n-1$ kierroksen kuluessa?
+Jotta voimme vastata tähän kysymykseen,
 tarvitsemme kaksi havaintoa koskien verkon lyhimpiä polkuja.
 
 Ensimmäinen havainto on, että jos lyhin polku solmusta $s_1$ solmuun $s_k$ on
@@ -236,7 +237,7 @@ Sama jatkuu, kunnes $n-1$ kierroksen jälkeen olemme löytäneet
 lyhimmät polut, joissa on enintään $n-1$ kaarta.
 Koska missään lyhimmässä polussa ei voi olla enempää kaaria,
 olemme löytäneet kaikki lyhimmät polut.
-Algoritmi suorittaa siis enintään $n-1$ kierrosta,
+Algoritmin riittää suorittaa siis $n-1$ kierrosta,
 joista jokainen käy läpi kaikki verkon kaaret ajassa $O(m)$.
 Niinpä algoritmi löytää kaikki lyhimmät polut ajassa $O(nm)$.
 
@@ -276,8 +277,10 @@ Tässä tilanteessa Bellman–Fordin algoritmi jää jumiin, koska se pystyy par
 loputtomasti syklin kautta kulkevia polkuja.
 Oikeastaan ongelma on siinä, että lyhin polku ei ole mielekäs käsite,
 jos polun osana on negatiivinen sykli.
-Voimme kuitenkin havaita negatiivisen syklin siitä,
-että jokin etäisyys paranee vielä $n-1$ kierroksen jälkeen.
+Voimme kuitenkin havaita negatiivisen syklin suorittamalla
+algoritmia $n$ kierrosta tavallisen $n-1$ kierroksen sijaan.
+Jos jokin etäisyys paranee viimeisellä kierroksella,
+olemme löytäneet negatiivisen syklin.
 
 \subsection{Dijkstran algoritmi}
 
