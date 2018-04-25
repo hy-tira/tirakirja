@@ -547,26 +547,31 @@ niin $n=O(m)$ ja aikavaativuus on yksinkertaisesti $O(m \log n)$.
 Entä mitä tapahtuu, jos verkossa on kuitenkin negatiivinen kaari?
 Tällöin Dijkstran algoritmi ei toimi välttämättä oikein.
 Kuva \ref{fig:dijneg} näyttää esimerkin tällaisesta tilanteesta.
-Dijkstran algoritmi seuraa ahneesti ylempää polkua ja toteaa,
+Algoritmi seuraa ahneesti ylempää polkua ja toteaa,
 että pienin etäisyys solmusta 1 solmuun 4 on 8.
 Kuitenkin parempi tapa olisi kulkea alempaa polkua,
 jolloin polun pituus on vain 5.
 
 \section{Kaikki lyhimmät polut}
 
+Tarkastellaan sitten tilannetta, jossa haluamme etsiä
+lyhimmät polut verkon \emph{kaikista} solmuista
+\emph{kaikkiin} solmuihin.
+Yksi mahdollisuus ratkaista tehtävä olisi suorittaa Bellman–Fordin algoritmi
+tai Dijkstran algoritmi jokaisesta verkon solmusta alkaen.
+Voimme kuitenkin ratkaista tehtävän suoremmin
+etsimällä kaikki polut \emph{samanaikaisesti}
+Floyd–Warshallin algoritmilla.
+
 \subsection{Floyd–Warshallin algoritmi}
 
 Floyd-Warshallin algoritmi muodostaa verkolle \emph{etäisyysmatriisin},
 jossa rivin $a$ sarakkeessa $b$ on lyhimmän polun pituus
 solmusta $a$ solmuun $b$.
-Algoritmi eroaa Bellman–Fordin ja Dijkstran algoritmeista
-siinä, että se laskee samalla kertaa \emph{kaikki} etäisyydet verkossa
-eikä meidän tarvitse valita, mistä solmusta lähdemme liikkeelle.
-
-Algoritmin alustaa ensin etäisyysmatriisin niin,
+Algoritmi alustaa ensin etäisyysmatriisin niin,
 että siihen on merkitty vain etäisyydet,
 jotka toteutuvat kulkemalla yksittäistä kaarta,
-ja kaikissa muissa matriisin kohdissa on arvo ääretön.
+ja kaikissa muissa matriisin kohdissa etäisyys on ääretön.
 Sitten algoritmi suorittaa $n$ kierrosta,
 jotka on numeroitu $1,2,\dots,n$.
 Kierroksella $k$ algoritmi etsii polkuja, joissa on välisolmuna
@@ -654,10 +659,9 @@ jolloin saamme etäisyyden 5.
 Jatkamme vastaavasti, kunnes kierroksen 4 jälkeen olemme
 saaneet selville kaikki etäisyydet ja etäisyysmatriisi on lopullinen.
 
-\subsubsection{Algoritmin toteutus}
-
-Floyd–Warshallin algoritmin etuna on, että se on hyvin helppoa toteuttaa.
-Meidän riittää rakentaa kolme sisäkkäistä for-silmukkaa,
+Floyd–Warshallin algoritmin mukavana puolena on,
+että se on hyvin helppoa toteuttaa.
+Meidän riittää luoda kolme sisäkkäistä for-silmukkaa,
 jotka toteuttavat matriisin päivitykset.
 Seuraavassa koodissa muuttuja $k$ kertoo,
 mikä kierros on kyseessä eli mitä solmua käytämme välisolmuna.
@@ -665,23 +669,17 @@ Jokaisella kierroksella käymme läpi kaikki solmuparit $(i,j)$
 ja koetamme parantaa niiden etäisyyksiä kulkemalla solmun $k$ kautta.
 
 \begin{code}
-for (int k = 1; k <= n; k++) {
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n; j++) {
-            int vanha = etaisyys[i][j];
-            int uusi = etaisyys[i][k]+etaisyys[k][j];
-            etaisyys[i][j] = Math.min(vanha,uusi);
-        }
-    }
-}
+for k = 1 to n
+    for i = 1 to n
+        for j = 1 to n
+            etaisyys[i][j] = min(etaisyys[i][j],
+                                   etaisyys[i][k]+etaisyys[k][j])
 \end{code}
 
 Algoritmin aikavaativuus on selkeästi $O(n^3)$,
 koska se muodostuu kolmesta sisäkkäisestä for-silmukasta.
-
-\subsubsection{Miksi algoritmi toimii?}
-
-Yksi tapa ymmärtää Floyd–Warshallin algoritmia on
+Mutta miksi algoritmi onnistuu määrittämään kaikki etäisyydet?
+Yksi tapa ymmärtää algoritmia on
 ajatella algoritmin toimintaa ''käänteisesti'' rekursiivisesti:
 kun verkossa on lyhin polku solmusta $a$ solmuun $b$,
 millainen tämä polku voi olla?
