@@ -537,13 +537,20 @@ Toisaalta poistamme kaikki alkiot aikanaan keosta,
 mihin menee myös aikaa $O(m \log m)$.
 Algoritmin kokonaisaikavaativuus on siis $O(n + m \log m)$.
 
+Voimme vielä hieman siistiä aikavaativuutta, kun oletamme,
+että verkossa ei ole kahta kaarta, joiden alku- ja loppusolmu on sama.
+Tällöin $m \le n^2$, jolloin $\log m = \log (n^2) = 2 \log n$
+eli aikavaativuudeksi tulee $O(n+m \log n)$.
+Lisäksi jos oletamme, että pääsemme lähtösolmusta kaikkiin solmuihin,
+niin $n=O(m)$ ja aikavaativuus on yksinkertaisesti $O(m \log n)$.
+
 Entä mitä tapahtuu, jos verkossa on kuitenkin negatiivinen kaari?
 Tällöin Dijkstran algoritmi ei toimi välttämättä oikein.
 Kuva \ref{fig:dijneg} näyttää esimerkin tällaisesta tilanteesta.
 Dijkstran algoritmi seuraa ahneesti ylempää polkua ja toteaa,
 että pienin etäisyys solmusta 1 solmuun 4 on 8.
 Kuitenkin parempi tapa olisi kulkea alempaa polkua,
-jolloin negatiivisen kaaren asiosta pienin etäisyys on vain 5.
+jolloin polun pituus on vain 5.
 
 \section{Kaikki lyhimmät polut}
 
