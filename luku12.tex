@@ -1,16 +1,16 @@
 \chapter{Suunnatut syklittömät verkot}
 
-Keskeinen haaste verkkoalgoritmien suunnittelussa
-ovat verkossa olevat syklit,
+Verkkoalgoritmien suunnittelussa aiheuttavat
+vaikeuksia usein verkossa olevat syklit,
 ja monen ongelman ratkaiseminen on vaikeaa nimenomaan
 sen takia, että meidän täytyy ottaa huomioon,
 mitä tapahtuu sykleissä.
 Tässä luvussa katsomme, miten asiat muuttuvat,
-kun voimme olettaa, että käsiteltävänä on suunnattu verkko,
+kun voimme olettaa, että käsitel\-tävänä on suunnattu verkko,
 jossa \emph{ei ole} syklejä.
 
 Kun verkko on suunnattu ja syklitön,
-voimme muodostaa sille aina topologisen järjestyksen,
+voimme muodostaa sille aina \emph{topologisen järjestyksen},
 joka antaa meille luontevan järjestyksen käsitellä
 verkon solmut niiden riippuvuuksien mukaisesti.
 Tämän ansiosta voimme hyödyntää dynaamista ohjelmointia
@@ -24,11 +24,12 @@ Osoittautuu, että voimme silti esittää sen syvärakenteen
 syklittömänä verkkona muodostamalla verkon
 vahvasti yhtenäiset komponentit.
 Tämän ansiosta voimme tietyissä tilanteissa käsitellä
-verkkoa mukavasti syklittömän verkon tavoin.
+verkkoa mukavasti syklittömän verkon tavoin,
+vaikka se ei olisikaan alun perin syklitön.
 
 \section{Topologinen järjestys}
 
-\emph{Topologinen järjestys} on suunnatun verkon solmujen järjestys,
+Topologinen järjestys on suunnatun verkon solmujen järjestys,
 jossa pätee, että jos solmusta $a$ on kaari solmuun $b$,
 niin solmu $a$ on ennen solmua $b$ järjestyksessä.
 Topologinen järjestys voidaan esittää listana,
@@ -76,18 +77,12 @@ järjestys $[1,3,5,2,4]$.
 Osoittautuu, että voimme muodostaa suunnatulle verkolle
 topologisen järjestyksen tarkalleen silloin,
 kun verkko on syklitön.
-Jos verkossa on sykli, emme voi muodostaa topologista
-järjestystä, koska emme voi valita mitään syklissä
-olevaa solmua järjestykseen ennen muita.
-Jos kuitenkaan verkossa ei ole sykliä,
-löydämme aina jonkin sopivan järjestyksen.
+Tutustumme seuraavaksi syvyyshakuun perustuvaan
+algoritmiin, joka muodostaa verkon topologisen järjestyksen
+tai toteaa, ettei järjestystä voi muodostaa
+verkossa olevan syklin takia.
 
-Seuraavaksi tutustumme algoritmiin,
-jonka avulla voimme muodostaa topologisen järjestyksen
-tai todeta, että verkossa on sykli eikä
-topologista järjestystä ole olemassa.
-
-\subsection{Järjestyksen muodostus}
+\subsection{Järjestyksen muodostaminen}
 
 Voimme muodostaa topologisen järjestyksen suorittamalla
 joukon syvyyshakuja, joissa jokaisella solmulla on kolme mahdollista tilaa:
@@ -97,6 +92,30 @@ joukon syvyyshakuja, joissa jokaisella solmulla on kolme mahdollista tilaa:
 \item tila 1 (harmaa): solmun käsittely on kesken
 \item tila 2 (musta): solmun käsittely on valmis
 \end{itemize}
+
+Algoritmin alussa jokainen solmu on valkoinen.
+Käymme läpi kaikki verkon solmut ja aloitamme aina syvyyshaun
+solmusta, jos se on valkoinen.
+Aina kun saavumme uuteen solmuun, sen väri muuttuu
+valkoisesta harmaaksi.
+Sitten kun olemme käsitelleet kaikki solmusta lähtevät
+kaaret, solmun väri muuttuu harmaasta mustaksi
+ja lisäämme solmun listalle.
+Tämä lista käänteisessä järjestyksessä on verkon
+topologinen järjestys.
+Kuitenkin jos saavumme jossain vaiheessa
+toista kautta harmaaseen solmuun,
+verkossa on sykli eikä topologista järjestystä ole olemassa.
+
+Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
+järjestyksen esimerkkiverkossamme.
+Tässä tapauksessa suoritamme kaksi syvyyshakua,
+joista ensimmäinen alkaa solmusta 1 ja toinen alkaa solmusta 5.
+Algoritmin tuloksena on lista $[4,2,3,1,5]$,
+joten käänteinen lista $[5,1,3,2,4]$ on verkon topologinen järjestys.
+Huomaa, että tämä on eri järjestys kuin kuvassa \ref{fig:topjar} --
+topologinen järjestys ei ole yksikäsitteinen ja voimme yleensä
+muodostaa järjestyksen monella tavalla.
 
 \begin{figure}
 \center
@@ -167,30 +186,6 @@ joukon syvyyshakuja, joissa jokaisella solmulla on kolme mahdollista tilaa:
 \label{fig:topesi}
 \end{figure}
 
-Algoritmin alussa jokainen solmu on valkoinen.
-Käymme läpi kaikki verkon solmut ja aloitamme aina syvyyshaun
-solmusta, jos se on valkoinen.
-Aina kun saavumme uuteen solmuun, sen väri muuttuu
-valkoisesta harmaaksi.
-Sitten kun olemme käsitelleet kaikki solmusta lähtevät
-kaaret, solmun väri muuttuu harmaasta mustaksi
-ja lisäämme solmun listalle.
-Tämä lista käänteisessä järjestyksessä on verkon
-topologinen järjestys.
-Kuitenkin jos saavumme jossain vaiheessa algoritmia
-toista kautta harmaaseen solmuun,
-verkossa on sykli eikä topologista järjestystä voi muodostaa.
-
-Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
-järjestyksen esimerkkiverkossamme.
-Tässä tapauksessa suoritamme kaksi syvyyshakua,
-joista ensimmäinen alkaa solmusta 1 ja toinen alkaa solmusta 5.
-Algoritmin tuloksena on lista $[4,2,3,1,5]$,
-joten käänteinen lista $[5,1,3,2,4]$ on verkon topologinen järjestys.
-Huomaa, että tämä on eri järjestys kuin kuvassa \ref{fig:topjar};
-topologinen järjestys ei ole yksikäsitteinen ja voimme yleensä
-muodostaa järjestyksen monella tavalla.
-
 \begin{figure}
 \center
 \begin{center}
@@ -245,13 +240,10 @@ Tässä verkossa on sykli $2 \rightarrow 4 \rightarrow 3 \rightarrow 2$,
 jonka olemassaolon huomaamme siitä, että tulemme uudestaan
 harmaaseen solmuun 2.
 
-Algoritmi käy läpi verkon solmut ja kaaret syvyyshaun avulla,
-joten sen aikavaativuus on $O(n+m)$.
-
-\subsection{Miksi algoritmi toimii?}
-
-Miten voimme tietää, että algoritmimme toimii
-kaikissa tilanteissa?
+Algoritmimme on tehokas,
+koska sen aikavaativuus on $O(n+m)$.
+Mutta miten voimme tietää, että se
+toimii oikein kaikissa tilanteissa?
 
 Tarkastellaan ensin tilannetta, jossa verkossa on sykli.
 Jos algoritmi saapuu uudestaan harmaaseen solmuun $x$,
@@ -370,7 +362,8 @@ $1 \rightarrow 3 \rightarrow 4$.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
+\small
 \begin{scope}
 \node[draw, circle] (1) at (0,-1) {$1$};
 \node[draw, circle] (2) at (2,0) {$2$};
@@ -450,8 +443,8 @@ ja funktion arvot ovat seuraavat:
 \texttt{polut}(5)&=0 \\
 \end{align*}
 
-Nyt meidän täytyy enää löytää kaava funktion
-arvojen laskemiseen.
+Nyt meidän täytyy enää löytää tapa laskea
+funktion arvoja.
 Pohjatapauksessa olemme solmussa $a$,
 jolloin on aina yksi tyhjä polku:
 
@@ -466,8 +459,7 @@ saamme seuraavan rekursiivisen kaavan:
 \[ \texttt{polut}(x)=\texttt{polut}(u_1)+\texttt{polut}(u_2)+\dots+\texttt{polut}(u_k) \]
 
 Esimerkiksi kuvan \ref{fig:verpol} verkossa
-solmuun $4$ on kaari solmuista $2$, $3$ ja $5$.
-Tämän seurauksena
+solmuun $4$ on kaari solmuista $2$, $3$ ja $5$, joten
 \[ \texttt{polut}(4)=\texttt{polut}(2)+\texttt{polut}(3)+\texttt{polut}(5) = 2+1+0 = 3.\]
 
 Koska tiedämme, että verkko on syklitön,
@@ -500,16 +492,16 @@ Jokaisesta solmusta $x$ on kaari solmuihin
 $x+1$, $x+2$ ja $x+3$,
 ja polkujen määrä solmusta $0$ solmuun $n$
 on yhtä suuri kuin tornin rakentamistapojen määrä.
-
 Esimerkiksi kuva \ref{fig:verkol} näyttää verkon,
 joka vastaa tapausta $n=6$.
-Tässä verkossa solmusta $0$ solmuun $6$ on yhteensä $24$ polkua,
+Solmusta $0$ solmuun $6$ on yhteensä $24$ polkua,
 eli voimme rakentaa korkeuden $6$ tornin kaikkiaan $24$ tavalla.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
+\small
 \node[draw, circle] (0) at (0,0) {$0$};
 \node[draw, circle] (1) at (2,0) {$1$};
 \node[draw, circle] (2) at (4,0) {$2$};
@@ -559,9 +551,9 @@ joista muodostuu syklitön \emph{komponenttiverkko}.
 Tämä verkko esittää alkuperäisen verkon syvärakenteen.
 
 \begin{figure}
-\center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
+\small
 \begin{scope}
 \node[draw, circle] (1) at (0,0) {$1$};
 \node[draw, circle] (2) at (0,-2) {$2$};
@@ -625,7 +617,7 @@ tämän listan perusteella.
 Algoritmin ensimmäisessä vaiheessa käymme läpi verkon
 solmut ja aloitamme uuden syvyyshaun aina,
 jos emme ole vielä käyneet solmussa.
-Syvyyshaun aikana lisäämme aina solmun listalle
+Syvyyshaun aikana lisäämme solmun listalle,
 kun olemme käyneet läpi kaikki solmusta lähtevät kaaret.
 Toimimme siis kuten topologisen järjestyksen muodostamisessa,
 mutta emme välitä, jos tulemme toista reittiä solmuun,
@@ -725,7 +717,7 @@ vielä kuulu mihinkään komponenttiin.
 \label{fig:koseka}
 \end{figure}
 
-Tarkastelemme seuraavaksi, kuinka Kosarajun algoritmi
+Tarkastellaan seuraavaksi, kuinka Kosarajun algoritmi
 toimii esimerkkiverkossamme.
 Kuva \ref{fig:koseka} näyttää algoritmin ensimmäisen vaiheen,
 joka muodostaa solmuista listan $[2,5,6,4,3,1]$.
@@ -810,15 +802,10 @@ solmujen 5 ja 6 alueelle.
 \label{fig:kostok}
 \end{figure}
 
-Koska algoritmi muodostuu kahdesta verkon läpikäynnistä,
-sen aikavaativuus on $O(n+m)$.
-
-\subsection{Miksi algoritmi toimii?}
-
 Keskeinen kysymys Kosarajun algoritmiin liittyen on,
 miten voimme olla varmoja, että algoritmin toinen vaihe
 muodostaa vahvasti yhtenäisiä komponentteja,
-joihin ei tule ylimääräisiä solmuja?
+joihin ei tule ylimääräisiä solmuja.
 
 Voimme tarkastella asiaa muodostettavan
 komponenttiverkon näkökul\-masta.
@@ -839,11 +826,12 @@ koska komponentti $A$ on jo muodostettu.
 
 \subsection{Esimerkki: Luolapeli}
 
-Olemme pelissä luolastossa, joka muodostuu luolista ja niitä yhdistävistä
-käytävistä. Jokainen käytävä on yksisuuntainen.
+Olemme pelissä luolastossa, joka muodostuu $n$ luolasta ja
+$m$ käytävästä niiden välillä.
+Jokainen käytävä on yksisuuntainen.
 Jokaisessa luolassa on yksi aarre, jonka voimme ottaa mukaamme,
 jos kuljemme luolan kautta.
-Peli alkaa luolasta $a$ ja päättyy luolaan $b$.
+Peli alkaa luolasta $1$ ja päättyy luolaan $n$.
 Montako aarretta voimme saada, jos valitsemme parhaan
 mahdollisen reitin?
 On sallittua kulkea saman luolan kautta monta kertaa tarvittaessa.
@@ -851,7 +839,8 @@ On sallittua kulkea saman luolan kautta monta kertaa tarvittaessa.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
+\small
 \node[draw, circle] (1) at (0,0) {$1$};
 \node[draw, circle] (2) at (2,-1) {$2$};
 \node[draw, circle] (3) at (-2,0) {$3$};
@@ -882,17 +871,16 @@ kaaret ovat käytäviä. Haluamme löytää reitin solmusta $a$ solmuun $b$
 niin, että kuljemme mahdollisimman monen solmun kautta.
 Esimerkiksi kuva \ref{fig:luopel} näyttää verkkona luolaston, joka muodostuu
 seitsemästä luolasta ja kymmenestä käytävästä.
-Oletetaan, että haluamme liikkua luolasta 1 luolaan 7
-keräten mahdollisimman paljon aarteita.
-Tällöin yksi mahdollinen reitti on
+Yksi optimaalinen reitti luolasta $1$ luolaan $7$ on
 $1 \rightarrow 4 \rightarrow 2 \rightarrow 1 \rightarrow 3 \rightarrow 6 \rightarrow 7$,
-jonka avulla saamme kaikki aarteet paitsi luolassa 5 olevan aarteen.
-Ei ole olemassa reittiä, jota seuraamalla saisimme kaikki luolaston aarteet.
+jota seuraten saamme kerättyä kaikki aarteet paitsi luolassa 5 olevan aarteen.
+Ei ole olemassa reittiä, jota seuraten saisimme kaikki luolaston aarteet.
 
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
+\small
 \node[draw, rectangle] (1) at (0,0) {$\{1,2,4\}$};
 \node[draw, rectangle] (2) at (-4,-2) {$\{3\}$};
 \node[draw, rectangle] (3) at (4,-2) {$\{5\}$};
