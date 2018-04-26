@@ -1,12 +1,12 @@
 \chapter{Suunnatut syklittömät verkot}
 
 Verkkoalgoritmien suunnittelussa aiheuttavat
-vaikeuksia usein verkossa olevat syklit,
+usein vaikeuksia verkossa olevat syklit,
 ja monen ongelman ratkaiseminen on vaikeaa nimenomaan
 sen takia, että meidän täytyy ottaa huomioon,
 mitä tapahtuu sykleissä.
 Tässä luvussa katsomme, miten asiat muuttuvat,
-kun voimme olettaa, että käsitel\-tävänä on suunnattu verkko,
+kun voimmekin olettaa, että käsitel\-tävänä on suunnattu verkko,
 jossa \emph{ei ole} syklejä.
 
 Kun verkko on suunnattu ja syklitön,
@@ -27,17 +27,7 @@ Tämän ansiosta voimme tietyissä tilanteissa käsitellä
 verkkoa mukavasti syklittömän verkon tavoin,
 vaikka se ei olisikaan alun perin syklitön.
 
-\section{Topologinen järjestys}
-
-Topologinen järjestys on suunnatun verkon solmujen järjestys,
-jossa pätee, että jos solmusta $a$ on kaari solmuun $b$,
-niin solmu $a$ on ennen solmua $b$ järjestyksessä.
-Topologinen järjestys voidaan esittää listana,
-joka ilmaisee solmujen järjestyksen.
-Kuvassa \ref{fig:topjar} on esimerkkinä verkko ja yksi sen topologinen
-järjestys $[1,3,5,2,4]$.
-
-\begin{figure}
+\begin{figure}[ht]
 \center
 \begin{center}
 \begin{tikzpicture}[scale=0.6]
@@ -74,48 +64,25 @@ järjestys $[1,3,5,2,4]$.
 \label{fig:topjar}
 \end{figure}
 
+\section{Topologinen järjestys}
+
+Topologinen järjestys on suunnatun verkon solmujen järjestys,
+jossa pätee, että jos solmusta $a$ on kaari solmuun $b$,
+niin solmu $a$ on ennen solmua $b$ järjestyksessä.
+Topologinen järjestys voidaan esittää listana,
+joka ilmaisee solmujen järjestyksen.
+Kuvassa \ref{fig:topjar} on esimerkkinä verkko ja yksi sen topologinen
+järjestys $[1,3,5,2,4]$.
+
 Osoittautuu, että voimme muodostaa suunnatulle verkolle
 topologisen järjestyksen tarkalleen silloin,
 kun verkko on syklitön.
-Tutustumme seuraavaksi syvyyshakuun perustuvaan
-algoritmiin, joka muodostaa verkon topologisen järjestyksen
+Tutustumme seuraavaksi tehokkaaseen algoritmiin,
+joka muodostaa topologisen järjestyksen
 tai toteaa, ettei järjestystä voi muodostaa
 verkossa olevan syklin takia.
 
 \subsection{Järjestyksen muodostaminen}
-
-Voimme muodostaa topologisen järjestyksen suorittamalla
-joukon syvyyshakuja, joissa jokaisella solmulla on kolme mahdollista tilaa:
-
-\begin{itemize}
-\item tila 0 (valkoinen): solmussa ei ole käyty
-\item tila 1 (harmaa): solmun käsittely on kesken
-\item tila 2 (musta): solmun käsittely on valmis
-\end{itemize}
-
-Algoritmin alussa jokainen solmu on valkoinen.
-Käymme läpi kaikki verkon solmut ja aloitamme aina syvyyshaun
-solmusta, jos se on valkoinen.
-Aina kun saavumme uuteen solmuun, sen väri muuttuu
-valkoisesta harmaaksi.
-Sitten kun olemme käsitelleet kaikki solmusta lähtevät
-kaaret, solmun väri muuttuu harmaasta mustaksi
-ja lisäämme solmun listalle.
-Tämä lista käänteisessä järjestyksessä on verkon
-topologinen järjestys.
-Kuitenkin jos saavumme jossain vaiheessa
-toista kautta harmaaseen solmuun,
-verkossa on sykli eikä topologista järjestystä ole olemassa.
-
-Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
-järjestyksen esimerkkiverkossamme.
-Tässä tapauksessa suoritamme kaksi syvyyshakua,
-joista ensimmäinen alkaa solmusta 1 ja toinen alkaa solmusta 5.
-Algoritmin tuloksena on lista $[4,2,3,1,5]$,
-joten käänteinen lista $[5,1,3,2,4]$ on verkon topologinen järjestys.
-Huomaa, että tämä on eri järjestys kuin kuvassa \ref{fig:topjar} --
-topologinen järjestys ei ole yksikäsitteinen ja voimme yleensä
-muodostaa järjestyksen monella tavalla.
 
 \begin{figure}
 \center
@@ -186,6 +153,29 @@ muodostaa järjestyksen monella tavalla.
 \label{fig:topesi}
 \end{figure}
 
+Voimme muodostaa topologisen järjestyksen suorittamalla
+joukon syvyyshakuja, joissa jokaisella solmulla on kolme mahdollista tilaa:
+
+\begin{itemize}
+\item tila 0 (valkoinen): solmussa ei ole käyty
+\item tila 1 (harmaa): solmun käsittely on kesken
+\item tila 2 (musta): solmun käsittely on valmis
+\end{itemize}
+
+Algoritmin alussa jokainen solmu on valkoinen.
+Käymme läpi kaikki verkon solmut ja aloitamme aina syvyyshaun
+solmusta, jos se on valkoinen.
+Aina kun saavumme uuteen solmuun, sen väri muuttuu
+valkoisesta harmaaksi.
+Sitten kun olemme käsitelleet kaikki solmusta lähtevät
+kaaret, solmun väri muuttuu harmaasta mustaksi
+ja lisäämme solmun listalle.
+Tämä lista käänteisessä järjestyksessä on verkon
+topologinen järjestys.
+Kuitenkin jos saavumme jossain vaiheessa
+toista kautta harmaaseen solmuun,
+verkossa on sykli eikä topologista järjestystä ole olemassa.
+
 \begin{figure}
 \center
 \begin{center}
@@ -233,29 +223,34 @@ muodostaa järjestyksen monella tavalla.
 \label{fig:topsyk}
 \end{figure}
 
-Kuva \ref{fig:topsyk} näyttää puolestaan esimerkin tilanteesta,
+Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
+järjestyksen esimerkkiverkossamme.
+Tässä tapauksessa suoritamme kaksi syvyyshakua,
+joista ensimmäinen alkaa solmusta 1 ja toinen alkaa solmusta 5.
+Algoritmin tuloksena on lista $[4,2,3,1,5]$,
+joten käänteinen lista $[5,1,3,2,4]$ on verkon topologinen järjestys.
+Huomaa, että tämä on eri järjestys kuin kuvassa \ref{fig:topjar} --
+topologinen järjestys ei ole yksikäsitteinen ja voimme yleensä
+muodostaa järjestyksen monella tavalla.
+Kuva \ref{fig:topsyk} näyttää puolestaan tilanteen,
 jossa topologista järjestystä ei voi muodostaa verkossa
 olevan syklin takia.
 Tässä verkossa on sykli $2 \rightarrow 4 \rightarrow 3 \rightarrow 2$,
 jonka olemassaolon huomaamme siitä, että tulemme uudestaan
 harmaaseen solmuun 2.
 
-Algoritmimme on tehokas,
-koska sen aikavaativuus on $O(n+m)$.
-Mutta miten voimme tietää, että se
-toimii oikein kaikissa tilanteissa?
-
+Miten voimme tietää, että algoritmimme on toimiva?
 Tarkastellaan ensin tilannetta, jossa verkossa on sykli.
-Jos algoritmi saapuu uudestaan harmaaseen solmuun $x$,
+Jos algoritmi saapuu toista reittiä harmaaseen solmuun,
 on selvää, että verkossa on sykli,
-koska algoritmi on onnistunut pääsemään solmusta $x$
-takaisin itseensä kulkemalla jotain polkua verkossa.
+koska algoritmi on onnistunut pääsemään harmaasta solmusta
+itseensä kulkemalla jotain polkua verkossa.
 Toisaalta jos verkossa on sykli, algoritmi tulee
 jossain vaiheessa ensimmäistä kertaa johonkin sykliin
 kuuluvaan solmuun $x$. Tämän jälkeen se käy läpi solmusta
-lähtevät kaaret ja aikanaan saapuu varmasti uudestaan
-solmuun $x$. Niinpä algoritmi onnistuu kaikissa tilanteissa tunnistamaan,
-jos verkossa on sykli.
+lähtevät kaaret ja aikanaan käy varmasti läpi kaikki syklin
+solmut ja saapuu uudestaan solmuun $x$.
+Niinpä algoritmi tunnistaa kaikissa tilanteissa verkossa olevan syklin.
 
 Jos sitten verkossa ei ole sykliä, algoritmi lisää jokaisen
 solmun listalle sen jälkeen, kun se on käsitellyt
@@ -265,7 +260,8 @@ solmu $b$ lisätään listalle ennen solmua $a$.
 Lopuksi lista käännetään, jolloin solmu $a$
 tulee ennen solmua $b$.
 Tämän ansiosta jokaiselle kaarelle $a \rightarrow b$ pätee,
-että solmu $a$ tulee järjestykseen ennen solmua $b$.
+että solmu $a$ tulee järjestykseen ennen solmua $b$,
+eli algoritmi muodostaa kelvollisen topologisen järjestyksen.
 
 \subsection{Esimerkki: Kurssivalinnat}
 
@@ -348,13 +344,11 @@ meille selkeän järjestyksen, jossa voimme käsitellä solmut.
 
 \subsection{Polkujen laskeminen}
 
-Tarkastellaan esimerkkinä ongelmaa, jossa haluamme
-laskea, montako erilaista polkua verkossa on
-solmusta $a$ solmuun $b$.
-Kuva \ref{fig:verpol} näyttää esimerkin,
-jossa laskemme polkujen määrän solmusta 1
-solmuun 4.
-Tässä tapauksessa polkuja on kolme:
+Tarkastellaan esimerkkinä ongelmaa, jossa haluamme laskea,
+montako polkua verkossa on solmusta $a$ solmuun $b$.
+Esimerkiksi kuva \ref{fig:verpol} näyttää tilanteen,
+jossa haluamme laskea polut solmusta $1$ solmuun $4$.
+Tällaisia polkuja on kolme:
 $1 \rightarrow 2 \rightarrow 4$,
 $1 \rightarrow 3 \rightarrow 2 \rightarrow 4$ ja
 $1 \rightarrow 3 \rightarrow 4$.
@@ -419,7 +413,7 @@ $1 \rightarrow 3 \rightarrow 4$.
 Polkujen määrän laskeminen on vaikea ongelma yleisessä
 verkossa, jossa voi olla syklejä.
 Itse asiassa tehtävä ei ole edes mielekäs sellaisenaan:
-jos verkossa on sykli, voimme kulkea sitä miten
+jos verkossa on sykli, voimme kiertää sykliä miten
 monta kertaa tahansa ja tuottaa aina vain uusia polkuja,
 joten polkuja tulee äärettömästi.
 Nyt kuitenkin oletamme, että verkko on syklitön,
@@ -466,11 +460,9 @@ Koska tiedämme, että verkko on syklitön,
 voimme laskea funktion arvoja
 tehokkaasti dynaamisella ohjelmoinnilla.
 Oleellista on, että emme voi joutua koskaan silmukkaan
-laskiessamme arvoja.
-Käytännössä voimme laskea arvot solmujen
+laskiessamme arvoja, ja
+käytännössä laskemme arvot jossakin solmujen
 topologisessa järjestyksessä.
-Tällä tavalla saamme ongelmaan ratkaisun, joka
-vie aikaa $O(n+m)$.
 
 \subsection{Ongelmat verkkoina}
 
@@ -827,7 +819,7 @@ koska komponentti $A$ on jo muodostettu.
 \subsection{Esimerkki: Luolapeli}
 
 Olemme pelissä luolastossa, joka muodostuu $n$ luolasta ja
-$m$ käytävästä niiden välillä.
+joukosta käytäviä niiden välillä.
 Jokainen käytävä on yksisuuntainen.
 Jokaisessa luolassa on yksi aarre, jonka voimme ottaa mukaamme,
 jos kuljemme luolan kautta.
