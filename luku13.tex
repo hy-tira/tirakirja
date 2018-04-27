@@ -63,7 +63,7 @@ että alkiot ovat samassa joukossa.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
 \node[draw, circle] (1) at (0,0) {$1$};
 \node[draw, circle] (4) at (0,-2) {$4$};
 
@@ -128,7 +128,7 @@ Jos joukot ovat yhtä suuria, voimme toteuttaa yhdistämisen kummin päin vain.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
 \node[draw, circle] (1) at (0,0) {$1$};
 \node[draw, circle] (2) at (0,-2) {$4$};
 \node[draw, circle] (3) at (4,0) {$5$};
@@ -155,11 +155,13 @@ edustajan osoittamaan joukon $B$ edustajaan.
 Tämän jälkeen kaikki alkiot kuuluvat samaan joukkoon ja
 alkio $5$ on tästä lähtien koko joukon edustaja.
 
+Nyt olemme valmiita toteuttamaan operaation,
+joka yhdistää toisiinsa joukot, joissa on alkiot $a$ ja $b$.
+Oletamme, että alkiot ovat eri joukoissa ennen yhdistämistä.
 Jotta voimme toteuttaa yhdistämisen tehokkaasti,
 meidän täytyy myös pitää kirjaa kunkin joukon koosta.
 Seuraavassa toteutuksessa $\texttt{koko}[x]$ kertoo,
 montako alkiota alkion $x$ edustama joukko sisältää.
-Selvitämme ensin joukkojen edustajat ja yhdistämme sitten joukot.
 
 \begin{code}
 function yhdista(a,b)
@@ -193,7 +195,7 @@ kertaa yhteydessä toisiinsa?
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
 \small
 \newcommand\verkko[6]{
 \node[draw, circle] (1) at (0,-1) {$1$};
@@ -256,24 +258,21 @@ Kaikki kaupungit ovat yhteydessä toisiinsa vaiheen 5 jälkeen.
 
 \subsubsection{Ratkaisu 1: Union-find-rakenne}
 
-Voimme ratkaista tehtävän union-find-rakenteen avulla.
-Esitämme verkon yhtenäiset komponentit joukkoina niin,
-että kukin joukko sisältää komponentin solmut.
-Alussa joukot ovat $\{1\},\{2\},\dots,\{n\}$
-eli jokainen solmu on omassa komponentissaan.
+Pidämme yllä verkon komponentteja
+union-find-rakenteen avulla.
+Aluksi jokainen solmu on omassa komponentissaan
+eli joukot ovat $\{1\},\{2\},\dots,\{n\}$.
 Sitten jokaisen kaaren kohdalla tarkastamme,
 ovatko sen päätesolmut eri joukoissa,
 ja jos ovat, yhdistämme joukot.
 Kun lopulta kaikki solmut ovat samassa joukossa,
 verkko on tullut yhtenäiseksi.
 
-Luomme ensin jokaiselle solmulle oman komponentin ja
-suoritamme sitten jokaisen kaaren kohdalla yhden
-\texttt{sama}-operaation
-ja mahdollisesti yhden \texttt{yhdista}-operaation.
-Tuloksena oleva algoritmi vie aikaa $O(n+m \alpha(n))$,
-kun käytämme union-find-rakennetta, jossa on
-tehokas yhdistäminen ja ketjujen tiivistäminen.
+Tuloksena oleva algoritmi vie aikaa $O(n+m \log n)$,
+koska luomme ensin $n$ komponenttia ajassa $O(n)$
+ja käsittelemme tämän jälkeen $m$ kaarta.
+Jokaisen kaaren kohdalla suoritamme enintään kaksi
+operaatiota union-find-rakenteessa ajassa $O(\log n)$.
 
 \subsubsection{Ratkaisu 2: Binäärihaku}
 
@@ -304,8 +303,9 @@ Kuvassa \ref{fig:virpuu} on esimerkkinä verkko ja yksi sen virittävistä puist
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
+\begin{tikzpicture}[scale=0.6]
 \begin{scope}
+\small
 \node[draw, circle] (1) at (0,-1) {$1$};
 \node[draw, circle] (2) at (2,0) {$2$};
 \node[draw, circle] (3) at (2,-2) {$3$};
@@ -348,8 +348,9 @@ Näistä jälkimmäinen on verkon pienin virittävä puu.
 \begin{figure}
 \center
 \begin{center}
-\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
 \begin{scope}
+\small
 \node[draw, circle] (1) at (0,-1) {$1$};
 \node[draw, circle] (2) at (2,0) {$2$};
 \node[draw, circle] (3) at (2,-2) {$3$};
