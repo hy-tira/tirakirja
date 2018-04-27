@@ -495,7 +495,7 @@ Algoritmin alussa järjestämme kaaret painojärjestykseen,
 missä kuluu aikaa $O(m \log m)$.
 Tämän jälkeen käymme kaaret läpi, ja jokaisen kaaren
 kohdalla otamme kaaren mukaan, jos se yhdistää kaksi eri komponenttia.
-Tässä kuluu aikaa $O(m \alpha(n))$,
+Tässä kuluu aikaa $O(m \log n)$,
 kun käytämme union-find-rakennetta.
 Algoritmi vie siis yhteensä aikaa $O(m \log m)$.
 
@@ -577,7 +577,7 @@ mutta Primin algoritmissa valitsemme solmun, jonka etäisyys
 \emph{johonkin solmuun} puussa on pienin.
 Voimme myös toteuttaa Primin algoritmin tehokkaasti samaan
 tapaan kuin Dijkstran algoritmin keon avulla,
-jolloin algoritmi vie aikaa $O(m \log m)$.
+jolloin algoritmi vie aikaa $O(m \log n)$.
 
 \subsection{Miksi algoritmit toimivat?}
 
