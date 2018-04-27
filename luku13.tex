@@ -27,8 +27,8 @@ pitää yllä kokoelmaa alkioiden joukkoja ja tarjoaa
 seuraavat tehokkaat operaatiot:
 
 \begin{itemize}
+\item tarkasta, ovatko kaksi alkiota samassa joukossa
 \item yhdistä kaksi joukkoa samaksi joukoksi
-\item tarkista, ovatko kaksi alkiota samassa joukossa
 \end{itemize}
 
 Oletamme, että alkiot ovat $1,2,\dots,n$,
@@ -42,17 +42,23 @@ mutta järjestämisen jälkeen ne ovat samassa joukossa.
 
 \subsection{Rakenteen toteutus}
 
-Toteutamme union-find-rakenteen niin, että jokaisessa joukossa
-yksi alkioista on joukon \emph{edustaja} ja muut alkiot viittaavat
-edustajaan suoraan tai muiden alkioiden kautta.
+Toteutamme union-find-rakenteen niin,
+että jokaisessa joukossa
+yksi alkioista on joukon \emph{edustaja}.
+Kutakin joukkoa vastaa puu,
+jonka juurena on joukon edustaja ja
+muut alkiot viittaavat edustajaan yhden tai useamman kaaren kautta.
 Kun haluamme tarkastaa, ovatko kaksi alkiota samassa joukossa,
 selvitämme niiden edustajat ja vertaamme niitä toisiinsa.
 
-Jokaisella joukon alkiolla $x$ on arvo $\texttt{seuraava}[x]$,
-joka kertoo seuraavan alkion viittauksien ketjussa.
-Jos $\texttt{seuraava}[x]=x$, alkio on joukon edustaja.
-Tämän ansiosta saamme selville mille tahansa alkiolle $x$,
-mikä on vastaavan joukon edustaja, kulkemalla läpi viittausten ketjun.
+Kuvassa \ref{fig:unifin} on esimerkkinä union-find-rakenne,
+joka vastaa joukkoja $A=\{1,4\}$, $B=\{2,5,6\}$ ja $C=\{3,7,8\}$.
+Tässä tapauksessa joukkojen edustajat ovat 1, 5 ja 3.
+Esimerkiksi jos haluamme tarkastaa, ovatko alkiot 2 ja 6
+samassa joukossa, selvitämme ensin alkioiden edustajat
+kulkemalla polkuja $2 \rightarrow 5$ ja $6 \rightarrow 5$.
+Kummankin alkion edustaja on $5$, joten toteamme,
+että alkiot ovat samassa joukossa.
 
 \begin{figure}
 \center
@@ -80,47 +86,44 @@ mikä on vastaavan joukon edustaja, kulkemalla läpi viittausten ketjun.
 \label{fig:unifin}
 \end{figure}
 
-Kuvassa \ref{fig:unifin} on union-find-rakenne,
-joka vastaa joukkoja $A=\{1,4\}$, $B=\{2,5,6\}$ ja $C=\{3,7,8\}$.
-Tässä tapauksessa joukkojen edustajat ovat 1, 5 ja 3.
-Esimerkiksi $\texttt{seuraava}[1]=1$, koska alkio $1$ on joukon edustaja,
-ja $\texttt{seuraava}[2]=5$, koska alkio $2$ osoittaa alkioon $5$.
-Saamme selville, mikä on alkion 8 joukon edustaja, kulkemalla ketjua
-$8 \rightarrow 7 \rightarrow 3$.
-
-Seuraava operaatio \texttt{edustaja} selvittää alkion $x$ joukon edustajan:
+Jotta saamme toteutettua union-find-rakenteen,
+pidämme yllä jokaiselle alkiolle $x$ arvoa $\texttt{vanhempi}[x]$,
+joka kertoo seuraavan alkion ylempänä puussa.
+Kuitenkin jos $x$ on joukon edustaja,
+$\texttt{vanhempi}[x]=x$.
+Esimerkiksi kuvassa \ref{fig:unifin}
+$\texttt{vanhempi}[2]=5$ ja $\texttt{vanhempi}[5]=5$.
+Tämän ansiosta pystymme selvittämään alkion $x$
+edustajan seuraavasti:                                                          
 
 \begin{code}
-int edustaja(int x) {
-    while (x != seuraava[x]) {
-        x = seuraava[x];
-    }
-    return x;
-}
+function edustaja(x)
+    while x != vanhempi[x]
+        x = vanhempi[x]
+    return x
 \end{code}
 
-Tämän avulla voimme luoda operaation \texttt{sama}, joka tarkastaa,
+Tämän jälkeen voimme tarkastaa seuraavalla operaatiolla,
 ovatko alkiot $a$ ja $b$ samassa joukossa.
 Alkiot ovat samassa joukossa täsmälleen silloin, kun niillä
 on sama edustaja:
 
 \begin{code}
-boolean sama(int a, int b) {
-    return edustaja(a) == edustaja(b);
-}
+function sama(a,b)
+    return edustaja(a) == edustaja(b)
 \end{code}
 
-\subsection{Tehokas yhdistäminen}
-
-Viimeinen tarvittava operaatio on \texttt{yhdista}, joka yhdistää alkioita
-$a$ ja $b$ vastaavat joukot.
+Haluamme toteuttaa vielä operaation, jolla voimme
+yhdistää kaksi joukkoa toisiinsa.
 Tämän operaation toteutus ratkaisee, kuinka tehokas rakenteemme on.
-Haluamme, että alkioiden viittausten ketjut ovat lyhyitä,
-jotta pystymme selvittämään nopeasti alkioiden edustajia.
-Saavutamme tämän tavoitteen asettamalla \emph{pienemmän} joukon
+Alkion edustajan etsiminen vie aikaa $O(k)$,
+missä $k$ on polun pituus,
+joten haluamme toteuttaa yhdistämiset niin,
+että puussa on vain lyhyitä polkuja.
+Saavutamme tämän tavoitteen yhdistämällä kaksi joukkoa
+aina asettamalla \emph{pienemmän} joukon
 edustajan osoittamaan \emph{suuremman} joukon edustajaan.
-Jos joukot ovat yhtä suuria, voimme toteuttaa yhdistämisen
-kummin päin vain haluamallamme tavalla.
+Jos joukot ovat yhtä suuria, voimme toteuttaa yhdistämisen kummin päin vain.
 
 \begin{figure}
 \center
@@ -145,7 +148,8 @@ joten yhdistämme alkion 1 alkioon 5.}
 
 Kuva \ref{fig:tehyhd} näyttää, mitä tapahtuu, kun yhdistämme joukot
 $A=\{1,4\}$ ja $B=\{2,5,6\}$.
-Joukon $A$ edustaja on $1$ ja joukon $B$ edustaja on $5$.
+Joukon $A$ edustaja on $1$ ja siinä on kaksi alkiota,
+kun taas joukon $B$ edustaja on $5$ ja siinä on kolme alkiota.
 Koska joukko $A$ on pienempi, asetamme joukon $A$
 edustajan osoittamaan joukon $B$ edustajaan.
 Tämän jälkeen kaikki alkiot kuuluvat samaan joukkoon ja
@@ -158,96 +162,27 @@ montako alkiota alkion $x$ edustama joukko sisältää.
 Selvitämme ensin joukkojen edustajat ja yhdistämme sitten joukot.
 
 \begin{code}
-void yhdista(int a, int b) {
-    a = edustaja(a);
-    b = edustaja(b);
-    if (koko[a] < koko[b]) {
-        seuraava[a] = b;
-        koko[b] += koko[a];
-    } else {
-        seuraava[b] = a;
-        koko[a] += koko[b];
-    }
-}
+function yhdista(a,b)
+    a = edustaja(a)
+    b = edustaja(b)
+    if koko[a] < koko[b]
+        swap(a,b)
+    vanhempi[b] = a
+    koko[a] += koko[b]
 \end{code}
 
 Kun toteutamme yhdistämiset tällä tavalla, jokainen
-alkioiden ketju sisäl\-tää vain $O(\log n)$ alkiota.
-Tämä johtuu siitä, että aina kun kuljemme ketjussa
-askeleen eteenpäin alkiosta $a$ alkioon $b$,
+puussa esiintyvä polku sisäl\-tää vain $O(\log n)$ alkiota.
+Tämä johtuu siitä, että aina kun kuljemme polkua
+askeleen ylöspäin alkiosta $a$ alkioon $b$,
 $\texttt{koko}[b] \ge 2 \cdot \texttt{koko}[a]$ eli
 edustajaa vastaavan joukon koko ainakin \emph{kaksinkertaistuu}.
 Koska joukossa on enintään $n$ alkiota,
 kuljemme siis yhteensä enintään $O(\log n)$ askelta.
-Niinpä operaatio \texttt{edustaja} toimii ajassa $O(\log n)$,
-ja sen myötä myös operaatiot \texttt{sama} ja \texttt{yhdista}
+Niinpä kaikki union-find-rakenteen operaatiot
 toimivat ajassa $O(\log n)$.
 
-\subsection{Ketjun tiivistäminen}
-
-Pystymme saamaan union-find-rakenteen vielä tehokkaammaksi
-toteuttamalla \texttt{edustaja}-operaation seuraavasti:
-
-\begin{code}
-int edustaja(int x) {
-    return seuraava[x] = edustaja(x);
-}
-\end{code}
-
-Tässä ideana on \emph{tiivistää} ketjua samalla,
-kun kuljemme eteenpäin ketjussa.
-Asetamme jokaisen ketjun alkion \texttt{seuraava}-arvoksi sen edustajan,
-minkä ansiosta pääsemme suoraan edustajaan,
-jos kuljemme samaa ketjua myöhemmin.
-Kuva \ref{fig:poltii} näyttää esimerkin ketjun tiivistämisestä.
-Kuljemme aluksi ketjua $4 \rightarrow 3 \rightarrow 2 \rightarrow 1$,
-jolloin kaikki alkiot asetetaan viittaamaan edustajaan $1$.
-Kun haluamme selvittää seuraavan kerran alkion $4$ edustajan,
-pääsemme suoraan alkiosta $4$ edustajaan $1$.
-
-\begin{figure}
-\center
-\begin{center}
-\begin{tikzpicture}[scale=0.7]
-\begin{scope}
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-2,0) {$2$};
-\node[draw, circle] (3) at (-4,0) {$3$};
-\node[draw, circle] (4) at (-6,0) {$4$};
-\path[draw,thick,->] (4) -- (3);
-\path[draw,thick,->] (3) -- (2);
-\path[draw,thick,->] (2) -- (1);
-\node at (-8,0) {(a)};
-\end{scope}
-\begin{scope}[yshift=-2.5cm]
-\node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (-2,0) {$2$};
-\node[draw, circle] (3) at (-4,0) {$3$};
-\node[draw, circle] (4) at (-6,0) {$4$};
-\path[draw,thick,->] (4) edge [bend left] (1);
-\path[draw,thick,->] (3) edge [bend right] (1);
-\path[draw,thick,->] (2) -- (1);
-\node at (-8,0) {(b)};
-\end{scope}
-\end{tikzpicture}
-\end{center}
-\caption{Ketjun tiivistäminen. (a) Alkuperäinen ketju $4 \rightarrow 3 \rightarrow 2 \rightarrow 1$.
-(b) Tiivistetty ketju, jossa kaikki alkiot viittaavat suoraan edustajaan.}
-\label{fig:poltii}
-\end{figure}
-
-On mahdollista osoittaa, että ketjujen tiivistämisen ansiosta
-$\texttt{edustaja}$-ope\-raatiot vievät tasoitetusti aikaa vain
-$O(\alpha(n))$, missä $\alpha(n)$ on hyvin hitaasti kasvava
-\emph{käänteinen Ackermannin funktio}.
-Funktiosta tiedetään, että $\alpha(n)<5$, kun $n$ on mikä tahansa
-käytännössä esiintyvä joukon koko.
-Tämä tarkoittaa, että voimme ajatella union-find-rakenteen
-operaatioiden olevan käytännössä \emph{vakioaikaisia}.
-Tämän tuloksen osoittaminen on kuitenkin vaikeaa,
-emmekä käsittele asiaa tarkemmin tällä kurssilla.
-
-\section{Esimerkki: Kaupungit}
+\subsection{Esimerkki: Kaupungit}
 
 Bittimaassa on $n$ kaupunkia, joiden välillä ei ole vielä yhtään tietä.
 Sitten teitä aletaan rakentaa yksi kerrallaan, yhteensä $m$ tietä.
