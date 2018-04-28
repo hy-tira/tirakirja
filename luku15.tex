@@ -90,8 +90,8 @@ koko ongelman alusta alkaen polynomisessa ajassa.
 
 Äkkiseltään tuntuu selvältä, että luokassa NP täytyy olla
 enemmän ongelmia kuin luokassa P.
-Luokassa NP meidän riittää vain pystyä tarkastamaan ''kyllä''-vastauksen
-todiste, mikä tuntuu helpommalta kuin muodostaa ongelman ratkaisu tyhjästä.
+Luokassa NP meidän riittää vain tarkastaa ''kyllä''-vastauksen
+todiste, mikä tuntuu helpommalta kuin muodostaa ongelman ratkaisu tyhjästä (kuva \ref{fig:pvsnpp}).
 Monet uskovatkin, että luokka NP on suurempi kuin luokka P --
 mutta kukaan ei ole onnistunut todistamaan asiaa.
 
@@ -105,6 +105,53 @@ Clay-instituutti on luvannut miljoonan dollarin palkinnon
 sille, joka todistaa, että $\textrm{P}=\textrm{NP}$ tai $\textrm{P} \neq \textrm{NP}$.
 Voi olla kuitenkin, että tämä on yksi \emph{vaikeimmista}
 tavoista ansaita miljoona dollaria.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\small
+\begin{scope}
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (4) -- (5);
+
+\node at (8.5,2) {vs.};
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (4) -- (5);
+
+\path[draw,thick,->,red,line width=2pt] (1) -- (3);
+\path[draw,thick,->,red,line width=2pt] (3) -- (4);
+\path[draw,thick,->,red,line width=2pt] (4) -- (2);
+\path[draw,thick,->,red,line width=2pt] (2) -- (5);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{P vs. NP: Voisiko olla yhtä helppoa muodostaa ratkaisu tyhjästä
+kuin tarkastaa, onko annettu ratkaisu oikein?}
+\label{fig:pvsnpp}
+\end{figure}
 
 Jos pätee $\textrm{P} \neq \textrm{NP}$, kuten uskotaan,
 vaikeutena on keksiä keino todistaa, että jotakin
