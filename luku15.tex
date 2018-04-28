@@ -269,10 +269,142 @@ meidän täytyy näyttää, että voimme tulkita minkä tahansa
 Meidän tulee siis pystyä muuttamaan looginen kaava verkoksi,
 jonka jokin solmupeite vastaa sitä, että kaava on totta.
 Tarkastelemme esimerkkinä kaavaa
-\[(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor \neg x_2 \lor x_3).\]
+\[(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor \neg x_3 \lor x_4).\]
 
+Oletamme, että kaavassa esiintyy $n$ muuttujaa $x_1,x_2,\dots,x_n$
+ja siinä on $m$ lauseketta.
+Muodostamme verkon, jossa on ensinnäkin $n$ paria solmuja,
+jotka vastaavat muuttujia ja niiden negaatioita.
+Jokaisen solmun $x_i$ ja $\neg x_i$ välillä on kaari.
+Lisäksi verkossa on $m$ kolmen solmun ryhmää,
+jotka vastaavat lausekkeita.
+Kussakin ryhmässä kaikki solmut ovat yhteydessä toisiinsa,
+minkä lisäksi kukin solmu on yhteydessä sitä vastaavaan solmuun pareissa.
+Verkossa on siis $2n+3m$ solmua ja $n+6m$ kaarta.
+Kuva \ref{fig:solko1} näyttää esimerkkikaavaamme vastaavan verkon.
 
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\small
+\node[draw, circle] (a1) at (0,0) {$x_1$};
+\node[draw, circle] (a2) at (2,0) {$x_2$};
+\node[draw, circle] (a3) at (4,0) {$x_3$};
+\node[draw, circle] (a4) at (6,0) {$x_4$};
+\node[draw, circle] (b1) at (0,-2) {\phantom{$x_1$}};
+\node[draw, circle] (b2) at (2,-2) {\phantom{$x_2$}};
+\node[draw, circle] (b3) at (4,-2) {\phantom{$x_3$}};
+\node[draw, circle] (b4) at (6,-2) {\phantom{$x_4$}};
+\node at (0,-2) {$\neg x_1$};
+\node at (2,-2) {$\neg x_2$};
+\node at (4,-2) {$\neg x_3$};
+\node at (6,-2) {$\neg x_4$};
 
+\node[draw, circle] (c1) at (10.5,0) {$x_1$};
+\node[draw, circle] (c2) at (9,-2) {\phantom{$x_2$}};
+\node[draw, circle] (c3) at (12,-2) {$x_3$};
+\node at (9,-2) {$\neg x_2$};
+
+\node[draw, circle] (d1) at (16.5,0) {\phantom{$x_1$}};
+\node[draw, circle] (d2) at (15,-2) {\phantom{$x_3$}};
+\node[draw, circle] (d3) at (18,-2) {$x_4$};
+\node at (16.5,0) {$\neg x_1$};
+\node at (15,-2) {$\neg x_3$};
+
+\path[draw,thick,-] (a1) -- (b1);
+\path[draw,thick,-] (a2) -- (b2);
+\path[draw,thick,-] (a3) -- (b3);
+\path[draw,thick,-] (a4) -- (b4);
+
+\path[draw,thick,-] (c1) -- (c2);
+\path[draw,thick,-] (c2) -- (c3);
+\path[draw,thick,-] (c3) -- (c1);
+\path[draw,thick,-] (d1) -- (d2);
+\path[draw,thick,-] (d2) -- (d3);
+\path[draw,thick,-] (d3) -- (d1);
+
+\path[draw,thick,-] (a1) edge [bend left=25] (c1);
+\path[draw,thick,-] (b2) edge [bend right=30] (c2);
+\path[draw,thick,-] (b3) edge [bend right=30] (d2);
+
+\path[draw,thick,-] (a3) .. controls (5,1) and (12,3.00) .. (c3);
+\path[draw,thick,-] (a4) .. controls (7,1) and (18,4.00) .. (d3);
+\path[draw,thick,-] (b1) .. controls (5,-5) and (17,-5.00) .. (d1);
+\end{tikzpicture}
+\end{center}
+\caption{Kaava $(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor \neg x_3 \lor x_4)$ verkkona.}
+\label{fig:solko1}
+\end{figure}
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\small
+\node[draw, circle,fill=lightgray] (a1) at (0,0) {$x_1$};
+\node[draw, circle,fill=lightgray] (a2) at (2,0) {$x_2$};
+\node[draw, circle] (a3) at (4,0) {$x_3$};
+\node[draw, circle,fill=lightgray] (a4) at (6,0) {$x_4$};
+\node[draw, circle] (b1) at (0,-2) {\phantom{$x_1$}};
+\node[draw, circle] (b2) at (2,-2) {\phantom{$x_2$}};
+\node[draw, circle,fill=lightgray] (b3) at (4,-2) {\phantom{$x_3$}};
+\node[draw, circle] (b4) at (6,-2) {\phantom{$x_4$}};
+\node at (0,-2) {$\neg x_1$};
+\node at (2,-2) {$\neg x_2$};
+\node at (4,-2) {$\neg x_3$};
+\node at (6,-2) {$\neg x_4$};
+
+\node[draw, circle] (c1) at (10.5,0) {$x_1$};
+\node[draw, circle,fill=lightgray] (c2) at (9,-2) {\phantom{$x_2$}};
+\node[draw, circle,fill=lightgray] (c3) at (12,-2) {$x_3$};
+\node at (9,-2) {$\neg x_2$};
+
+\node[draw, circle,fill=lightgray] (d1) at (16.5,0) {\phantom{$x_1$}};
+\node[draw, circle,fill=lightgray] (d2) at (15,-2) {\phantom{$x_3$}};
+\node[draw, circle] (d3) at (18,-2) {$x_4$};
+\node at (16.5,0) {$\neg x_1$};
+\node at (15,-2) {$\neg x_3$};
+
+\path[draw,thick,-] (a1) -- (b1);
+\path[draw,thick,-] (a2) -- (b2);
+\path[draw,thick,-] (a3) -- (b3);
+\path[draw,thick,-] (a4) -- (b4);
+
+\path[draw,thick,-] (c1) -- (c2);
+\path[draw,thick,-] (c2) -- (c3);
+\path[draw,thick,-] (c3) -- (c1);
+\path[draw,thick,-] (d1) -- (d2);
+\path[draw,thick,-] (d2) -- (d3);
+\path[draw,thick,-] (d3) -- (d1);
+
+\path[draw,thick,-] (a1) edge [bend left=25] (c1);
+\path[draw,thick,-] (b2) edge [bend right=30] (c2);
+\path[draw,thick,-] (b3) edge [bend right=30] (d2);
+
+\path[draw,thick,-] (a3) .. controls (5,1) and (12,3.00) .. (c3);
+\path[draw,thick,-] (a4) .. controls (7,1) and (18,4.00) .. (d3);
+\path[draw,thick,-] (b1) .. controls (5,-5) and (17,-5.00) .. (d1);
+\end{tikzpicture}
+\end{center}
+\caption{Ratkaisu, jossa $x_1$, $x_2$ ja $x_4$ ovat tosia ja $x_3$ on epätosi.}
+\label{fig:solko2}
+\end{figure}
+
+Osoittautuu, että voimme saada kaavan todeksi tarkalleen silloin,
+kun verkossa on solmupeite, jossa on enintään $n+2m$ solmua.
+Tällaiseen peitteeseen kuuluu toinen solmu jokaisesta
+parista $x_i$ ja $\neg x_i$, mikä määrittää, miten muuttujien
+arvot asetetaan.
+Lisäksi peitteeseen kuuluu kaksi solmua jokaisesta kolmen solmun ryhmästä.
+Koska ryhmässä on yksi solmu, joka ei kuulu peitteeseen,
+sen täytyy olla yhteydessä kaarella solmuun, joka kuuluu peitteeseen.
+Tämä varmistaa, että jokaisessa lausekkeessa ainakin yksi kolmesta
+muuttujasta on asetettu oikein.
+
+Olemme siis onnistuneet palauttamaan 3SAT-ongelman solmupeiteongelmaksi
+niin, että verkon koko on polynominen suhteessa kaavan pituuteen,
+joten solmupeiteongelma on NP-täydellinen.
 
 \subsection{Esimerkkejä}
 
