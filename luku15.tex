@@ -96,17 +96,17 @@ Monet uskovatkin, että luokka NP on suurempi kuin luokka P --
 mutta kukaan ei ole onnistunut todistamaan asiaa.
 
 Tietojenkäsittelytieteen merkittävä avoin ongelma onkin,
-päteekö $P=NP$ vai $P \neq NP$.
+päteekö $\textrm{P}=\textrm{NP}$ vai $\textrm{P} \neq \textrm{NP}$.
 Monet tutkijat ovat tarttuneet haasteeseen
 70-luvulta lähtien, mutta kaikki ovat epäonnistuneet.
 Ongelman ratkaisija saisi maineen ja kunnian lisäksi
 myös tuntuvan rahallisen korvauksen, koska
 Clay-instituutti on luvannut miljoonan dollarin palkinnon
-sille, joka todistaa, että $P=NP$ tai $P \neq NP$.
+sille, joka todistaa, että $\textrm{P}=\textrm{NP}$ tai $\textrm{P} \neq \textrm{NP}$.
 Voi olla kuitenkin, että tämä on yksi \emph{vaikeimmista}
 tavoista ansaita miljoona dollaria.
 
-Jos pätee $P \neq NP$, kuten uskotaan,
+Jos pätee $\textrm{P} \neq \textrm{NP}$, kuten uskotaan,
 vaikeutena on keksiä keino todistaa, että jotakin
 luokan NP ongelmaa on mahdotonta ratkaista
 polynomisessa ajassa.
@@ -465,3 +465,63 @@ päätösongelmien optimointiversiot,
 koska voimme palauttaa niihin NP-täydellisiä ongelmia
 mutta ne eivät itse kuulu luokkaan NP.
 
+Käytännössä termejä ei käytetä aina näin täsmällisesti
+ja optimointiongelmaa saatetaan sanoa NP-täydelliseksi,
+vaikka se oikeastaan on NP-vaikea.
+Voimme myös vain puhua yleisesti NP-ongelmista,
+kun tarkoitamme NP-täydellisiä tai NP-vaikeita ongelmia.
+
+\section{Ongelmien ratkaiseminen}
+
+Jos saamme ratkaistavaksemme NP-ongelman,
+tilanne ei näytä hy\-vältä, koska edessämme on silloin ongelma,
+johon ei tunneta mitään tehokasta algoritmia.
+Emme voi toivoa, että osaisimme ratkaista tehokkaasti ongelmaa,
+jota kukaan muukaan ei ole osannut,
+etenkin kun yleisesti uskotaan, että $\textrm{P} \neq \textrm{NP}$.
+Peli ei ole kuitenkaan välttämättä menetetty.
+
+Suoraviivainen tapa koettaa ratkaista NP-ongelmaa on 
+käyttää peruuttavaa hakua, joka käy läpi kaikki mahdolliset
+ratkaisut raa'alla voimalla.
+Tässä tulee kuitenkin ongelmaksi haun hitaus,
+eikä haku löydä välttämättä mitään järkevää ratkaisua alkuvaiheessa.
+Käytännössä voimme usein tyytyä siihen,
+että löydämme nopeasti \emph{melko hyvän} ratkaisun,
+vaikka se ei olisi optimaalinen.
+Voimme koettaa muodostaa ratkaisun ahneesti niin,
+että käytämme sopivaa \emph{heuristiikkaa},
+joka ohjaa hakua hyvältä näyttävään suuntaan.
+Voimme myös hyödyntää \emph{satunnaisuutta} niin,
+että algoritmi arpoo suuren määrän ratkaisuja
+ja valitsee niistä parhaan.
+Näiden ainesten avulla on saatu aikaan käytännössä
+hyviä ratkaisuja monissa vaikeissa ongelmissa.
+
+Esimerkiksi jos haluamme löytää verkosta suuren klikin,
+voimme järjestää verkon solmut satunnaiseen järjestykseen
+ja muodostaa klikin käymällä solmut läpi ja lisäämällä
+solmun klikkiin, jos siitä on kaari kaikissa klikissä
+tällä hetkellä oleviin solmuihin.
+Kun toistamme tätä monta kertaa, löydämme todennäköisesti
+jonkin klikin, joka on lähellä verkon suurinta klikkiä.
+Toisaalta emme voi tietää koskaan varmasti,
+onko suurin löytynyt klikki suurin mahdollinen,
+koska käymme läpi vain satunnaisia järjestyksiä emmekä
+kaikkia mahdollisia vaihtoehtoja, mikä olisi liian hidasta.
+
+Joskus voimme saada aikaan NP-ongelmaan \emph{pseudopolynomisen}
+ratkaisun dynaamisen ohjelmoinnin avulla.
+Tämä tarkoittaa, että algoritmi näyttää päältä päin polynomiselta,
+mutta sen tehokkuus perustuu siihen,
+että teemme oletuksia syötteen lukujen suuruudesta.
+Tyypillinen esimerkki on NP-täydellinen ongelma,
+jossa haluamme muodostaa $n$ kokonaisluvusta osajoukon,
+jonka summa on $x$.
+Voimme ratkaista tehtävän dynaamisella ohjelmoinnilla niin,
+että ratkaisun aikavaativuus on $O(ns)$, missä $s$
+on lukujen summa.
+Tällainen ratkaisu on tehokas monissa käytännön tilanteissa,
+kunhan $s$ on riittävän pieni.
+Kuitenkin yleisessä tilanteessa luvut voivat olla
+suuria emmekä voi enää käyttää dynaamista ohjelmointia.
