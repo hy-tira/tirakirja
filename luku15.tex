@@ -4,7 +4,7 @@ Olemme tässä kirjassa tutustuneet menetelmiin, joiden avulla voimme
 ratkaista tehokkaasti ongelmia.
 Kuitenkin on myös monia ongelmia, joiden ratkaisemiseen ei tällä
 hetkellä tunneta mitään tehokasta algoritmia.
-Jos vastaamme tulee tällaisia ongelmia, hyvät neuvot ovat kalliit.
+Jos vastaamme tulee tällainen ongelma, hyvät neuvot ovat kalliit.
 
 Vaikeiden ongelmien yhteydessä vastaan tulee usein
 kirjainyhdistelmä NP.
@@ -16,68 +16,69 @@ Nyt on aika selvittää, mitä nämä käsitteet oikeastaan tarkoittavat.
 
 \section{Luokat P ja NP}
 
-Kun tässä luvussa käsittelemme algoritmisia ongelmia,
-muotoilemme ne niin, että voimme esittää ne \emph{päätösongelmina}.
-Tämä tarkoittaa, että algoritmin tulee antaa jokaiselle syötteelle
-vastaus ''kyllä'' tai ''ei''.
-Tämä voi tuntua aluksi hieman rajoittavalta, mutta huomaamme myöhemmin,
-että voimme esittää helposti monenlaisia ongelmia päätösongelmina.
+Keskitymme tässä luvussa \emph{päätösongelmiin}, joissa algoritmin tulee
+antaa vastaus ''kyllä'' tai ''ei''.
+Esimerkiksi ongelma 
+''onko verkossa polkua solmusta $a$ solmuun $b$?'' on päätösongelma.
+Tulemme huomaamaan, että voimme muotoilla monenlaisia ongelmia
+päätösongelmina eikä tämä rajoita juurikaan, mitä ongelmia voimme tarkastella.
 
-\subsection{Luokka P}
+\subsubsection{Luokka P}
 
 Luokka P sisältää päätösongelmat, joiden ratkaisemiseen on
-\emph{polynominen} algoritmi eli algoritmi, jonka aikavaativuus
-on muotoa $O(n^k)$, missä $k$ on vakio.
-Lähes kaikki tässä kirjassa esitetyt algoritmit toimivat
-polynomisessa ajassa.
+olemassa \emph{polynominen} algoritmi eli algoritmi, jonka aikavaativuus
+on enintään $O(n^k)$, missä $k$ on vakio.
+Lähes kaikki tässä kirjassa esitetyt algoritmit
+ovat toimineet polyonmisessa ajassa.
 Tuttuja polynomisia aikavaativuuksia ovat esimerkiksi
 $O(1)$, $O(\log n)$ $O(n)$, $O(n \log n)$, $O(n^2)$ ja $O(n^3)$.
 
-Esimerkki luokkaan P kuuluvasta ongelmasta on
-''onko taulukossa kahta samaa alkiota?''.
-Tämä ongelma kuuluu luokkaan P, koska voimme ratkaista
-sen monellakin tavalla polynomisessa ajassa.
-Helpoin tapa on käydä läpi kaikki tavat valita taulukosta
-kaksi alkiota ja tarkastaa ovatko jotkin kaksi samat,
-jolloin tuloksena on ajassa $O(n^2)$ toimiva algoritmi.
+Esimerkiksi ongelma ''onko verkossa polkua solmusta $a$ solmuun $b$?''
+kuuluu luokkaan P, koska voimme ratkaista sen monellakin tavalla
+polynomisessa ajassa.
+Voimme vaikkapa aloittaa syvyyshaun solmusta $a$ ja tarkastaa,
+pääsemmekö solmuun $b$.
+Tuloksena on algoritmi, jolla on polynominen aikavaativuus
+$O(n+m)$, joten ongelma kuuluu luokkaan P.
 
 Luokan P tarkoituksena on kuvata ongelmia, jotka voimme
-ratkaista \emph{tehokkaasti}.
+ratkaista jossain mielessä \emph{tehokkaasti}.
 Tässä tehokkuuden määritelmä on varsin karkea:
 pidämme algoritmia tehokkaana, jos sillä on mikä tahansa
 polynominen aikavaativuus.
 Onko $O(n^{100})$-aikainen algoritmi siis tehokas?
-Ei, mutta tällaisia algoritmeja ei esiinny käytännössä
-eikä meidän tarvitse murehtia asiasta.
+Ei, mutta käytännössä vakio $k$ on yleensä pieni ja
+on osoittautunut, että polynominen aikavaativuus 
+on toimiva tehokkuuden mittari.
 
-\subsection{Luokka NP}
 
-Luokka NP sisältää päätösongelmat, joissa jokaiseen
-algoritmin antamaan ''kyllä''-vastaukseen voidaan liittää
-polynomisen kokoinen \emph{todiste}, jonka avulla voimme
+\subsubsection{Luokka NP}
+
+Luokka NP sisältää päätösongelmat, joissa jokaisessa
+''kyllä''-tapauksessa on olemassa
+\emph{todiste}, jonka avulla voimme
 \emph{tarkastaa} polynomisessa ajassa, että vastaus on oikein.
-Todiste antaa meille lisätietoa siitä,
-minkä takia algoritmin ''kyllä''-vastaus
-pitää paikkansa syötteelle.
+Todiste on merkkijono, jonka koko on polynominen
+suhteessa syötteeseen,
+ja se antaa meille lisätietoa siitä,
+minkä takia ''kyllä''-vastaus pitää paikkansa syötteelle.
 
 Esimerkki luokkaan NP kuuluvasta ongelmasta on
-\emph{kauppamatkustajan ongelma}: onko verkossa reittiä,
-joka alkaa jostakin solmusta, käy kerran kaikissa muissa
-solmuissa ja palaa lähtösolmuun?
+''onko verkossa polkua solmusta $a$ solmuun $b$,
+joka kulkee tasan kerran jokaisen verkon solmun kautta?''.
 Tämän ongelman ratkaisemiseen ei tunneta tehokasta algoritmia,
-mutta jokaiseen ''kyllä''-tapaukseen liittyy todiste,
-jonka voimme tarkastaa tehokkaasti.
-Todisteena on reitti, jota kauppamatkustaja noudattaa.
-Voimme tarkastaa tehokkaasti, että reitti kulkee verkon
-kaaria pitkin ja käy kerran jokaisessa solmussa.
+mutta jokaisessa ''kyllä''-tapauksessa on olemassa todiste:
+halutunlainen polku solmusta $a$ solmuun $b$.
+Voimme tarkastaa helposti polynomisessa ajassa,
+että todisteen kuvaamalla polulla on vaaditut ominaisuudet.
 
-Jos algoritmi antaa ''ei''-vastauksen, tähän ei tarvitse
+Jos vastaus syötteeseen on ''ei'', tähän ei tarvitse
 liittyä tehokkaasti tarkastettavaa todistetta.
 Usein olisikin hankalaa antaa todiste siitä, että jotain
 asiaa \emph{ei} ole olemassa.
-Esimerkiksi kauppamatkustajan ongelmassa on helppoa
-todistaa, että reitti on olemassa, koska voimme vain
-näyttää reitin, mutta vaikeaa todistaa, että reittiä ei ole olemassa.
+Äskeisessä esimerkissä meidän oli helppoa todistaa
+polun olemassaolo, koska voimme vain näyttää kyseisen polun,
+mutta meillä ei ole vastaavaa keinoa todistaa, että polkua ei ole olemassa.
 
 Huomaa, että kaikki luokan P ongelmat kuuluvat myös
 luokkaan NP. Tämä johtuu siitä, että luokan P ongelmissa
@@ -85,12 +86,12 @@ voimme tarkastaa ''kyllä''-vastauksen
 \emph{tyhjän} todisteen avulla: voimme saman tien ratkaista
 koko ongelman alusta alkaen polynomisessa ajassa.
 
-\subsection{P vs. NP}
+\subsubsection{P vs. NP}
 
 Äkkiseltään tuntuu selvältä, että luokassa NP täytyy olla
 enemmän ongelmia kuin luokassa P.
-Luokassa NP meidän riittää vain tarkastaa ''kyllä''-vastauksen
-todiste, mikä tuntuu helpommalta kuin keksiä ongelman ratkaisu tyhjästä.
+Luokassa NP meidän riittää vain pystyä tarkastamaan ''kyllä''-vastauksen
+todiste, mikä tuntuu helpommalta kuin muodostaa ongelman ratkaisu tyhjästä.
 Monet uskovatkin, että luokka NP on suurempi kuin luokka P --
 mutta kukaan ei ole onnistunut todistamaan asiaa.
 
@@ -104,21 +105,6 @@ Clay-instituutti on luvannut miljoonan dollarin palkinnon
 sille, joka todistaa, että $P=NP$ tai $P \neq NP$.
 Voi olla kuitenkin, että tämä on yksi \emph{vaikeimmista}
 tavoista ansaita miljoona dollaria.
-
-Asialla on myös suuri käytännön merkitys,
-koska moni tärkeä ongelma kuuluu luokkaan NP,
-mutta sen ei tiedetä kuuluvan luokkaan P.
-Yksi esimerkki tällaisesta ongelmasta on kokonaisluvun
-jakaminen alkutekijöihin (esimerkiksi luvun $15$
-alkutekijät ovat $3$ ja $5$).
-Tämän ongelman päätösversio kuuluu luokkaan NP,
-koska meidän on helppoa tarkastaa,
-onko alkutekijöiden tulo haluttu luku,
-mutta ongelman ei tiedetä kuuluvan luokkaan P.
-Laajasti käytössä olevat salausmenetelmät perustuvat siihen,
-että emme voi selvittää tehokkaasti luvun alkutekijöitä.
-Niinpä jos päteekin $P=NP$, nämä salausmenetelmät voivat
-muuttua käyttökelvottomiksi.
 
 Jos pätee $P \neq NP$, kuten uskotaan,
 vaikeutena on keksiä keino todistaa, että jotakin
@@ -146,34 +132,61 @@ ongelmat joko kuuluvat myös luokkaan P tai ovat
 NP-täydellisiä.
 Nykyään tunnetaankin tuhansia erilaisia NP-täydellisiä ongelmia.
 Jos keksisimme mihin tahansa niistä polynomisessa ajassa toimivan
-ratkaisun, olisimme samalla todistaneet, että $P=NP$.
+ratkaisun, olisimme samalla onnistuneet todistamaan, että $P=NP$.
 
 \subsection{SAT-ongelma}
 
 Ensimmäinen löydetty NP-täydellinen ongelma oli
-SAT-ongelma, jossa annettuna on looginen lauseke ja haluamme
+SAT-ongelma, jossa annettuna on konjunktiivisessa
+normaalimuodossa oleva looginen kaava ja haluamme
 selvittää, voimmeko valita muuttujien arvot niin,
-että lauseke on tosi.
-Lauseke muodostuu osista, jotka on yhdistetty
-ja-operaatiolla ($\land$). Jokainen osa puolestaan muodostuu
+että kaava on tosi.
+Konjunktiivinen normaalimuoto tarkoittaa,
+että kaava koostuu osista, jotka on yhdistetty
+ja-operaatiolla ($\land$), ja jokainen osa puolestaan koostuu
 muuttujista ja niiden negaatioista, jotka on yhdistetty
 tai-operaatiolla ($\lor$).
 
-Esimerkiksi lauseke
+Esimerkiksi kaava
 \[(\neg x_1 \lor x_3) \land (x_1 \lor x_2 \lor x_3) \land (\neg x_2 \lor \neg x_3)\]
 on mahdollista saada todeksi, koska voimme esimerkiksi asettaa
 muuttujat $x_1$ ja $x_2$ epätosiksi ja muuttujan $x_3$ todeksi.
+Vastaavasti kaava
+\[(x_1 \lor x_2) \land (\neg x_1 \lor x_2) \land (x_1 \lor \neg x_2) \land (\neg x_1 \lor \neg x_2) \]
+ei ole tosi, vaikka valitsisimme muuttujien arvot miten tahansa.
 
-Tämä ongelma kuuluu selvästi luokkaan NP, koska ''kyllä''-vastauksen
-todisteena on jokaiselle muuttujalle valittu arvo.
+Kun haluamme osoittaa, että SAT on NP-täydellinen ongelma,
+meidän täytyy näyttää, että se kuuluu luokkaan NP ja mikä
+tahansa luokan NP ongelma voidaan palauttaa siihen.
+Luokkaan NP kuuluminen on helppoa näyttää:
+''kyllä''-tapauksessa todiste on jokaiselle muuttujalle valittu arvo.
 Huomattavasti vaikeampaa on osoittaa, että \emph{jokainen} luokan
-NP ongelma voidaan palauttaa tähän ongelmaan polynomisessa ajassa.
+NP ongelma voidaan palauttaa SAT-ongelmaan polynomisessa ajassa.
 
-TODO
+Tässä kirjassa emme käsittele todistusta yksityiskohtaisesti,
+mutta voimme kuitenkin kuvailla sen perusideaa.
+Tarkastellaan tiettyä luokan NP ongelmaa,
+joka meidän täytyy pystyä palauttamaan SAT-ongelmaan.
+Koska ongelma voi olla mikä tahansa luokkaan NP kuuluva, tiedämme siitä vain,
+että on olemassa algoritmi, joka tarkastaa
+polynomisessa ajassa ''kyllä''-tapauksen todisteen.
+Tämä vastaa sitä, että on olemassa epädeterministinen
+Turingin kone, joka \emph{arvaa} ensin todisteen sisällön ja
+tarkastaa sitten, että todiste on kelvollinen.
+Ideana on muodostaa looginen kaava, joka luonnehtii tällaisen
+Turing-koneen laskentaa ''kyllä''-tapauksessa:
+koneen tulee käsitellä syöte jollakin tavalla,
+muodostaa todiste ja tarkastaa se.
+Kaavan tarkka sisältö riippuu siitä, miten kone on rakentunut,
+mutta voimme aina muodostaa kaavan, kunhan tiedämme koneen rakenteen
+ja annetun syötteen.
+Tuloksena on looginen kaava, jonka voi saada todeksi tarkalleen silloin,
+kun vastaus syötteeseen on ''kyllä'',
+joten olemme palauttaneet ongelman SAT-ongelmaan.
 
 \subsection{Ongelmien palautukset}
 
-Kun meillä on tiedossamme yksi NP-täydellinen ongelma,
+Kun meillä on tiedossa yksi NP-täydellinen ongelma,
 voimme osoittaa muita ongelmia NP-täydellisiksi palautusten avulla.
 Ideana on, että jos ongelma $A$ on NP-täydellinen ja
 voimme palauttaa sen polynomisessa ajassa ongelmaksi $B$,
