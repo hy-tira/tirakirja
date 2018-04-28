@@ -142,8 +142,8 @@ normaalimuodossa oleva looginen kaava ja haluamme
 selvittää, voimmeko valita muuttujien arvot niin,
 että kaava on tosi.
 Konjunktiivinen normaalimuoto tarkoittaa,
-että kaava koostuu osista, jotka on yhdistetty
-ja-operaatiolla ($\land$), ja jokainen osa puolestaan koostuu
+että kaava koostuu lausekkeista, jotka on yhdistetty
+ja-operaatiolla ($\land$), ja jokainen lauseke koostuu
 muuttujista ja niiden negaatioista, jotka on yhdistetty
 tai-operaatiolla ($\lor$).
 
@@ -186,43 +186,32 @@ joten olemme palauttaneet ongelman SAT-ongelmaan.
 
 \subsection{Ongelmien palautukset}
 
-Kun meillä on tiedossa yksi NP-täydellinen ongelma,
-voimme osoittaa muita ongelmia NP-täydellisiksi palautusten avulla.
+Nyt kun tiedämme, että SAT-ongelma on NP-täydellinen,
+voimme alkaa osoittaa muita ongelmia NP-täydellisiksi palautusten avulla.
 Ideana on, että jos ongelma $A$ on NP-täydellinen ja
 voimme palauttaa sen polynomisessa ajassa ongelmaksi $B$,
 myös ongelma $B$ on NP-täydellinen.
 
-Ongelman $A$ palauttaminen ongelmaksi $B$ tarkoittaa,
-että näytämme yleisen tavan muuntaa ongelman $A$ syöte
-ongelman $B$ syötteeksi.
-Palautuksen täytyy säilyttää syötteen vastaus
-(päätösongelmassa ''kyllä'' tai ''ei'') ennallaan.
-Jos pystymme tekemään palautuksen, voimme keskittyä ratkomaan ongelman
-$A$ sijasta ongelmaa $B$.
-
-Näytämme seuraavaksi, miten voimme palauttaa SAT-ongelman
-3SAT-ongelmaksi ja edelleen 3SAT-ongelman CLIQUE-ongelmaksi.
-Tämä osoittaa, että sekä 3SAT että CLIQUE
-ovat NP-täydellisiä ongelmia.
-
 \subsubsection{Palautus SAT $\rightarrow$ 3SAT}
 
-3SAT-ongelma on SAT-ongelman erikoistapaus, jossa jokaisessa
-$\land$-merkeillä yhdistetyssä lausekkessa on tarkalleen kolme muuttujaa.
+Aloitamme osoittamalla, että 3SAT-ongelma on NP-täydellinen.
+3SAT-on\-gelma on SAT-ongelman erikoistapaus, jossa jokaisessa
+$\land$-merkeillä yhdistetyssä lausekkeessa on tarkalleen kolme muuttujaa.
 Haluamme näyttää, että voimme muuttaa minkä tahansa
 SAT-ongelman syötteen 3SAT-ongelman syötteeksi,
 jonka totuusarvo on sama.
 
 Ideana on muokata jokaista lauseketta niin, 
 että tuloksena on yksi tai useampia kolmen muuttujan lausekkeita.
-Merkitään $k$ lausekkeen muuttujien määrää.
+Merkitään $k$:lla lausekkeen muuttujien määrää.
 Jos $k=1$ tai $k=2$, toistamme viimeistä muuttujaa uudestaan,
 jotta saamme aikaan kolme muuttujaa.
 Esimerkiksi jos lauseke on $(x_1)$, muutamme sen muotoon
 $(x_1 \lor x_1 \lor x_1)$, ja jos lauseke on $(x_1 \lor x_2)$, muutamme
 sen muotoon $(x_1 \lor x_2 \lor x_2)$.
 
-Jos $k=3$, meidän ei tarvitse tehdä mitään. Jos sitten $k>3$,
+Jos $k=3$, meidän ei tarvitse tehdä mitään, koska lausekkeessa
+on valmiiksi kolme muuttujaa. Jos sitten $k>3$,
 jaamme lausekkeen osiin, jotka ketjutetaan apumuuttujien avulla.
 Ketjun jokaisessa kohdassa vasemman lausekkeen viimeinen
 muuttuja on $a_i$ ja oikean lausekkeen ensimmäinen muuttuja on $\neg a_i$.
@@ -232,20 +221,62 @@ muutamme sen kolmeksi lausekkeeksi $(x_1 \lor x_2 \lor a_1)$,
 $(\neg a_1 \lor x_3 \lor a_2)$ ja $(\neg a_2 \lor x_4 \lor x_5)$.
 
 Tämä palautus osoittaa, että 3SAT on NP-täydellinen ongelma --
-eli SAT-ongelman oleellinen vaikeus syntyy siitä, että lausekkeissa
-voi olla kolme muuttujaa\footnote{Entä ongelma 2SAT, jossa jokaisessa lausekkeessa
+eli saimme tietää, että
+SAT-ongelman oleellinen vaikeus syntyy jo silloin, kun lausekkeissa
+on vain kolme muuttujaa\footnote{Entä ongelma 2SAT, jossa jokaisessa lausekkeessa
 on kaksi muuttujaa? Tämä \emph{ei} ole NP-täydellinen ongelma,
 vaan kuuluu luokkaan P.}.
-Palautuksen hyötynä on toisaalta myös, että kolmen muuttujan lausekkeita
+Palautuksen hyötynä on myös se, että kolmen muuttujan lausekkeita
 on helpompaa käsitellä myöhemmissä todistuksissa
 kuin vaihtelevan pituisia lausekkeita.
 
+\subsubsection{Palautus 3SAT $\rightarrow$ solmupeite}
 
-\subsubsection{Palautus 3SAT $\rightarrow$ CLIQUE}
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\small
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle, fill=lightgray] (2) at (4,3) {$2$};
+\node[draw, circle, fill=lightgray] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle, fill=lightgray] (5) at (6,2) {$5$};
+
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (4) -- (5);
+\end{tikzpicture}
+\end{center}
+\caption{Solmut $\{2,3,5\}$ muodostavat solmupeitteen.}
+\label{fig:solpei}
+\end{figure}
+
+Seuraavaksi osoitamme, että on NP-täydellinen ongelma tarkastaa,
+onko verkossa \emph{solmupeitettä}, jossa on enintään $k$ solmua.
+Solmupeite on verkon solmujen osajoukko, joka on valittu niin,
+että jokaisessa kaaressa ainakin toinen päätesolmu kuuluu
+solmupeitteeseen.
+Esimerkiksi kuvassa \ref{fig:solpei} on verkko ja sen solmupeite,
+johon kuuluu kolme solmua.
+
+Kun haluamme palauttaa 3SAT-ongelman solmupeiteongelmaan,
+meidän täytyy näyttää, että voimme tulkita minkä tahansa
+3SAT-ongelman tapauksen verkon solmupeitteen etsimisenä.
+Meidän tulee siis pystyä muuttamaan looginen kaava verkoksi,
+jonka jokin solmupeite vastaa sitä, että kaava on totta.
+Tarkastelemme esimerkkinä kaavaa
+\[(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor \neg x_2 \lor x_3).\]
+
+
+
 
 \subsection{Esimerkkejä}
 
-\subsection{NP-vaikeat ongelmat}
+\section{Optimointiongelmat}
 
 Sanomme, että ongelma on NP-vaikea, jos voimme palauttaa
 NP-täydellisen ongelman siihen mutta ongelma ei välttämättä
