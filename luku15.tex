@@ -406,6 +406,30 @@ Olemme siis onnistuneet palauttamaan 3SAT-ongelman solmupeiteongelmaksi
 niin, että verkon koko on polynominen suhteessa kaavan pituuteen,
 joten solmupeiteongelma on NP-täydellinen.
 
+\subsection{Lisää ongelmia}
+
+Palautusten avulla on onnistuttu löytämään tuhansia NP-täydellisiä ongelmia.
+Esimerkiksi myös seuraavat ongelmat ovat NP-täydellisiä:
+
+\begin{itemize}
+\item onko verkossa $k$-kokoista \emph{klikkiä} eli $k$ solmun joukkoa,
+jossa jokaisen kahden solmun välillä on kaari?
+\item voimmeko värittää verkon solmut kolmella värillä niin,
+että jokaisen kaaren päätesolmut ovat erivärisiä?
+\item onko verkossa polkua, joka kulkee tasan kerran jokaisen
+verkon solmun kautta (eli \emph{Hamiltonin polkua})?
+\item voiko annetuista $n$ luvusta valita osajoukon, jonka summa on $x$?
+\end{itemize}
+
+Entä millainen olisi ongelma, jonka ei tiedetä kuuluvan luokkaan P
+eikä olevan NP-täydellinen?
+Klassinen esimerkki on ongelma, jossa haluamme tutkia,
+ovatko kaksi verkkoa \emph{isomorfiset} eli onko niiden
+rakenne samanlainen.
+Tähän ongelmaan ei tunneta polynomiaikaista algoritmia,
+mutta ei ole myöskään tiedossa tapaa palauttaa
+jotain NP-täydellistä ongelmaa siihen.
+
 \subsection{Optimointiongelmat}
 
 Käytännössä haluamme usein ratkaista päätösongelman
@@ -441,34 +465,3 @@ päätösongelmien optimointiversiot,
 koska voimme palauttaa niihin NP-täydellisiä ongelmia
 mutta ne eivät itse kuulu luokkaan NP.
 
-% 
-% 
-% Sanomme, että ongelma on NP-vaikea, jos voimme palauttaa
-% NP-täydellisen ongelman siihen mutta ongelma ei välttämättä
-% kuulu luokkaan NP.
-% Jos ongelma on NP-vaikea, se on siis ainakin yhtä vaikea
-% kuin luokan NP vaikeimmat ongelmat.
-% 
-% Tähän mennessä olemme käsitelleet päätösongelmia,
-% mutta käytännössä moni ongelma \emph{ei} ole päätösongelma
-% vaan optimointiongelma: haluamme löytää jollakin
-% tavalla parhaan ratkaisun ongelmaan.
-% Vaikuttaa siis, että päätöson\-gelmien ulkopuolelle jää
-% monia kiinnostavia ongelmia.
-% 
-% Osoittautuu kuitenkin, että voimme ratkaista optimointiongelmia
-% muotoilemalla ne päätösongelman avulla.
-% Lisäksi jos meillä on tehokas ratkaisu päätösongelmaan,
-% pystymme sen avulla saamaan aikaan myös tehokkaan
-% ratkaisun optimointiongelmaan.
-% Ideana on muuttaa optimointiongelma päätös\-ongelmaksi niin,
-% että kysymme, onko olemassa ratkaisua, jonka hyvyys ylittää
-% tietyn rajan $x$. Tämän jälkeen voimme selvittää binäärihaun
-% avulla, mikä on suurin $x$:n arvo, jolle ratkaisu on olemassa.
-% 
-% Tarkastellaan esimerkkinä ongelmaa, jossa haluamme selvittää,
-% mikä on verkon suurin \emph{klikki} eli joukko solmuja,
-% jossa minkä tahansa kahden solmun välillä on kaari.
-% Voimme muotoilla tämän ongelman päätösongelmana
-% ''onko verkossa klikkiä, jonka koko on vähintään $x$''
-% ja etsiä sitten suurimman $x$:n arvon binäärihaun avulla.
