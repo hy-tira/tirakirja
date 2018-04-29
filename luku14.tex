@@ -1,30 +1,32 @@
-\chapter{Virtauslaskenta}
+\chapter{Maksimivirtaus}
 
 Tässä luvussa tarkastelemme ongelmaa,
-jossa haluamme selvittää suurimman \emph{virtauksen}
+jossa haluamme selvittää \emph{maksimivirtauksen}
 verkon lähtösolmusta kohdesolmuun.
-Tämä tarkoittaa, että haluamme välittää jotakin
-kaaria pitkin mahdollisimman tehokkaasti
-ottaen huomioon kaarten kapasiteetit.
-Esimerkiksi tietoverkossa meitä voi kiinnostaa,
-kuinka nopeasti voimme välittää tietoa koneelta toiselle.
+Tämä tarkoittaa, että haluamme löytää mahdollisimman
+tehokkaan tavan välittää lähtösolmusta kohdesolmuun
+jotain hyödykettä ottaen huomioon kaarten kapasiteetit.
 
 Tutustumme aluksi Ford-Fulkersonin algoritmiin,
 jonka avulla voimme sekä selvittää maksimivirtauksen
-että saada paremman käsityksen ongelman luonteesta.
-Tämän jälkeen käymme läpi joukon muita verkko-ongelmia,
+että ymmärtää paremmin, mistä ongelmassa on kysymys.
+Tämän jälkeen tarkastelemme joitakin verkko-ongelmia,
 jotka pystymme ratkaisemaan \emph{palauttamalla}
 ongelmat maksimivirtaukseen.
 
-\section{Maksimivirtaus}
+\section{Maksimivirtauksen laskeminen}
 
-Verkossa kulkeva \emph{virtaus} lähtee liikkeelle
-tietystä lähtösolmusta ja päätyy tiettyyn kohdesolmuun.
-Jokaisessa välisolmussa solmuun tuleva virtaus on
+Annettuna on suunnattu verkko,
+jossa on kaksi erityistä solmua:
+\emph{lähtösolmu} ja \emph{kohdesolmu}.
+Haluamme muodostaa verkkoon mahdollisimman
+suuren virtauksen eli \emph{maksimivirtauksen}
+lähtösolmusta kohdesolmuun niin, että
+jokaiseen välisolmuun tuleva virtaus on
 yhtä suuri kuin solmusta lähtevä virtaus.
-Lisäksi kullakin verkon kaarella on \emph{kapasiteetti}, jota virtauksen
+Virtausta rajoittaa, että kullakin verkon kaarella on
+\emph{kapasiteetti}, jota virtauksen
 määrä kaarta pitkin ei saa ylittää.
-\emph{Maksimivirtaus} on virtaus, joka on mahdollisimman suuri.
 
 \begin{figure}
 \center
@@ -47,8 +49,9 @@ määrä kaarta pitkin ei saa ylittää.
 \label{fig:makvir}
 \end{figure}
 
-Tarkastellaan esimerkkinä kuvan \ref{fig:makvir} verkkoa.
-Tässä verkossa maksimivirtaus solmusta $1$ solmuun $5$ on $7$.
+Kuvassa \ref{fig:makvir} näkyy esimerkkinä verkon maksimivirtaus,
+kun lähtösolmu on $1$ ja kohdesolmu $5$.
+Tässä tapauksessa maksimivirtauksen suuruus on $7$.
 Jokaisessa kaaressa merkintä $v/k$ tarkoittaa,
 että kaaren kautta kulkee virtausta $v$ ja
 kaaren kapasiteetti on $k$.
@@ -218,11 +221,21 @@ solmusta $1$ solmuun $5$, joten maksimivirtaus on $4+3=7$.
 \label{fig:floesi}
 \end{figure}
 
+Maksimivirtauksen muodostamisen jälkeen voimme tarkastella kaaria,
+jotka vastaavat verkon alkuperäisiä kaaria, jotta näemme,
+miten virtaus on muodostunut.
+Kaarta kulkevan virtauksen määrä on yhtä suuri kuin
+muutos kaaren painossa algoritmin aikana.
+Esimerkiksi kuvassa \ref{fig:floesi} kaaren $4 \rightarrow 5$
+paino on alussa 5 ja algoritmin suorituksen jälkeen 2.
+Tämä tarkoittaa, että kaarta pitkin kulkevan virtauksen määrä on $5-2=3$.
+
 \subsection{Yhteys minimileikkaukseen}
 
 Ford-Fulkersonin algoritmin toimintaidea on sinänsä järkevä,
-mutta ei ole silti päältä päin todellakaan selvää,
-miksi algoritmi löytää varmasti maksimivirtauksen.
+koska polut lähtösolmusta kohdesolmuun kasvattavat virtausta.
+Tästä huolimatta ei ole päältä päin todellakaan selvää,
+miksi algoritmi löytää varmasti \emph{suurimman} mahdollisen virtauksen.
 Jotta voimme ymmärtää paremmin algoritmin toimintaa,
 tarkastelemme seuraavaksi toista verkko-ongelmaa,
 joka antaa meille uuden näkökulman maksimivirtaukseen.
@@ -331,8 +344,9 @@ Riippumatta polkujen valintatavasta on selvää,
 että jokainen polku kasvattaa virtausta ainakin \emph{yhdellä}.
 Niinpä tiedämme, että joudumme etsimään enintään $f$ polkua,
 kun verkon maksimivirtaus on $f$.
-Jos muodostamme polut syvyyshaulla, saamme siis algoritmin
-ajankäytölle ylärajan $O(f (n+m))$.
+Jos muodostamme polut syvyyshaulla,
+jokaisen polun muodostaminen vie aikaa $O(m)$,
+joten saamme algoritmin ajankäytölle ylärajan $O(fm)$.
 
 \begin{figure}
 \center
@@ -373,9 +387,20 @@ polun, jossa on mahdollisimman vähän kaaria.
 Leveyshakua käyttäen muodostamme kuvan \ref{fig:polhuo} verkossa
 vain kaksi polkua $1 \rightarrow 2 \rightarrow 4$ ja
 $1 \rightarrow 3 \rightarrow 4$, jotka antavat suoraan maksimivirtauksen.
-Yleisemmin on mahdollista osoittaa, että
-Edmonds-Karpin algoritmi muodostaa aina enintään $nm$ polkua,
-joten sen aikavaativuus on $O(nm (n+m))$.
+
+Kun käytämme Edmonds-Karpin algoritmia,
+meidän täytyy muodostaa aina vain $O(nm)$ polkua,
+joten algoritmi vie aikaa $O(nm^2)$.
+Saamme tämän rajan tarkastelemalla kullakin polulla
+jotain kaarta, jonka kapasiteetti on käytetty kokonaan polulla.
+Jotta voimme käyttää kyseistä kaarta uudestaan jollain tulevalla polulla,
+meidän täytyy sitä ennen peruuttaa virtausta
+kulkemalla kaarta käänteiseen suuntaan,
+mikä kasvattaa etäisyyttä lähtösolmusta kaareen.
+Koska valitsemme polut leveyshaun avulla,
+kukin $m$ kaaresta voi tämän vuoksi olla vain $O(n)$ 
+kertaa kaarena, jonka kapasiteetti käytetään kokonaan,
+ja saamme polkujen määrälle ylärajan $O(nm)$.
 
 \section{Sovelluksia}
 
@@ -389,7 +414,7 @@ Tutustumme seuraavaksi joihinkin tällaisiin ongelmiin.
 
 Ensimmäinen tehtävämme on muodostaa mahdollisimman monta
 \emph{erillistä} polkua verkon lähtösolmusta kohdesolmuun.
-Tämä tarkoittaa, että jokainen verkon kaari saa esiintyä
+Erillisyys tarkoittaa, että jokainen verkon kaari saa esiintyä
 enintään yhdellä polulla.
 Saamme kuitenkin halutessamme kulkea saman solmun kautta useita kertoja.
 Esimerkiksi kuvassa \ref{fig:eripol} voimme muodostaa
@@ -454,10 +479,10 @@ mutta ei ole mahdollista muodostaa kolmea erillistä polkua.
 \label{fig:erivir}
 \end{figure}
 
-Voimme ratkaista erillisten polkujen ongelman
-tulkitsemalla tehtävän maksimivirtauksena.
+Voimme ratkaista ongelman
+tulkitsemalla erilliset polut maksimivirtauksena.
 Ideana on etsiä maksimivirtaus lähtösolmusta kohdesolmuun
-niin, että jokaisen kaaren kapasiteetti on $1$.
+olettaen, että jokaisen kaaren kapasiteetti on $1$.
 Tämä maksimivirtaus on yhtä suuri kuin suurin
 erillisten polkujen määrä.
 Kuva \ref{fig:erivir} näyttää maksimivirtauksen
@@ -466,7 +491,8 @@ esimerkkiverkossamme.
 Miksi maksimivirtaus ja erillisten polkujen määrä ovat yhtä suuret?
 Ensinnäkin erilliset polut muodostavat yhdessä virtauksen,
 joten maksimivirtaus ei voi olla pienempi kuin erillisten polkujen määrä.
-Toisaalta jos virtaus on $k$, voimme muodostaa $k$ erillistä polkua
+Toisaalta jos verkossa on virtaus, jonka suuruus on $k$,
+voimme muodostaa $k$ erillistä polkua
 valitsemalla kaaria ahneesti lähtösolmusta alkaen,
 joten maksimivirtaus ei voi olla suurempi kuin erillisten polkujen määrä.
 Ainoa mahdollisuus on, että maksimivirtaus ja erillisten polkujen määrä
@@ -563,7 +589,7 @@ maksimiparitusta.
 
 \emph{Polkupeite} on joukko verkon polkuja,
 jotka kattavat yhdessä kaikki verkon solmut.
-Oletamme seuraavaksi, että verkko on suunnattu ja syklitön,
+Oletamme, että verkko on suunnattu ja syklitön,
 ja haluamme muodostaa mahdollisimman pienen polkupeitteen
 niin, että jokainen solmu esiintyy tarkalleen yhdessä polussa.
 Kuvassa \ref{fig:polpei} on esimerkkinä verkko ja sen pienin polkupeite,
