@@ -1,33 +1,26 @@
 \chapter{Keko}
 
-Keko on tietorakenne, joka pitää yllä alkioiden kokoelmaa
-ja tarjoaa seuraavat operaatiot:
+Keko on tietorakenne, joka toteuttaa erikoistuneen joukon,
+jossa voimme lisätä alkioita vapaasti, mutta voimme
+etsiä ja poistaa vain pienimmän tai suurimman alkion,
+riippuen keon tyypistä.
+Vaikka voisimme sinänsä toteuttaa nämä operaatiot myös
+binäärihakupuulla, keon etuna on, että
+saamme aikaan \emph{kevyemmän} toteutuksen, kun
+rajoitumme tilanteeseen, jossa tarvitsemme vain nämä operaatiot.
 
-\begin{itemize}
-\item lisää alkio kokoelmaan
-\item etsi kokoelman pienin/suurin alkio
-\item poista kokoelman pienin/suurin alkio
-\end{itemize}
-
-Keon operaatioiden toiminta riippuu siitä,
-onko keko \emph{minimikeko} vai \emph{maksimikeko}.
-Minimikeossa voimme etsiä ja poistaa pienimmän alkion,
-kun taas maksimikeossa voimme etsiä ja poistaa suurimman alkion.
-Meidän täytyy päättää keon luontivaiheessa,
-onko keko minimikeko vai maksimikeko.
-
-Tässä luvussa tutustumme binäärikeko-rakenteeseen,
-jossa lisäykset ja poistot vievät aikaa $O(\log n)$
-ja haku vie aikaa $O(1)$.
-Binäärikeko toteutetaan binääripuun avulla,
-ja se on tavallisimmin käytetty kekorakenne.
-Javan standardikirjaston tietorakenne prioriteettijono
-perustuu binäärikekoon.
+Tutustumme tässä luvussa binäärikeko-rakenteeseen,
+joka on tavallisimmin käytetty kekorakenne.
+Binäärikeko toteutetaan binääripuuna,
+ja se mahdollistaa alkion etsimisen ajassa $O(1)$ sekä
+alkioiden lisäykset ja poistot ajassa $O(\log n)$.
+Käsittelemme myös Javan \texttt{PriorityQueue}-rakenteen, 
+joka perustuu binäärikekoon.
 
 \section{Binäärikeko}
 
 Binäärikeko on binääripuu, jonka jokaisessa solmussa on
-yksi keossa oleva alkio.
+yksi joukkoon kuuluva alkio.
 Puu on rakennettu niin, että sen kaikki tasot alinta
 tasoa lukuun ottamatta ovat täynnä solmuja,
 eli kaikilla solmuilla on vasen ja oikea lapsi.
@@ -35,12 +28,16 @@ Alin taso on puolestaan täytetty niin,
 että solmut on sijoitettu mahdollisimman vasemmalle
 ylempien solmujen lapsiksi.
 
-Keon toiminta perustuu siihen,
-että jokainen keon solmu täyttää \emph{kekoehdon}.
-Minimikeossa kekoehto vaatii, että jokaisen
-solmun arvo on suurempi tai yhtä suuri kuin solmun vanhemman arvo.
-Maksimikeossa puolestaan jokaisen solmun arvon tulee olla
-pienempi tai yhtä suuri kuin solmun vanhemman arvon.
+Kun luomme keon, meidän täytyy päättää,
+onko se \emph{minimikeko} vai \emph{maksimikeko}.
+Minimikeossa voimme etsiä ja poistaa pienimmän alkion,
+kun taas maksimikeossa voimme etsiä ja poistaa suurimman alkion.
+Keon toiminta perustuu siihen, että jokainen
+keon solmu täyttää \emph{kekoehdon}.
+Minimikeossa ehtona on,
+että solmun arvo on suurempi tai yhtä suuri kuin vanhemman arvo,
+ja maksimikeossa solmun arvon tulee olla
+pienempi tai yhtä suuri kuin vanhemman arvon.
 Kekoehdon ansiosta minimikeon juuressa on keon
 pienin alkio ja maksimikeon juuressa on keon suurin alkio.
 
@@ -71,15 +68,17 @@ pienin alkio ja maksimikeon juuressa on keon suurin alkio.
 \label{fig:minkek}
 \end{figure}
 
-
 Kuvassa \ref{fig:minkek} on minimikeko,
 johon on tallennettu kymmenen alkiota.
 Keon kolme ensimmäistä tasoa ovat täynnä
 ja neljännellä tasolla kolme ensimmäistä kohtaa on käytetty.
-Keon juurena on kokoelman pienin alkio $1$,
+Keon juurena on joukon pienin alkio $1$,
 ja kaikki solmut täyttävät kekoehdon.
-Huomaa, että sama alkio voi esiintyä keossa useasti,
-kuten tässä keossa alkiot $5$ ja $8$.
+
+Huomaa, että toisin kuin aiemmissa joukkorakenteissamme,
+sama alkio voi esiintyä keossa useasti.
+Esimerkiksi kuvan \ref{fig:minkek} keko
+sisältää monta kertaa alkiot $5$ ja $8$.
 
 \subsection{Keon tallentaminen}
 
@@ -451,10 +450,10 @@ jossa vertailemme keskenään Javan tietorakenteita
 \texttt{PriorityQueue} ja \texttt{TreeSet}.
 Testissä meillä on taulukko,
 jossa on satunnaisessa järjestyksessä luvut $1,2,\dots,n$.
-Lisäämme ensin taulukon $n/2$ ensimmäistä lukua kokoelmaan.
+Lisäämme ensin taulukon $n/2$ ensimmäistä lukua joukkoon.
 Tämän jälkeen käymme läpi loput $n/2$ lukua,
-ja jokaisen luvun kohdalla lisäämme sen kokoelmaan ja
-poistamme kokoelman pienimmän luvun.
+ja jokaisen luvun kohdalla lisäämme sen joukkoon ja
+poistamme joukon pienimmän luvun.
 Laskemme lisäksi samalla summaa poistetuista luvuista.
 Käytämme testissä seuraavia koodeja:
 
