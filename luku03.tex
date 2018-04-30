@@ -717,18 +717,24 @@ Järjestämisen merkitys algoritmiikassa on siinä,
 että voimme ratkaista monia ongelmia tehokkaasti, 
 kunhan aineisto on järjestyksessä.
 Niinpä yleinen tapa luoda tehokas algoritmi on järjestää
-ensin syöte ajassa $O(n \log n)$ ja käsitellä sitten
-syöte tehokkaasti järjestystä hyödyntäen.
+ensin syöte ajassa $O(n \log n)$ ja hyödyntää sitten
+järjestystä algoritmin loppuosassa.
 
-Tarkastellaan esimerkkinä tehtävää, jossa haluamme
-laskea, montako \emph{eri} alkiota taulukko sisältää.
+\subsection{Taulukon käsittely}
+
+Järjestämisen avulla voimme ratkaista ajassa
+$O(n \log n)$ monia taulukkoihin liittyviä tehtäviä.
+Käymme seuraavaksi läpi kaksi tällaista tehtävää.
+
+Ensimmäinen tehtävämme on laskea,
+montako \emph{eri} alkiota annetussa taulukossa on.
 Esimerkiksi taulukko $[2,1,4,2,4,2]$ sisältää kolme
 eri alkiota: $1$, $2$ ja $4$.
 Voimme ratkaista tehtävän järjestämällä ensin taulukon,
 minkä jälkeen yhtä suuret alkiot ovat vierekkäin.
-Tämän jälkeen meidän on helppoa ratkaista tehtävä,
+Tämän jälkeen tehtävän ratkaisu käy helposti,
 koska riittää tutkia, monessako taulukon kohdassa on
-vierekkäin kaksi eri alkiota.
+\emph{vierekkäin} kaksi eri alkiota.
 Voimme toteuttaa algoritmin näin:
 
 \begin{code}
@@ -750,8 +756,8 @@ Entä jos haluammekin selvittää, mikä on taulukon \emph{yleisin} alkio?
 Esimerkiksi taulukon $[2,1,4,2,4,2]$ yleisin alkio on $2$,
 joka esiintyy kolme kertaa taulukossa.
 Tämäkin tehtävä ratkeaa järjestämisen avulla, koska
-järjestämisen jälkeen meidän riittää tutkia, mikä on pisin
-samaa alkiota toistava osuus taulukossa.
+järjestämisen jälkeen yhtä suuret alkiot ovat peräkkäin ja
+meidän riittää etsiä pisin samaa alkiota toistava osuus.
 Voimme toteuttaa algoritmin seuraavasti:
 
 \begin{code}
@@ -772,3 +778,49 @@ print(yleisin)
 Tässäkin algoritmissa järjestäminen vie aikaa $O(n \log n)$ ja
 for-silmukka vie aikaa $O(n)$, joten algoritmin
 kokonaisaikavaativuus on $O(n \log n)$.
+
+\subsection{Binäärihaku}
+
+Binäärihaku on menetelmä, jonka avulla voimme löytää alkion
+järjestetystä taulukosta ajassa $O(n \log n)$.
+Ideana on pitää yllä väliä, jossa etsittävä alkio voi olla,
+ja puolittaa väli joka askeleella tutkimalla välin
+keskimmäisenä olevaa alkiota.
+Koska taulukko on järjestyksessä, voimme aina päätellä,
+kumpaan suuntaan hakua tulee jatkaa.
+
+Seuraava koodi etsii binäärihaulla taulukosta alkiota $x$:
+
+\begin{code}
+a = 0
+b = n-1
+while a <= b
+    k = (a+b)/2
+    if taulu[k] == x
+        // alkio löytyi
+    if taulu[k] < x
+        a = k+1
+    if taulu[k] > x
+        b = k-1
+\end{code}
+
+Algoritmi pitää yllä hakuväliä $[a,b]$, joka on aluksi $[0,n-1]$,
+koska alkio saattaa olla missä tahansa kohdassa taulukossa.
+Joka askeleella algoritmi tarkastaa välin keskellä kohdassa
+$k=\lfloor (a+b)/2 \rfloor$ olevan alkion ja jatkaa hakua
+sen suuruuden perusteella.
+Koska välin koko puolittuu joka askeleella,
+algoritmin aikavaativuus on $O(\log n)$.
+
+Voimme ratkaista binäärihaun avulla esimerkiksi tehtävän,
+jossa annettuna on taulukko ja luku $x$ ja haluamme selvittää,
+voimmeko valita taulukosta kaksi lukua $a$ ja $b$ niin, että $a+b=x$.
+Järjestämme ensin taulukon, minkä jälkeen käymme läpi taulukon
+luvut yksi kerrallaan.
+Jokaisen luvun kohdalla testaamme, voisiko kyseinen luku olla $a$.
+Tällöin taulukossa pitäisi olla toinen luku $b$ niin, että
+$a+b=x$, eli taulukossa pitäisi olla luku $x-a$.
+Pystymme tarkastamaan tämän binäärihaulla ajassa $O(\log n)$.
+Tuloksena on algoritmi, joka vie aikaa $O(n \log n)$,
+koska sekä järjestäminen että binäärihakua käyttävä läpikäynti
+vievät aikaa $O(n \log n)$.
