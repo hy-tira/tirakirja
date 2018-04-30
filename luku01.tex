@@ -10,7 +10,7 @@ huomiota myös siihen, miten nopeasti algoritmit toimivat.
 
 Algoritmien tehokkuudella on suuri merkitys käytännössä.
 Esimerkiksi netissä toimiva reittiopas on käyttökelpoinen sen vuoksi,
-että saamme tietoomme reitin kuvauksen heti sen jälkeen kun olemme
+että se antaa meille reitin kuvauksen heti sen jälkeen, kun olemme
 ilmoittaneet, mistä mihin haluamme matkustaa.
 Jos meidän pitäisi odottaa reitin kuvausta vaikkapa minuutti tai tunti,
 tämä rajoittaisi paljon palvelun käyttöä.
@@ -27,12 +27,12 @@ mutta myös osata toteuttaa niitä käytännössä.
 Algoritmi on toimintaohje, jota seuraamalla voimme ratkaista
 jonkin laskennallisen ongelman.
 Esimerkiksi ''onko luku $n$ alkuluku?'' on laskennallinen ongelma,
-jossa algoritmille annetaan luku $n$
-ja sen täytyy ilmoittaa ''kyllä'' tai ''ei'' riippuen siitä,
+jossa algoritmille annetaan \emph{syötteenä} luku $n$
+ja sen täytyy ilmoittaa \emph{tulosteena} ''kyllä'' tai ''ei'' riippuen siitä,
 onko $n$ alkuluku vai ei.
 Esimerkiksi jos algoritmille annetaan luku $7$,
 sen täytyy ilmoittaa ''kyllä'',
-ja jos algoritmille annetaan luku $9$,
+ja jos algoritmille annetaan luku $12$,
 sen täytyy ilmoittaa ''ei''.
 
 Voimme tarkastaa, onko annettu luku $n$ alkuluku, seuraavalla algoritmilla:
@@ -42,39 +42,9 @@ Jos $n$ on jaollinen jollain luvuista, se ei ole alkuluku,
 ja muuten se on alkuluku.
 Esimerkiksi luku $7$ on alkuluku, koska se ei ole jaollinen
 millään luvuista $2,3,\dots,6$,
-ja luku $9$ puolestaan ei ole alkuluku, koska se on jaollinen luvulla $3$.
+ja luku $12$ puolestaan ei ole alkuluku, koska $3 \cdot 4 = 12$.
 Voimme tutkia tämän algoritmin avulla mistä tahansa luvusta,
 onko se alkuluku vai ei.
-
-Ensimmäinen vaihe ohjelmoinnin oppimisessa on oppia
-ohjelmoinnin perustaidot niin, että osaamme laatia
-\emph{jonkin} toimivan annetun algoritmin ongelman ratkaisemiseen.
-On arvokas taito sinänsä, että osaamme ratkaista
-ongelman jollakin tavalla.
-Toinen vaihe, johon keskitymme tällä kurssilla,
-on oppia suunnittelemaan \emph{tehokkaita} algoritmeja.
-Tämä tarkoittaa, että haluamme saada aikaan mahdollisuuksien mukaan
-jotain parempaa kuin suoraviivaisia
-raakaan voimaan perustuvia algoritmeja.
-
-Kiehtova seikka ohjelmoinnissa on, että monimutkaisetkin algoritmit
-syntyvät yksinkertaisista aineksista. Keskeiset käsitteet ovat
-
-\begin{itemize}
-\item muuttujat, joissa voimme säilyttää tietoa ohjelmassa,
-\item ehtolause (\texttt{if}), jonka avulla voimme haarautua ohjelmassa,
-\item silmukat (\texttt{for} ja \texttt{while}), joiden avulla voimme
-toistaa laskentaa, sekä
-\item taulukot, joissa voimme säilyttää paljon tietoa.
-\end{itemize}
-
-Itse asiassa voimme toteuttaa \emph{minkä tahansa} algoritmin
-vain näitä aineksia käyttäen.
-Tämä on huojentava tieto, koska meidän ei siis tarvitse opetella
-suurta määrää ohjelmointikielten ominaisuuksia,
-ennen kuin voimme alkaa suunnitella tehokkaita algoritmeja.
-Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
-tekniikoita eri tilanteessa.
 
 Algoritmin toiminnan esittämiseen on useita tapoja.
 Yksi tapa on selittää sanallisesti, kuinka algoritmi toimii,
@@ -94,10 +64,10 @@ for (int i = 2; i < n; i++) {
 }
 \end{code}
 
-Algoritmien suunnittelussa on usein tapana esittää
-algoritmin koodi \emph{pseudokoodina} todellisen ohjelmointikielen sijasta.
+Esitämme myös usein algoritmeja \emph{pseudokoodina}
+todellisen ohjelmointikielen sijasta.
 Tämä tarkoittaa, että kirjoitamme koodia,
-joka on lähellä todellista ohjelmointia, mutta voimme
+joka on lähellä käytössä olevia ohjelmointikieliä, mutta voimme
 päättää koodin tarkan syntaksin itse ja ottaa joitakin vapauksia,
 joiden ansiosta voimme kuvata algoritmin mukavammin.
 Voisimme esimerkiksi esittää äskeisen algoritmin pseudokoodina seuraavasti:
@@ -115,13 +85,7 @@ Käytämme Java-koodia silloin, kun haluamme erityisesti kiinnittää huomiota s
 miten jokin asia toteutetaan käytännössä Javassa.
 Pseudokoodia käytämme taas silloin, kun haluamme kuvata algoritmin yleisen
 idean eikä käytetyllä kielellä ole merkitystä.
-
-Taulukko \ref{tab:psekoo} esittää yhteenvedon tässä kirjassa käytetyn pseudokoodin syntaksista
-suhteessa Java-kieleen.
-Tavoitteena on ollut, että voimme esittää koodin tiiviisti ja
-käyttää joitakin hyödyllisiä lyhennyksiä.
-Tämä ei tarkoita, että kyseinen tapa kirjoittaa pseudokoodia olisi ainoa sallittu --
-se on vain yksi mahdollisuus, joka soveltuu hyvin tähän kirjaan.
+Taulukko \ref{tab:psekoo} esittää yhteenvedon käyttämämme pseudokoodin syntaksista.
 
 \lstnewenvironment{smallcode}[1][]%
 {
@@ -244,6 +208,36 @@ int summa(int a, int b) {
 \caption{Kirjassa käytetty pseudokoodin syntaksi.}
 \label{tab:psekoo}
 \end{table}
+
+Ensimmäinen vaihe ohjelmoinnin oppimisessa on oppia
+ohjelmoinnin perustaidot niin, että osaamme laatia
+\emph{jonkin} toimivan algoritmin annetun ongelman ratkaisemiseen.
+On arvokas taito sinänsä, että osaamme ratkaista
+ongelman jollakin tavalla.
+Toinen vaihe, johon keskitymme tällä kurssilla,
+on oppia suunnittelemaan \emph{tehokkaita} algoritmeja.
+Tämä tarkoittaa, että haluamme saada aikaan mahdollisuuksien mukaan
+jotain parempaa kuin suoraviivaisia
+raakaan voimaan perustuvia algoritmeja.
+
+Kiehtova seikka ohjelmoinnissa on, että monimutkaisetkin algoritmit
+syntyvät yksinkertaisista aineksista. Keskeiset käsitteet ovat
+
+\begin{itemize}
+\item muuttuja, jossa voimme säilyttää tietoa ohjelmassa,
+\item ehtolause (\texttt{if}), jonka avulla voimme haarautua ohjelmassa,
+\item silmukat (\texttt{for} ja \texttt{while}), joiden avulla voimme
+toistaa laskentaa, sekä
+\item taulukko, joka on ohjelmoinnin perustietorakenne.
+\end{itemize}
+
+Itse asiassa voimme toteuttaa \emph{minkä tahansa} algoritmin
+vain näitä aineksia käyttäen.
+Tämä on huojentava tieto, koska meidän ei siis tarvitse opetella
+suurta määrää ohjelmointikielten ominaisuuksia,
+ennen kuin voimme alkaa suunnitella tehokkaita algoritmeja.
+Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
+tekniikoita eri tilanteessa.
 
 \section{Rekursiiviset algoritmit}
 
