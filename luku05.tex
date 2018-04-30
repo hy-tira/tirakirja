@@ -1,21 +1,25 @@
 \chapter{Hajautustaulu}
 
 Hajautustaulu on tietorakenne,
-joka pitää yllä alkioiden joukkoa ja tarjoaa
-seuraavat operaatiot:
+joka pitää yllä alkioiden joukkoa.
+Voimme tarkastaa,
+kuuluuko tietty alkio joukkoon,
+sekä lisätä ja poistaa alkioita.
+Kuten matematiikassa, jokainen alkio
+voi esiintyä enintään kerran joukossa.
+Hajautustaulu toteuttaa kaikki yllä mainitut
+operaatiot tehokkaasti, mikä tekee siitä
+kätevän työkalun algoritmien suunnittelussa.
 
-\begin{itemize}
-\item lisää alkio joukkoon
-\item tarkasta, onko alkio joukossa
-\item poista alkio joukosta
-\end{itemize}
-
-Hajautustaulu toteuttaa kaikki yllä olevat
-operaatiot \emph{tehokkaasti} $O(1)$-ajassa,
-minkä ansiosta voimme käyttää hajautustaulua
-tehokkaiden algoritmien luomiseen.
-Mutta ennen kuin alamme käyttää hajautustaulua,
-on paikallaan ottaa selvää, miten se toimii.
+Tutustumme tässä luvussa ensin hajautustaulun
+toimintaan ja sen tehokkuuteen
+vaikuttaviin seikkoihin.
+Tämän jälkeen käsittelemme Javan tietorakenteet
+\texttt{HashSet} ja \texttt{HashMap},
+jotka perustuvat hajautustauluun.
+Lopuksi käymme läpi esimerkkejä tilanteista,
+joissa voimme käyttää hajautustaulua
+algoritmien suunnittelussa.
 
 \section{Hajautustaulun toiminta}
 
