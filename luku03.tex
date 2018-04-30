@@ -31,7 +31,7 @@ ja etsiä siitä pisin samaa alkiota toistava osuus.
 \section{Järjestäminen ajassa $O(n^2)$}
 
 Tutustumme aluksi yksinkertaiseen järjestämisalgoritmiin
-nimeltä lisäysjär\-jestäminen,
+nimeltä \emph{lisäysjär\-jestäminen},
 joka järjestää $n$-alkioisen aineiston ajassa $O(n^2)$.
 Vaikka algoritmi ei ole nopea, se on tutustumisen arvoinen
 ja antaa hyvän lähtökohdan tehokkaampien algoritmien
@@ -39,7 +39,7 @@ suunnittelemiselle.
 
 \subsection{Lisäysjärjestäminen}
 
-\emph{Lisäysjärjestäminen} käy läpi taulukon
+Lisäysjärjestäminen käy läpi taulukon
 vasemmalta oikealle.
 Kun algoritmi tulee tiettyyn taulukon kohtaan,
 se siirtää kyseisessä kohdassa olevan alkion
@@ -140,6 +140,8 @@ for i = 1 to n-1
         j--
 \end{code}
 
+Koodissa komento \texttt{swap} vaihtaa keskenään
+sille annetut alkiot.
 Jokaisen indeksin $i$ kohdalla siirrämme taulukon
 kohdassa $i$ olevan alkion sen oikealle paikalle
 taulukon alkuosassa.
@@ -174,8 +176,8 @@ kun siinä ei ole yhtään inversiota.
 
 Kun järjestämisalgoritmi järjestää taulukon,
 se \emph{poistaa} siitä inversioita.
-Aina kun lisäysjärjestäminen vaihtaa kaksi
-väärin päin olevaa alkiota keskenään,
+Lisäysjärjestämisen tapauksessa aina kun
+algoritmi vaihtaa kaksi alkiota keskenään,
 se poistaa taulukosta yhden inversion.
 Niinpä lisäysjärjestämisen työmäärä on yhtä suuri
 kuin järjestettävän taulukon inversioiden määrä.
@@ -197,7 +199,7 @@ Syy lisäysjärjestämisen hitauteen on siis,
 että se ei poista taulukosta inversioita riittävän tehokkaasti.
 Jos haluamme kehittää paremman järjestämis\-algoritmin,
 meidän täytyy suunnitella se niin, että se voi poistaa
-useita inversiota \emph{yhtä aikaa}.
+useita inversioita \emph{yhtä aikaa}.
 Käytännössä algoritmin täytyy pystyä siirtämään
 väärässä paikassa oleva alkio tehokkaasti taulukon
 toiselle puolelle.
@@ -292,7 +294,7 @@ joissa meidän riittää järjestää pienempiä taulukoita.
 \label{fig:lomjar}
 \end{figure}
 
-\emph{Lomitusjärjestäminen} on rekursiivinen järjestämisalgoritmi,
+Lomitusjärjestäminen on rekursiivinen järjestämisalgoritmi,
 joka perustuu taulukon puolituksiin.
 Kun saamme järjestettäväksi $n$-kokoisen taulukon,
 jaamme sen keskeltä kahdeksi osataulukoksi,
@@ -300,14 +302,14 @@ joissa molemmissa on noin $n/2$ alkiota.
 Tämän jälkeen järjestämme molemmat osataulukot erikseen rekursiivisesti.
 Lopuksi \emph{lomitamme} järjestetyt osataulukot niin,
 että niistä muodostuu kokonainen järjestetty taulukko.
-Pohjatapauksena jos $n=1$,
+Rekursio päättyy tapaukseen $n=1$, jolloin
 taulukko on valmiiksi järjestyksessä eikä
-meidän tarvitse tehdä mitään.
+tarvitse tehdä mitään.
 
 Seuraava koodi esittää tarkemmin lomitusjärjestämisen toiminnan:
 
 \begin{code}
-jarjesta(a,b)
+function jarjesta(a,b)
     if a == b
         return
     k = (a+b)/2
@@ -316,14 +318,14 @@ jarjesta(a,b)
     lomita(a,k-1,k,b)
 \end{code}
 
-Algoritmi järjestää taulukon osataulukon kohdasta
+Funktio järjestää taulukon osataulukon kohdasta
 $a$ kohtaan $b$, eli kun haluamme järjestää koko taulukon,
-kutsumme algoritmia parametreilla $a=0$ ja $b=n-1$.
+kutsumme funktiota parametreilla $a=0$ ja $b=n-1$.
 Tarkastamme ensin, onko osataulukossa vain yksi alkio,
-ja jos on, poistumme algoritmista.
+ja jos on, poistumme funktiosta.
 Sitten laskemme muuttujaan $k$ järjestettävän välin keskikohdan
 ja järjestämme vasemman ja oikean puoliskon rekursiivisesti.
-Lopuksi kutsumme algoritmia \texttt{lomita},
+Lopuksi kutsumme funktiota \texttt{lomita},
 joka muodostaa kokonaisen järjestetyn taulukon osataulukoista.
 
 Kuva \ref{fig:lomjar} näyttää, miten lomitusjärjestäminen
@@ -331,8 +333,8 @@ toimii, kun sille annetaan taulukko $[5,1,2,9,7,5,4,2]$.
 Algoritmi puolittaa ensin taulukon kahdeksi osataulukoksi
 $[5,1,2,9]$ ja $[7,5,4,2]$ ja järjestää molemmat
 osataulukot kutsumalla itseään.
-Seuraavaksi järjestettävänä on osataulukko $[5,1,2,9]$,
-jonka algoritmi jakaa osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
+Kun algoritmi saa sitten järjestettäväksi taulukon $[5,1,2,9]$,
+se jakaantuu jälleen osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
 Lopulta jäljellä on vain yhden alkion kokoisia
 osataulukoita, jotka ovat valmiiksi järjestyksessä.
 Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
@@ -357,7 +359,7 @@ Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
 
 \subsection{Pikajärjestäminen}
 
-\emph{Pikajärjestäminen} tarjoaa toisenlaisen rekursiivisen
+Pikajärjestäminen tarjoaa toisenlaisen rekursiivisen
 lähestymistavan taulukon järjestämiseen.
 Kun saamme järjestettäväksi taulukon, valitsemme ensin jonkin
 sen alkioista \emph{jakoalkioksi}.
@@ -369,7 +371,7 @@ Lopuksi järjestämme rekursiivisesti vasemman ja oikean puolen alkiot.
 Seuraava koodi esittää pikajärjestämisen toiminnan:
 
 \begin{code}
-jarjesta(int a, int b)
+function jarjesta(int a, int b)
     if (a >= b)
         return
     k = jako(a,b)
@@ -377,16 +379,15 @@ jarjesta(int a, int b)
     jarjesta(k+1,b)
 \end{code}
 
-Algoritmille annetaan parametrina järjestettävä
+Funktiolle annetaan parametrina järjestettävä
 taulukon osataulukko.
 Jos osataulukko on tyhjä tai siinä on vain yksi alkio,
-poistumme algoritmista.
-Muuten kutsumme algoritmia \texttt{jako}, joka valitsee jakoalkion,
+poistumme funktiosta.
+Muuten kutsumme funktiota \texttt{jako}, joka valitsee jakoalkion,
 siirtää muut alkiot sen vasemmalle ja oikealle puolelle
 ja palauttaa sitten taulukon kohdan, jossa jakoalkio on siirtojen jälkeen.
-Sitten kutsumme algoritmia rekursiivisesti
+Sitten kutsumme funktiota rekursiivisesti
 taulukon vasempaan ja oikeaan osaan.
-
 
 \begin{figure}
 \center
@@ -498,8 +499,6 @@ Tällainen valinta toimii käytännössä hyvin:
 on vaikeaa keksiä taulukkoa, jossa järjestäminen veisi aikaa $O(n^2)$,
 saati sitten, että tällainen tilanne esiintyisi käytännössä.
 
-\subsection{Algoritmien vertailua}
-
 Meillä on nyt siis kaksi rekursiivista järjestämisalgoritmia:
 lomitusjärjestä\-minen toimii \emph{aina} ajassa $O(n \log n)$,
 kun taas pikajärjestäminen toimii \emph{ehkä} ajassa $O(n \log n)$,
@@ -518,7 +517,7 @@ jos jakoalkion valinta on toteutettu huolellisesti.
 
 \section{Järjestämisen alaraja}
 
-Onko mahdollista luoda järjestämisalgoritmi, joka toimisi
+Olisiko mahdollista luoda järjestämisalgoritmi, joka toimisi
 nopeammin kuin $O(n \log n)$?
 Osoittautuu, että tämä \emph{ei} ole mahdollista,
 jos oletamme, että algoritmin tulee perustua taulukon
@@ -540,7 +539,7 @@ ovat olleet vertailuihin perustuvia
 
 Voimme ajatella vertailuihin perustuvaa järjestämistä
 \emph{prosessina}, jossa jokainen vertailu antaa meille tietoa
-taulukosta ja saamme vietyä taulukkoa lähemmäs järjestystä.
+taulukosta ja auttaa meitä viemään taulukkoa lähemmäs järjestystä.
 Oletamme seuraavaksi, että taulukko muodostuu alkioista
 $1,2,\dots,n$, jolloin meillä on $n!$ vaihtoehtoa, mikä
 on taulukon alkuperäinen järjestys.
@@ -565,16 +564,16 @@ tapauksessa meille jää jäljelle puolet mahdollisista taulukoista.
 Niinpä jos algoritmilla käy huono tuuri, se voi enintään puolittaa
 taulukoiden määrän joka askeleella.
 Tämä tarkoittaa, että algoritmi joutuu tekemään pahimmassa
-tapauksessa ainakin $\log_2(n!)$ vertailua.
+tapauksessa ainakin $\log(n!)$ vertailua.
 Logaritmien laskusääntöjen perusteella
 \[
-\log_2(n!) = \log_2(1)+\log_2(2)+\dots+\log_2(n).
+\log(n!) = \log(1)+\log(2)+\dots+\log(n).
 \]
 Saamme tälle summalle alarajan ottamalla huomioon vain
 $n/2$ viimeistä termiä ja arvioimalla niitä alaspäin niin, 
-että jokaisen termin suuruus on vain $\log_2(n/2)$. Tuloksena on alaraja
+että jokaisen termin suuruus on vain $\log(n/2)$. Tuloksena on alaraja
 \[
-\log_2(n!) \ge (n/2) \log_2(n/2),
+\log(n!) \ge (n/2) \log(n/2),
 \]
 mikä tarkoittaa, että algoritmi joutuu tekemään
 pahimmassa tapauksessa $\Omega(n \log n)$ vertailua pahimmassa tapauksessa.
@@ -584,28 +583,28 @@ pahimmassa tapauksessa $\Omega(n \log n)$ vertailua pahimmassa tapauksessa.
 Millainen olisi sitten järjestämisalgoritmi,
 joka ei perustu vertailuihin ja toimii
 tehokkaammin kuin $O(n \log n)$?
-\emph{Laskemisjärjestäminen} on $O(n)$-aikainen järjestämisalgoritmi,
+Laskemisjärjestäminen on $O(n)$-aikainen järjestämisalgoritmi,
 jonka toiminta perustuu oletukseen, että taulukon alkiot
 ovat sopivan pieniä kokonaislukuja.
 Tarkemmin ottaen algoritmi olettaa, että jokainen luku on
 kokonaisluku välillä $0 \dots k$, missä $k=O(n)$.
 
-Laskemisjärjestäminen luo \emph{kirjanpidon}, joka kertoo,
+Algoritmi luo \emph{kirjanpidon}, joka kertoo,
 montako kertaa mikä\-kin mahdollinen luku välillä $0 \dots k$
 esiintyy taulukossa.
 Seuraavassa koodissa kirjanpito tallennetaan
-taulukkoon \texttt{kerrat} niin, että
-$\texttt{kerrat}[x]$ ilmaisee,
+taulukkoon \texttt{laskuri} niin, että
+$\texttt{laskuri}[x]$ ilmaisee,
 montako kertaa luku $x$ esiintyy taulukossa.
 Tämän kirjanpidon avulla voimme luoda suoraan
 lopullisen järjestetyn taulukon.
 
 \begin{code}
 for i = 0 to n-1
-    kerrat[taulu[i]]++
+    laskuri[taulu[i]]++
 i = 0
 for x = 0 to k
-    for j = 1 to kerrat[x]
+    for j = 1 to laskuri[x]
         taulu[i] = x
         i++
 \end{code}
@@ -643,7 +642,7 @@ taulukon järjes\-tämiseen.
 Asian voi tarkastaa Javan standardikirjaston
 dokumentaatiosta.
 Yllättävää kyllä, Javan käyttämä algoritmi riippuu siitä,
-minkä tyyppistä tietoa taulukossa on.
+minkä \emph{tyyppistä} tietoa taulukossa on.
 Jos taulukon alkiot ovat alkeistyyppisiä
 (esimerkiksi \texttt{int}), Java käyttää 
 pikajärjestämisen muunnelmaa,
@@ -718,7 +717,7 @@ että voimme ratkaista monia ongelmia tehokkaasti,
 kunhan aineisto on järjestyksessä.
 Niinpä yleinen tapa luoda tehokas algoritmi on järjestää
 ensin syöte ajassa $O(n \log n)$ ja hyödyntää sitten
-järjestystä algoritmin loppuosassa.
+tavalla tai toisella järjestystä algoritmin loppuosassa.
 
 \subsection{Taulukon käsittely}
 
@@ -805,19 +804,23 @@ while a <= b
 \end{code}
 
 Algoritmi pitää yllä hakuväliä $[a,b]$, joka on aluksi $[0,n-1]$,
-koska alkio saattaa olla missä tahansa kohdassa taulukossa.
+koska alkio $x$ saattaa olla missä tahansa kohdassa taulukossa.
 Joka askeleella algoritmi tarkastaa välin keskellä kohdassa
-$k=\lfloor (a+b)/2 \rfloor$ olevan alkion ja jatkaa hakua
-sen suuruuden perusteella.
+$k=\lfloor (a+b)/2 \rfloor$ olevan alkion.
+Jos kyseinen alkio on $x$, haku päättyy.
+Jos taas alkio on pienempi kuin $x$, haku jatkuu välin
+oikeaan puoliskoon,
+ja jos alkio on suurempi kuin $x$, haku jatkuu välin
+vasempaan puoliskoon.
 Koska välin koko puolittuu joka askeleella,
-algoritmin aikavaativuus on $O(\log n)$.
+binäärihaun aikavaativuus on $O(\log n)$.
 
 Voimme ratkaista binäärihaun avulla esimerkiksi tehtävän,
 jossa annettuna on taulukko ja luku $x$ ja haluamme selvittää,
 voimmeko valita taulukosta kaksi lukua $a$ ja $b$ niin, että $a+b=x$.
 Järjestämme ensin taulukon, minkä jälkeen käymme läpi taulukon
 luvut yksi kerrallaan.
-Jokaisen luvun kohdalla testaamme, voisiko kyseinen luku olla $a$.
+Jokaisen luvun kohdalla tutkimme, voisiko kyseinen luku olla $a$.
 Tällöin taulukossa pitäisi olla toinen luku $b$ niin, että
 $a+b=x$, eli taulukossa pitäisi olla luku $x-a$.
 Pystymme tarkastamaan tämän binäärihaulla ajassa $O(\log n)$.
