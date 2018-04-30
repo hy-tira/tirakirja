@@ -1,16 +1,16 @@
 \chapter{Lista}
 
-\emph{Lista} on tietorakenne,
+Lista on tietorakenne,
 joka muodostuu peräkkäin olevista alkioista.
 Esimerkiksi $[3,7,2,5]$ on lista,
 joka sisältää neljä alkiota.
-Merkitsemme listan alkioiden määrää
-kirjaimella $n$ ja indeksoimme alkiot
-$0,1,\dots,n-1$.
 Haluamme toteuttaa listan niin,
 että pääsemme käsiksi tietyssä kohdassa
 olevaan alkioon sekä pystymme
 lisäämään ja poistamaan alkioita.
+Merkitsemme listan alkioiden määrää
+kirjaimella $n$ ja indeksoimme alkiot
+$0,1,\dots,n-1$.
 
 Tässä luvussa tutustumme kahteen
 tapaan listan luomiseen.
@@ -23,10 +23,10 @@ hyvät ja huonot puolensa.
 
 \section{Taulukkolista}
 
-\emph{Taulukkolista} on lista, joka on tallennettu taulukkona.
+Taulukkolista on lista, joka on tallennettu taulukkona.
 Koska taulukon alkiot sijaitsevat aina peräkkäin muistissa,
 pääsemme käsiksi mihin tahansa listan alkioon ajassa $O(1)$.
-Toisaalta haasteena toteutuksessa on,
+Haasteena toteutuksessa on kuitenkin,
 että taulukon koko on \emph{kiinteä} ja jos haluamme
 muuttaa kokoa, meidän täytyy varata uusi taulukko
 ja kopioida sinne vanhan taulukon sisältö.
@@ -40,11 +40,11 @@ että tietty määrä alkioita taulukon alussa on listan käytössä
 ja loput tyhjät kohdat on varattu tuleville alkioille.
 Tämän ansiosta pystymme lisäämään uuden alkion listalle
 ajassa $O(1)$, jos taulukossa on tilaa,
-koska meidän riittää ottaa käyttöön seuraava
+koska meidän riittää vain ottaa käyttöön seuraava
 vapaana oleva kohta taulukosta.
 
 Kuva \ref{fig:listau} näyttää esimerkin,
-jossa taulukossa on tilaa yhteenä kahdeksalle alkiolle
+jossa taulukossa on tilaa yhteensä kahdeksalle alkiolle
 ja siihen on tallennettu lista $[3,7,2,5]$.
 Taulukon neljä ensimmäistä alkiota ovat siis listan käytössä
 ja muut ovat varalla tulevia alkioita varten.
@@ -142,7 +142,7 @@ kun varaamme uuden taulukon.
 Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
 
-Voimme ajatella asian näin: jokainen listalle lisättävä alkio
+Voimme ajatella asian näin: Jokainen listalle lisättävä alkio
 maksaa \emph{pääsy\-maksuna} kolme euroa.
 Tästä yksi euro menee listalle liittymiseen ja kaksi euroa jäävät säästöön.
 Sitten kun aikanaan listalle täytyy varata suurempi taulukko,
@@ -183,7 +183,7 @@ ja puolitamme taulukon koon.}
 Voimme poistaa alkion listan lopusta aina $O(1)$-ajassa,
 koska taulukon kokoa ei tarvitse koskaan suurentaa.
 Tässä voisi kuitenkin tulla ongelmaksi, että monien poistojen
-jälkeen taulukossa olisi turhan paljon tyhjää tilaa lopussa.
+jälkeen taulukossa on turhan paljon tyhjää tilaa lopussa.
 Voimme soveltaa tässä käänteisesti samaa ideaa kuin lisäämisessä:
 jos poistamisen jälkeen vain \emph{neljännes} taulukosta on käytössä,
 puolitamme taulukon koon.
@@ -303,7 +303,7 @@ jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \section{Linkitetty lista}
 
-\emph{Linkitetty lista} muodostuu solmuista, joista jokainen sisältää
+Linkitetty lista muodostuu solmuista, joista jokainen sisältää
 yhden listan alkion.
 Linkitetty lista voi olla yhteen tai kahteen suuntaan linkitetty.
 Yhteen suuntaan linkitetyssä listassa jokaisesta solmusta
@@ -357,7 +357,7 @@ alkuun ja loppuun.
 Yhteen suuntaan linkitetyssä listassa voimme käydä
 läpi listan alkiot alusta loppuun,
 kun taas kahteen suuntaan linkitetyssä listassa
-voimme liikkua sekä alusta loppuun että lopusta alkuun.
+voimme kulkea sekä alusta loppuun että lopusta alkuun.
 
 Kaksisuuntainen linkitys on käytännössä järkevä tapa toteuttaa
 linkitetty lista, ja oletamme jatkossa, että listamme on
@@ -548,23 +548,114 @@ Listan avulla voimme toteuttaa myös kaksi erikoistunutta tietorakennetta,
 pinon ja jonon, jotka sisältävät vain osan listan ominaisuuksista
 eli niiden operaatiot ovat listaa rajoittuneempia.
 
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\begin{scope}[xshift=2.5cm]
+\draw (0,0) grid (1,1);
+\node at (0.5,0.5) {3};
+\node at (0.5,-1) {$\texttt{push}(3)$};
+\end{scope}
+\begin{scope}[xshift=5cm]
+\draw (0,0) grid (1,2);
+\node at (0.5,0.5) {3};
+\node at (0.5,1.5) {1};
+\node at (0.5,-1) {$\texttt{push}(1)$};
+\end{scope}
+\begin{scope}[xshift=7.5cm]
+\draw (0,0) grid (1,3);
+\node at (0.5,0.5) {3};
+\node at (0.5,1.5) {1};
+\node at (0.5,2.5) {4};
+\node at (0.5,-1) {$\texttt{push}(4)$};
+\end{scope}
+\begin{scope}[xshift=10cm]
+\draw (0,0) grid (1,2);
+\node at (0.5,0.5) {3};
+\node at (0.5,1.5) {1};
+\node at (0.5,-1) {$\texttt{pop}()$};
+\end{scope}
+\begin{scope}[xshift=12.5cm]
+\draw (0,0) grid (1,1);
+\node at (0.5,0.5) {3};
+\node at (0.5,-1) {$\texttt{pop}()$};
+\end{scope}
+\begin{scope}[xshift=15cm]
+\draw (0,0) grid (1,2);
+\node at (0.5,0.5) {3};
+\node at (0.5,1.5) {5};
+\node at (0.5,-1) {$\texttt{push}(5)$};
+\end{scope}
+\end{tikzpicture}
+\caption{Esimerkki pinon käsittelystä:
+lisäämme tyhjään pinoon alkiot 3, 1 ja 4, poistamme kaksi ylintä
+alkiota ja lisäämme lopuksi alkion 5.}
+\label{fig:pinesi}
+\end{figure}
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.7]
+\begin{scope}
+\draw (0,0) grid (1,1);
+\node at (0.5,0.5) {$1$};
+\node at (-2.5,0.5) {$\texttt{enqueue}(1)$};
+\end{scope}
+\begin{scope}[yshift=-1.5cm]
+\draw (0,0) grid (2,1);
+\node at (0.5,0.5) {$1$};
+\node at (1.5,0.5) {$5$};
+\node at (-2.5,0.5) {$\texttt{enqueue}(5)$};
+\end{scope}
+\begin{scope}[yshift=-3cm]
+\draw (0,0) grid (3,1);
+\node at (0.5,0.5) {$1$};
+\node at (1.5,0.5) {$5$};
+\node at (2.5,0.5) {$2$};
+\node at (-2.5,0.5) {$\texttt{enqueue}(2)$};
+\end{scope}
+\begin{scope}[yshift=-4.5cm]
+\draw (0,0) grid (2,1);
+\node at (0.5,0.5) {$5$};
+\node at (1.5,0.5) {$2$};
+\node at (-2.5,0.5) {$\texttt{dequeue}()$};
+\end{scope}
+\begin{scope}[yshift=-6cm]
+\draw (0,0) grid (3,1);
+\node at (0.5,0.5) {$5$};
+\node at (1.5,0.5) {$2$};
+\node at (2.5,0.5) {$3$};
+\node at (-2.5,0.5) {$\texttt{enqueue}(3)$};
+\end{scope}
+\end{tikzpicture}
+\caption{Esimerkki jonon käsittelystä:
+lisäämme tyhjään jonon alkiot 1, 5 ja 2,
+poistamme yhden alkion ja lisäämme vielä alkion 3.}
+\label{fig:jonesi}
+\end{figure}
+
 \emph{Pino} on tietorakenne, jossa on kolme operaatiota:
-alkion lisääminen pinon päälle, ylimmän alkion hakeminen
-sekä ylimmän alkion poistaminen.
-Pystymme siis käsittelemään vain pinon ylintä alkiota.
-Voimme toteuttaa pinon helposti listan avulla niin,
-että kaikki operaatiot vievät aikaa $O(1)$.
-
+alkion lisääminen pinon päälle (\texttt{push}),
+ylimmän alkion poistaminen (\texttt{pop})
+sekä ylimmän alkion hakeminen.
+Esimerkiksi kuvassa \ref{fig:pinesi} lisäämme ensin tyhjään pinoon kolme alkiota,
+poistamme sitten kaksi alkiota ja lisäämme vielä yhden alkion.
 \emph{Jono} on puolestaan tietorakenne, jossa voimme lisätä alkioita
-jonon loppuun, poistaa alkioita jonon alusta ja hakea alkioita
-molemmista päistä. Voimme toteuttaa kaikki jonon
-operaatiot ajassa $O(1)$ listan avulla.
+jonon loppuun (\texttt{enqueue}),
+poistaa alkioita jonon alusta (\texttt{dequeue})
+ja hakea alkioita molemmista päistä.
+Esimerkiksi kuvassa \ref{fig:jonesi} lisäämme ensin tyhjään jonoon
+kolme alkiota, poistamme sitten yhden alkion ja lisämme vielä yhden alkion.
 
-Mitä järkeä on luoda uusia tietorakenteita,
+Pystymme toteuttamaan sekä pinon että jonon helposti
+listana niin, että niiden operaatiot toimivat ajassa $O(1)$.
+Mutta mitä järkeä on luoda uusia tietorakenteita,
 jotka ovat \emph{huonompia} kuin lista?
+Listassa voimme käsitellä mitä tahansa alkioita, mutta
+pinossa ja jonossa emme pääse käsiksi keskellä oleviin alkioihin.
 Selitys on siinä, että pino ja jono ovat hyödyllisiä 
-käsitteitä algoritmien suunnittelussa.
-Voimme usein ajatella jossakin algoritmissa tarvittavaa
+\emph{käsit\-teitä} algoritmien suunnittelussa.
+Voimme usein ajatella algoritmissa tarvittavaa
 tietorakennetta pinona tai jonona ja toteuttaa sen sitten listana.
 
 Tarkastellaan esimerkkinä tehtävää, jossa meille on annettu
@@ -574,7 +665,6 @@ Haluamme selvittää, onko lauseke \emph{oikein muodostettu} eli
 onko jokaiselle aloittavalle sululle vastaava lopettava pari.
 Esimerkiksi lauseke \texttt{[()]()} on oikein muodostettu,
 kun taas lauseke \texttt{[()(])} ei ole.
-
 Voimme ratkaista tehtävän pinon avulla
 käymällä läpi lausekkeen merkit vasemmalta oikealle.
 Kun vastaan tulee aloittava sulku \texttt{(} tai \texttt{[},
