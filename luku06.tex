@@ -4,25 +4,18 @@ Binäärihakupuu on tietorakenne, joka pitää yllä
 alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
 Binäärihakupuu eroaa hajautustaulusta kuitenkin siinä,
 että se säilyttää alkioita \emph{järjestyksessä}.
-Tämän ansiosta voimme toteuttaa myös esimerkiksi seuraavat operaatiot:
+Tämän ansiosta voimme esimerkiksi etsiä tehokkaasti
+joukon pienimmän tai suurimman alkion,
+mikä ei ole mahdollista hajautustaulussa.
 
-\begin{itemize}
-\item etsi joukon pienin/suurin alkio
-\item etsi joukon pienin alkio, joka on vähintään $x$
-\item etsi joukon suurin alkio, joka on enintään $x$
-\end{itemize}
-
-Hajautustaulu \emph{ei} pysty tarjoamaan näitä operaatioita,
-koska alkiot ovat siinä sekalaisessa järjestyksessä.
-
-Jotta binäärihakupuu toimii tehokkaasti,
-meidän täytyy varmistaa,
-että puu on tasapainoinen eli alkiot jakautuvat
-tasaisesti sen eri puolille.
-Tällöin kaikki puun operaatiot toimivat ajassa $O(\log n)$.
-Tässä luvussa tutustumme esimerkkinä AVL-puuhun,
-joka on varhaisin tunnettu tapa luoda tasapainoinen
-binäärihakupuu.
+Aloitamme luvun tutustumalla binääripuiden teoriaan,
+minkä jälkeen perehdymme binäärihakupuun toimintaan.
+Käsittelemme binäärihakupuun tehokkaasta toteutuksesta
+esimerkkinä AVL-puun.
+Sitten käymme läpi Javan tietorakenteet
+\texttt{TreeSet} ja \texttt{TreeMap}, jotka
+perustuvat binäärihakupuuhun,
+ja lopuksi vertailemme joukkorakenteita ja järjestämistä.
 
 \section{Taustaa binääripuista}
 
