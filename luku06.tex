@@ -1,6 +1,6 @@
 \chapter{Binäärihakupuu}
 
-\emph{Binäärihakupuu} on tietorakenne, joka pitää yllä
+Binäärihakupuu on tietorakenne, joka pitää yllä
 alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
 Binäärihakupuu eroaa hajautustaulusta kuitenkin siinä,
 että se säilyttää alkioita \emph{järjestyksessä}.
@@ -227,13 +227,13 @@ void tulosta(Solmu puu) {
 
 \section{Binäärihakupuun toiminta}
 
-\emph{Binäärihakupuu} on binääripuu, jonka kunkin solmun
-arvona on yksi joukon alkioista.
-Jokaisessa solmussa
-kaikki alkiot vasemmassa alipuussa ovat pienempiä
-kuin solmun alkio ja vastaavasti kaikki alkiot
-oikeassa alipuussa ovat suurempia kuin solmun alkio.
-Tämän ominaisuuden ansiosta voimme löytää halutun
+Binäärihakupuu on binääripuu, jonka kukin solmu
+vastaa yhtä joukon alkiota.
+Solmut on järjestetty niin, että jokaisessa solmussa
+kaikki vasemman alipuun alkiot ovat solmun alkiota pienempiä
+ja vastaavasti kaikki oikean alipuun alkiot
+ovat solmun alkiota suurempia.
+Tämän ansiosta voimme löytää kätevästi halutun
 alkion puusta aloittamalla haun puun juuresta.
 
 \begin{figure}
@@ -489,7 +489,7 @@ Vasemman puun korkeus on 2 ja oikean puun korkeus on 4.}
 \label{fig:bihkor}
 \end{figure}
 
-Jotta binäärihakupuu toimii tehokkaasti, haluamme,
+Jotta binäärihakupuu toimisi tehokkaasti, haluamme,
 että puun korkeus ei kasva liian suureksi.
 Tarkemmin ottaen tavoitteemme on, että
 solmut ovat jakautuneet tasaisesti puun eri puolille
@@ -586,7 +586,7 @@ on $O(\log n)$?
 Voimme lähestyä asiaa pahimman tapauksen kautta:
 kun tiedämme, että AVL-puussa on $n$ solmua,
 mikä on sen \emph{suurin mahdollinen} korkeus?
-Voimme selvittää tämän tutkimalla käänteisesti,
+Voimme selvittää tämän laskemalla ensin käänteisesti,
 mikä on \emph{pienin mahdollinen} solmujen määrä
 AVL-puussa, jonka korkeus on $h$.
 
@@ -607,17 +607,17 @@ eli funktion arvo ainakin kaksinkertaistuu kahden askeleen välein.
 Voimme ilmaista tämän alarajan
 \[f(h) \ge 2^{h/2},\]
 jonka voimme taas muuttaa ylärajaksi
-\[ h \le 2 \log_2 f(h).\]
+\[ h \le 2 \log f(h).\]
 
 Tarkastellaan sitten puuta, jossa on $n$ solmua
 ja jonka korkeus on $h$.
 Korkeudelle täytyy päteä $f(h) \le n$,
 koska korkeutta $h$ olevassa puussa on vähintään $f(h)$ solmua.
 Niinpä saamme ylärajan
-\[h \le 2 \log_2 n,\]
+\[h \le 2 \log n,\]
 mikä tarkoittaa samaa kuin $h = O(\log n)$.
 
-\subsection{Kiertojen toteutus}
+\subsection{Kiertojen toteuttaminen}
 
 \begin{figure}
 \center
@@ -974,58 +974,6 @@ ja \texttt{compareTo} kertoo kahden olion suuruusjärjestyksen.
 Jälkimmäisen metodin ansiosta luokka toteuttaa rajapinnan
 \texttt{Comparable}.
 
-Esimerkiksi seuraava luokka sisältää henkilön etu- ja sukunimen.
-Metodi \texttt{compareTo} on toteutettu niin,
-että henkilöt järjestetään ensisijaisesti sukunimen mukaan ja
-toissijaisesti etunimen mukaan.
-
-\begin{code}
-class Henkilo implements Comparable<Henkilo> {
-    String etunimi, sukunimi;
-
-    bool equals(Object o) {
-        Henkilo h = (Henkilo)o;
-        return etunimi.equals(h.etunimi) &&
-               sukunimi.equals(h.sukunimi);
-    }
-
-    int compareTo(Henkilo h) {
-        if (sukunimi.equals(h.sukunimi)) {
-            return etunimi.compareTo(etunimi);
-        } else {
-            return sukunimi.compareTo(sukunimi);
-        }
-    }
-
-    String toString() {
-        return etunimi + " " + sukunimi;
-    }
-
-    // ...
-}
-\end{code}
-
-Voimme lisätä henkilöitä joukkoon seuraavasti:
-
-\begin{code}
-TreeSet<Henkilo> joukko = new TreeSet<>();
-joukko.add(new Henkilo("Aku","Ankka"));
-joukko.add(new Henkilo("Iines","Ankka"));
-joukko.add(new Henkilo("Pelle","Peloton));
-\end{code}
-
-Tämän jälkeen voimme vaikkapa tarkastaa, onko joukossa henkilöä,
-jonka sukunimi alkaa P-kirjaimella.
-Tämä onnistuu luomalla ''valehenkilö'', jonka sukunimi
-on ''P'' ja etunimi on tyhjä.
-Jos joukossa on henkilö, jonka sukunimi alkaa P-kirjaimella,
-se on tätä henkilöä seuraava henkilö.
-
-\begin{code}
-Henkilo haettu = joukko.higher(new Henkilo("","P"));
-System.out.println(haettu); // Pelle Peloton
-\end{code}
-
 \section{Tehokkuusvertailu}
 
 Monissa ongelmissa meillä on kaksi mahdollista lähestymistapaa:
@@ -1117,8 +1065,8 @@ mikä aiheuttaa suuret vakiokertoimet.
 Vaikka joukot ovat käteviä, niitä ei siis kannata
 käyttää turhaan.
 Jos haluamme ratkaista ongelman todella tehokkaasti,
-kannattaa miettiä, voisimmeko käyttää järjestämistä
-tavalla tai toisella joukkojen sijaan.
+kannattaa miettiä, voisimmeko käyttää tavalla tai toisella
+järjestämistä joukkojen sijaan.
 
 \begin{table}
 \center
