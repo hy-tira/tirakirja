@@ -1,6 +1,6 @@
 \chapter{Hajautustaulu}
 
-\emph{Hajautustaulu} on tietorakenne,
+Hajautustaulu on tietorakenne,
 joka pitää yllä alkioiden joukkoa ja tarjoaa
 seuraavat operaatiot:
 
@@ -11,7 +11,8 @@ seuraavat operaatiot:
 \end{itemize}
 
 Hajautustaulun hienoutena on, että se toteuttaa
-kaikki yllä olevat operaatiot \emph{tehokkaasti},
+kaikki yllä olevat operaatiot \emph{tehokkaasti}
+$O(1)$-ajassa,
 minkä ansiosta voimme luoda hajautustaulun avulla
 tehokkaita algoritmeja.
 Mutta ennen kuin alamme käyttää hajautustaulua,
@@ -137,7 +138,7 @@ Tällöin meidän riittää päättää ensin jokin järkevä tapa,
 kuinka muutamme alkion kokonaisluvuksi,
 minkä jälkeen otamme jakojäännöksen $N$:llä.
 
-Tarkastellaan tilannetta, jossa haluamme hajauttaa merkkijonoja
+Tarkastellaan esimerkkinä tilannetta, jossa haluamme hajauttaa merkkijonoja
 eli mei\-dän täytyy löytää keino muuttaa merkkijono kokonaisluvuksi.
 Oletamme, että merkkijonossa on $k$ merkkiä,
 joiden merkkikoodit ovat $c_0,c_1,\dots,c_{k-1}$.
@@ -358,7 +359,7 @@ polynomista hajautusta vakiolla $A=31$,
 joten voimme laskea Javan hajautusarvon myös itse kaavalla
 \[31^4 \cdot 97+31^3 \cdot 112+31^2 \cdot 105+31^1 \cdot 110+31^0 \cdot 97=93022541.\]
 
-Jos haluamme käyttää omia oliota hajautustauluissa,
+Jos haluamme käyttää omia olioitamme hajautustauluissa,
 meidän täytyy toteuttaa luokkaan kaksi metodia:
 \texttt{hashCode}, joka antaa olion hajautusarvon,
 sekä \texttt{equals},
@@ -376,7 +377,7 @@ joukkoja ja hakemistoja, joiden operaatiot toimivat tehokkaasti.
 Voimme alkajaisiksi ratkoa mukavammin ajassa $O(n)$ sellaisia ongelmia,
 jotka olemme ratkoneet aiemmin järjestämisen avulla ajassa $O(n \log n)$.
 
-Tarkastellaan ongelmaa, jossa haluamme laskea,
+Ensimmäinen ongelmamme on selvittää,
 montako eri alkiota taulukko sisältää.
 Aiemmin olemme ratkaisseet ongelman
 järjestämällä taulukon ja tutkimalla sen jälkeen
@@ -392,6 +393,9 @@ for i = 0 to n-1
 print(alkiot.size())
 \end{code}
 
+Koska jokainen alkion lisääminen joukkoon vie aikaa $O(1)$,
+tuloksena on algoritmi, joka toimii ajassa $O(n)$.
+
 Tarkastellaan sitten ongelmaa, jossa haluamme selvittää
 taulukon yleisimmän alkion.
 Olemme ratkaisseet tämänkin ongelman aiemmin
@@ -404,19 +408,25 @@ Nyt voimme vain käydä läpi taulukon sisällön ja
 pitää kirjaa, montako kertaa mikäkin alkio esiintyy taulukossa:
 
 \begin{code}
-kerrat = []
+laskuri = []
 suurin = 1
 yleisin = taulu[0]
 for i = 0 to n-1
-    kerrat[taulu[i]]++
-    if kerrat[taulu[i]] > suurin
-        suurin = kerrat[taulu[i]]
+    laskuri[taulu[i]]++
+    if laskuri[taulu[i]] > suurin
+        suurin = laskuri[taulu[i]]
         yleisin = taulu[i]
 print(yleisin)
 \end{code}
 
+Yllä olevassa koodissa hakemisto \texttt{laskuri}
+on toteutettu hajautustaulun avulla,
+jolloin avaimet voivat olla mitä tahansa lukuja
+ja operaatiot toimivat ajassa $O(1)$.
+Tuloksena on algoritmi, jonka aikavaativuus on $O(n)$.
+
 Kuten nämä esimerkit osoittavat, hajautustaulu
-helpottaa algoritmien luomista,
+\emph{helpottaa} algoritmien luomista,
 koska meidän ei tarvitse pukea ongelmia järjestämisen muotoon
 vaan voimme käsitellä niitä suoremmin.
 Mutta toisaalta olemme ratkoneet vain uudestaan tehtäviä,
@@ -424,11 +434,11 @@ jotka ovat hoituneet mainiosti myös järjestämisen avulla.
 Antaisiko hajautustaulu meille jotain todellisia uusia
 mahdollisuuksia algoritmien suunnittelussa?
 
-Hajautustaulu osoittaa kyntensä silloin,
+Hajautustaulu osoittaa todelliset kyntensä silloin,
 kun haluamme pitää yllä aidosti \emph{dynaamista}
 joukkoa algoritmin aikana eli haluamme pystyä
-lisäämään, poistamaan ja hakemaan alkioita sekalaisessa järjestyksessä.
-Tällaisessa tilanteessa emme voi enää korvata hajautustaulua
+lisää\-mään, poistamaan ja hakemaan alkioita sekalaisessa järjestyksessä.
+Tällai\-sessa tilanteessa emme voi enää korvata hajautustaulua
 järjestämisellä, koska joukon sisältö muuttuu jatkuvasti
 emmekä voi järjestää alkioita yhtenä kokonaisuutena
 missään vaiheessa algoritmia.
