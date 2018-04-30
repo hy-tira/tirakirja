@@ -194,7 +194,7 @@ b = Math.max(x,y);
 \end{smallcode}
 \\
 \begin{smallcode}[xleftmargin=0pt]
-summa(a,b)
+function summa(a,b)
     return a+b
 \end{smallcode}
 &
@@ -286,19 +286,19 @@ Rekursio tarjoaa helpon ratkaisun juuri tähän:
 pystymme toteuttamaan kätevästi algoritmeja, joissa on
 ''vaihteleva määrä silmukoita''.
 
-Seuraavassa on rekursiivinen algoritmi \texttt{muodosta},
+Seuraavassa on rekursiivinen funktio \texttt{muodosta},
 joka muodostaa kaikki DNA-ketjut pituutta $n$.
 Rekursio lähtee käyntiin, kun parametriksi \texttt{ketju}
 annetaan tyhjä merkkijono.
-Algoritmi tarkastaa ensin, onko annettu ketju valmis
+Funktio tarkastaa ensin, onko annettu ketju valmis
 eli onko siinä jo $n$ merkkiä.
-Jos näin on, algoritmi tulostaa ketjun eikä tee muuta.
-Muussa tapauksessa algoritmi käy läpi kaikki tavat
+Jos näin on, funktio tulostaa ketjun eikä tee muuta.
+Muussa tapauksessa funktio käy läpi kaikki tavat
 lisätä ketjun loppuun seuraava merkki (A, C, G tai T)
 ja kutsuu itseään rekursiivisesti jokaisen vaihtoehdon kohdalla.
 
 \begin{code}
-muodosta(ketju)
+function muodosta(ketju)
     if ketju.length() == n
         print(ketju)
     else
@@ -334,31 +334,31 @@ muodosta(ketju)
 \end{figure}
 
 Kuva \ref{fig:ketjut} havainnollistaa,
-kuinka algoritmi lähtee muodostamaan ketjuja tyhjästä ketjusta alkaen.
-Ensin algoritmi haarautuu neljään osaan sen mukaan,
+kuinka funktio lähtee muodostamaan ketjuja tyhjästä ketjusta alkaen.
+Ensin funktio haarautuu neljään osaan sen mukaan,
 onko ketjun ensimmäinen merkki A, C, G vai T.
 Tämän jälkeen haarautuminen jatkuu vastaavasti
 jokaisessa kutsussa:
 esimerkiksi jos ketju alkaa merkillä G,
-algoritmi haarautuu tapauksiin GA, GC, GG ja GT, jne.
+funktio haarautuu tapauksiin GA, GC, GG ja GT, jne.
 
 \subsection{Osajoukot ja permutaatiot}
 
 Yksi tavallinen rekursion käyttötarkoitus on,
-että haluamme käydä läpi kaikki annetun joukon osajoukot.
-Joukon \emph{osajoukko} on jokin tapa valita joukon alkioita.
+että haluamme käydä läpi kaikki annetun joukon \emph{osajoukot}
+eli kaikki tavat valita jokin kokoelma joukon alkioita.
 Esimerkiksi joukon $\{1,2,3\}$ osajoukot ovat
 $\emptyset$ (tyhjä joukko), $\{1\}$, $\{2\}$, $\{3\}$,
 $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
 Kun joukossa on $n$ alkioita, osa\-joukkoja on yhteensä $2^n$.
 
-Seuraava rekursiivinen algoritmi muodostaa joukon
+Seuraava rekursiivinen funktio muodostaa joukon
 $\{1,2,\dots,n\}$ osajoukot.
-Haku lähtee käyntiin, kun kutsumme algoritmia
+Haku lähtee käyntiin, kun kutsumme funktiota
 parametrilla $1$.
 
 \begin{code}
-muodosta(x)
+function muodosta(x)
     if x == n+1
         // käsittele osajoukko
     else
@@ -388,14 +388,14 @@ for i = 1 to n
 \end{code}
 
 Tarkastellaan sitten toista tilannetta, jossa haluammekin
-muodostaa joukon permutaatiot.
-Joukon \emph{permutaatio} on jokin tapa järjestää joukon alkiot.
+muodostaa joukon \emph{permutaatiot}
+eli kaikki mahdolliset joukon alkioiden järjestykset.
 Esimerkiksi joukon $\{1,2,3\}$ permutaatiot ovat
 $(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
 Kun joukossa on $n$ alkiota, voimme muodostaa siitä yhteensä $n!$ permutaatiota.
 
 Myös permutaatioiden läpikäynti onnistuu kätevästi rekursiolla.
-Seuraava algoritmi muodostaa joukon $\{1,2,\dots,n\}$ permutaatiot,
+Seuraava rekursiivinen funktio muodostaa joukon $\{1,2,\dots,n\}$ permutaatiot,
 kun kutsumme sitä parametrilla $1$.
 
 \begin{code}
@@ -498,10 +498,9 @@ peruuttava haku löytää kaikki ratkaisut.
 \end{figure}
 
 Tarkastellaan esimerkkinä tehtävää, jossa haluamme käydä läpi
-kaikki tietyn kokoiset latinalaiset neliöt.
-\emph{Latinalainen neliö} on ruudukko kokoa $n \times n$, jonka
-kullakin vaaka- ja pystyrivillä esiintyy tarkalleen kerran
-jokainen luku $1,2,\dots,n$.
+kaikki kokoa $n \times n$ olevat \emph{latinalaiset neliöt}
+eli ruudukot, joissa kullakin vaaka- ja pystyrivillä
+esiintyy tarkalleen kerran jokainen luku $1,2,\dots,n$.
 Kyseessä on siis yksinkertaistus tutusta sudoku-tehtävästä.
 Esimerkiksi kuva \ref{fig:latnel} näyttää kaikki 12 latinalaista neliötä kokoa $3 \times 3$.
 
