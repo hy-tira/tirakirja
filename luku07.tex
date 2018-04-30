@@ -1,6 +1,6 @@
 \chapter{Keko}
 
-\emph{Keko} on tietorakenne, joka pitää yllä alkioiden kokoelmaa
+Keko on tietorakenne, joka pitää yllä alkioiden kokoelmaa
 ja tarjoaa seuraavat operaatiot:
 
 \begin{itemize}
@@ -26,7 +26,7 @@ perustuu binäärikekoon.
 
 \section{Binäärikeko}
 
-\emph{Binäärikeko} on binääripuu, jonka jokaisessa solmussa on
+Binäärikeko on binääripuu, jonka jokaisessa solmussa on
 yksi keossa oleva alkio.
 Puu on rakennettu niin, että sen kaikki tasot alinta
 tasoa lukuun ottamatta ovat täynnä solmuja,
@@ -115,10 +115,11 @@ joten sen vasen lapsi on kohdassa $8$,
 oikea lapsi on kohdassa $9$ ja
 vanhempi on kohdassa $2$.
 
-Käytännössä haluamme yleensä, että pystymme lisäämään kekoon uusia alkioita,
-jolloin varaamme riittävän suuren taulukon,
-jonka alkuosa on keon käytössä ja loppuosassa
-on tilaa myöhemmin lisättäville alkioille.
+Käytännössä haluamme yleensä,
+että pystymme lisäämään kekoon uusia alkioita,
+jolloin saattaa olla tarpeen suurentaa taulukkoa.
+Voimme toteuttaa tämän samalla tavalla kuin taulukkolistassa,
+jolloin taulukon suurentaminen ei hidasta keon operaatioita.
 
 \subsection{Operaatioiden toteutus}
 
@@ -422,7 +423,7 @@ PriorityQueue<Integer> jono =
 Tässä tilanteessa meidän täytyy antaa konstruktorille kaksi tietoa:
 keolle alussa muistista varattava tila (tässä 10)
 sekä alkioiden järjestämistapa (tässä käänteinen järjestys).
-Java varaa keolle tarvittaessa myöhemmin uuden suuremman muistialueen,
+Huomaa, että Java varaa keolle tarvittaessa myöhemmin uuden suuremman muistialueen,
 joten tämä määrittely ei tarkoita, että keossa voisi olla enintään 10 alkiota.
 
 Jos haluamme tallentaa \texttt{PriorityQueue}-rakenteeseen omia olioitamme,
@@ -445,8 +446,8 @@ vain pienimmän tai suurimman alkion, voi siis olla hyvä
 ratkaisu käyttää kekoa binäärihakupuun sijasta.
 Mutta kuinka suuria erot ovat käytännössä?
 
-Teemme seuraavaksi testin, jossa vertailemme keskenään
-Javan tietorakenteita
+Tämän selvittämiseksi teemme testin,
+jossa vertailemme keskenään Javan tietorakenteita
 \texttt{PriorityQueue} ja \texttt{TreeSet}.
 Testissä meillä on taulukko,
 jossa on satunnaisessa järjestyksessä luvut $1,2,\dots,n$.
@@ -483,7 +484,7 @@ for (int i = n/2; i < n; i++) {
 System.out.println(summa);
 \end{code}
 
-Taulukko \ref{tab:kekver} näyttää vertailun tulokset.
+Taulukko \ref{tab:kekver} näyttää testin tulokset.
 Tämän testin perusteella näyttää siltä,
 että keon käyttämiseestä on todellista hyötyä,
 koska \texttt{PriorityQueue} toimii 2–3
@@ -504,6 +505,11 @@ $8 \cdot 10^6$ & 3.68 s & 9.43 s \\
 \end{table}
 
 \section{Lisää keosta}
+
+Käymme seuraavaksi läpi menetelmän, jonka avulla voimme
+\emph{muuttaa} taulukon keoksi $O(n)$-ajassa.
+Tämän jälkeen luomme katsauksen $O(n \log n)$-aikaiseen
+järjestämisalgoritmiin, jonka toiminta perustuu kekoon.
 
 \subsection{Taulukosta keoksi}
 
@@ -650,15 +656,135 @@ joten aikaa kuluu vain $O(n)$.
 
 \subsection{Kekojärjestäminen}
 
-\emph{Kekojärjestäminen} on järjestämisalgoritmi,
+Kekojärjestäminen on järjestämisalgoritmi,
 jonka toiminta perustuu kekoon.
 Ideana on muuttaa järjestettävä taulukko ensin keoksi
-ja sen jälkeen poistaa alkiot keosta yksi kerrallaan,
-jolloin saamme alkiot järjestyk\-sessä pienimmästä suurimpaan
-tai suurimmasta pienimpään.
+ja sen jälkeen poistaa alkiot keosta yksi kerrallaan
+järjestyksessä.
 Kekojärjestäminen vie aikaa $O(n \log n)$,
 koska taulukon muuttaminen keoksi vie aikaa $O(n)$
 ja $n$ alkion poistaminen keosta vie aikaa $O(n \log n)$.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.4]
+\scriptsize
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$7$};
+\node[draw, circle] (2) at (-2.5,-2) {$5$};
+\node[draw, circle] (3) at (2.5,-2) {$6$};
+\node[draw, circle] (4) at (-3.5,-4) {$1$};
+\node[draw, circle] (5) at (-1.5,-4) {$2$};
+\node[draw, circle] (6) at (1.5,-4) {$4$};
+\node[draw, circle] (7) at (3.5,-4) {$3$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\path[draw,thick,-] (3) -- (7);
+\node at (0,-6) {\small vaihe $1$};
+\end{scope}
+\begin{scope}[xshift=10cm]
+\node[draw, circle] (1) at (0,0) {$6$};
+\node[draw, circle] (2) at (-2.5,-2) {$5$};
+\node[draw, circle] (3) at (2.5,-2) {$4$};
+\node[draw, circle] (4) at (-3.5,-4) {$1$};
+\node[draw, circle] (5) at (-1.5,-4) {$2$};
+\node[draw, circle] (6) at (1.5,-4) {$3$};
+\node[draw, circle, dashed] (7) at (3.5,-4) {$7$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\path[draw,thick,-] (3) -- (6);
+\node at (0,-6) {\small vaihe $2$};
+\end{scope}
+\begin{scope}[xshift=20cm]
+\node[draw, circle] (1) at (0,0) {$5$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$4$};
+\node[draw, circle] (4) at (-3.5,-4) {$1$};
+\node[draw, circle] (5) at (-1.5,-4) {$2$};
+\node[draw, circle, dashed] (6) at (1.5,-4) {$6$};
+\node[draw, circle, dashed] (7) at (3.5,-4) {$7$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (2) -- (5);
+\node at (0,-6) {\small vaihe $3$};
+\end{scope}
+\begin{scope}[xshift=0cm,yshift=-8cm]
+\node[draw, circle] (1) at (0,0) {$4$};
+\node[draw, circle] (2) at (-2.5,-2) {$3$};
+\node[draw, circle] (3) at (2.5,-2) {$2$};
+\node[draw, circle] (4) at (-3.5,-4) {$1$};
+\node[draw, circle, dashed] (5) at (-1.5,-4) {$5$};
+\node[draw, circle, dashed] (6) at (1.5,-4) {$6$};
+\node[draw, circle, dashed] (7) at (3.5,-4) {$7$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (2) -- (4);
+\node at (0,-6) {\small vaihe $4$};
+\end{scope}
+\begin{scope}[xshift=10cm,yshift=-8cm]
+\node[draw, circle] (1) at (0,0) {$3$};
+\node[draw, circle] (2) at (-2.5,-2) {$1$};
+\node[draw, circle] (3) at (2.5,-2) {$2$};
+\node[draw, circle, dashed] (4) at (-3.5,-4) {$4$};
+\node[draw, circle, dashed] (5) at (-1.5,-4) {$5$};
+\node[draw, circle, dashed] (6) at (1.5,-4) {$6$};
+\node[draw, circle, dashed] (7) at (3.5,-4) {$7$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (1) -- (3);
+\node at (0,-6) {\small vaihe $5$};
+\end{scope}
+\begin{scope}[xshift=20cm,yshift=-8cm]
+\node[draw, circle] (1) at (0,0) {$2$};
+\node[draw, circle] (2) at (-2.5,-2) {$1$};
+\node[draw, circle, dashed] (3) at (2.5,-2) {$3$};
+\node[draw, circle, dashed] (4) at (-3.5,-4) {$4$};
+\node[draw, circle, dashed] (5) at (-1.5,-4) {$5$};
+\node[draw, circle, dashed] (6) at (1.5,-4) {$6$};
+\node[draw, circle, dashed] (7) at (3.5,-4) {$7$};
+\path[draw,thick,-] (1) -- (2);
+\node at (0,-6) {\small vaihe $6$};
+\end{scope}
+\begin{scope}[xshift=0cm,yshift=-16cm]
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle, dashed] (2) at (-2.5,-2) {$2$};
+\node[draw, circle, dashed] (3) at (2.5,-2) {$3$};
+\node[draw, circle, dashed] (4) at (-3.5,-4) {$4$};
+\node[draw, circle, dashed] (5) at (-1.5,-4) {$5$};
+\node[draw, circle, dashed] (6) at (1.5,-4) {$6$};
+\node[draw, circle, dashed] (7) at (3.5,-4) {$7$};
+\node at (0,-6) {\small vaihe $7$};
+\end{scope}
+\begin{scope}[xshift=10cm,yshift=-16cm]
+\node[draw, circle, dashed] (1) at (0,0) {$1$};
+\node[draw, circle, dashed] (2) at (-2.5,-2) {$2$};
+\node[draw, circle, dashed] (3) at (2.5,-2) {$3$};
+\node[draw, circle, dashed] (4) at (-3.5,-4) {$4$};
+\node[draw, circle, dashed] (5) at (-1.5,-4) {$5$};
+\node[draw, circle, dashed] (6) at (1.5,-4) {$6$};
+\node[draw, circle, dashed] (7) at (3.5,-4) {$7$};
+\node at (0,-6) {\small vaihe $8$};
+\end{scope}
+\end{tikzpicture}
+\caption{Esimerkki kekojärjestämisestä.}
+\label{fig:kekjar}
+\end{figure}
+
+Kuva \ref{fig:kekjar} näyttää esimerkin kekojärjestämisestä,
+kun järjestämme taulukon $[5,2,3,1,7,4,6]$
+pienimmästä suurimpaan.
+Muutamme ensin taulukon maksimikeoksi,
+jolloin taulukosta tulee $[7,5,6,1,2,4,3]$.
+Tämän jälkeen poistamme yksi kerrallaan
+keon juuressa olevan alkion vaihtamalla sen
+keon viimeisen alkion kanssa.
+Tämän seurauksena keosta poistuneet alkiot
+(merkitty katkoviivoilla) muodostavat lopulta järjestetyn taulukon.
 
 Kekojärjestäminen ei ole käytännössä yhtä tehokas algoritmi
 kuin lomitusjärjestäminen tai pikajärjestäminen,
