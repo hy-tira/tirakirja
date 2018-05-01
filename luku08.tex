@@ -6,12 +6,11 @@ Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
 tai säveltää hyvää musiikkia.
 Algoritmien suunnittelu on taito, jonka oppiminen vie aikaa.
 
-Tässä luvussa keskitymme erityisesti tavoitteeseen
-saada aikaan algoritmi, jonka aikavaativuus on $O(n)$ tai $O(n \log n)$.
-Tällaisen algoritmin etuna on, että se toimii tehokkaasti
-myös silloin, kun syötteen koko $n$ on suuri.
+Keskitymme tässä luvussa tavoitteeseen
+saada aikaan algoritmi, jonka aikavaativuus on $O(n)$ tai $O(n \log n)$
+eli joka toimii tehokkaasti myös silloin, kun $n$ on suuri.
 Tavoitteen asettaminen etukäteen on hyödyllistä,
-koska kun tiedämme tavoitteen, voimme ottaa sen suunnittelumme
+koska voimme ottaa sen algoritmin suunnittelun
 lähtökohdaksi ja rajata sen avulla mahdollisia
 lähestymistapoja, joita voimme käyttää.
 
@@ -152,37 +151,78 @@ huoletta tehokkaassa algoritmissa.
 
 Jotta voimme käyttää järjestämistä, meidän täytyy usein havaita
 ongelmasta jokin ominaisuus, jonka ansiosta voimme ratkaista
-ongelman \emph{ahneella} algoritmilla.
-Ahne algoritmi valitsee joka askeleella parhaalta tuntuvan
-vaihtoehdon eikä tutki muita vaihtoehtoja.
-Meidän täytyy kuitenkin olla varmoja, että saamme oikean ratkaisun tällä tavalla.
+ongelman \emph{ahneesti}.
+Meillä täytyy siis olla syy, miksi voimme käsitellä aineiston
+pienimmästä suurimpaan tai suurimmasta pienimpään ja
+olla varmoja,
+että saamme oikean ratkaisun tällä tavalla.
 
-Tarkastellaan esimerkkinä tehtävää, jossa haluamme laskea
-tutkijan \emph{$h$-indeksin}. Tämä on suurin luku $x$, jolle pätee,
-että tutkijalla on $x$ julkaisua, joihin on viitattu ainakin $x$ kertaa.
-Esimerkiksi jos tutkijalla on kolme julkaisua,
-joiden viittausmäärät ovat $[5,1,3]$, hänen $h$-indeksinsä on $2$:
-hänellä on kaksi julkaisua, joihin on viitattu ainakin kahdesti.
+Tarkastellaan esimerkkinä tehtävää, jossa annettuna on
+$n$ kolikkoa ja haluamme löytää pienimmän rahamäärän,
+jota \emph{emme} voi muodostaa summana kolikoista.
+Jokaisella kolikolla on tietty kokonaislukuarvo, ja
+muodostettava rahamäärä on myös kokonaisluku.
+Esimerkiksi jos kolikot ovat $[1,2,2,7]$,
+voimme muodostaa rahamäärät $1,2,\dots,5$,
+mutta emme voi muodostaa rahamäärää $6$,
+joten tässä tapauksessa oikea vastaus on $6$.
 
-Tässä tehtävässä hyödyllinen havainto on, että meidän kannattaa aina
-tarkastella tutkijan \emph{viitatuimpia} julkaisuja.
-Jos tutkijan $h$-indeksi on $x$, voimme tarkastella vain $x$ viitatuinta
-julkaisua, ja kaikissa niissä viittausmäärän on oltava ainakin $x$.
-Tämä havainto johtaa ahneeseen algoritmiin: järjestämme ensin
-viittausmäärät ja etsimme sitten suurimman arvon $x$,
-jolle pätee, että $x$ viitatuimman julkaisun joukossa vähiten viitatussa
-julkaisussa on ainakin $x$ viittausta. Voimme toteuttaa algoritmin seuraavasti:
+Algoritmien suunnittelussa on usein hyödyllistä
+lähteä liikkeelle helpoista tapauksista.
+Kun meillä on käytössämme tietyt kolikot,
+hyvä ensimmäinen tavoite on koettaa muodostaa rahamäärä $1$.
+Jotta onnistumme tässä, meillä on pakko olla kolikko,
+jonka arvo on $1$.
+Entä milloin voimme muodostaa rahamäärän $2$,
+jos tiedämme, että voimme muodostaa rahamäärän $1$?
+Tässä on kaksi vaihtoehtoa: meillä täytyy olla
+toinen kolikko, jonka arvo on $1$, jolloin saamme
+summan $1+1=2$, tai sitten kolikko, jonka arvo on $2$.
+
+Tämä on hyvää päättelyä, mutta jotta saamme aikaan algoritmin,
+meidän täytyy pystyä yleistämään se kaikkiin tapauksiin.
+Voimme ajatella asiaa hieman toisesta näkökulmasta:
+Meillä on joukko kolikoita, joiden avulla voimme muodostaa
+rahamäärät $1,2,\dots,k$.
+Miten voisimme muodostaa myös rahamäärän $k+1$?
+Ratkaisu on, että tarvitsemme uuden kolikon,
+jonka arvo on \emph{enintään} $k+1$.
+Kun uuden kolikon arvo on $u \le k+1$,
+voimme tämän jälkeen muodostaa rahamäärät $1,2,\dots,k+u$.
+Tämän havainnon ansiosta voimme alkaa muodostaa ratkaisua
+kolikko kerrallaan.
+Lisäksi jos mahdollisia uusia kolikoita on useita,
+voimme aina valita ahneesti \emph{pienimmän} kolikon,
+koska pystymme valitsemaan suuremmat kolikot myöhemminkin.
+
+Nyt meillä on kaikki ainekset tehokasta algoritmia varten.
+Järjes\-tämme ensin kolikot ja muodostamme sitten ratkaisun
+käymällä kolikot läpi pienimmästä suurimpaan.
+Aloitamme tyhjästä ratkaisusta, jossa $k=0$.
+Jokaisen kolikon kohdalla tiedämme,
+että voimme muodostaa tällä hetkellä rahamäärät $1,2,\dots,k$,
+joten voimme parantaa ratkaisua kolikon avulla,
+jos sen arvo on enintään $k+1$.
+Muuten lopetamme ratkaisun muodostamisen,
+koska kaikki tulevat kolikot ovat vielä suurempia.
+Lopuksi toteamme, että $k+1$ on pienin rahamäärä,
+jota emme voi muodostaa.
 
 \begin{code}
-sort(viittaukset)
-h_indeksi = 0
-for x = 1 to n
-    if viittaukset[n-x] >= x
-        h_indeksi = x
+sort(kolikot)
+k = 0
+for i = 0 to n-1
+    u = kolikot[i]
+    if u <= k+1
+        k += u
+    else
+        break
+print(k+1)
 \end{code}
 
-Taulukon järjestäminen vie aikaa $O(n \log n)$ ja for-silmukka vie aikaa $O(n)$,
-joten algoritmi toimii ajassa $O(n \log n)$.
+Algoritmi järjestää ensin kolikot ajassa $O(n \log n)$
+ja tämän jälkeen käy ne läpi ajassa $O(n)$,
+joten algoritmin aikavaativuus on $O(n \log n)$.
 
 \subsection{Tietorakenteet}
 
@@ -206,6 +246,7 @@ for i = 0 to n-1
         summa += taulu[j]
         if summa == x:
             laskuri++
+print(laskuri)
 \end{code}
 
 Entä kuinka voisimme ratkaista tehtävän tehokkaasti?
@@ -224,7 +265,7 @@ hyvä tavoite olisi käydä taulukko läpi vain kerran.
 Kun olemme taulukon kohdassa $i$,
 monessako tähän kohtaan päättyvässä osataulukossa
 lukujen summa on $x$?
-Tämä tarkoittaa, että haluamme etsiä kohdat $j<i$,
+Tämä tarkoittaa, että haluamme etsiä kohdat $j \le i$,
 joille pätee
 \[s(i)-s(j-1)=x\]
 eli
@@ -241,6 +282,7 @@ for i = 0 to n-1
     laskuri += summat[taulu[i]-x]
     summa += taulu[i]
     summat[summa]++
+print(laskuri)
 \end{code}
 
 Tässä rakenne \texttt{summat} pitää kirjaa,
@@ -320,7 +362,7 @@ montako minuuttia kestää valmistaa yksi tavara konetta käyttäen,
 ja haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
 $m$ tavaraa mahdollisimman nopeasti.
 
-Kuva \ref{fig:optkon} näyttää parhaan aikataulun tilanteessa,
+Kuva \ref{fig:optkon} näyttää parhaan aikataulun esimerkkitilanteessa,
 jossa koneiden nopeudet ovat $[2,3,7]$ ja haluamme
 valmistaa seitsemän tavaraa (eli $m=7$).
 Käynnistämme koneen 1 neljästi kahden minuutin välein,
@@ -340,10 +382,11 @@ Kun sitten käytössämme on kaikki koneet,
 pystymme valmistamaan yhteensä
 \[ s = \sum_{i=1}^n \lfloor u/x_i \rfloor \]
 tavaraa. Niinpä $\texttt{ok}(u)=\texttt{false}$, jos $s<m$,
-ja $\texttt{ok}(u)=\texttt{true}$, jos $s \ge m$. Voimme toteuttaa tämän seuraavasti:
+ja $\texttt{ok}(u)=\texttt{true}$, jos $s \ge m$.
+Voimme toteuttaa tämän käytännössä seuraavasti:
 
 \begin{code}
-ok(u)
+function ok(u)
     s = 0
     for i = 1 to n
         s += u/x[i]
@@ -395,38 +438,6 @@ lähimmät pienemmät edeltäjät ovat $[-,1,4,1,2,1]$.
 Koska luvulla $1$ ei ole pienempää edeltäjää,
 sen kohdalla on merkki $-$.
 
-Seuraava koodi ratkaisee tehtävän $O(n^2)$-ajassa ja muodostaa
-taulukon \texttt{edeltaja}, jossa on jokaisen luvun lähin pienempi edeltäjä:
-
-\begin{code}
-for i = 0 to n-1
-    for j = i-1 to 0
-        if taulu[j] < taulu[i]
-            edeltaja[i] = taulu[j]
-            break
-\end{code}
-
-Saamme aikaan tehokkaan ratkaisun käymällä läpi taulukon
-vasemmalta oikealle ja pitämällä yllä \emph{pinoa}, jossa on
-kasvava lista taulukon lukuja.
-Jokaisessa kohdassa $i$ poistamme ensin pinon lopusta lukuja
-niin kauan kuin pinon viimeinen luku on suurempi tai yhtä
-suuri kuin kohdan $i$ luku.
-Tämän jälkeen kirjaamme muistiin, että kohdan $i$ luvun
-lähin pienempi edeltäjä on pinon viimeinen luku (jos pino ei ole tyhjä) ja
-lisäämme kohdan $i$ luvun pinon loppuun.
-Tuloksena on seuraava algoritmi:
-
-\begin{code}
-pino = []
-for i = 0 to n-1
-    while not pino.empty() and pino.top() >= taulu[i]
-        pino.pop()
-    if not pino.empty()
-        edeltaja[i] = pino.top()
-    pino.push(taulu[i])
-\end{code}
-
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.6]
@@ -450,7 +461,7 @@ for i = 0 to n-1
 \draw[thick,->] (1) -- (2);
 \node at (3,-2) {vaihe $2$};
 \end{scope}
-\begin{scope}[yshift=-5cm]
+\begin{scope}[yshift=-4.5cm]
 \fill[color=lightgray] (2,0) rectangle (3,1);
 \draw (0,0) grid (6,1);
 \foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
@@ -461,7 +472,7 @@ for i = 0 to n-1
 \draw[thick,->] (2) -- (3);
 \node at (3,-2) {vaihe $3$};
 \end{scope}
-\begin{scope}[yshift=-5cm,xshift=10cm]
+\begin{scope}[yshift=-4.5cm,xshift=10cm]
 \fill[color=lightgray] (3,0) rectangle (4,1);
 \draw (0,0) grid (6,1);
 \foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
@@ -470,7 +481,7 @@ for i = 0 to n-1
 \draw[thick,->] (1) -- (2);
 \node at (3,-2) {vaihe $4$};
 \end{scope}
-\begin{scope}[yshift=-10cm]
+\begin{scope}[yshift=-9cm]
 \fill[color=lightgray] (4,0) rectangle (5,1);
 \draw (0,0) grid (6,1);
 \foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
@@ -481,7 +492,7 @@ for i = 0 to n-1
 \draw[thick,->] (2) -- (3);
 \node at (3,-2) {vaihe $5$};
 \end{scope}
-\begin{scope}[yshift=-10cm,xshift=10cm]
+\begin{scope}[yshift=-9cm,xshift=10cm]
 \fill[color=lightgray] (5,0) rectangle (6,1);
 \draw (0,0) grid (6,1);
 \foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
@@ -495,15 +506,48 @@ for i = 0 to n-1
 \label{fig:pielah}
 \end{figure}
 
+Seuraava koodi ratkaisee tehtävän $O(n^2)$-ajassa ja muodostaa
+taulukon \texttt{edeltaja}, jossa on jokaisen luvun lähin pienempi edeltäjä:
+
+\begin{code}
+for i = 0 to n-1
+    for j = i-1 to 0
+        if taulu[j] < taulu[i]
+            edeltaja[i] = taulu[j]
+            break
+\end{code}
+
+Nyt haluamme kuitenkin saada aikaan tehokkaamman algoritmin.
+Onnistumme tässä, kun käymme läpi taulukon
+vasemmalta oikealle ja pidämme yllä \emph{pinoa}, jossa on
+kasvava lista taulukon lukuja.
+Jokaisessa kohdassa $i$ poistamme ensin pinon lopusta lukuja
+niin kauan kuin pinon viimeinen luku on suurempi tai yhtä
+suuri kuin kohdan $i$ luku.
+Tämän jälkeen kirjaamme muistiin, että kohdan $i$ luvun
+lähin pienempi edeltäjä on pinon viimeinen luku (jos pino ei ole tyhjä) ja
+lisäämme kohdan $i$ luvun pinon loppuun.
+Tuloksena on seuraava algoritmi:
+
+\begin{code}
+pino = []
+for i = 0 to n-1
+    while not pino.empty() and pino.top() >= taulu[i]
+        pino.pop()
+    if not pino.empty()
+        edeltaja[i] = pino.top()
+    pino.push(taulu[i])
+\end{code}
+
 Kuva \ref{fig:pielah} näyttää, kuinka algoritmi käsittelee taulukon $[1,4,5,2,3,2]$.
 Alussa pino on tyhjä, joten toteamme, ettei luvulla 1
-ole lähintä pienintä edeltäjää ja lisäämme sen pinoon.
-Sitten vuoroon tulee luku 4, jonka lähin pienin edeltäjä
+ole lähintä pienempää edeltäjää ja lisäämme sen pinoon.
+Sitten vuoroon tulee luku 4, jonka lähin pienempi edeltäjä
 on pinon päällä oleva luku 1. Tämän jälkeen lisäämme luvun 4 pinoon.
-Vastaavasti luvun 5 lähin pienin edeltäjä on luku 4,
+Vastaavasti luvun 5 lähin pienempi edeltäjä on luku 4,
 ja lisäämme luvun 5 pinoon.
 Luvun 2 kohdalla poistamme pinosta luvut 5 ja 4
-ja toteamme, että luvun 2 lähin pienin edeltäjä on luku 1.
+ja toteamme, että luvun 2 lähin pienempi edeltäjä on luku 1.
 Lopuksi käsittelemme vielä vastaavasti luvut 3 ja 2.
 
 Algoritmin tehokkuus riippuu siitä, montako kertaa suoritamme
