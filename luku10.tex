@@ -1,6 +1,6 @@
 \chapter{Verkkojen perusteet}
 
-Voimme ratkaista monia algoritmisia ongelmia
+Voimme ratkaista monia algoritmiikan ongelmia
 esittämällä tilanteen \emph{verkkona} ja käyttämällä sitten
 sopivaa verkkoalgoritmia.
 Tyypillinen esimerkki verkosta on tieverkosto,
@@ -148,10 +148,8 @@ ja toinen polku on $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 \label{fig:versyk}
 \end{figure}
 
-
-Polku on \emph{sykli},
-jos se alkaa ja päättyy samassa solmussa,
-kulkee ainakin yhden toisen solmun kautta
+Polku on \emph{sykli}, jos sen alku- ja loppusolmu on sama,
+se kulkee ainakin yhden toisen solmun kautta
 eikä kulje kahta kertaa saman solmun tai kaaren kautta.
 Kuvassa \ref{fig:versyk} on esimerkkinä sykli
 $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$.
@@ -215,7 +213,7 @@ jossa on viisi solmua ja neljä kaarta.
 \path[draw,thick,-] (4) -- (5);
 \end{tikzpicture}
 \end{center}
-\caption{Yhtenäinen, syklitön verkko eli puu.}
+\caption{Puu eli yhtenäinen, syklitön verkko.}
 \label{fig:verpuu}
 \end{figure}
 
@@ -262,8 +260,8 @@ jokaiseen kaareen liittyy jokin paino,
 joka kuvaa tyypillisesti kaaren pituutta.
 Kun kuljemme polkua painotetussa verkossa,
 polun pituus on kaarten painojen summa.
-Kuvassa \ref{fig:verpae} on esimerkkinä painotettu verkko.
-Tässä verkossa polun $1 \rightarrow 2 \rightarrow 5$
+Kuvassa \ref{fig:verpae} on esimerkkinä painotettu verkko,
+jossa polun $1 \rightarrow 2 \rightarrow 5$
 paino on $5+8=13$ ja polun
 $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$
 paino on $2+4+3=9$.
@@ -433,8 +431,8 @@ kaaret.add(new Kaari(4,5));
 \end{code}
 
 Kaarilista on hyvä esitystapa algoritmeissa,
-joissa meidän täytyy pystyä käymään helposti läpi
-kaikki verkon kaaret eikä meillä ole tarvetta
+joissa haluamme pystyä käy\-mään helposti läpi
+kaikki verkon kaaret eikä ole tarvetta
 selvittää tietystä solmusta lähteviä kaaria.
 
 \subsection{Vierusmatriisiesitys}
@@ -475,17 +473,17 @@ selvittää tietystä solmusta lähteviä kaaria.
 \label{fig:vervim}
 \end{figure}
 
-Vierusmatriisi on kaksiulotteinen taulukko,
+\emph{Vierusmatriisi} on kaksiulotteinen taulukko,
 joka kertoo jokaisesta verkon kaaresta,
 esiintyykö se verkossa.
+Tavallinen tapa on muodostaa vierusmatriisi niin,
+että sen jokainen alkio on 0 tai 1.
 Jos verkossa pääsee kaarella solmusta
 $a$ solmuun $b$,
 niin matriisin rivin $a$ sarakkeessa $b$
-on sitä vastaava merkintä.
+lukee 1, ja muuten 0.
 Kuvassa \ref{fig:vervim} on esimerkki
-verkon vierusmatriisiesityksestä,
-Jokaisessa matriisin kohdassa on luku ''0'' tai ''1''
-sen mukaan, onko verkossa kyseistä kaarta.
+verkon vierusmatriisiesityksestä.
 
 Javassa voimme määritellä vierusmatriisin seuraavasti:
 
@@ -532,7 +530,7 @@ Syvyyshaku pitää yllä jokaisesta verkon solmusta tietoa,
 onko se vielä vieraillut solmussa.
 Kun haku saapuu solmuun, jossa se ei ole vieraillut aiemmin,
 se merkitsee solmun vierailluksi ja alkaa käydä
-solmusta lähteviä kaaria.
+läpi solmusta lähteviä kaaria.
 Jokaisen kaaren kohdalla haku etenee verkon niihin osiin,
 joihin pääsee kaaren kautta.
 Lopulta kun haku on käynyt läpi kaikki kaaret,
@@ -784,21 +782,21 @@ Tavallinen tapa toteuttaa leveyshaku on käyttää \emph{jonoa},
 jossa on käsittelyä odottavia solmuja.
 Jonon ansiosta pystymme käymään läpi solmut siinä
 jär\-jestyksessä kuin olemme löytäneet ne leveyshaun aikana.
-Oletamme, että jonossa on metodi \texttt{add},
-joka lisää alkion jonon loppuun, sekä metodi \texttt{poll},
+Oletamme, että jonossa on metodi \texttt{enqueue},
+joka lisää alkion jonon loppuun, sekä metodi \texttt{dequeue},
 joka hakee ja poistaa jonon ensimmäisen alkion.
 Seuraava koodi suorittaa leveyshaun lähtösolmusta \texttt{alku} alkaen:
 
 \begin{code}
-jono.add(alku)
+jono.enqueue(alku)
 vierailtu[alku] = true
 etaisyys[alku] = 0
 while jono.size() > 0
-    solmu = jono.poll()
+    solmu = jono.dequeue()
     for naapuri in verkko[solmu]
         if vierailtu[naapuri]
             continue
-        jono.add(naapuri)
+        jono.enqueue(naapuri)
         vierailtu[naapuri] = true
         etaisyys[naapuri] = etaisyys[solmu]+1
 \end{code}
@@ -817,7 +815,7 @@ solmun ja kaaren enintään kerran.
 Olemme labyrintissa ja haluamme päästä ruudusta $A$ ruutuun $B$.
 Joka askeleella voimme siirtyä yhden ruudun verran ylöspäin, alaspäin,
 vasemmalle tai oikealle.
-Pystymmekö pääsemään ruudusta $A$ ruutuun $B$, ja jos pystymme, niin
+Pystymmekö pääsemään ruudusta $A$ ruutuun $B$, ja jos pystymme,
 mikä on lyhin mahdollinen reitti?
 Esimerkiksi kuvassa \ref{fig:labrei}(a) lyhin reitti
 ruudusta $A$ ruutuun $B$ muodostuu 9 askeleesta.
@@ -861,15 +859,15 @@ Labyrintin esittäminen verkkona.}
 \end{figure}
 
 Voimme esittää ongelman verkkona niin,
-että jokainen labyrintin ruutu on yksi verkon solmuista
+että jokainen lattiaruutu on yksi verkon solmuista
 ja kahden solmun välillä on kaari,
 jos vastaavat ruudut ovat vierekkäin labyrintissa.
 Kuva \ref{fig:labrei}(b) näyttää esimerkkilabyrinttimme verkkona.
 Tätä esitystapaa käyttäen ruudusta $A$ on reitti ruutuun $B$ tarkalleen silloin,
 kun vastaavat verkon solmut kuuluvat samaan yhtenäiseen komponenttiin.
 Voimme siis tarkastaa syvyyshaulla, onko ruudusta $A$ reittiä ruutuun $B$.
-Jos haluamme löytää \emph{lyhimmän} reitin ruudusta $A$ ruutuun $B$,
-voimme puolestaan käyttää leveyshakua, joka lähtee liikkeelle ruudusta $A$.
+Lyhin reitti ruudusta $A$ ruutuun $B$ löytyy
+puolestaan leveyshaulla, joka lähtee liikkeelle ruudusta $A$.
 
 Huomaa, että meidän ei tarvitse erikseen muuttaa labyrinttia
 verkoksi, vaan voimme toteuttaa haut \emph{implisiittiseen} verkkoon.
