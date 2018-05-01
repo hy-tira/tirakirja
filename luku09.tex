@@ -6,7 +6,7 @@ algoritmiikan ongelmia.
 Ideana on muotoilla ongelma rekursiivisesti niin,
 että ratkaisu ongelmaan palautuu saman ongelman
 pienempiin osaongelmiin.
-Tämän jälkeen saamme aikaan tehokkaan ratkaisun,
+Tämän jälkeen saamme aikaan tehokkaan algoritmin,
 kun laskemme jokaisen osaongelman ratkaisun vain kerran.
 
 Tässä luvussa tutustumme ensin dynaamisen ohjelmoinnin perusteisiin
@@ -42,19 +42,19 @@ joiden korkeudet ovat 1, 2 ja 3.}
 \label{fig:dyntor}
 \end{figure}
 
-Kuva \ref{fig:dyntor} näyttää esimerkin, jossa $n=4$
-ja meillä on 7 tapaa rakentaa torni palikoista.
+Esimerkiksi kun tornin korkeus on $n=4$, voimme rakentaa
+sen 7 tavalla kuvan \ref{fig:dyntor} mukaisesti.
 Jos $n$ on pieni, voimme laskea tornien määrän helposti
 käymällä läpi kaikki tavat, mutta tornien määrä kasvaa
 nopeasti emmekä voi käyttää raakaa voimaa suuremmilla
 $n$:n arvoilla.
 Seuraavaksi ratkaisemmekin ongelman tehokkaasti
-dynaamisen ohjelmoinnin avulla.
+dynaamisella ohjelmoinnilla.
 
 \subsection{Rekursiivinen esitys}
 
 Jotta voimme käyttää dynaamista ohjelmointia,
-meidän täytyy pystyä esit\-tämään ongelma rekursiivisesti
+meidän täytyy pystyä esit\-tämään ongelma \emph{rekursiivisesti}
 niin, että saamme laskettua ongelman ratkaisun
 käyttäen osaongelmina pienempiä vastaavia ongelmia.
 Tässä tehtävässä luonteva rekursiivinen funktio on
@@ -64,13 +64,15 @@ Esimerkiksi $\texttt{tornit}(4)=7$, koska
 voimme rakentaa korkeuden 4 tornin 7 tavalla.
 
 Funktion pienten arvojen laskeminen on helppoa.
-Ensinnäkin $\texttt{tornit}(0)=1$, koska voimme
-muodostaa tyhjän tornin yhdellä tavalla:
+Ensinnäkin $\texttt{tornit}(0)=1$, koska on
+tarkalleen yksi tapa rakentaa tyhjä torni:
 siinä ei ole mitään palikoita.
-Sitten $\texttt{tornit}(1)=1$, koska ainoa mahdollisuus
-rakentaa torni on valita korkeuden 1 palikka,
-ja $\texttt{tornit}(2)=2$, koska voimme joko valita
-kaksi korkeuden 1 palikkaa tai yhden korkeuden 2 palikan.
+Sitten $\texttt{tornit}(1)=1$, koska ainoa tapa
+rakentaa korkeuden 1 torni on valita palikka, jonka korkeus on 1,
+ja $\texttt{tornit}(2)=2$, koska voimme
+rakentaa korkeuden 2 tornin valitsemalla joko
+kaksi palikkaa, jonka kummankin korkeus on 1,
+tai yhden palikan, jonka korkeus on 2.
 
 \begin{figure}
 \center
@@ -90,18 +92,17 @@ korkeuden 1, 2 tai 3 palikan.}
 \label{fig:dynrek}
 \end{figure}
 
-Kuinka voisimme sitten laskea funktion arvon yleisessä tapauksessa,
+Kuinka voisimme sitten laskea funktion arvon \emph{yleisessä} tapauksessa,
 kun tornin korkeus on $n$?
 Tässä voimme miettiä, kuinka tornin rakentaminen alkaa.
-Meillä on kolme mahdollisuutta: voimme laittaa ensin palikan
-korkeutta 1, 2 tai 3.
-Jos valitsemme korkeuden 1 palikan, meidän täytyy rakentaa
+Meillä on kolme mahdollisuutta: voimme laittaa ensin palikan,
+jonka korkeus on 1, 2 tai 3.
+Jos aloitamme korkeuden 1 palikalla, meidän täytyy rakentaa
 sen päälle korkeuden $n-1$ torni.
-Vastaavasti jos valitsemme korkeuden 2 tai 3 palikan,
+Vastaavasti jos aloitamme korkeuden 2 tai 3 palikalla,
 meidän täytyy rakentaa sen päälle torni,
 jonka korkeus on $n-2$ tai $n-3$.
 Kuva \ref{fig:dynrek} havainnollistaa tämän idean.
-
 Niinpä voimme laskea tornien määrän rekursiivisesti kaavalla
 \[
 \texttt{tornit}(n) = \texttt{tornit}(n-1)+\texttt{tornit}(n-2)+\texttt{tornit}(n-3),
@@ -138,8 +139,8 @@ korkeus $n$ & $\texttt{tornit}(n)$ \\
 \label{tab:dyntor}
 \end{table}
 
-Taulukko \ref{tab:dyntor} näyttää yhteenvedon funktion
-$\texttt{tornit}(n)$ arvoista, kun $n=0,1,\dots,9$.
+Taulukko \ref{tab:dyntor} näyttää funktion
+$\texttt{tornit}(n)$ arvot, kun $n=0,1,\dots,9$.
 Kuten taulukosta voi huomata, funktion arvo kasvaa nopeasti:
 se lähes kaksinkertaistuu joka askeleella.
 Kun $n$ on suuri,
@@ -274,9 +275,11 @@ Muussa tapauksessa alijonossa on ensin kohtaan $x$ päättyvä
 pisin nouseva alijono, missä $x<k$, ja sitten vielä kohdan $k$ alkio.
 Tämä edellyttää, että kohdan $x$ alkio on pienempi
 kuin kohdan $k$ alkio.
-Tuloksena olevan alijonon pituus on $\texttt{pituus}(x)+1$.
-Voimmekin käydä läpi kaikki mahdolliset tavat valita kohta $x$
-ja ottaa niistä parhaan vaihtoehdon.
+Tuloksena olevan alijonon pituus on $\texttt{pisin}(x)+1$.
+Tämä antaa mahdollisuuden dynaamiseen ohjelmointiin:
+kun haluamme laskea arvon $\texttt{pisin}(k)$,
+käymme läpi kaikki mahdolliset tavat valita kohta $x$
+ja valitsemme niistä parhaan vaihtoehdon.
 
 Seuraava koodi laskee jokaiselle $k=0,1,\dots,n-1$
 pisimmän kohtaan $k$ päättyvän alijonon pituuden yllä kuvattua
@@ -340,6 +343,10 @@ Jokaisella askeleella voimme siirtyä ruudun alaspäin tai oikealle.
 Kuitenkin joissakin ruuduissa on este, emmekä voi kulkea sellaisen
 ruudun kautta.
 Montako mahdollista reittiä on olemassa?
+Esimerkiksi kuvassa \ref{fig:reiruu} on $4 \times 4$ -ruudukko,
+jossa on kolme mahdollista reittiä ruudukon
+vasemmasta yläkulmasta oikeaan alakulmaan.
+
 
 \begin{figure}
 \center
@@ -367,27 +374,24 @@ Montako mahdollista reittiä on olemassa?
 \label{fig:reiruu}
 \end{figure}
 
-Kuvassa \ref{fig:reiruu} on esimerkkitilanne, jossa ruudukon koko on $4 \times 4$.
-Tässä tapauksessa meillä on kolme mahdollisuutta, kuinka voimme liikkua
-vasemmasta yläkulmasta oikeaan alakulmaan.
-
 Tässä tehtävässä osaongelmat ovat \emph{kaksiulotteisia},
 koska olemme reitin joka vaiheessa tietyn rivin tietyllä sarakkeella.
 Niinpä määritte\-lemme rekursiivisen funktion, jolla on kaksi
 parametria: $\texttt{reitit}(y,x)$ kertoo, montako reittiä on
 vasemmasta yläkulmasta ruutuun $(y,x)$.
-Tätä funktiota käyttäen $\texttt{reitit}(n,n)$ antaa meille
-vastauksen tehtävään.
+Numeroimme rivit ja sarakkeet $1,2,\dots,n$
+ja haluamme laskea arvon $\texttt{reitit}(n,n)$,
+joka on reittien määrää vasemmasta yläkulmasta oikeaan alakulmaan.
 
-Hyödyllinen havainto on, että jokaisessa ruudussa meillä on kaksi
+Hyödyllinen havainto on, että jokaisessa ruudussa on kaksi
 mahdollisuutta, kuinka reitti voi tulla ruutuun,
 koska voimme tulla joko ylhäältä tai vasemmalta.
-Kun haluamme laskea reittien määrää, laskemme yhteen ylhäältä
+Kun haluamme laskea reittien määrää, laskemmekin yhteen ylhäältä
 ja vasemmalta tulevat reitit.
 Rajoituksena jos ruudussa on este, siihen tulevien reittien
 määrä on aina nolla.
-
-Seuraava koodi toteuttaa dynaamisen ohjelmoinnin:
+Tämän perusteella saamme aikaan seuraavan
+dynaamisen ohjelmoinnin algoritmin:
 
 \begin{code}
 reitit[1][1] = 1
@@ -404,10 +408,10 @@ koska lähdemme liikkeelle siitä.
 Tämän jälkeen laskemme reittien määrän kaikkiin muihin ruutuihin.
 Jos ruudussa on este, siihen ei tule mitään reittiä,
 ja muuten laskemme yhteen ylhäältä ja vasemmalta tulevat reitit.
-Tuloksena on koodi, joka vie aikaa $O(n^2)$.
+Tuloksena on algoritmi, joka vie aikaa $O(n^2)$.
 
-Huomaa, että tässä käytämme taulukon indeksejä $1,2,\dots,n$
-ja oletamme, että indekseissä $0$ on arvona nolla.
+Huomaa, että tässä käytämme taulukon kohtia $1,2,\dots,n$
+ja oletamme, että kohdissa $0$ on arvona nolla.
 Tämä on kätevää, koska meidän ei tarvitse tehdä erikoistapauksia
 ruudukon yläreunaa ja vasenta reunaa varten.
 
@@ -477,7 +481,7 @@ Viimeisellä rivillä käytössämme ovat kaikki painot,
 joten se vastaa ongelman ratkaisua.
 
 Voimme toteuttaa dynaamisen ohjelmoinnin kätevästi niin,
-että koodissa on vain yksi boolean-taulukko \texttt{reppu},
+että koodissa on vain yksi boolean-taulukko \texttt{painot},
 jossa on $s+1$ alkiota.
 Taulukko kertoo laskennan jokaisessa vaiheessa,
 mitkä yhteispainot ovat mahdollisia sillä hetkellä.
@@ -487,19 +491,25 @@ Tämän jälkeen päivitämme taulukkoa lisäämällä mukaan
 painoja yksi kerrallaan.
 
 \begin{code}
-reppu[0] = true
+painot[0] = true
 for i = 1 to n
     for j = s to 0
-        if reppu[j]
-            reppu[j+p[i]] = true
+        if painot[j]
+            painot[j+p[i]] = true
 \end{code}
 
+Tärkeä yksityiskohta algoritmissa on,
+että käymme jokaisen painon kohdalla taulukon
+läpi \emph{lopusta alkuun}.
+Syynä tähän on, että tällä tavalla saamme
+laskettua oikealla tavalla, mitä uusia yhteispainoja
+voimme muodostaa, kun saamme käyttää uutta painoa kerran.
 Laskennan jälkeen voimme tulostaa kaikki
 mahdolliset yhteispainot näin:
 
 \begin{code}
 for i = 0 to s
-    if reppu[i]
+    if painot[i]
         print(i)
 \end{code}
 
