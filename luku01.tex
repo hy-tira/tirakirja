@@ -36,18 +36,19 @@ ja jos algoritmille annetaan luku $12$,
 sen täytyy ilmoittaa ''ei''.
 
 Voimme tarkastaa, onko annettu luku $n$ alkuluku, seuraavalla algoritmilla:
-käymme läpi kaikki luvut $2,3,\dots,n-1$ ja koetamme
+Käymme läpi kaikki luvut $2,3,\dots,n-1$ ja koetamme
 jakaa lukua $n$ jokaisella niistä.
 Jos $n$ on jaollinen jollain luvuista, se ei ole alkuluku,
 ja muuten se on alkuluku.
 Esimerkiksi luku $7$ on alkuluku, koska se ei ole jaollinen
 millään luvuista $2,3,\dots,6$,
-ja luku $12$ puolestaan ei ole alkuluku, koska $3 \cdot 4 = 12$.
+ja luku $12$ puolestaan ei ole alkuluku, koska se on
+jaollinen luvuilla $3$ ja $4$.
 Voimme tutkia tämän algoritmin avulla mistä tahansa luvusta,
 onko se alkuluku vai ei.
 
-Algoritmin toiminnan esittämiseen on useita tapoja.
-Yksi tapa on selittää sanallisesti, kuinka algoritmi toimii,
+Algoritmin toiminnan esittämiseen on useita mahdollisuuksia.
+Yksi tapa on selostaa sanallisesti, kuinka algoritmi toimii,
 kuten teimme äsken.
 Toinen tapa taas on antaa koodi, joka toteuttaa algoritmin.
 Tällöin meidän täytyy valita jokin ohjelmointikieli,
@@ -60,11 +61,12 @@ boolean alkuluku = true;
 for (int i = 2; i < n; i++) {
     if (n%i == 0) {
         alkuluku = false;
+        break;
     }
 }
 \end{code}
 
-Esitämme myös usein algoritmeja \emph{pseudokoodina}
+Voimme myös esittää algoritmin \emph{pseudokoodina}
 todellisen ohjelmointikielen sijasta.
 Tämä tarkoittaa, että kirjoitamme koodia,
 joka on lähellä käytössä olevia ohjelmointikieliä, mutta voimme
@@ -77,6 +79,7 @@ alkuluku = true
 for i = 2 to n-1
     if n%i == 0
         alkuluku = false
+        break
 \end{code}
 
 Tässä kirjassa esitämme algoritmeja sekä Java-koodina että pseudokoodina
@@ -239,6 +242,16 @@ ennen kuin voimme alkaa suunnitella tehokkaita algoritmeja.
 Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
 tekniikoita eri tilanteessa.
 
+Tärkeä osa algoritmien suunnittelua on taito valita käyttöön
+sopivia \emph{tietorakenteita}.
+Tietorakenne on tapa säilyttää tietoa tietokoneen muistissa
+niin, että pääsemme tehokkaasti käsiksi siihen.
+Tutustumme kirjan alku\-osassa moniin tietorakenteisiin,
+jotka auttavat meitä algoritmien suunnittelussa.
+Toisaalta voimme loppujen
+lopuksi toteuttaa minkä tahansa tietorakenteen taulukkona,
+koska tietokoneen muisti vastaa taulukkoa.
+
 \section{Rekursiiviset algoritmit}
 
 Rekursio on hyödyllinen ohjelmointitekniikka,
@@ -350,7 +363,9 @@ eli kaikki tavat valita jokin kokoelma joukon alkioita.
 Esimerkiksi joukon $\{1,2,3\}$ osajoukot ovat
 $\emptyset$ (tyhjä joukko), $\{1\}$, $\{2\}$, $\{3\}$,
 $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
-Kun joukossa on $n$ alkioita, osa\-joukkoja on yhteensä $2^n$.
+Kun joukossa on $n$ alkioita, osa\-joukkoja on yhteensä $2^n$,
+koska jokaisen alkion kohdalla on kaksi vaihtoehtoa,
+valitaanko alkio mukaan osajoukkoon vai ei.
 
 Seuraava rekursiivinen funktio muodostaa joukon
 $\{1,2,\dots,n\}$ osajoukot.
@@ -369,7 +384,7 @@ function muodosta(x)
 \end{code}
 
 Ideana on, että parametri $x$ tarkoittaa, minkä alkion
-''kohtalon'' ratkaisemme seuraavaksi: joko lisäämme alkion
+''kohtalon'' ratkaisemme seuraavaksi: joko valitsemme alkion
 osajoukkoon tai jätämme sen osa\-joukon ulkopuolelle.
 Ensin päätämme, kuuluuko alkio $1$ osajoukkoon vai ei,
 sitten toimimme vastaavasti alkion $2$ kohdalla, jne.,
@@ -379,13 +394,6 @@ Jokaisen alkion kohdalla merkitsemme päätöksemme taulukkoon
 Rekursio päät\-tyy, kun $x=n+1$ eli olemme tehneet valinnan
 jokaiselle alkiolle ja olemme saaneet jonkin osajoukon muodostettua.
 Tällöin voimme käsitellä muodostetun osajoukon haluamallamme tavalla.
-Esimerkiksi voisimme tulostaa osajoukkoon kuuluvat alkiot seuraavasti:
-
-\begin{code}
-for i = 1 to n
-    if valittu[i]
-        print(i)
-\end{code}
 
 Tarkastellaan sitten toista tilannetta, jossa haluammekin
 muodostaa joukon \emph{permutaatiot}
@@ -399,7 +407,7 @@ Seuraava rekursiivinen funktio muodostaa joukon $\{1,2,\dots,n\}$ permutaatiot,
 kun kutsumme sitä parametrilla $1$.
 
 \begin{code}
-muodosta(k)
+function muodosta(k)
     if k == n+1
         // käsittele permutaatio
     else
@@ -423,24 +431,17 @@ jossa valitsemme sen kohtaan $k$ ja merkitsemme tämän tiedon
 taulukkoon \texttt{permutaatio}.
 Lopulta kun $k=n+1$, olemme saaneet muodostettua jonkin permutaation
 ja rekursiivinen haarautuminen päättyy.
-Tällöin voimme käsitellä permutaation haluamallamme tavalla,
-esimerkiksi tulostaa alkioiden järjestyksen seuraavasti:
-
-\begin{code}
-for i = 1 to n
-    print(permutaatio[i])
-\end{code}
 
 \subsection{Peruuttava haku}
 
-\emph{Peruuttava haku} on yleinen rekursiivinen menetelmä,
+Peruuttava haku on yleinen rekursiivinen menetelmä,
 jota käyttäen voimme muodostaa järjestelmällisesti
 kaikki ratkaisut annettuun ongelmaan.
 Ideana on aloittaa tyhjästä ratkaisusta ja käydä
 joka askeleella läpi rekursiivisesti kaikki mahdolliset tavat,
 kuinka voimme laajentaa ratkaisua.
 
-Peruuttava haku on raa'an voiman menetelmä,
+Peruuttava haku on raa'an voiman algoritmi,
 ja voimme käyttää sitä vain silloin,
 kun ratkaisujen määrä on niin pieni,
 että ehdimme käydä läpi kaikki ratkaisut.
@@ -513,7 +514,7 @@ Seuraava rekursiivinen algoritmi toteuttaa haun,
 kun sitä kutsutaan parametreilla $(1,1)$:
 
 \begin{code}
-muodosta(y,x)
+function muodosta(y,x)
     if y == n+1
         // käsittele ratkaisu
     else if x == n+1
