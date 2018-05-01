@@ -16,7 +16,7 @@ Nyt on aika selvittää, mitä nämä käsitteet oikeastaan tarkoittavat.
 \section{Luokat P ja NP}
 
 Keskitymme tässä luvussa \emph{päätösongelmiin}, joissa algoritmin tulee
-antaa vastaus ''kyllä'' tai ''ei''.
+antaa aina vastaus ''kyllä'' tai ''ei''.
 Esimerkiksi ongelma 
 ''onko verkossa polkua solmusta $a$ solmuun $b$?'' on päätösongelma.
 Tulemme huomaamaan, että voimme muotoilla monenlaisia ongelmia
@@ -72,12 +72,13 @@ Voimme tarkastaa helposti polynomisessa ajassa,
 että todisteen kuvaamalla polulla on vaaditut ominaisuudet.
 
 Jos vastaus syötteeseen on ''ei'', tähän ei tarvitse
-liittyä tehokkaasti tarkastettavaa todistetta.
+liittyä mitään todistetta.
 Usein olisikin hankalaa antaa todiste siitä, että jotain
 asiaa \emph{ei} ole olemassa.
-Äskeisessä esimerkissä meidän oli helppoa todistaa
-polun olemassaolo, koska voimme vain näyttää kyseisen polun,
-mutta meillä ei ole vastaavaa keinoa todistaa, että polkua ei ole olemassa.
+Esimerkiksi jos etsimme verkosta tietynlaista polkua,
+on helppoa todistaa polun olemassaolo,
+koska voimme vain näyttää kyseisen polun,
+mutta ei ole vastaavaa keinoa todistaa, että polkua ei ole olemassa.
 
 Huomaa, että kaikki luokan P ongelmat kuuluvat myös
 luokkaan NP. Tämä johtuu siitä, että luokan P ongelmissa
@@ -216,13 +217,12 @@ joka meidän täytyy pystyä palauttamaan SAT-ongelmaan.
 Koska ongelma voi olla mikä tahansa luokkaan NP kuuluva, tiedämme siitä vain,
 että on olemassa algoritmi, joka tarkastaa
 polynomisessa ajassa ''kyllä''-tapauksen todisteen.
-Tämä vastaa sitä, että on olemassa epädeterministinen
-Turingin kone, joka \emph{arvaa} ensin todisteen sisällön ja
-tarkastaa sitten, että todiste on kelvollinen.
+Tämä vastaa sitä, että on olemassa \emph{epädeterministinen}
+Turingin kone, joka ratkaisee ongelman polynomisessa ajassa.
 Ideana on muodostaa looginen kaava, joka luonnehtii tällaisen
 Turing-koneen laskentaa ''kyllä''-tapauksessa:
-koneen tulee käsitellä syöte jollakin tavalla,
-muodostaa todiste ja tarkastaa se.
+koneen tulee käsitellä syöte jollakin tavalla niin,
+että askelten määrä on polynominen.
 Kaavan tarkka sisältö riippuu siitä, miten kone on rakentunut,
 mutta voimme aina muodostaa kaavan, kunhan tiedämme koneen rakenteen
 ja annetun syötteen.
@@ -251,7 +251,7 @@ meidän on näytettävä, että voimme muuttaa polynomisessa ajassa
 minkä tahansa SAT-ongelman syötteen 3SAT-ongelman syötteeksi,
 jonka totuusarvo on sama.
 
-Ideana on muokata jokaista lauseketta niin, 
+Ideana on muokata jokaista SAT-ongelman lauseketta niin, 
 että tuloksena on yksi tai useampia kolmen muuttujan lausekkeita.
 Merkitään $k$:lla lausekkeen muuttujien määrää.
 Jos $k=1$ tai $k=2$, toistamme viimeistä muuttujaa uudestaan,
@@ -259,10 +259,9 @@ jotta saamme aikaan kolme muuttujaa.
 Esimerkiksi jos lauseke on $(x_1)$, muutamme sen muotoon
 $(x_1 \lor x_1 \lor x_1)$, ja jos lauseke on $(x_1 \lor x_2)$, muutamme
 sen muotoon $(x_1 \lor x_2 \lor x_2)$.
-
 Jos $k=3$, meidän ei tarvitse tehdä mitään, koska lausekkeessa
 on valmiiksi kolme muuttujaa. Jos sitten $k>3$,
-jaamme lausekkeen osiin, jotka ketjutetaan apumuuttujien avulla.
+jaamme lausekkeen osiin, jotka ketjutetaan uusien apumuuttujien avulla.
 Ketjun jokaisessa kohdassa vasemman lausekkeen viimeinen
 muuttuja on $a_i$ ja oikean lausekkeen ensimmäinen muuttuja on $\neg a_i$.
 Tämä takaa, että ainakin yksi alkuperäinen muuttuja saa oikean arvon.
@@ -273,7 +272,7 @@ $(\neg a_1 \lor x_3 \lor a_2)$ ja $(\neg a_2 \lor x_4 \lor x_5)$.
 Tämä palautus osoittaa, että 3SAT on NP-täydellinen ongelma --
 eli saimme tietää, että
 SAT-ongelman oleellinen vaikeus syntyy jo siitä, että lausekkeissa
-on kolme muuttujaa\footnote{Entä ongelma 2SAT, jossa jokaisessa lausekkeessa
+voi olla kolme muuttujaa\footnote{Entä ongelma 2SAT, jossa jokaisessa lausekkeessa
 on kaksi muuttujaa? Tämä \emph{ei} ole NP-täydellinen ongelma,
 vaan kuuluu luokkaan P.}.
 Palautuksen hyötynä on myös se, että myöhemmissä todistuksissa
@@ -316,10 +315,9 @@ johon kuuluu kolme solmua.
 Kun haluamme palauttaa 3SAT-ongelman solmupeiteongelmaan,
 meidän täytyy näyttää, että voimme tulkita minkä tahansa
 3SAT-ongelman tapauksen verkon solmupeitteen etsimisenä.
-Meidän tulee siis pystyä muuttamaan looginen kaava verkoksi,
+Meidän tulee siis keksiä systemaattinen tapa
+muuttaa looginen kaava verkoksi,
 jonka jokin solmupeite vastaa sitä, että kaava on totta.
-Tarkastelemme esimerkkinä kaavaa
-\[(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor \neg x_3 \lor x_4).\]
 
 Oletamme, että kaavassa esiintyy $n$ muuttujaa $x_1,x_2,\dots,x_n$
 ja siinä on $m$ lauseketta.
@@ -330,8 +328,9 @@ Lisäksi verkossa on $m$ kolmen solmun ryhmää,
 jotka vastaavat lausekkeita.
 Kussakin ryhmässä kaikki solmut ovat yhteydessä toisiinsa,
 minkä lisäksi kukin solmu on yhteydessä sitä vastaavaan solmuun pareissa.
-Verkossa on siis $2n+3m$ solmua ja $n+6m$ kaarta.
-Kuva \ref{fig:solko1} näyttää esimerkkikaavaamme vastaavan verkon.
+Esimerkiksi jos kaava on
+\[(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor \neg x_3 \lor x_4),\]
+muodostamme siitä kuvan \ref{fig:solko1} mukaisen verkon.
 
 \begin{figure}
 \center
@@ -448,9 +447,11 @@ parista $x_i$ ja $\neg x_i$, mikä määrittää, miten muuttujien
 arvot asetetaan.
 Lisäksi peitteeseen kuuluu kaksi solmua jokaisesta kolmen solmun ryhmästä.
 Koska ryhmässä on yksi solmu, joka ei kuulu peitteeseen,
-sen täytyy olla yhteydessä kaarella solmuun, joka kuuluu peitteeseen.
+kyseisen solmun täytyy olla yhteydessä kaarella peitteeseen kuuluvaan solmuun.
 Tämä varmistaa, että jokaisessa lausekkeessa ainakin yksi kolmesta
 muuttujasta on asetettu oikein.
+Kuva \ref{fig:solko2} näyttää esimerkin solmupeitteestä,
+joka saa kaavan todeksi.
 
 Olemme siis onnistuneet palauttamaan 3SAT-ongelman solmupeiteongelmaksi
 niin, että verkon koko on polynominen suhteessa kaavan pituuteen,
