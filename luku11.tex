@@ -204,9 +204,9 @@ sekä mikä on uusi etäisyys, jos kuljemmekin solmuun kaaren kautta.
 Jos uusi etäisyys on pienempi, päivitämme
 sen solmun etäisyysarvioksi.
 
-Olemme nyt kuvailleet ja toteuttaneet algoritmin,
-mutta miten voimme olla varmoja,
-että algoritmi löytää kaikissa tilanteissa lyhimmät polut $n-1$ kierroksen kuluessa?
+Olemme nyt kuvailleet ja toteuttaneet Bellman–Fordin
+algoritmin, mutta miten voimme olla varmoja,
+että se löytää kaikissa tilanteissa lyhimmät polut $n-1$ kierroksen kuluessa?
 Jotta voimme vastata tähän kysymykseen,
 tarvitsemme kaksi havaintoa koskien verkon lyhimpiä polkuja.
 
@@ -274,13 +274,13 @@ jonka avulla voimme lyhentää polkuja loputtomasti.}
 Mitä tapahtuu sitten, jos verkossa on negatiivinen sykli?
 Esimerkiksi kuvan \ref{fig:belsyk} verkossa on negatiivinen sykli
 $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$, jonka paino on $-2$.
-Tässä tilanteessa Bellman–Fordin algoritmi jää jumiin, koska se pystyy parantamaan
-loputtomasti syklin kautta kulkevia polkuja.
+Tässä tilanteessa Bellman–Fordin algoritmi ei anna oikeaa tulosta,
+koska voimme lyhentää loputtomasti syklin kautta kulkevia polkuja.
 Oikeastaan ongelma on siinä, että lyhin polku ei ole mielekäs käsite,
 jos polun osana on negatiivinen sykli.
 Voimme kuitenkin havaita negatiivisen syklin suorittamalla
 algoritmia $n$ kierrosta tavallisen $n-1$ kierroksen sijaan.
-Jos jokin etäisyys paranee viimeisellä kierroksella,
+Jos jokin etäisyys paranee vielä viimeisellä kierroksella,
 olemme löytäneet negatiivisen syklin.
 
 \subsection{Dijkstran algoritmi}
@@ -514,10 +514,10 @@ ja kaikissa muissa matriisin kohdissa etäisyys on ääretön.
 Sitten algoritmi suorittaa $n$ kierrosta,
 jotka on numeroitu $1,2,\dots,n$.
 Kierroksella $k$ algoritmi etsii polkuja, joissa on välisolmuna
-solmu $k$ sekä mahdollisesti solmuja $1,2,\dots,k-1$.
+solmu $k$ sekä mahdollisesti muita välisolmuja joukosta $1,2,\dots,k-1$.
 Jos tällainen polku parantaa etäisyyttä,
 päivitämme uuden etäisyyden matriisiin.
-Viimeisen kierroksen jälkeen jokainen solmu on ollut
+Lopulta jokainen solmu on ollut
 välisolmuna poluilla, jolloin olemme saaneet selville
 kaikki lyhimmät polut.
 
@@ -646,17 +646,23 @@ eli mikä tahansa verkon solmu voi olla välisolmu.
 
 \subsection{Algoritmien vertailua}
 
+Olemme nyt käyneet läpi monia algoritmeja
+lyhimpien polkujen etsintään ja voimme alkaa
+muodostaa yleiskuvaa aiheesta.
 Taulukko \ref{tab:reiver} näyttää yhteenvedon
-lyhimmät polut etsivistä algoritmeista.
+algoritmiemme tehokkuudesta ja ominaisuuksista.
+
 Käytännössä leveyshaku ja Dijkstran algoritmi ovat
 yleisimmin tarvittavat algoritmit:
 jos kaarilla ei ole painoja, käytämme leveyshakua,
 ja muuten Dijkstran algoritmia.
 Dijkstran algoritmin rajoituksena on,
 että verkossa ei saa olla negatiivisia kaaria,
-mutta tämä ei yleensä aiheuta vaikeuksia käytännön ongelmissa.
-Esimerkiksi tien pituus ei voi olla negatiivinen
-eikä lennon hinta voi olla negatiivinen.
+mutta tällä rajoituksella ei ole yleensä merkitystä
+käytännön ongelmissa, koska kaarten painot eivät
+useimmiten voi olla negatiivisia.
+Esimerkiksi selvästikään tien pituus tai lennon hinta
+ei voi olla negatiivinen.
 Jos kuitenkin verkossa voi olla negatiivisia kaaria,
 voimme turvautua Bellman–Fordin algoritmiin.
 
@@ -689,4 +695,6 @@ Siis harvassa verkossa aikavaativuus on parempi
 kuin Floyd–Warshallin algoritmissa,
 mutta tiheässä verkossa se on huonompi.
 Toisaalta Floyd–Warshallin algoritmin vakiokertoimet
-ovat hyvin pienet sen yksinkertaisen rakenteen ansiosta.
+ovat hyvin pienet sen yksinkertaisen rakenteen ansiosta,
+minkä ansiosta algoritmi voi toimia käytännössä
+yllättävänkin nopeasti.
