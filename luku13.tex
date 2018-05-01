@@ -38,7 +38,7 @@ $A=\{1,4\}$, $B=\{2,5,6\}$ ja $C=\{3,7,8\}$.
 Kun yhdistämme sitten joukot $A$ ja $B$,
 niistä syntyy joukko $\{1,2,4,5,6\}$.
 Ennen yhdistämistä alkiot $1$ ja $2$ olivat eri joukoissa,
-mutta järjestämisen jälkeen ne ovat samassa joukossa.
+mutta yhdistämisen jälkeen ne ovat samassa joukossa.
 
 \subsection{Rakenteen toteutus}
 
@@ -280,7 +280,7 @@ Toinen tapa ratkaista tehtävä on hyödyntää \emph{binäärihakua}.
 Jos meillä on arvaus, että kaikki kaupungit ovat yhteydessä
 $x$ lisäyksen jälkeen, voimme tarkistaa helposti,
 pitääkö arvaus paikkansa:
-lisäämme ensin $x$ ensimmäistä tietä verkkoon ja tarkastamme
+lisäämme ensin $x$ ensimmäistä tietä tyhjään verkkoon ja tarkastamme
 sitten, onko verkko yhtenäinen. Tämä vie aikaa $O(n+m)$
 käyttäen syvyyshakua.
 
@@ -402,7 +402,7 @@ Kruskalin algoritmi muodostaa verkon
 pienimmän virittävän puun aloittamalla tyhjästä verkosta,
 jossa on vain verkon solmut, ja lisäämällä siihen kaaria.
 Algoritmi käy läpi tarjolla olevat kaaret
-järjestyksessä niiden painon mukaan keveimmästä raskaimpaan.
+järjestyksessä niiden painon mukaan kevyimmästä raskaimpaan.
 Jokaisen kaaren kohdalla algoritmi ottaa kaaren mukaan,
 jos se yhdistää kaksi eri komponenttia.
 Kun kaikki komponentit on yhdistetty, pienin virittävä puu on valmis.
@@ -463,7 +463,7 @@ Kun kaikki komponentit on yhdistetty, pienin virittävä puu on valmis.
 
 Kuva \ref{fig:kruesi} näyttää, kuinka Kruskalin algoritmi löytää pienimmän virittävän
 puun esimerkkiverkossamme.
-Verkon kaaret järjestyksessä keveim\-mästä raskaimpaan ovat:
+Verkon kaaret järjestyksessä kevyim\-mästä raskaimpaan ovat:
 
 \begin{center}
 \begin{tabular}{rr}
@@ -505,7 +505,7 @@ Primin algoritmi tarjoaa toisen lähestymistavan
 pienimmän virittävän puun muodostamiseen.
 Algoritmi aloittaa puun muodostamisen tilanteesta,
 jossa puussa on vain yksi solmu.
-Tämän jälkeen se etsii joka vaiheessa keveimmän kaaren,
+Tämän jälkeen se etsii joka vaiheessa kevyimmän kaaren,
 jonka toinen päätesolmu kuuluu puuhun ja toinen
 päätesolmu on vielä puun ulkopuolella, ja lisää puuhun tämän kaaren.
 Kun kaikki solmut on lisätty puuhun, pienin virittävä puu on valmis.
@@ -563,8 +563,8 @@ Kun kaikki solmut on lisätty puuhun, pienin virittävä puu on valmis.
 Kuva \ref{fig:priesi} näyttää esimerkin Primin algoritmin toiminnasta.
 Voimme aloittaa puun rakentamisen mistä tahansa solmusta;
 tässä esimerkissä aloitamme solmusta $1$.
-Solmuun $1$ on yhteydessä kaksi kaarta $(1,2)$ ja $(2,3)$,
-joista valitsemme kaaren $(1,2)$, koska se on keveämpi.
+Solmuun $1$ on yhteydessä kaksi kaarta $(1,2)$ ja $(1,3)$,
+joista valitsemme kaaren $(1,2)$, koska se on kevyempi.
 Seuraavaksi tarjolla ovat kaaret $(1,3)$, $(2,3)$ ja $(2,4)$,
 joista valitsemme kaaren $(2,3)$.
 Tämän jälkeen lisäämme puuhun vastaavalla tavalla kaaret
@@ -582,29 +582,29 @@ jolloin algoritmi vie aikaa $O(m \log n)$.
 \subsection{Miksi algoritmit toimivat?}
 
 Kruskalin ja Primin algoritmit ovat ahneita algoritmeja:
-ne lisäävät joka askeleella keveimmän mahdollisen kaaren puuhun.
+ne lisäävät joka askeleella kevyimmän mahdollisen kaaren puuhun.
 Miksi on varmaa, että algoritmit tuottavat pienimmän virittävän
 puun joka tilanteessa?
 
 Voimme ajatella asiaa näin: 
 Jos meillä on kaksi solmua $a$ ja $b$, jotka ovat eri komponenteissa,
 meidän on yhdistettävä ne jotenkin samaan komponenttiin algoritmin aikana.
-Jos kevein saatavilla oleva kaari on solmujen $a$ ja $b$ välillä,
+Jos kevyin saatavilla oleva kaari on solmujen $a$ ja $b$ välillä,
 meidän kannattaa valita se, koska muuten joutuisimme yhdistämään komponentit
 myöhemmin käyttäen raskaampaa kaarta.
 
 Tarkastellaan esimerkkinä Kruskalin algoritmin alkua:
-mitä tapahtuu, jos emme valitse puuhun keveintä kaarta?
+mitä tapahtuu, jos emme valitse puuhun kevyintä kaarta?
 Kuvassa \ref{fig:pietod} näkyy kuvitteellinen tilanne,
 jossa katkoviivoilla esitetty pienin virittävä puu ei sisällä
-keveintä kaarta $(2,3)$, jonka paino on 1.
+kevyintä kaarta $(2,3)$, jonka paino on 1.
 Ei ole kuitenkaan mahdollista, että tämä olisi todellisuudessa
 pienin virittävä puu, koska voisimme vaihtaa jonkin puun kaaren
 kaareen $(2,3)$, jolloin puun paino pienenee.
 Tämä tarkoittaa, että on varmasti turvallinen ratkaisu valita
-kevein kaari puuhun Kruskalin algoritmin alussa.
+kevyin kaari puuhun Kruskalin algoritmin alussa.
 Vastaavasti voimme perustella, miksi tämän jälkeen kannattaa
-valita seuraavaksi kevein kaari, jne.
+valita seuraavaksi kevyin kaari, jne.
 
 \begin{figure}
 \center
