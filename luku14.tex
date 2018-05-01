@@ -1,11 +1,13 @@
 \chapter{Maksimivirtaus}
 
 Tässä luvussa tarkastelemme ongelmaa,
-jossa haluamme selvittää \emph{maksimivirtauksen}
-verkon lähtösolmusta kohdesolmuun.
-Tämä tarkoittaa, että haluamme löytää mahdollisimman
-tehokkaan tavan välittää lähtösolmusta kohdesolmuun
-jotain hyödykettä ottaen huomioon kaarten kapasiteetit.
+jossa haluamme välittää mahdollisimman paljon
+\emph{virtausta} verkon solmusta toiseen,
+kun jokaisella kaarella on tietty kapasiteetti,
+jota emme saa ylittää.
+Voimme esimerkiksi haluta laskea, kuinka tehokkaasti
+voimme siirtää tietoa verkossa kahden koneen välillä,
+kun tiedämme verkon rakenteen ja yhteyksien nopeudet.
 
 Tutustumme aluksi Ford-Fulkersonin algoritmiin,
 jonka avulla voimme sekä selvittää maksimivirtauksen
@@ -16,7 +18,7 @@ ongelmat maksimivirtaukseen.
 
 \section{Maksimivirtauksen laskeminen}
 
-Annettuna on suunnattu verkko,
+Käsittelemme suunnattua verkkoa,
 jossa on kaksi erityistä solmua:
 \emph{lähtösolmu} ja \emph{kohdesolmu}.
 Haluamme muodostaa verkkoon mahdollisimman
@@ -62,13 +64,13 @@ on yhtä suuri kuin lähtevä virtaus.
 
 \subsection{Ford-Fulkersonin algoritmi}
 
-Ford-Fulkersonin algoritmi on tunnetuin menetelmä verkon
+Ford-Fulkersonin algoritmi on tavallisin menetelmä verkon
 maksimivirtauksen etsimiseen,
 ja tutustumme seuraavaksi tämän algoritmin toimintaan.
-Algoritmi etsii polkuja lähtösolmusta kohdesolmuun,
+Algoritmi muodostaa lähtösolmusta kohdesolmuun polkuja,
 jotka kasvattavat virtausta pikkuhiljaa.
-Kun mitään polkua ei voi enää muodostaa, algoritmi on onnistunut
-muodostamaan maksimivirtauksen.
+Kun mitään polkua ei voi enää muodostaa, algoritmi on
+saanut valmiiksi maksimivirtauksen.
 
 \begin{figure}
 \center
@@ -97,7 +99,7 @@ muodostamaan maksimivirtauksen.
 \label{fig:flouus}
 \end{figure}
 
-Jotta voimme käyttää algoritmia, oletamme, että verkko on esitetty
+Jotta voimme käyttää algoritmia, esitämme verkon
 erityisessä muodossa, jossa jokaista alkuperäisen verkon
 kaarta vastaa \emph{kaksi} kaarta:
 alkuperäinen kaari, jonka painona on kaaren kapasiteetti,
@@ -221,20 +223,20 @@ solmusta $1$ solmuun $5$, joten maksimivirtaus on $4+3=7$.
 \label{fig:floesi}
 \end{figure}
 
-Maksimivirtauksen muodostamisen jälkeen voimme tarkastella kaaria,
-jotka vastaavat verkon alkuperäisiä kaaria, jotta näemme,
-miten virtaus on muodostunut.
-Kaarta kulkevan virtauksen määrä on yhtä suuri kuin
-muutos kaaren painossa algoritmin aikana.
+Kun olemme saaneet maksimivirtauksen muodostettua,
+voimme selvittää jokaisessa alkuperäisessä kaaressa kulkevan
+virtauksen tutkimalla, miten kaaren paino on muuttunut algoritmin aikana.
+Kaarta pitkin kulkeva virtaus on yhtä suuri kuin kaaren painon
+vähennys algoritmin aikana.
 Esimerkiksi kuvassa \ref{fig:floesi} kaaren $4 \rightarrow 5$
-paino on alussa 5 ja algoritmin suorituksen jälkeen 2.
-Tämä tarkoittaa, että kaarta pitkin kulkevan virtauksen määrä on $5-2=3$.
+paino on alussa 5 ja algoritmin suorituksen jälkeen 2,
+joten kaarta pitkin kulkevan virtauksen määrä on $5-2=3$.
 
 \subsection{Yhteys minimileikkaukseen}
 
 Ford-Fulkersonin algoritmin toimintaidea on sinänsä järkevä,
-koska polut lähtösolmusta kohdesolmuun kasvattavat virtausta.
-Tästä huolimatta ei ole päältä päin todellakaan selvää,
+koska polut lähtösolmusta kohdesolmuun kasvattavat virtausta,
+mutta ei ole silti todellakaan päältä päin selvää,
 miksi algoritmi löytää varmasti \emph{suurimman} mahdollisen virtauksen.
 Jotta voimme ymmärtää paremmin algoritmin toimintaa,
 tarkastelemme seuraavaksi toista verkko-ongelmaa,
@@ -323,8 +325,8 @@ myös verkon leikkauksen, joka on yhtä suuri kuin maksimivirtaus.
 Löydämme leikkauksen etsimällä ensin kaikki solmut,
 joihin pääsemme lähtösolmusta positiivisia kaaria pitkin
 algoritmin lopputilanteessa.
-Kuva \ref{fig:flolei} näyttää nämä solmut esimerkkiverkossamme:
-solmut ovat 1, 2 ja 3.
+Esimerkkiverkossamme nämä solmut ovat 1, 2 ja 3
+kuvan \ref{fig:flolei} mukaisesti.
 Kun valitsemme sitten alkuperäisen verkon kaaret,
 jotka johtavat näiden solmujen ulkopuolelle
 ja joiden kapasiteetti on käytetty kokonaan,
@@ -338,10 +340,10 @@ joten Ford-Fulkersonin algoritmi toimii oikein.
 
 \subsection{Polkujen valitseminen}
 
-Voimme muodostaa Ford-Fulkersonin algoritmin aikana miten tahansa,
+Voimme muodostaa polkuja Ford-Fulkersonin algoritmin aikana miten tahansa,
 mutta polkujen valintatapa vaikuttaa algoritmin tehokkuuteen.
 Riippumatta polkujen valintatavasta on selvää,
-että jokainen polku kasvattaa virtausta ainakin \emph{yhdellä}.
+että jokainen polku kasvattaa virtausta ainakin \emph{yhdellä} yksiköllä.
 Niinpä tiedämme, että joudumme etsimään enintään $f$ polkua,
 kun verkon maksimivirtaus on $f$.
 Jos muodostamme polut syvyyshaulla,
@@ -378,8 +380,8 @@ lisäämme ja peruutamme edestakaisin kaarta $2 \rightarrow 3$ kulkevaa virtaust
 Tämän vuoksi joudumme muodostamaan $2 \cdot 10^9$ polkua,
 ennen kuin olemme saaneet selville verkon maksimivirtauksen.
 
-Tästä ongelmasta on kuitenkin mahdollista selviytyä
-tekemällä yksinkertainen muutos algoritmiin.
+Voimme kuitenkin estää tämän ilmiön määrittelemällä tarkemmin,
+miten valitsemme polkuja algoritmin aikana.
 Edmonds-Karpin algoritmi on Ford-Fulkersonin algoritmin versio,
 jossa muodostamme polut \emph{leveyshaulla}.
 Tämä tarkoittaa, että valitsemme aina
@@ -402,12 +404,12 @@ kukin $m$ kaaresta voi tämän vuoksi olla vain $O(n)$
 kertaa kaarena, jonka kapasiteetti käytetään kokonaan,
 ja saamme polkujen määrälle ylärajan $O(nm)$.
 
-\section{Sovelluksia}
+\section{Maksimivirtauksen sovelluksia}
 
-Virtauslaskennan merkitys on siinä, että voimme \emph{palauttaa}
-monia ongelmia maksimivirtauksen laskemiseen.
-Tämä tarkoittaa, että muunnamme ongelman jotenkin
-sellaiseen muotoon, että se vastaa maksimivirtauksen etsimistä.
+Maksimivirtauksen etsiminen on tärkeä ongelma,
+koska pystymme \emph{palauttamaan} monia verkko-ongelmia maksimivirtaukseen.
+Tämä tarkoittaa, että esitämme ongelman jotenkin
+sellaisessa muodossa, että se vastaa maksimivirtausta.
 Tutustumme seuraavaksi joihinkin tällaisiin ongelmiin.
 
 \subsection{Erilliset polut}
