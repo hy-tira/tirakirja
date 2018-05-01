@@ -22,7 +22,7 @@ suunnatun syklittömän verkon käsittelynä.
 Entä jos verkossa kuitenkin on syklejä?
 Osoittautuu, että voimme silti esittää sen syvärakenteen
 syklittömänä verkkona muodostamalla verkon
-vahvasti yhtenäiset komponentit.
+\emph{vahvasti yhtenäiset} komponentit.
 Tämän ansiosta voimme tietyissä tilanteissa käsitellä
 verkkoa mukavasti syklittömän verkon tavoin,
 vaikka se ei olisikaan alun perin syklitön.
@@ -485,9 +485,9 @@ $x+1$, $x+2$ ja $x+3$,
 ja polkujen määrä solmusta $0$ solmuun $n$
 on yhtä suuri kuin tornin rakentamistapojen määrä.
 Esimerkiksi kuva \ref{fig:verkol} näyttää verkon,
-joka vastaa tapausta $n=6$.
-Solmusta $0$ solmuun $6$ on yhteensä $24$ polkua,
-eli voimme rakentaa korkeuden $6$ tornin kaikkiaan $24$ tavalla.
+joka vastaa tapausta $n=4$.
+Solmusta $0$ solmuun $4$ on yhteensä $7$ polkua,
+eli voimme rakentaa korkeuden $4$ tornin $7$ tavalla.
 
 \begin{figure}
 \center
@@ -499,26 +499,18 @@ eli voimme rakentaa korkeuden $6$ tornin kaikkiaan $24$ tavalla.
 \node[draw, circle] (2) at (4,0) {$2$};
 \node[draw, circle] (3) at (6,0) {$3$};
 \node[draw, circle] (4) at (8,0) {$4$};
-\node[draw, circle] (5) at (10,0) {$5$};
-\node[draw, circle] (6) at (12,0) {$6$};
 \path[draw,thick,->] (0) -- (1);
 \path[draw,thick,->] (1) -- (2);
 \path[draw,thick,->] (2) -- (3);
 \path[draw,thick,->] (3) -- (4);
-\path[draw,thick,->] (4) -- (5);
-\path[draw,thick,->] (5) -- (6);
 \path[draw,thick,->] (0) edge [bend left] (2);
 \path[draw,thick,->] (1) edge [bend left] (3);
 \path[draw,thick,->] (2) edge [bend left] (4);
-\path[draw,thick,->] (3) edge [bend left] (5);
-\path[draw,thick,->] (4) edge [bend left] (6);
 \path[draw,thick,->] (0) edge [bend right] (3);
 \path[draw,thick,->] (1) edge [bend right] (4);
-\path[draw,thick,->] (2) edge [bend right] (5);
-\path[draw,thick,->] (3) edge [bend right] (6);
 \end{tikzpicture}
 \end{center}
-\caption{Tornitehtävä esitettynä verkkona.}
+\caption{Tornitehtävän tapaus $n=4$ esitettynä verkkona.}
 \label{fig:verkol}
 \end{figure}
 
@@ -597,7 +589,7 @@ mutta emme pääse takaisin joukosta $\{5,6\}$ joukkoon $\{1,2,3,4\}$.
 
 \subsection{Kosarajun algoritmi}
 
-\emph{Kosarajun algoritmi} on tehokas algoritmi,
+Kosarajun algoritmi on tehokas algoritmi,
 joka muodostaa suunnatun verkon vahvasti yhtenäiset
 komponentit. Algoritmissa on kaksi vaihetta,
 joista kumpikin käy läpi verkon solmut syvyyshaulla.
@@ -859,14 +851,14 @@ Haluamme kulkea luolasta 1 luolaan 7 keräten mahdollisimman paljon aarteita.}
 \end{figure}
 
 Voimme mallintaa tilanteen verkkona, jonka solmut ovat luolia ja
-kaaret ovat käytäviä. Haluamme löytää reitin solmusta $a$ solmuun $b$
+kaaret ovat käytäviä. Haluamme löytää reitin solmusta $1$ solmuun $n$
 niin, että kuljemme mahdollisimman monen solmun kautta.
 Esimerkiksi kuva \ref{fig:luopel} näyttää verkkona luolaston, joka muodostuu
 seitsemästä luolasta ja kymmenestä käytävästä.
 Yksi optimaalinen reitti luolasta $1$ luolaan $7$ on
 $1 \rightarrow 4 \rightarrow 2 \rightarrow 1 \rightarrow 3 \rightarrow 6 \rightarrow 7$,
 jota seuraten saamme kerättyä kaikki aarteet paitsi luolassa 5 olevan aarteen.
-Ei ole olemassa reittiä, jota seuraten saisimme kaikki luolaston aarteet.
+Ei ole olemassa reittiä, jota noudattamalla saisimme haltuumme kaikki luolaston aarteet.
 
 \begin{figure}
 \center
@@ -891,12 +883,12 @@ Ei ole olemassa reittiä, jota seuraten saisimme kaikki luolaston aarteet.
 
 Voimme ratkaista ongelman tehokkaasti määrittämällä ensin verkon
 vahvasti yhtenäiset komponentit.
-Tämän jälkeen meidän riittää löytää polku alkusolmun komponentista
-loppusolmun komponenttiin niin, että komponenttien kokojen summa
+Tämän jälkeen riittää löytää sellainen polku alkusolmun komponentista
+loppusolmun komponenttiin, että komponenttien kokojen summa
 on suurin mahdollinen.
 Koska verkko on syklitön, tämä onnistuu dynaamisella ohjelmoinnilla.
 
 Kuva \ref{fig:luovah} näyttää vahvasti yhtenäiset komponentit
 esimerkkiverkossamme.
-Tästä esityksestä näemme suoraan, että optimaalisia reittejä on kaksi:
+Tästä esityksestä näemme suoraan, että optimaalisia reittejä on olennaisesti kaksi:
 voimme kulkea joko luolan 3 tai luolan 5 kautta.
