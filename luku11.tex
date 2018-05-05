@@ -547,39 +547,37 @@ kaikki lyhimmät polut.
 }
 \begin{scope}
 \verkko{1}{lightgray}{white}{white}{white}
-\foreach \x/\v in {1/\infty,2/5,3/1,4/\infty} \node at (-0.5+\x,-3.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/2,3/\infty,4/\infty} \node at (-0.5+\x,-5.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/\infty,3/4,4/\infty} \node at (-0.5+\x,-6.5) {$\v$};
+\foreach \x/\v in {1/0,2/5,3/1,4/\infty} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/0,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/0,4/\infty} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/4,4/0} \node at (-0.5+\x,-6.5) {$\v$};
 \end{scope}
 \begin{scope}[xshift=5.5cm]
 \verkko{2}{white}{lightgray}{white}{white}
-\foreach \x/\v in {1/\infty,2/5,3/1,4/} \node at (-0.5+\x,-3.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/2,3/\infty,4/} \node at (-0.5+\x,-5.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/\infty,3/4,4/\infty} \node at (-0.5+\x,-6.5) {$\v$};
+\foreach \x/\v in {1/0,2/5,3/1,4/} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/0,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/0,4/} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/\infty,3/4,4/0} \node at (-0.5+\x,-6.5) {$\v$};
 \node[color=red] at (3.5,-3.5) {$8$};
 \node[color=red] at (3.5,-5.5) {$5$};
 \end{scope}
 \begin{scope}[xshift=11cm]
 \verkko{3}{white}{white}{lightgray}{white}
-\foreach \x/\v in {1/\infty,2/,3/1,4/8} \node at (-0.5+\x,-3.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/\infty,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/2,3/\infty,4/5} \node at (-0.5+\x,-5.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/,3/4,4/} \node at (-0.5+\x,-6.5) {$\v$};
+\foreach \x/\v in {1/0,2/,3/1,4/} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/0,3/\infty,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/0,4/5} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/,3/4,4/0} \node at (-0.5+\x,-6.5) {$\v$};
 \node[color=red] at (1.5,-3.5) {$3$};
 \node[color=red] at (1.5,-6.5) {$6$};
-\node[color=red] at (3.5,-6.5) {$9$};
+\node[color=red] at (3.5,-3.5) {$6$};
 \end{scope}
 \begin{scope}[xshift=16.5cm]
 \verkko{4}{white}{white}{white}{lightgray}
-\foreach \x/\v in {1/\infty,2/3,3/1,4/8} \node at (-0.5+\x,-3.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/,3/,4/3} \node at (-0.5+\x,-4.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/2,3/,4/5} \node at (-0.5+\x,-5.5) {$\v$};
-\foreach \x/\v in {1/\infty,2/6,3/4,4/9} \node at (-0.5+\x,-6.5) {$\v$};
-\node[color=red] at (1.5,-4.5) {$9$};
+\foreach \x/\v in {1/0,2/3,3/1,4/6} \node at (-0.5+\x,-3.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/0,3/,4/3} \node at (-0.5+\x,-4.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/2,3/0,4/5} \node at (-0.5+\x,-5.5) {$\v$};
+\foreach \x/\v in {1/\infty,2/6,3/4,4/0} \node at (-0.5+\x,-6.5) {$\v$};
 \node[color=red] at (2.5,-4.5) {$7$};
-\node[color=red] at (2.5,-5.5) {$9$};
 \end{scope}
 \end{tikzpicture}
 \end{center}
