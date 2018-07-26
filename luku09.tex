@@ -1,8 +1,9 @@
 \chapter{Dynaaminen ohjelmointi}
 
 Dynaaminen ohjelmointi on tekniikka,
-jonka avulla voimme ratkaista tehokkaasti monia
-algoritmiikan ongelmia.
+joka soveltuu moniin ongelmiin,
+joissa tehtävänä on laskea ratkaisujen yhteismäärä
+tai löytää pienin tai suurin mahdollinen ratkaisu.
 Ideana on muotoilla ongelma rekursiivisesti niin,
 että ratkaisu ongelmaan palautuu saman ongelman
 pienempiin osaongelmiin.
@@ -541,11 +542,11 @@ joukosta $\{1,2,3,4,5\}$ seuraavat 3 alkion osajoukot:
 \end{itemize}
 \end{multicols}
 
-Binomikerrointen laskemiseen on monia tapoja.
+Binomikertoimien laskemiseen on monia tapoja.
 Dynaamisen ohjelmoinnin kannalta kiinnostava tapa on rekursiivinen kaava
 \[\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}.\]
-Kaavassa on ideana, että meillä on kaksi tapaa muodostaa $k$ alkion osajoukko
-joukosta $\{1,2,\dots,n\}$.
+Voimme perustella kaavan tarkastelemalla
+$k$ alkion osajoukon muodostamista joukosta $\{1,2,\dots,n\}$.
 Jos otamme osajoukkoon mukaan alkion $n$, meidän tulee muodostaa
 vielä $k-1$ alkion osajoukko joukosta $\{1,2,\dots,n-1\}$.
 Jos taas emme ota osajoukkoon mukaan alkiota $n$, meidän tulee muodostaa
@@ -561,6 +562,7 @@ binomikertoimia dynaamisen ohjelmoinnin avulla.
 Voimme toteuttaa laskennan seuraavasti:
 
 \begin{code}
+binom[0][0] = 1
 for i = 1 to n
     binom[i][0] = 1
     for j = 1 to k
@@ -570,4 +572,4 @@ for i = 1 to n
 Koodin suorituksen jälkeen taulukon kohdassa
 $\texttt{binom}[n][k]$ on binomikerroin $\binom{n}{k}$.
 Algoritmi vie aikaa $O(nk)$, joten sitä voi käyttää
-melko suurten binomikerrointen laskemiseen.
+melko suurten binomikertoimien laskemiseen.
