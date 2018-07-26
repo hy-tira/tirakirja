@@ -1,16 +1,14 @@
 \chapter{Lista}
 
-Tämän luvun tavoitteemme on toteuttaa tietorakenne,
-jota kutsumme nimellä \emph{lista}.
-Tällainen rakenne muodostuu alkioista,
+\emph{Lista} on taulukkoa muistuttava tietorakenne,
+joka sisältää joukon alkioita,
 jotka ovat peräkkäin tietyssä järjestyksessä.
-Esimerkiksi $[3,7,2,5]$ on lista, joka sisältää
-neljä alkiota.
+Esimerkiksi $[3,7,2,5]$ on lista, joka sisältää neljä alkiota.
 Haluamme toteuttaa listan niin,
 että pääsemme käsiksi tietyssä kohdassa olevaan alkioon
-sekä pystymme lisäämään ja poistamaan alkioita.
+ja pystymme lisäämään ja poistamaan alkioita.
 
-Tutustumme kahteen lähestymistapaan listan luomiseen.
+Tässä luvussa tutustumme kahteen lähestymistapaan listan luomiseen.
 Ensin toteutamme taulukkolistan,
 jossa listan alkiot tallennetaan taulukkoon.
 Tämän jälkeen toteutamme linkitetyn listan,
@@ -512,12 +510,12 @@ operaatio & taulukkolista & linkitetty lista \\
 pääsy listan alkuun & $O(1)$ & $O(1)$ \\
 pääsy listan loppuun & $O(1)$ & $O(1)$ \\ 
 pääsy listan keskelle &  $O(1)$ & $O(n)$ \\
-lisäys/poisto listan alussa & $O(1)^*$ & $O(1)$ \\
-lisäys/poisto listan lopussa & $O(1)^*$ & $O(1)$ \\ 
+lisäys/poisto listan alussa & $O(1)$ & $O(1)$ \\
+lisäys/poisto listan lopussa & $O(1)$ & $O(1)$ \\ 
 lisäys/poisto listan keskellä &  $O(n)$ & $O(1)$ \\
 \end{tabular}
 \caption{Taulukkolistan ja linkitetyn listan operaatioiden
-aikavaativuuksia. Merkintä $^*$ tarkoittaa keskimääräistä aikavaativuutta.}
+aikavaativuuksia.}
 \label{tab:taulin}
 \end{table}
 
@@ -637,9 +635,10 @@ ylimmän alkion poistaminen (\texttt{pop})
 sekä ylimmän alkion hakeminen.
 Esimerkiksi kuvassa \ref{fig:pinesi} lisäämme ensin tyhjään pinoon kolme alkiota,
 poistamme sitten kaksi alkiota ja lisäämme vielä yhden alkion.
-\emph{Jono} on puolestaan tietorakenne, jossa voimme lisätä alkioita
-jonon loppuun (\texttt{enqueue}),
-poistaa alkioita jonon alusta (\texttt{dequeue})
+
+\emph{Jono} on tietorakenne, jossa voimme lisätä alkioita
+loppuun (\texttt{enqueue}),
+poistaa alkioita alusta (\texttt{dequeue})
 ja hakea alkioita molemmista päistä.
 Esimerkiksi kuvassa \ref{fig:jonesi} lisäämme ensin tyhjään jonoon
 kolme alkiota, poistamme sitten yhden alkion ja lisämme vielä yhden alkion.
@@ -656,21 +655,24 @@ Voimme usein ajatella algoritmissa tarvittavaa
 tietorakennetta pinona tai jonona ja toteuttaa sen sitten listana.
 
 Tarkastellaan esimerkkinä tehtävää, jossa meille on annettu
-\emph{sulkulauseke}, joka muodostuu kaarisulkeista \texttt{()} sekä
+$n$ merkin pituinen \emph{sulkulauseke}, 
+joka muodostuu kaarisulkeista \texttt{()} sekä
 hakasulkeista \texttt{[]}.
 Haluamme selvittää, onko lauseke \emph{oikein muodostettu} eli
 onko jokaiselle aloittavalle sululle vastaava lopettava pari.
 Esimerkiksi lauseke \texttt{[()]()} on oikein muodostettu,
 kun taas lauseke \texttt{[()(])} ei ole.
-Voimme ratkaista tehtävän pinon avulla
+
+Voimme ratkaista tehtävän $O(n)$-ajassa pinon avulla
 käymällä läpi lausekkeen merkit vasemmalta oikealle.
 Kun vastaan tulee aloittava sulku \texttt{(} tai \texttt{[},
 lisäämme sen pinoon.
-Kun taas vastaan tulee lopettava sulku \texttt{)} tai
-\texttt{]}, varmistamme että pinossa ylimpänä on sitä vastaava
-aloittava sulku, jonka poistamme pinosta.
-Jos lausekkeen läpikäynnissä ei esiinny virheitä ja pino on lopuksi tyhjä,
-lauseke on oikein muodostettu.
+Kun taas vastaan tulee lopettava sulku \texttt{)} tai \texttt{]},
+tutkimme, mikä on pinossa ylimpänä oleva merkki.
+Jos merkki on vastaava aloittava sulku,
+poistamme sen pinosta, ja muuten toteamme, että lauseke on virheellinen.
+Jos lausekkeen läpikäynnin aikana ei esiinny virheitä
+ja pino on lopuksi tyhjä, lauseke on oikein muodostettu.
 
 \section{Javan toteutukset}
 
@@ -681,7 +683,7 @@ hyötyä algoritmien toteutuksessa.
 
 \subsection{\texttt{ArrayList}-rakenne}
 
-\texttt{ArrayList}-rakenne on taulukkolista,
+\texttt{ArrayList} on taulukkolista,
 joka sallii tehokkaat lisäykset ja poistot listan lopussa.
 Esimerkiksi seuraava koodi luo listan, lisää siihen alkiot
 1, 2 ja 3 ja tulostaa listan sisällön.
@@ -694,8 +696,8 @@ lista.add(3);
 System.out.println(lista); // [1, 2, 3]
 \end{code}
 
-Metodi \texttt{add} toimii keskimäärin ajassa $O(1)$,
-joten voimme lisätä tehokkaasti alkioita listan loppuun.
+Metodi \texttt{add} lisää oletuksena alkion listan loppuun
+ja toimii siinä tapauksessa keskimäärin ajassa $O(1)$.
 
 Koska lista on tallennettu taulukkona,
 pääsemme myös tehokkaasti käsiksi sen alkioihin
@@ -712,9 +714,10 @@ lista.set(1,5);
 System.out.println(lista.get(1)); // 5
 \end{code}
 
-Luokassa \texttt{Collections} on hyödyllisiä metodeita
-\texttt{ArrayList}-rakenteen käsittelyyn.
-Esimerkiksi seuraava koodi järjestää ensin listan,
+Luokassa \texttt{Collections} on hyödyllisiä metodeita,
+joiden avulla voimme muuttaa \texttt{ArrayList}-rakenteen
+alkioiden järjestystä.
+Seuraava esimerkkikoodi järjestää ensin listan,
 muuttaa sitten sen järjestyksen käänteiseksi
 ja sekoittaa lopuksi järjestyksen.
 
@@ -821,7 +824,7 @@ Teemme saman testin taulukkolistalle ja linkitetylle listalle.
 
 Taulukkolistan tapauksessa käymme listaa läpi alusta
 muuttujalla $k$, kunnes tulemme kohtaan, johon uusi alkio kuuluu.
-Tämän jälkeen lisäämme alkion kutsumalla metodia \texttt{add}.
+Tämän jälkeen lisäämme alkion kohtaan $k$ kutsumalla metodia \texttt{add}.
 
 \begin{code}
 for (int i = 0; i < n; i++) {
@@ -835,7 +838,7 @@ for (int i = 0; i < n; i++) {
 
 Linkitetyn listan tapauksessa luomme iteraattorin,
 jonka avulla etsimme uuden alkion kohdan listan alusta lähtien.
-Tämän jälkeen lisäämme alkion listalle metodilla \texttt{add}.
+Tämän jälkeen lisäämme alkion listalle iteraattorin osoittamaan kohtaan.
 
 \begin{code}
 for (int i = 0; i < n; i++) {
@@ -922,3 +925,7 @@ kun tieto on tallennettu muistissa peräkkäin -- eli juuri kuten
 taulukkolistassa.
 Tämä näkyy käytännössä siinä, että taulukkolistan käsittely on selvästi
 tehokkaampaa kuin linkitetyn listan käsittely.
+
+Vaikka linkitetty lista ei ole käytännössä hyvä tietorakenne,
+linkitetyn rakenteen idea on hyödyllinen
+ja tarvitsemme sitä myöhemmin monimutkaisemmissa tietorakenteissa.
