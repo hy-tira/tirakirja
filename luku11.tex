@@ -430,7 +430,7 @@ varmistamme ensin, että emme ole käsitelleet sitä aiemmin.
 Dijkstran algoritmi on ahne algoritmi,
 koska se valitsee joka vaiheessa käsittelyyn solmun,
 jonka etäisyys on pienin, minkä jälkeen kyseisen
-solmun etäisyys ei einää muutu.
+solmun etäisyys ei enää muutu.
 Miten voimme olla varmoja, että olemme löytäneet
 tässä vaiheessa oikean etäisyyden?
 
@@ -477,12 +477,13 @@ Toisaalta poistamme kaikki alkiot aikanaan keosta,
 mihin menee myös aikaa $O(m \log m)$.
 Algoritmin kokonaisaikavaativuus on siis $O(n + m \log m)$.
 
-Voimme vielä hieman siistiä aikavaativuutta, kun oletamme,
+Voimme vielä hieman siistiä aikavaativuutta, kun
+teemme luontevan oletuksen,
 että verkossa ei ole kahta kaarta, joiden alku- ja loppusolmu on sama.
 Tällöin $m \le n^2$, jolloin $\log m = \log (n^2) = 2 \log n$
-ja voimme ilmoittaa algoritmin aikavaativuudeksi muodossa $O(n+m \log n)$.
+ja saamme algoritmin aikavaativuudeksi $O(n+m \log n)$.
 
-Entä mitä tapahtuu, jos verkossa on kuitenkin negatiivinen kaari?
+Entä mitä tapahtuu, jos verkossa kuitenkin on negatiivinen kaari?
 Tällöin Dijkstran algoritmi ei toimi välttämättä oikein.
 Kuva \ref{fig:dijneg} näyttää esimerkin tällaisesta tilanteesta.
 Algoritmi seuraa ahneesti ylempää polkua ja toteaa,
@@ -667,7 +668,7 @@ voimme turvautua Bellman–Fordin algoritmiin.
 \begin{table}
 \center
 \begin{tabular}{lll}
-algoritmi $n$ & aikavaativuus & erityistä \\
+algoritmi & aikavaativuus & erityistä \\
 \hline
 leveyshaku & $O(n+m)$ & ei salli painoja kaarissa \\
 Bellman–Fordin algoritmi & $O(nm)$ & \\
