@@ -4,17 +4,16 @@ Keko on tietorakenne, joka toteuttaa erikoistuneen joukon,
 jossa voimme lisätä alkioita vapaasti, mutta voimme
 etsiä ja poistaa vain pienimmän tai suurimman alkion,
 riippuen keon tyypistä.
-Vaikka voisimme sinänsä toteuttaa nämä operaatiot myös
-binäärihakupuulla, keon etuna on, että
-saamme aikaan \emph{kevyemmän} toteutuksen, kun
-rajoitumme tilanteeseen, jossa tarvitsemme vain nämä operaatiot.
+Keon etuna on, että saamme aikaan
+yleistä joukkorakennetta \emph{kevyemmän} rakenteen, kun
+rajoitumme tilanteeseen, jossa käytössämme on vain nämä operaatiot.
 
 Tutustumme tässä luvussa binäärikeko-rakenteeseen,
 joka on tavallisimmin käytetty kekorakenne.
 Binäärikeko toteutetaan binääripuuna,
 ja se mahdollistaa alkion etsimisen ajassa $O(1)$ sekä
 alkioiden lisäykset ja poistot ajassa $O(\log n)$.
-Käsittelemme myös Javan \texttt{PriorityQueue}-rakenteen, 
+Javassa voimme käyttää tietorakennetta \texttt{PriorityQueue},
 joka perustuu binäärikekoon.
 
 \section{Binäärikeko}
@@ -485,7 +484,7 @@ System.out.println(summa);
 
 Taulukko \ref{tab:kekver} näyttää testin tulokset.
 Tämän testin perusteella näyttää siltä,
-että keon käyttämiseestä on todellista hyötyä,
+että keon käyttämisestä on todellista hyötyä,
 koska \texttt{PriorityQueue} toimii 2–3
 kertaa nopeammin kuin \texttt{TreeSet}.
 
@@ -505,10 +504,13 @@ $8 \cdot 10^6$ & 3.68 s & 9.43 s \\
 
 \section{Lisää keosta}
 
+Koska keko on tallennettu taulukkona,
+voimme tulkita minkä tahansa taulukon kekona,
+kunhan vain kekoehto on voimassa taulukon kaikissa kohdissa.
 Käymme seuraavaksi läpi menetelmän, jonka avulla voimme
 \emph{muuttaa} taulukon keoksi $O(n)$-ajassa.
-Tämän jälkeen luomme katsauksen $O(n \log n)$-aikaiseen
-järjestämisalgoritmiin, jonka toiminta perustuu kekoon.
+Tämän jälkeen tutustumme kekojärjestämiseen,
+joka on $O(n \log n)$-aikainen järjestämisalgoritmi.
 
 \subsection{Taulukosta keoksi}
 
