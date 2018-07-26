@@ -35,10 +35,10 @@ Oletamme, että alkiot ovat $1,2,\dots,n$,
 ja jokainen alkio kuuluu tarkalleen yhteen joukkoon.
 Esimerkiksi kun $n=8$, joukot voivat olla vaikkapa
 $A=\{1,4\}$, $B=\{2,5,6\}$ ja $C=\{3,7,8\}$.
+Tällä hetkellä esimerkiksi alkiot 1 ja 2 ovat eri joukoissa.
 Kun yhdistämme sitten joukot $A$ ja $B$,
 niistä syntyy joukko $\{1,2,4,5,6\}$.
-Ennen yhdistämistä alkiot $1$ ja $2$ olivat eri joukoissa,
-mutta yhdistämisen jälkeen ne ovat samassa joukossa.
+Tästä lähtien alkiot 1 ja 2 ovatkin samassa joukossa.
 
 \subsection{Rakenteen toteutus}
 
@@ -493,11 +493,14 @@ Voimme toteuttaa Kruskalin algoritmin tehokkaasti
 käyttäen union-find-rakennetta.
 Algoritmin alussa järjestämme kaaret painojärjestykseen,
 missä kuluu aikaa $O(m \log m)$.
-Tämän jälkeen käymme kaaret läpi, ja jokaisen kaaren
+Kun oletamme, että jokaisen solmuparin välillä
+on enintään yksi kaari, tämä sievenee muotoon $O(m \log n)$.
+Tämän jälkeen luomme kullekin solmulle komponentin,
+käymme kaaret läpi ja jokaisen kaaren
 kohdalla otamme kaaren mukaan, jos se yhdistää kaksi eri komponenttia.
-Tässä kuluu aikaa $O(m \log n)$,
+Tässä kuluu aikaa $O(n+m \log n)$,
 kun käytämme union-find-rakennetta.
-Algoritmi vie siis yhteensä aikaa $O(m \log m)$.
+Algoritmi vie siis yhteensä aikaa $O(n+m \log n)$.
 
 \subsection{Primin algoritmi}
 
@@ -577,7 +580,9 @@ mutta Primin algoritmissa valitsemme solmun, jonka etäisyys
 \emph{johonkin solmuun} puussa on pienin.
 Voimme myös toteuttaa Primin algoritmin tehokkaasti samaan
 tapaan kuin Dijkstran algoritmin keon avulla,
-jolloin algoritmi vie aikaa $O(m \log n)$.
+jolloin algoritmi vie aikaa $O(n+m \log n)$.
+Aikavaativuus on siis sama kuin Kruskalin algoritmissa,
+ja on käytännössä makuasia, kumman algoritmin valitsemme.
 
 \subsection{Miksi algoritmit toimivat?}
 
