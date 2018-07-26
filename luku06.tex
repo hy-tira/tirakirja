@@ -70,9 +70,9 @@ Solmun 3 alipuu sisältää solmut 3, 5, 6, 7 ja 8.
 
 Binääripuun juuren \emph{syvyys} on 0 ja jokaisen muun solmun syvyys on yhtä
 suurempi kuin sen vanhemman syvyys.
-Binääripuun \emph{korkeus} on puolestaan suurin
-askelten määrä juuresta alaspäin lehteen
-eli toisin sanoen suurin puun solmussa esiintyvä syvyys.
+Binääripuun \emph{korkeus} on puolestaan
+suurin puun solmussa esiintyvä syvyys
+eli toisin sanoen suurin askelten määrä juuresta alaspäin lehteen.
 Esimerkiksi kuvan \ref{fig:binpuu} puun korkeus on 3,
 koska solmujen 7 ja 8 syvyys on 3.
 
@@ -81,8 +81,8 @@ koska solmujen 7 ja 8 syvyys on 3.
 \begin{tikzpicture}[scale=0.5]
 \begin{scope}
 \node[draw, circle] (1) at (0,0) {$1$};
-\node[draw, circle] (2) at (0,-2) {$2$};
-\node[draw, circle] (3) at (0,-4) {$3$};
+\node[draw, circle] (2) at (-1.5,-2) {$2$};
+\node[draw, circle] (3) at (-3,-4) {$3$};
 \path[draw,thick,-] (1) -- (2);
 \path[draw,thick,-] (2) -- (3);
 \node at (0,-6) {(a)};
@@ -116,73 +116,45 @@ jolloin kaikilla tasoilla on kaikki mahdolliset solmut.
 Kuva \ref{fig:binraj} näyttää esimerkit näistä tapauksista,
 kun puun korkeus on $2$.
 
-\subsection{Binääripuun toteutus}
+\subsection{Binääripuun käsittely}
 
 Voimme toteuttaa binääripuun linkitettynä rakenteena niin,
-että jokainen puun solmu on olio, josta on viittaus
-vasempaan ja oikeaan lapseen.
-Javassa voimme määritellä solmua vastaavan luokan seuraavasti:
+että jokainen puun solmu on olio, jossa on viittaus
+vasempaan ja oikeaan lapseen sekä mahdollisesti
+muita kenttiä, kuten solmuun liittyvä arvo.
+Jos solmulla ei ole vasenta tai oikeaa lasta,
+viittauksena on \texttt{null}.
 
-\begin{code}
-public class Solmu {
-    Solmu vasen, oikea;
-    int arvo;
-
-    public Solmu(Solmu vasen, Solmu oikea, int arvo) {
-        this.vasen = vasen;
-        this.oikea = oikea;
-        this.arvo = arvo;
-    }
-}
-\end{code}
-
-Kentät \texttt{vasen} ja \texttt{oikea} osoittavat solmun
-vasempaan ja oikeaan lapseen.
-Jos lapsi puuttuu, sen tilalla on arvo \texttt{null}.
-Kentässä \texttt{arvo} on puolestaan solmun arvo.
-Nyt voimme määritellä kuvan \ref{fig:binpuu} binääripuun näin:
-
-\begin{code}
-Solmu s1, s2, s3, s4, s5, s6, s7, s8;
-s1 = new Solmu(s2, s3, 1);
-s2 = new Solmu(s4, null, 2);
-s3 = new Solmu(s5, s6, 3);
-s4 = new Solmu(null, null, 4);
-s5 = new Solmu(null, null, 5);
-s6 = new Solmu(s7, s8, 6);
-s7 = new Solmu(null, null, 7);
-s8 = new Solmu(null, null, 8);
-\end{code}
-
-Voimme toteuttaa monia binääripuun käsittelyyn liittyviä
-operaatioita luontevasti rekursiolla.
-Esimerkiksi seuraava metodi laskee, montako solmua
+Rekursio on luonteva tapa toteuttaa monia
+binääripuun käsittelyyn liittyviä operaatioita.
+Esimerkiksi seuraava funktio laskee, montako solmua
 sille annetussa puussa on:
 
 \begin{code}
-int laskeSolmut(Solmu puu) {
-    if (puu == null) return 0;
-    return 1 + laskeSolmut(puu.vasen) + laskeSolmut(puu.oikea);
-}
+function laskeSolmut(solmu)
+    if solmu == null
+        return 0
+    return 1 + laskeSolmut(solmu.vasen) +
+                laskeSolmut(solmu.oikea)
 \end{code}
 
-Metodille annetaan parametrina solmu,
+Funktiolle annetaan parametrina solmu,
 joka vastaa puun juurta.
 Jos puu on tyhjä, siinä ei ole yhtään solmua.
 Muuten puussa on juurisolmu sekä vasemman
 ja oikean alipuun solmut.
 Pystymme laskemaan alipuiden solmut rekursiivisesti
-kutsumalla samaa metodia uudestaan.
+kutsumalla samaa funktiota uudestaan.
 
-Seuraava metodi puolestaan selvittää, mikä on puun korkeus.
-Huomaa, että jos puu on tyhjä, tulkitsemme,
+Seuraava funktio puolestaan selvittää, mikä on puun korkeus.
+Huomaa, että jos puu on tyhjä, tulkintana on,
 että sen korkeus on $-1$.
 
 \begin{code}
-int korkeus(Solmu puu) {
-    if (puu == null) return -1;
-    return 1 + Math.max(korkeus(puu.vasen), korkeus(puu.oikea));
-}
+function korkeus(puu)
+    if puu == null
+        return -1
+    return 1 + max(korkeus(puu.vasen), korkeus(puu.oikea))
 \end{code}
 
 \subsection{Läpikäyntijärjestykset}
@@ -205,17 +177,17 @@ esijärjestys on $[1,2,4,3,5,6,7,8]$,
 sisäjärjes\-tys on $[4,2,1,5,3,7,6,8]$ ja
 jälkijärjestys on $[4,2,5,7,8,6,3,1]$.
 
-Seuraava Java-metodi tulostaa binääripuun solmut
+Seuraava funktio tulostaa binääripuun solmut
 sisäjärjestyksessä, kun sille annetaan parametrina
 puun juuri.
 
 \begin{code}
-void tulosta(Solmu puu) {
-    if (puu == null) return;
-    tulosta(puu.vasen);
-    System.out.println(puu.arvo);
-    tulosta(puu.oikea);
-}
+function tulosta(solmu)
+    if solmu == null
+        return
+    tulosta(solmu.vasen)
+    print(solmu.arvo)
+    tulosta(solmu.oikea)
 \end{code}
 
 \section{Binäärihakupuun toiminta}
@@ -571,7 +543,7 @@ jonka operaatiot toimivat ajassa $O(\log n)$.
 \end{scope}
 \end{tikzpicture}
 \caption{Vähiten solmuja sisältävät AVL-puut korkeuksille 0, 1, 2 ja 3.}
-\label{fig:avlkor}
+\label{fig:avlvah}
 \end{figure}
 
 Miksi sitten AVL-ehto takaa, että binäärihakupuun korkeus
@@ -585,7 +557,7 @@ AVL-puussa, jonka korkeus on $h$.
 
 Merkitään $f(h)$:lla korkeutta $h$ olevan AVL-puun
 pienintä mahdollista solmujen määrää.
-Kuvan \ref{fig:avlkor} mukaisesti funktion ensimmäiset arvot
+Kuvan \ref{fig:avlvah} mukaisesti funktion ensimmäiset arvot
 ovat $f(0)=1$, $f(1)=2$, $f(2)=4$ ja $f(3)=7$.
 Yleisemmin
 \[f(h)=1+f(h-1)+f(h-2),\]
@@ -678,6 +650,7 @@ jolloin solmu $x$ nousee ylöspäin.
 \path[draw,thick,-] (1) -- (3);
 \path[draw,thick,-] (3) -- (5);
 \path[draw,thick,-] (3) -- (6);
+\node at (0,-7) {(a)};
 \end{scope}
 \begin{scope}[xshift=10cm]
 \node[draw, circle] (1) at (0,0) {$3$};
@@ -691,9 +664,11 @@ jolloin solmu $x$ nousee ylöspäin.
 \path[draw,thick,-] (3) -- (5);
 \path[draw,thick,-] (3) -- (6);
 \path[draw,thick,-] (6) -- (7);
+\node at (1,-7) {(b)};
 \end{scope}
 \end{tikzpicture}
-\caption{AVL-ehto menee rikki, kun lisäämme puuhun solmun 9.}
+\caption{(a) Jokaisessa puun solmussa pätee AVL-ehto.
+(b) AVL-ehto menee rikki solmussa 3, kun lisäämme puuhun solmun 9.}
 \label{fig:avlrik}
 \end{figure}
 
@@ -817,9 +792,10 @@ muuttaa puun rakennetta niin, että AVL-ehto tulee taas
 voimaan kaikissa solmuissa.
 Tämän vuoksi kuljemme puussa ylöspäin lisätystä solmusta lähtien,
 kunnes tulemme ensimmäiseen solmuun, jossa ehto ei ole voimassa.
-Jos tällainen solmu $x$ löytyy, palautamme ehdon voimaan tekemällä yhden
+Jos tällainen solmu löytyy, palautamme ehdon voimaan tekemällä yhden
 tai kaksi kiertoa riippuen lisätyn solmun sijainnista.
-Oletetaan, että $y$ on $x$:n lapsi, jonka alipuussa on lisätty solmu,
+Oletetaan, että $x$ on alimpana puussa oleva solmu, jossa AVL-ehto ei päde,
+$y$ on $x$:n lapsi, jonka alipuussa on lisätty solmu,
 ja $z$ on puolestaan $y$:n lapsi, jonka alipuussa on lisätty solmu.
 Tapauksia on kaksi: jos $y$ ja $z$ ovat saman puoleisia lapsia,
 kierrämme solmua $y$ kerran ylöspäin (kuva \ref{fig:avlta1}),
@@ -828,7 +804,7 @@ Tämän korjauksen jälkeen AVL-ehto on jälleen
 voimassa kaikissa puun solmuissa, eli meidän riittää aina
 korjata ehto alimmassa solmussa, jossa se ei ole voimassa.
 
-Kuvassa \ref{fig:avlrik} AVL-ehto ei ole voimassa solmussa $3$,
+Kuvassa \ref{fig:avlrik}(b) AVL-ehto ei ole voimassa solmussa $3$,
 koska vasemman alipuun korkeus on 0 ja oikean alipuun korkeus on 2.
 Tässä tapauksessa $x=3$, $y=7$ ja $z=8$.
 Koska $y$ on $x$:n oikea lapsi ja $z$ on $y$:n oikea lapsi,
@@ -892,6 +868,7 @@ binäärihakupuu.
 Ne muistuttavat rakenteita \texttt{HashSet} ja \texttt{HashMap},
 mutta erona on, että pystymme lisäksi etsimään
 alkioita niiden järjestyksen perusteella.
+Rakenteiden operaatiot toimivat ajassa $O(\log n)$.
 
 \subsection{\texttt{TreeSet}-rakenne}
 
@@ -927,8 +904,6 @@ System.out.println(joukko.higher(5)); // 7
 System.out.println(joukko.lower(5)); // 4
 \end{code}
 
-Kaikki nämä operaatiot toimivat ajassa $O(\log n)$.
-
 \subsection{\texttt{TreeMap}-rakenne}
 
 Seuraava koodi luo sanakirjan \texttt{TreeMap}-rakenteen avulla:
@@ -940,10 +915,12 @@ sanakirja.put("banaani","banana");
 sanakirja.put("cembalo","harpsichord");
 \end{code}
 
-Sanakirjan avaimet on järjestetty,
-joten pystymme etsimään tietoa avainten perusteella.
+Tämä sanakirja muodostuu avain-arvo-pareista,
+joissa avaimet ovat suomen kielen sanoja
+ja arvot ovat englannin kielen sanoja.
+Sanakirjan sisältö on järjestetty avaimien perusteella.
 Esimerkiksi voimme selvittää, mikä on aakkosjärjestyksessä
-ensimmäinen ja viimeinen sanakirjassa oleva sana:
+ensimmäinen ja viimeinen avain:
 
 \begin{code}
 System.out.println(sanakirja.firstKey()); // apina
