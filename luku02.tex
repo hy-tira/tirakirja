@@ -21,16 +21,17 @@ vain saadaksemme tietää, miten nopea se on.
 \section{Aikavaativuus}
 
 Algoritmin tehokkuus riippuu siitä,
-montako askelta se suorittaa.
-Tavoitteemme on nyt arvioida askelten määrää suhteessa
-syötteen kokoon $n$.
+montako askelta siihen kuuluu eli
+montako kertaa sen koodissa olevia rivejä suoritetaan.
+Tavoitteemme on nyt arvioida algoritmin askelten määrää
+suhteessa syötteen kokoon $n$.
 Esimerkiksi jos syötteenä on taulukko,
 $n$ on taulukon koko,
 ja jos syötteenä on merkkijono,
 $n$ on merkkijonon pituus.
 
 Tarkastellaan esimerkkinä seuraavaa algoritmia,
-joka laskee, montako kertaa luku $x$ esiintyy
+joka laskee, montako kertaa alkio $x$ esiintyy
 $n$ lukua sisältävässä taulukossa.
 
 \begin{code}[numbers=left]
@@ -40,15 +41,15 @@ for i = 0 to n-1
         laskuri++
 \end{code}
 
-Tämän algoritmin oleelliset askeleet ovat riveillä
-1, 3 ja 4.
+Voimme arvioida algoritmin tehokkuutta tutkimalla
+jokaisesta rivistä, montako kertaa se suoritetaan algoritmin aikana.
 Rivi 1 suoritetaan vain kerran algoritmin alussa.
-Rivi 3 suoritetaan $n$ kertaa jokaisella silmukan
-kierroksella.
-Rivi 4 taas suoritetaan $0 \dots n$
+Tämän jälkeen alkaa silmukka, jossa
+rivit 2 ja 3 suoritetaan molemmat $n$ kertaa
+ja rivi 4 puolestaan suoritetaan $0 \dots n$
 kertaa riippuen siitä, kuinka usein
 luku $x$ esiintyy taulukossa.
-Algoritmi suorittaa siis vähintään $n+1$ ja enintään $2n+1$
+Algoritmi suorittaa siis vähintään $2n+1$ ja enintään $3n+1$
 askelta.
 
 Näin tarkka analyysi ei ole kuitenkaan yleensä tarpeen,
@@ -58,7 +59,7 @@ Sanomme, että algoritmi toimii ajassa $O(f(n))$ eli sen
 enintään $c f(n)$ askelta aina silloin kun $n \ge n_0$,
 missä $c$ ja $n_0$ ovat vakioita.
 Esimerkiksi yllä oleva algoritmi toimii ajassa $O(n)$,
-koska se suorittaa selkeästi enintään $3n$ askelta
+koska se suorittaa selkeästi enintään $4n$ askelta
 kaikilla $n$:n arvoilla.
 
 Aikavaativuuden mukavana puolena on, että voimme yleensä
@@ -67,6 +68,8 @@ rakenteesta. Tutustumme seuraavaksi laskusääntöihin,
 joiden avulla tämä on mahdollista.
 
 \subsection{Laskusääntöjä}
+
+\subsubsection{Yksittäiset komennot}
 
 Jos koodissa ei ole silmukoita vaan vain
 yksittäisiä komentoja, sen aikavaativuus on $O(1)$.
@@ -77,6 +80,8 @@ c = a+b
 b = a
 a = c
 \end{code}
+
+\subsubsection{Silmukat}
 
 Merkitsemme \texttt{...} koodia,
 jonka aikavaativuus on $O(1)$.
@@ -115,9 +120,11 @@ for i = 1 to n-1
     ...
 \end{code}
 
+\subsubsection{Peräkkäiset osuudet}
+
 Jos koodissa on peräkkäisiä osuuksia, sen aikavaativuus on suurin
 yksittäisen osuuden aikavaativuus. Esimerkiksi seuraavan koodin aikavaativuus on $O(n^2)$,
-koska sen osuudet ovat $O(n)$, $O(n^2)$ ja $O(n)$.
+koska sen osuuksien aikavaativuudet ovat $O(n)$, $O(n^2)$ ja $O(n)$.
 
 \begin{code}
 for i = 1 to n
@@ -129,6 +136,8 @@ for i = 1 to n
     ...
 \end{code}
 
+\subsubsection{Monta muuttujaa}
+
 Joskus aikavaativuus riippuu useammasta tekijästä,
 jolloin kaavassa on monta muuttujaa.
 Seuraavan koodin aikavaativuus on $O(nm)$:
@@ -139,38 +148,43 @@ for i = 1 to n
         ...
 \end{code}
 
+\subsubsection{Rekursiiviset algoritmit}
+
 Rekursiivisessa algoritmissa laskemme,
 montako rekursiivista kutsua teh\-dään ja kauanko
 kutsut vievät aikaa.
-Tarkastellaan esimerkkinä seuraavia
-funktioita, joita kutsutaan parametrilla $n$:
+Tarkastellaan esimerkkinä seuraavaa
+funktiota, jota kutsutaan parametrilla $n$:
 
 \begin{code}
-function f1(n)
+function f(n)
     if n == 1
         return
-    f1(n-1)
+    f(n-1)
 \end{code}
+
+Funktiota kutsutaan yhteensä $n$ kertaa ja jokainen
+kutsu vie aikaa $O(1)$, joten funktion aikavaativuus on $O(n)$.
+
+Tarkastellaan sitten seuraavaa funktiota:
 
 \begin{code}
-function f2(n)
+function g(n)
     if n == 1
         return
-    f2(n-1)
-    f2(n-1)
+    g(n-1)
+    g(n-1)
 \end{code}
 
-Ensimmäisessä tapauksessa rekursiivisia kutsuja on $O(n)$
-ja jokainen kutsu vie aikaa $O(1)$,
-joten aikavaativuus on $O(n)$.
-Toisessa tapauksessa rekursiivisia kutsuja on $O(2^n)$,
-koska jokainen kutsu tuottaa kaksi uutta kutsua,
-ja algoritmin aikavaativuus on $O(2^n)$.
+Koska jokainen kutsu tuottaa kaksi uutta kutsua,
+funktiota kutsutaan kaikkiaan $O(2^n)$ kertaa.
+Jokainen kutsu vie aikaa $O(1)$,
+joten funktion aikavaativuus on $O(2^n)$.
 
 \subsection{Yleisiä aikavaativuuksia}
 
-Tietyt aikavaativuudet esiintyvät usein algoritmien analyysissa.
-Seuraavaksi käymme läpi joukon tällaisia aikavaativuuksia.
+Tietyt aikavaativuudet esiintyvät usein algoritmeissa.
+Seuraavassa listassa on joukko tällaisia aikavaativuuksia.
 
 \subsubsection{$O(1)$ (vakioaikainen)}
 
@@ -238,7 +252,7 @@ for i = 1 to n-1
 \end{code}
 
 Algoritmi järjestää ensin taulukon, minkä jälkeen yhtä
-suuret alkiot ovat \emph{vierekkäin} ja ne on helppoa löytää.
+suuret alkiot ovat vierekkäin ja ne on helppoa löytää.
 Järjestäminen vie aikaa $O(n \log n)$
 ja silmukka vie aikaa $O(n)$, joten algoritmi vie
 yhteensä aikaa $O(n \log n)$.
@@ -303,7 +317,7 @@ tähtiluokituksen ansiosta,
 vaikka emme saisi tarkkaa listausta huoneen varustelusta.
 Vastaavasti jos kuulemme, että jonkin algoritmin aikavaativuus on $O(n \log n)$,
 voimme heti arvioida karkeasti, miten suuria syötteitä voimme käsitellä,
-vaikka emme tuntisi tarkemmin algoritmin toimintaa
+vaikka emme tuntisi tarkemmin algoritmin toimintaa.
 
 \begin{table}
 \center
@@ -344,7 +358,7 @@ jolla algoritmi on toteutettu.
 Tässä kirjassa analysoimme algoritmeja sekä aikavaativuuksien
 avulla että mittaamalla todellisia suoritusaikoja.
 
-\subsection{Esimerkki: Bittijonot}
+\subsection{Esimerkki: Merkkijonot}
 
 Seuraavassa esimerkissä vertailemme kahta
 erilaista algoritmia samaan tehtä\-vään.
@@ -353,26 +367,27 @@ algoritmi, joka toimii ajassa $O(n^2)$.
 Toinen algoritmi taas on tehokas algoritmi,
 joka toimii ajassa $O(n)$.
 
-Tehtävämme on seuraava: Annettuna on bittijono, jossa on $n$ bittiä,
-ja haluamme laskea, monellako tavalla voimme valita kaksi kohtaa
-niin, että vasen bitti on 0 ja oikea bitti on 1.
-Esimerkiksi bittijonossa 01001 tapoja on neljä:
+Tehtävämme on seuraava: Annettuna on merkkijono,
+jonka pituus on $n$ ja jokainen merkki on 0 tai 1.
+Haluamme laskea, monellako tavalla voimme valita kaksi kohtaa
+niin, että vasen merkki on 0 ja oikea merkki on 1.
+Esimerkiksi merkkijonossa 01001 tapoja on neljä:
 \underline{01}001, \underline{0}100\underline{1},
 01\underline{0}0\underline{1} ja 010\underline{01}.
 
-\subsubsection{$O(n^2)$-ratkaisu}
+\subsubsection{$O(n^2)$-algoritmi}
 
 Voimme ratkaista tehtävän raa'alla voimalla
 käymällä läpi kaikki mahdolliset tavat valita vasen ja oikea kohta.
 Tällöin voimme laskea yksi kerrallaan,
-monessako tavassa vasen bitti on 0 ja oikea bitti on 1.
+monessako tavassa vasen merkki on 0 ja oikea merkki on 1.
 Seuraava koodi toteuttaa algoritmin:
 
 \begin{code}
 laskuri = 0
 for i = 0 to n-1
     for j = i+1 to n-1
-        if bitit[i] == 0 and bitit[j] == 1
+        if merkit[i] == 0 and merkit[j] == 1
             laskuri++
 print(laskuri)
 \end{code}
@@ -380,32 +395,32 @@ print(laskuri)
 Algoritmin aikavaativuus on $O(n^2)$, koska siinä on kaksi
 sisäkkäistä silmukkaa, jotka käyvät läpi syötteen.
 
-\subsubsection{$O(n)$-ratkaisu}
+\subsubsection{$O(n)$-algoritmi}
 
 Kuinka voisimme ratkaista tehtävän tehokkaammin?
 Meidän tulisi käytän\-nössä keksiä tapa, jolla saisimme
 pois toisen silmukan koodista.
 
 Tässä auttaa lähestyä ongelmaa hieman toisesta
-näkökulmasta: kun olemme tietyssä kohdassa bittijonoa,
+näkökulmasta: kun olemme tietyssä kohdassa merkkijonoa,
 monellako tavalla voimme muodostaa parin,
-jonka oikea bitti on nykyisessä kohdassamme?
-Jos olemme bitin 0 kohdalla, pareja ei ole yhtään,
-mutta jos bittinä on 1, voimme valita \emph{minkä tahansa}
-vasemmalla puolella olevan bitin 0 pariin.
+jonka oikea merkki on nykyisessä kohdassamme?
+Jos olemme merkin 0 kohdalla, pareja ei ole yhtään,
+mutta jos merkkinä on 1, voimme valita \emph{minkä tahansa}
+vasemmalla puolella olevan merkin 0 pariin.
 
 Tämän havainnon ansiosta meidän riittää käydä läpi
-bittijono kerran vasemmalta oikealle ja pitää kirjaa,
-montako bittiä 0 olemme nähneet.
-Sitten jokaisen bitin 1 kohdalla kasvatamme
-vastausta tällä bittien 0 määrällä.
+merkkijono kerran vasemmalta oikealle ja pitää kirjaa,
+montako merkkiä 0 olemme nähneet.
+Sitten jokaisen merkin 1 kohdalla kasvatamme
+vastausta tämänhetkisellä merkkien 0 määrällä.
 Seuraava koodi toteuttaa algoritmin:
 
 \begin{code}
 laskuri = 0
 nollat = 0
 for i = 0 to n-1
-    if bitit[i] == 0
+    if merkit[i] == 0
         nollat++
     else
         laskuri += nollat
@@ -419,17 +434,17 @@ joten sen aikavaativuus on $O(n)$.
 
 Meillä on nyt siis kaksi algoritmia, joiden aikavaativuudet ovat
 $O(n^2)$ ja $O(n)$, mutta mitä tämä tarkoittaa käytännössä?
-Tämän selvittämiseksi teimme testin,
-jossa toteutimme algoritmit Javalla ja mittasimme niiden
-suoritusaikoja satunnaisilla syötteillä eri $n$:n arvoilla.
+Seuraavassa testissä olemme toteuttaneet algoritmit
+Javalla ja mitanneet niiden suoritusaikoja
+satunnaisilla syötteillä eri $n$:n arvoilla.
 
 Taulukko \ref{tab:algver} näyttää testin tulokset.
 Pienillä $n$:n arvoilla molemmat algoritmit toimivat
 hyvin tehokkaasti, mutta suuremmilla syötteillä on
 nähtävissä huomattavia eroja.
 Raakaan voimaan perustuva $O(n^2)$-algoritmi
-alkaa hidastua selvästi testistä $n=10000$ alkaen,
-ja testissä $n=1000000$ sillä kuluu jo lähes kolme minuuttia aikaa.
+alkaa hidastua selvästi testistä $n=10^4$ alkaen,
+ja testissä $n=10^6$ sillä kuluu jo lähes kolme minuuttia aikaa.
 Tehokas $O(n)$-algoritmi taas selvittää suuretkin testit
 salamannopeasti.
 
@@ -439,11 +454,11 @@ salamannopeasti.
 syötteen koko $n$ & $O(n^2)$-algoritmi & $O(n)$-algoritmi \\
 \hline
 $10$ & 0.00 s & 0.00 s\\
-$100$ & 0.00 s & 0.00 s\\
-$1000$ & 0.00 s & 0.00 s\\
-$10000$ & 0.14 s & 0.00 s \\
-$100000$ & 1.66 s & 0.00 s \\
-$1000000$ & 172.52 s & 0.01 s \\
+$10^2$ & 0.00 s & 0.00 s\\
+$10^3$ & 0.00 s & 0.00 s\\
+$10^4$ & 0.14 s & 0.00 s \\
+$10^5$ & 1.66 s & 0.00 s \\
+$10^6$ & 172.52 s & 0.01 s \\
 \end{tabular}
 \caption{Algoritmien suoritusaikojen vertailu.}
 \label{tab:algver}
