@@ -59,9 +59,6 @@ joihin se on yhteydessä kaarella,
 ja solmun \emph{aste} on sen naapureiden määrä.
 Kuvassa \ref{fig:veresi} solmun 2 naapurit ovat 1, 4 ja 5,
 joten solmun aste on 3.
-Voimme kulkea solmusta 1 solmuun 5
-esimerkiksi polkua $1 \rightarrow 2 \rightarrow 5$
-tai $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 
 \subsubsection{Polku ja sykli}
 
@@ -527,7 +524,7 @@ Etenemme vuorollaan kaikkiin solmuihin, jotka ovat saavutettavissa
 lähtösolmusta kulkemalla kaaria pitkin.
 
 Syvyyshaku pitää yllä jokaisesta verkon solmusta tietoa,
-onko se vielä vieraillut solmussa.
+onko solmussa jo vierailtu.
 Kun haku saapuu solmuun, jossa se ei ole vieraillut aiemmin,
 se merkitsee solmun vierailluksi ja alkaa käydä
 läpi solmusta lähteviä kaaria.
@@ -539,16 +536,16 @@ se perääntyy taaksepäin samaa reittiä kuin tuli solmuun.
 Kuvassa \ref{fig:syvhak} on esimerkki syvyyshaun toiminnasta.
 Jokaisessa vaiheessa harmaat solmut ovat solmuja,
 joissa haku on jo vieraillut.
-Tässä esimerkissä lähdemme liikkeelle solmusta 1,
+Tässä esimerkissä haku lähtee liikkeelle solmusta 1,
 josta pääsee kaarella solmuihin 2 ja 3.
-Etenemme ensin solmuun 2, josta pääsemme edelleen
+Haku etenee ensin solmuun 2, josta pääsee edelleen
 solmuihin 4 ja 5.
-Koska emme pysty enää etenemään solmusta 5
-uusiin solmuihin, peräännymme takaisin
-kulkemaamme reittiä solmuun 1.
-Tämän jälkeen käymme vielä solmussa 3,
-josta ei pääse muihin solmuihin.
-Nyt olemme käyneet läpi kaikki solmut,
+Tämän jälkeen haku ei enää löydä uusia solmuja
+tästä verkon osasta, joten se perääntyy takaisin
+kulkemaansa reittiä solmuun 1.
+Lopuksi haku käy vielä solmussa 3,
+josta ei pääse muihin uusiin solmuihin.
+Nyt haku on käynyt läpi kaikki solmut,
 joihin pääsee solmusta 1.
 
 \begin{figure}
@@ -791,7 +788,7 @@ Seuraava koodi suorittaa leveyshaun lähtösolmusta \texttt{alku} alkaen:
 jono.enqueue(alku)
 vierailtu[alku] = true
 etaisyys[alku] = 0
-while jono.size() > 0
+while not jono.empty()
     solmu = jono.dequeue()
     for naapuri in verkko[solmu]
         if vierailtu[naapuri]
