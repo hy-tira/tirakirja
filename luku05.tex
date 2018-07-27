@@ -431,55 +431,28 @@ mahdollisuuksia algoritmien suunnittelussa?
 
 Hajautustaulu osoittaa todelliset kyntensä silloin,
 kun haluamme pitää yllä aidosti \emph{dynaamista}
-tietorakennetta eli haluamme tehdä sekä lisäyksiä että poistoja.
-Tästä on hyötyä esimerkiksi tehtävässä,
-jossa haluamme laskea taulukon jokaiselle $k$ alkion
-alitaulukolle, montako eri alkiota siinä on.
-Esimerkiksi kun taulukko on $[2,3,2,1]$ ja $k=3$,
-alitaulukossa $[2,3,2]$ on 2 eri alkiota ja
-alitaulukossa $[3,2,1]$ on 3 eri alkiota.
-Seuraava hakemistoa käyttävä algoritmi ratkaisee
-tehtävän tehokkaasti:
+tietorakennetta eli haluamme vuorotellen muuttaa
+tietorakennetta ja hakea sieltä tietoa.
+Tällöin emme voi enää toteuttaa algoritmia,
+joka järjestää koko aineiston kerran alussa.
+Esimerkki tällaisesta tehtävästä on,
+että meille annetaan $n$ lukua ja meidän tulee ilmoittaa
+jokaisen luvun jälkeen, montako eri lukua olemme saaneet
+tähän mennessä, ennen kuin saamme seuraavan luvun.
+Voimme ratkaista tehtävän seuraavasti olettaen,
+että voimme hakea lukuja funktiolla \texttt{hae\_luku}.
 
 \begin{code}
-laskuri = []
-tulos = 0
-for i = 0 to n-1
-    if laskuri[taulu[i]] == 0:
-        tulos++
-    laskuri[taulu[i]]++
-    if i >= k-1
-        print(tulos)
-        laskuri[taulu[i-k+1]]--
-        if laskuri[taulu[i-k+1]]] == 0
-            tulos--
+alkiot = []
+for i = 1 to n
+    luku = hae_luku()
+    alkiot.add(luku)
+    print(alkiot.size())
 \end{code}
 
-Algoritmi käy läpi $k$-kokoisia alitaulukoita
-vasemmalta oikealle ja pitää yllä hakemistossa \texttt{laskuri}
-tietoa siitä, montako kertaa kukin alkio esiintyy nykyisessä
-alitaulukossa.
-Joka askeleella algoritmi liikuttaa alitaulukkoa
-eteenpäin lisäämällä alkion oikeaan reunaan sekä
-poistamalla alkion vasemmasta reunasta.
-Muuttuja \texttt{tulos} puolestaan pitää kirjaa siitä,
-montako eri alkiota alitaulukko sisältää.
-
-Algoritmi muodostuu silmukasta, joka käy läpi luvut $0 \ldots n-1$.
-Silmukan jokainen askel lisää ensin kohdassa $i$
-olevan alkion alitaulukkoon.
-Jos alkiota ei ole vielä alitaulukossa
-(eli sen esiintymiskertojen määrä on 0),
-muuttuja \texttt{tulos} kasvaa yhdellä.
-Jos $i \ge k-1$, alitaulukossa on $k$ lukua ja
-algoritmi tulostaa eri lukujen määrän.
-Tämän jälkeen se poistaa kohdassa $i-k+1$ olevan
-alkion alitaulukosta. Samalla muuttuja \texttt{tulos}
-vähenee yhdellä, jos poistettu alkio oli ainoa
-kyseisen alkion esiintymä alitaulukossa.
-
-Algoritmin aikavaativuus on $O(n)$,
-koska silmukan jokaisella kierroksella tehdään
-vakiomäärä operaatioita hakemistoon.
-Huomaa, että algoritmin aikavaativuus ei riipu
-lainkaan siitä, kuinka suuri $k$ on.
+Tämän algoritmin aikavaativuus on $O(n)$,
+koska se lisää jokaisella silmukan kierroksella yhden
+luvun joukkoon ja hakee joukon koon.
+Emme voisi ratkaista ongelmaa tehokkaasti
+järjestämisellä, koska lukuja tulee yksi kerrallaan
+eikä alussa ole mitään aineistoa, jonka voisi järjestää.
