@@ -154,12 +154,12 @@ mikä on järjestettävän taulukon sisältö.
 Algoritmi toimii sitä paremmin, mitä lähempänä järjestystä
 taulukko on valmiiksi.
 Jos taulukko on järjestyksessä,
-aikaa kuluu vain $\Theta(n)$, koska meidän ei tarvitse siirtää
+aikaa kuluu vain $O(n)$, koska meidän ei tarvitse siirtää
 mitään alkioita.
 Pahin tapaus algoritmille on kuitenkin, että taulukko on
 \emph{käänteisessä} järjestyksessä,
 jolloin joudumme siirtämään jokaisen alkion
-taulukon alkuun ja aikaa kuluu $\Theta(n^2)$.
+taulukon alkuun ja aikaa kuluu $O(n^2)$.
 
 \subsection{Inversiot}
 
@@ -186,12 +186,12 @@ Olemme jo todenneet, että pahin mahdollinen syöte
 lisäysjärjestämiselle on käänteisessä järjestyksessä oleva taulukko.
 Tällaisessa taulukossa jokainen alkiopari muodostaa inversion,
 joten inversioiden määrä on
-\[1+2+\dots+(n-1)=\frac{n(n-1)}{2}=\Theta(n^2).\]
+\[1+2+\dots+(n-1)=\frac{n(n-1)}{2}=O(n^2).\]
 Entä kuinka hyvin algoritmi toimii \emph{keskimäärin}?
 Jos oletamme, että taulukossa on $n$ eri alkiota satunnaisessa
 järjestyksessä, alkiopari muodostaa inversion todennäköisyydellä $1/2$.
 Niinpä inversioiden määrän \emph{odotusarvo} on
-\[\frac{n(n-1)}{4}=\Theta(n^2),\]
+\[\frac{n(n-1)}{4}=O(n^2),\]
 eli aikaa kuluu neliöllinen määrä myös keskimääräisessä
 tapauksessa.
 
@@ -523,6 +523,7 @@ Selvästikään \emph{ei} ole kaikissa tilanteissa hyvä tapa
 valita taulukon ensimmäinen alkio jakoalkioksi.
 Esimerkiksi valmiiksi järjestyksessä olevan
 taulukon järjestäminen vie silloin aikaa $O(n^2)$.
+
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.5]
@@ -604,14 +605,17 @@ Käytännössä pahin tapaus on kuitenkin harvinainen,
 jos jakoalkion valinta ja alkioiden siirtäminen on toteutettu huolellisesti.
 
 Jos taulukko on pieni, $O(n^2)$-aikainen lisäysjärjestäminen
-toimii käytän\-nössä vielä nopeammin, koska sen vakiokertoimet
-ovat hyvin pienet.
+toimii käytän\-nössä nopeammin kuin rekursiiviset algoritmit,
+koska sen vakiokertoimet ovat hyvin pienet.
 Yksi mahdollisuus onkin toteuttaa \emph{hybridialgoritmi},
-jossa suuret taulukot järjes\-tetään lomitusjärjestämisellä
-tai pikajärjestämisellä ja pienet taulukot järjes\-tetään
-lisäysjärjestämisellä.
+jossa suuret taulukot järjes\-tetään rekursiivisesti
+ja pienet taulukot järjes\-tetään lisäysjärjestämisellä.
 Tällöin eri algoritmien hyvät puolet pääsevät osaksi
 kokonaisalgoritmia.
+Käytännössä hybridialgoritmin voi tehdä niin,
+että valitaan jokin sopiva raja $k$ ja
+taulukko järjestetään rekursiivisesti,
+jos siinä on ainakin $k$ alkiota, ja muuten lisäysjärjestämisellä.
 
 \section{Järjestämisen alaraja}
 
@@ -749,16 +753,26 @@ Jos taas alkiot ovat oliotyyppisiä
 (esimerkiksi \texttt{String}),
 algoritmina on optimoitu lomitusjärjestäminen.
 
-Jos haluamme, että Java pystyy järjestämään omia olioitamme,
-meidän täytyy toteuttaa luokkaan metodi \texttt{compareTo} ja
-merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
 Kun \texttt{Arrays.sort} järjestää taulukon,
 se kutsuu metodia \texttt{compareTo} aina, kun se haluaa selvittää
 kahden alkion suuruusjärjestyksen.
 Metodin tulee palauttaa negatiivinen arvo, nolla tai positiivinen arvo
 sen mukaan, onko olio itse pienempi, yhtä suuri vai suurempi
 kuin parametrina annettu olio.
+Javan omissa luokissa tällainen metodi on olemassa valmiina.
+Esimerkiksi voimme tutkia merkkijonojen suuruusjärjestystä näin:
 
+\begin{code}
+System.out.println("apina".compareTo("banaani")); // -1
+System.out.println("banaani".compareTo("apina")); // 1
+System.out.println("apina".compareTo("apina")); // 0
+\end{code}
+
+Tämän ansiosta voimme järjestää suoraan taulukoita,
+joissa on esimerkiksi merkkijonoja.
+Jos haluamme, että Java pystyy järjestämään omia olioitamme,
+meidän täytyy toteuttaa itse luokkaan metodi \texttt{compareTo} ja
+merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
 Esimerkiksi seuraava koodi toteuttaa luokan \texttt{Piste},
 johon voidaan tallentaa pisteen x- ja y-koordinaatit.
 Luokassa on metodi \texttt{compareTo}, joka määrittelee,
@@ -817,7 +831,7 @@ Niinpä yleinen tapa luoda tehokas algoritmi on järjestää
 ensin syöte ajassa $O(n \log n)$ ja hyödyntää sitten
 tavalla tai toisella järjestystä algoritmin loppuosassa.
 
-\subsection{Taulukon käsittely}
+\subsection{Taulukkoalgoritmeja}
 
 \label{sec:taukas}
 
@@ -897,6 +911,7 @@ while a <= b
     k = (a+b)/2
     if taulu[k] == x
         // alkio löytyi
+        break
     if taulu[k] < x
         a = k+1
     if taulu[k] > x
@@ -914,6 +929,54 @@ ja jos alkio on suurempi kuin $x$, haku jatkuu välin
 vasempaan puoliskoon.
 Koska välin koko puolittuu joka askeleella,
 binäärihaun aikavaativuus on $O(\log n)$.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\begin{scope}
+\fill[color=lightgray] (0,0) rectangle (12,1);
+\draw (0,0) grid (12,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/2,4/4,5/4,6/5,7/6,8/7,9/7,10/7,11/9} \node at (0.5+\x,0.5) {\v};
+\draw[->] (5.5,-0.75) -- (5.5,-0.25);
+\end{scope}
+\begin{scope}[yshift=-3cm]
+\fill[color=lightgray] (6,0) rectangle (12,1);
+\draw (0,0) grid (12,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/2,4/4,5/4,6/5,7/6,8/7,9/7,10/7,11/9} \node at (0.5+\x,0.5) {\v};
+\draw[->] (8.5,-0.75) -- (8.5,-0.25);
+\end{scope}
+\begin{scope}[yshift=-6cm]
+\fill[color=lightgray] (6,0) rectangle (8,1);
+\draw (0,0) grid (12,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/2,4/4,5/4,6/5,7/6,8/7,9/7,10/7,11/9} \node at (0.5+\x,0.5) {\v};
+\draw[->] (6.5,-0.75) -- (6.5,-0.25);
+\end{scope}
+\begin{scope}[yshift=-9cm]
+\fill[color=lightgray] (7,0) rectangle (8,1);
+\draw (0,0) grid (12,1);
+\foreach \x/\v in {0/1,1/2,2/2,3/2,4/4,5/4,6/5,7/6,8/7,9/7,10/7,11/9} \node at (0.5+\x,0.5) {\v};
+\draw[->] (7.5,-0.75) -- (7.5,-0.25);
+\end{scope}
+\end{tikzpicture}
+\caption{Luvun 6 etsiminen järjestetystä taulukosta binäärihaun avulla.
+Harmaa alue vastaa väliä $[a,b]$ ja nuoli osoittaa kohdan $k$.}
+\label{fig:binhak}
+\end{figure}
+
+Kuva \ref{fig:binhak} näyttää esimerkin binäärihaun toiminnasta,
+kun etsimme lukua 6 järjestetystä taulukosta.
+Aluksi hakuvälinä on koko taulukko ja puolivälin kohdalla
+on luku 4.
+Niinpä voimme päätellä, että jos taulukossa on luku 6,
+sen täytyy esiintyä taulukon loppuosassa.
+Tämän jälkeen hakuvälinä on taulukon loppuosa ja
+puolivälin kohdalla on luku 7.
+Nyt voimme taas päätellä, että luvun 6 täytyy olla
+tämän kohdan vasemmalla puolella.
+Hakuväli puolittuu joka askeleella,
+ja kun jatkamme vastaavasti, kahden askeleen kuluttua
+hakuvälillä on vain yksi luku, joka on juuri haettu luku 6.
+Olemme löytäneet halutun luvun ja algoritmi päättyy.
 
 Voimme ratkaista binäärihaun avulla esimerkiksi tehtävän,
 jossa annettuna on taulukko ja luku $x$ ja haluamme selvittää,
