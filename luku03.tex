@@ -330,28 +330,7 @@ ja jos on, poistumme funktiosta.
 Sitten laskemme muuttujaan $k$ järjestettävän välin keskikohdan
 ja järjestämme vasemman ja oikean puoliskon rekursiivisesti.
 Lopuksi kutsumme funktiota \texttt{lomita},
-joka muodostaa kokonaisen järjestetyn taulukon osataulukoista.
-
-Kuva \ref{fig:lomjar} näyttää, miten lomitusjärjestäminen
-toimii, kun sille annetaan taulukko $[5,1,2,9,7,5,4,2]$.
-Algoritmi puolittaa ensin taulukon kahdeksi osataulukoksi
-$[5,1,2,9]$ ja $[7,5,4,2]$ ja järjestää molemmat
-osataulukot kutsumalla itseään.
-Kun algoritmi saa sitten järjestettäväksi taulukon $[5,1,2,9]$,
-se jakaantuu jälleen osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
-Lopulta jäljellä on vain yhden alkion kokoisia
-osataulukoita, jotka ovat valmiiksi järjestyksessä.
-Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
-alkaa koota järjestettyjä osataulukkoja pienimmästä suurimpaan.
-
-Oleellinen seikka algoritmin tehokkuuden kannalta on,
-miten nopeasti pystymme lomittamaan järjestetyt osataulukot.
-Tämä on mahdollista lineaarisessa ajassa käyttäen hyväksi tietoa,
-että osataulukot ovat järjestyksessä.
-Tämän ansiosta voimme käydä osataulukoita läpi rinnakkain
-vasemmalta oikealle ja valita aina seuraavaksi pienimmän alkion
-kahdesta vaihtoehdosta lopulliseen järjestettyyn taulukkoon.
-Voimme toteuttaa funktion \texttt{lomita} käytännössä seuraavasti:
+joka yhdistää järjestetyt puoliskot:
 
 \begin{code}
 function lomita(a1, b1, a2, b2)
@@ -373,10 +352,25 @@ Funktio olettaa, että näillä väleillä olevat
 taulukon alkiot on järjestetty,
 ja se lomittaa alkiot niin, että funktion suorituksen jälkeen
 taulukon koko väli $a_1 \dots b_2$ on järjestetty.
+Funktion perustana on silmukka, joka käy läpi välejä
+$a_1 \dots b_1$ ja $a_2 \dots b_2$ rinnakkain ja valitsee
+aina seuraavaksi pienimmän alkion lopulliseen järjestykseen.
 Jotta lomitus ei sotke taulukkoa,
 funktio käyttää globaalia aputaulukkoa,
 johon se ensin muodostaa järjestetyn osataulukon,
 ja kopioi sitten alkiot aputaulukosta varsinaiseen taulukkoon.
+
+Kuva \ref{fig:lomjar} näyttää, miten lomitusjärjestäminen
+toimii, kun sille annetaan taulukko $[5,1,2,9,7,5,4,2]$.
+Algoritmi puolittaa ensin taulukon kahdeksi osataulukoksi
+$[5,1,2,9]$ ja $[7,5,4,2]$ ja järjestää molemmat
+osataulukot kutsumalla itseään.
+Kun algoritmi saa sitten järjestettäväksi taulukon $[5,1,2,9]$,
+se jakaantuu jälleen osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
+Lopulta jäljellä on vain yhden alkion kokoisia
+osataulukoita, jotka ovat valmiiksi järjestyksessä.
+Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
+alkaa koota järjestettyjä osataulukkoja pienimmästä suurimpaan.
 
 Nyt voimme määrittää, kuinka tehokas lomitusjärjestäminen on.
 Koska jokainen funktion \texttt{jarjesta} kutsu
@@ -388,9 +382,10 @@ seuraavalla tasolla on kaksi taulukkoa,
 joissa on $n/2$ alkiota,
 seuraavalla tasolla on neljä taulukkoa,
 joissa on $n/4$ alkiota, jne.
-Jokaisella tasolla taulukoiden lomittamiset vievät yhteensä
-aikaa $O(n)$, joten algoritmin kokonaisaikavaativuus on
-$O(n \log n)$.
+Funktio \texttt{lomita} toimii lineaarisessa ajassa,
+joten kullakin tasolla taulukoiden lomittamiset vievät yhteensä
+aikaa $O(n)$.
+Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
 
 \subsection{Pikajärjestäminen}
 
@@ -399,20 +394,19 @@ lähestymistavan taulukon järjestämiseen.
 Kun saamme järjestettäväksi taulukon, valitsemme ensin jonkin
 sen alkioista \emph{jakoalkioksi}.
 Tämän jälkeen siirrämme alkioita niin,
-että taulukko jakautuu kahteen osaan:
-jokainen alkuosan alkio on pienempi tai yhtä suuri kuin jakoalkio
-ja vastaavasti jokainen loppuosan alkio
-on suurempi tai yhtä suuri kuin jakoalkio.
-Lopuksi järjestämme rekursiivisesti alkuosan ja loppuosan alkiot.
+että jakoalkiota pienemmät alkiot ovat sen vasemmalla puolella,
+jakoalkiota suuremmat alkiot ovat sen oikealla puolella ja
+jakoalkion kanssa yhtä suuret alkiot voivat olla kummalla tahansa puolella.
+Lopuksi järjestämme rekursiivisesti vasemman ja oikean osataulukon.
 
 Seuraava koodi esittää pikajärjestämisen toiminnan:
 
 \begin{code}
 function jarjesta(a, b)
-    if (a >= b)
+    if a >= b
         return
     k = jako(a,b)
-    jarjesta(a,k)
+    jarjesta(a,k-1)
     jarjesta(k+1,b)
 \end{code}
 
@@ -423,130 +417,112 @@ funktio ei tee mitään.
 Muuten funktio kutsuu funktiota \texttt{jako}, joka valitsee jakoalkion,
 siirtää taulukon alkioita sen mukaisesti
 ja palauttaa sitten kohdan $k$,
-jossa on alkuosan viimeinen alkio siirtojen jälkeen.
-Tämän jälkeen taulukon alkuosa (väli $a \dots k$)
-ja loppuosa (väli $k+1 \dots b$) järjestetään rekursiivisesti.
+jossa jakoalkio on siirtojen jälkeen.
+Tämän jälkeen taulukon vasen osa (väli $a \dots k-1$)
+ja oikea osa (väli $k+1 \dots b$) järjestetään rekursiivisesti.
+
+Funktion \texttt{jako} voi toteuttaa monella tavalla,
+koska voimme valita minkä tahansa alkion jakoalkioksi ja
+lisäksi on monia tapoja siirtää alkioita.
+Käy\-tämme tässä esimerkkinä seuraavaa toteutusta:
+
+\begin{code}
+function jako(a,b):
+    x = taulu[a]
+    k = a
+    for i = a+1 to b
+        if taulu[i] < x
+            k += 1
+            swap(taulu[i],taulu[k])
+    swap(taulu[a],taulu[k])
+    return k
+\end{code}
+
+Tässä jakoalkio on aina välin ensimmäinen alkio,
+joka tallennetaan muuttujaan $x$.
+Funktio käy läpi välin alkiot ja siirtää
+jakoalkiota pienempiä alkioita taulukon alkuosaan.
+Muuttuja $k$ määrittää kohdan,
+johon seuraava pienempi alkio siirretään.
+Lopuksi jakoalkio itse siirretään keskelle
+kohtaan $k$, jonka funktio myös palauttaa.
 
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.5]
 \begin{scope}
+\fill[lightgray] (0,0) rectangle (1,1);
 \draw (0,0) grid (8,1);
 \foreach \x/\v in {0/5,1/1,2/2,3/9,4/7,5/5,6/4,7/2} \node at (0.5+\x,0.5) {\v};
-\draw[->] (4,0) .. controls (4,-0.5) and (0,-1) .. (0,-1.5);
-\draw[->] (4,0) .. controls (4,-0.5) and (8,-1) .. (8,-1.5);
+\fill[lightgray] (4,-2) rectangle (5,-1);
+\draw (0,-2) grid (8,-1);
+\foreach \x/\v in {0/2,1/1,2/2,3/4,4/5,5/5,6/9,7/7} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (4,0) -- (4,-0.9);
+\draw[->] (2,-2) .. controls (1,-2.5) and (0,-3) .. (0,-3.5);
+\draw[->] (6.5,-2) .. controls (7,-2.5) and (8.5,-3) .. (8.5,-3.5);
 \end{scope}
-\begin{scope}[yshift=-2.5cm,xshift=-2cm]
+\begin{scope}[yshift=-4.5cm,xshift=-2cm]
+\fill[lightgray] (0,0) rectangle (1,1);
 \draw (0,0) grid (4,1);
-\draw (8,0) grid (12,1);
-\foreach \x/\v in {0/5,1/1,2/2,3/9,8/7,9/5,10/4,11/2} \node at (0.5+\x,0.5) {\v};
-\draw[->] (2,0) .. controls (2,-0.5) and (0,-1) .. (0,-1.5);
-\draw[->] (2,0) .. controls (2,-0.5) and (4,-1) .. (4,-1.5);
-\draw[->] (10,0) .. controls (10,-0.5) and (8,-1) .. (8,-1.5);
-\draw[->] (10,0) .. controls (10,-0.5) and (12,-1) .. (12,-1.5);
+\fill[lightgray] (9,0) rectangle (10,1);
+\draw (9,0) grid (12,1);
+\fill[lightgray] (1,-2) rectangle (2,-1);
+\draw (0,-2) grid (4,-1);
+\fill[lightgray] (9,-2) rectangle (10,-1);
+\draw (9,-2) grid (12,-1);
+\foreach \x/\v in {0/2,1/1,2/2,3/4,9/5,10/9,11/7} \node at (0.5+\x,0.5) {\v};
+\foreach \x/\v in {0/1,1/2,2/2,3/4,9/5,10/9,11/7} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (2,0) -- (2,-0.9);
+\draw[->] (10.5,0) -- (10.5,-0.9);
+\draw[->] (3,-2) -- (3,-3.4);
+\draw[->] (11,-2) -- (11,-3.4);
 \end{scope}
-\begin{scope}[yshift=-5cm,xshift=-3cm]
-\draw (0,0) grid (2,1);
-\draw (4,0) grid (6,1);
-\draw (8,0) grid (10,1);
-\draw (12,0) grid (14,1);
-\foreach \x/\v in {0/5,1/1,4/2,5/9,8/7,9/5,12/4,13/2} \node at (0.5+\x,0.5) {\v};
-\draw[->] (1,0) .. controls (1,-0.5) and (0,-1) .. (0,-1.5);
-\draw[->] (1,0) .. controls (1,-0.5) and (2,-1) .. (2,-1.5);
-\draw[->] (5,0) .. controls (5,-0.5) and (4,-1) .. (4,-1.5);
-\draw[->] (5,0) .. controls (5,-0.5) and (6,-1) .. (6,-1.5);
-\draw[->] (9,0) .. controls (9,-0.5) and (8,-1) .. (8,-1.5);
-\draw[->] (9,0) .. controls (9,-0.5) and (10,-1) .. (10,-1.5);
-\draw[->] (13,0) .. controls (13,-0.5) and (12,-1) .. (12,-1.5);
-\draw[->] (13,0) .. controls (13,-0.5) and (14,-1) .. (14,-1.5);
-\end{scope}
-\begin{scope}[yshift=-7.5cm,xshift=-3.5cm]
-\draw (0,0) grid (1,1);
-\draw (2,0) grid (3,1);
-\draw (4,0) grid (5,1);
-\draw (6,0) grid (7,1);
-\draw (8,0) grid (9,1);
-\draw (10,0) grid (11,1);
-\draw (12,0) grid (13,1);
-\draw (14,0) grid (15,1);
-\foreach \x/\v in {0/5,2/1,4/2,6/9,8/7,10/5,12/4,14/2} \node at (0.5+\x,0.5) {\v};
-\draw[->] (0.5,0) .. controls (0.5,-0.5) and (1.5,-1) .. (1.5,-1.5);
-\draw[->] (2.5,0) .. controls (2.5,-0.5) and (1.5,-1) .. (1.5,-1.5);
-\draw[->] (4.5,0) .. controls (4.5,-0.5) and (5.5,-1) .. (5.5,-1.5);
-\draw[->] (6.5,0) .. controls (6.5,-0.5) and (5.5,-1) .. (5.5,-1.5);
-\draw[->] (8.5,0) .. controls (8.5,-0.5) and (9.5,-1) .. (9.5,-1.5);
-\draw[->] (10.5,0) .. controls (10.5,-0.5) and (9.5,-1) .. (9.5,-1.5);
-\draw[->] (12.5,0) .. controls (12.5,-0.5) and (13.5,-1) .. (13.5,-1.5);
-\draw[->] (14.5,0) .. controls (14.5,-0.5) and (13.5,-1) .. (13.5,-1.5);
-\end{scope}
-\begin{scope}[yshift=-10cm,xshift=-3cm]
-\draw (0,0) grid (2,1);
-\draw (4,0) grid (6,1);
-\draw (8,0) grid (10,1);
-\draw (12,0) grid (14,1);
-\foreach \x/\v in {0/1,1/5,4/2,5/9,8/5,9/7,12/2,13/4} \node at (0.5+\x,0.5) {\v};
-\draw[->] (1,0) .. controls (1,-0.5) and (3,-1) .. (3,-1.5);
-\draw[->] (5,0) .. controls (5,-0.5) and (3,-1) .. (3,-1.5);
-\draw[->] (9,0) .. controls (9,-0.5) and (11,-1) .. (11,-1.5);
-\draw[->] (13,0) .. controls (13,-0.5) and (11,-1) .. (11,-1.5);
-\end{scope}
-\begin{scope}[yshift=-12.5cm,xshift=-2cm]
-\draw (0,0) grid (4,1);
-\draw (8,0) grid (12,1);
-\foreach \x/\v in {0/1,1/2,2/5,3/9,8/2,9/4,10/5,11/7} \node at (0.5+\x,0.5) {\v};
-\draw[->] (2,0) .. controls (2,-0.5) and (6,-1) .. (6,-1.5);
-\draw[->] (10,0) .. controls (10,-0.5) and (6,-1) .. (6,-1.5);
-\end{scope}
-\begin{scope}[yshift=-15cm]
-\draw (0,0) grid (8,1);
-\foreach \x/\v in {0/1,1/2,2/2,3/4,4/5,5/5,6/7,7/9} \node at (0.5+\x,0.5) {\v};
+\begin{scope}[yshift=-9cm,xshift=-2cm]
+\fill[lightgray] (2,0) rectangle (3,1);
+\draw (2,0) grid (4,1);
+\fill[lightgray] (10,0) rectangle (11,1);
+\draw (10,0) grid (12,1);
+\fill[lightgray] (2,-2) rectangle (3,-1);
+\draw (2,-2) grid (4,-1);
+\fill[lightgray] (11,-2) rectangle (12,-1);
+\draw (10,-2) grid (12,-1);
+\foreach \x/\v in {2/2,3/4,10/9,11/7} \node at (0.5+\x,0.5) {\v};
+\foreach \x/\v in {2/2,3/4,10/7,11/9} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (3,0) -- (3,-0.9);
+\draw[->] (11,0) -- (11,-0.9);
 \end{scope}
 \end{tikzpicture}
 \caption{Pikajärjestäminen taulukolle $[5,1,2,9,7,5,4,2]$.}
 \label{fig:pikjar}
 \end{figure}
 
-
 Kuva \ref{fig:pikjar} näyttää, miten pikajärjestäminen toimii, kun sille
 annetaan taulukko $[5,3,8,4,1,9,3,7]$.
-Toimimme tässä esimerkissä niin, että jakoalkio on aina
-taulukon \emph{ensimmäinen} alkio.
+Jokaisessa vaiheessa harmaa tausta osoittaa jakoalkion sijainnin.
 Kun aloitamme järjestämisen, koko taulukon jakoalkio on 5
-ja siirrämme sen vasemmalle puolelle
-alkiot $[3,4,1,3]$ ja oikealle puolelle alkiot $[8,9,7]$.
-Tämän jälkeen järjestämme vasemman ja oikean puolen rekursiivisesti vastaavasti.
+ja siirrämme sen vasemmalle puolelle alkiot $[2,1,2,4]$.
+Jakoalkion oikealle puolelle jäävät puolestaan alkiot $[5,9,7]$.
+Tämän jälkeen järjestämme vastaavalla tavalla rekursiivisesti
+vasemman ja oikean osataulukon.
 
-\begin{code}
-function jako(a, b)
-    x = taulu[a]
-    while a < b
-        if taulu[a] >= x and taulu[b] <= x
-            swap(taulu[a],taulu[b])
-        if taulu[b] >= x
-            b--
-        else if taulu[a] <= x
-            a++
-    return a
-\end{code}
-
-Pikajärjestämisen tehokkuuteen vaikuttaa, miten valitsemme jakoalkion.
-Haluaisimme valita jakoalkion niin, että sen vasemmalle ja oikealle
-puolelle siirretään suunnilleen yhtä monta alkiota.
-Jos onnistumme tässä, taulukon koko puolittuu jokaisen jaon jälkeen
+Pikajärjestämisen tehokkuuteen vaikuttaa, miten alkiot jakautuvat
+jakoalkion eri puolille.
+Jos hyvin käy, jakoalkion kummallekin puolelle
+siirretään suunnilleen yhtä monta alkiota.
+Tällöin taulukon koko puolittuu jokaisen jaon jälkeen
 ja pikajärjestäminen toimii tehokkaasti.
-Koska pystymme siirtämään alkiot jakoalkion ympärille
-lineaarisessa ajassa, pikajärjestäminen vie tässä tapauksessa aikaa
+Koska funktio \texttt{jako} toimii lineaarisessa ajassa,
+pikajärjestäminen vie tässä tapauksessa aikaa
 $O(n \log n)$ samaan tapaan kuin lomitusjärjestäminen.
-
-Uhkana on kuitenkin, että valitsemme jakoalkion huonosti ja se jakaa
-taulukon osiin epätasaisesti.
+Uhkana on kuitenkin, että jakoalkio jakaa taulukon osiin epätasaisesti.
 Kuva \ref{fig:pikpah} näyttää tilanteen, jossa jokaisessa jaossa
 kaikki alkiot jäävät jakoalkion oikealle puolelle.
 Tällöin pikajärjestäminen viekin aikaa $O(n^2)$, koska rekursiivisia
 tasoja on $O(n)$.
-Selvästikään \emph{ei} ole hyvä tapa valita taulukon ensimmäinen
-alkio jakoalkioksi, koska silloin valmiiksi järjestyksessä olevan
-taulukon järjestäminen vie aikaa $O(n^2)$.
+Selvästikään \emph{ei} ole kaikissa tilanteissa hyvä tapa
+valita taulukon ensimmäinen alkio jakoalkioksi.
+Esimerkiksi valmiiksi järjestyksessä olevan
+taulukon järjestäminen vie silloin aikaa $O(n^2)$.
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.5]
@@ -557,16 +533,27 @@ taulukon järjestäminen vie aikaa $O(n^2)$.
 \fill[color=lightgray] (0,-2) rectangle (1,-1);
 \draw (0,-2) grid (8,-1);
 \foreach \x/\v in {0/1,1/2,2/3,3/4,4/5,5/6,6/7,7/8} \node at (0.5+\x,-1.5) {\v};
-\draw[->] (4,-0.2) -- (4,-0.8);
+\draw[->] (4,-0) -- (4,-0.9);
+\draw[->] (4.5,-2) -- (4.5,-3.4);
 \end{scope}
-\begin{scope}[xshift=1cm,yshift=-4cm]
+\begin{scope}[xshift=1cm,yshift=-4.5cm]
 \fill[color=lightgray] (0,0) rectangle (1,1);
 \draw (0,0) grid (7,1);
 \foreach \x/\v in {0/2,1/3,2/4,3/5,4/6,5/7,6/8} \node at (0.5+\x,0.5) {\v};
 \fill[color=lightgray] (0,-2) rectangle (1,-1);
 \draw (0,-2) grid (7,-1);
 \foreach \x/\v in {0/2,1/3,2/4,3/5,4/6,5/7,6/8} \node at (0.5+\x,-1.5) {\v};
-\draw[->] (3.5,-0.2) -- (3.5,-0.8);
+\draw[->] (3.5,-0) -- (3.5,-0.9);
+\draw[->] (4,-2) -- (4,-3.4);
+\end{scope}
+\begin{scope}[xshift=2cm,yshift=-9cm]
+\fill[color=lightgray] (0,0) rectangle (1,1);
+\draw (0,0) grid (6,1);
+\foreach \x/\v in {0/3,1/4,2/5,3/6,4/7,5/8} \node at (0.5+\x,0.5) {\v};
+\fill[color=lightgray] (0,-2) rectangle (1,-1);
+\draw (0,-2) grid (6,-1);
+\foreach \x/\v in {0/3,1/4,2/5,3/6,4/7,5/8} \node at (0.5+\x,-1.5) {\v};
+\draw[->] (3,-0) -- (3,-0.9);
 \end{scope}
 \end{tikzpicture}
 \caption{Pikajärjestämisen pahin tapaus: jokaisessa jaossa kaikki
@@ -574,31 +561,57 @@ alkiot jäävät jakoalkion toiselle puolelle.}
 \label{fig:pikpah}
 \end{figure}
 
-Miten meidän tulisi sitten valita jakoalkio?
-Jakoalkion tulisi jakaa taulukkoa tasaisesti mutta toisaalta
-meidän täytyy pystyä valitsemaan jakoalkio nopeasti.
-Yksi hyvä tapa valita jakoalkio on ottaa tarkasteluun
+Oma lukunsa on tilanne, jossa taulukossa on paljon samoja alkioita,
+ääri\-tapauksena jokainen alkio on sama.
+Tällöin tässä esitetty funktio \texttt{jako} tuottaa aina huonon jaon,
+jossa kaikki alkiot menevät jakoalkion oikealle puolelle.
+Ei siis riitä, että jakoalkio on valittu hyvin,
+vaan myös tapa, jolla alkioita siirretään taulukossa,
+vaikuttaa algoritmin tehokkuuteen.
+
+Miten meidän tulisi sitten toteuttaa pikajärjestäminen?
+Algoritmista on kehitetty vuosien aikana suuri määrä muunnelmia,
+jotka pyrkivät parantamaan sen toimintaa eri tilanteissa.
+Yksi kehittyneempi tapa valita jakoalkio on ottaa tarkasteluun
 taulukon ensimmäinen, keskimmäinen ja viimeinen alkio ja valita
 jakoalkioksi järjestyksessä keskimmäinen näistä kolmesta alkiosta.
-Tällainen valinta toimii käytännössä hyvin:
-on vaikeaa keksiä taulukkoa, jossa järjestäminen veisi aikaa $O(n^2)$,
-saati sitten, että tällainen tilanne esiintyisi käytännössä.
+Tällainen valinta toimii käytännössä hyvin monissa tilanteissa.
+Parempi tapa toteuttaa alkioiden siirtäminen on puolestaan
+käydä läpi rinnakkain alkioita alusta ja lopusta ja
+pitää huoli siitä, että jakokohta jää keskelle, jos kaikki alkiot
+ovat yhtä suuria.
+
+\subsection{Algoritmien vertailua}
 
 Meillä on nyt siis kaksi rekursiivista järjestämisalgoritmia:
 lomitusjärjestä\-minen toimii \emph{aina} ajassa $O(n \log n)$,
 kun taas pikajärjestäminen toimii \emph{ehkä} ajassa $O(n \log n)$,
 mutta saattaa viedä aikaa $O(n^2)$.
+Vaatii monenlaista virittelyä,
+ennen kuin pikajärjestämisen saa toimimaan tehokkaasti
+edes tapauksissa, joissa taulukko on valmiiksi järjestyksessä
+tai kaikki alkiot ovat samoja.
 Miksi haluaisimme koskaan käyttää epävarmaa pikajärjestämistä,
 kun voimme käyttää myös varmasti tehokasta lomitusjärjestämistä?
 
 Syynä on, että pikajärjestämisen \emph{vakiokertoimet} ovat pienet.
 Kokemus on osoittanut, että kun toteutamme lomitusjärjestämisen ja
 pikajärjestämisen ja mittaamme algoritmien todellisia suoritusaikoja,
-pikajärjestäminen toimii nopeammin.
+pikajärjestäminen toimii usein nopeammin.
 Näin tapahtuu siitä huolimatta, että pikajärjestämisen pahimman
 tapauksen aikavaativuus on $O(n^2)$.
-Käytännössä pahin tapaus onkin hyvin harvinainen,
-jos jakoalkion valinta on toteutettu huolellisesti.
+Käytännössä pahin tapaus on kuitenkin harvinainen,
+jos jakoalkion valinta ja alkioiden siirtäminen on toteutettu huolellisesti.
+
+Jos taulukko on pieni, $O(n^2)$-aikainen lisäysjärjestäminen
+toimii käytän\-nössä vielä nopeammin, koska sen vakiokertoimet
+ovat hyvin pienet.
+Yksi mahdollisuus onkin toteuttaa \emph{hybridialgoritmi},
+jossa suuret taulukot järjes\-tetään lomitusjärjestämisellä
+tai pikajärjestämisellä ja pienet taulukot järjes\-tetään
+lisäysjärjestämisellä.
+Tällöin eri algoritmien hyvät puolet pääsevät osaksi
+kokonaisalgoritmia.
 
 \section{Järjestämisen alaraja}
 
@@ -644,8 +657,8 @@ Algoritmi voi päättyä vasta silloin, kun jäljellä on vain yksi
 mahdollinen taulukko, jotta voimme olla varmoja, että olemme
 järjestäneet taulukon oikein.
 
-Tärkeä seikka on, että jokaisessa vertailussa ainakin toisessa
-tapauksessa meille jää jäljelle puolet mahdollisista taulukoista.
+Tärkeä seikka on, että jokaisessa vertailussa ainakin puolet jäljellä
+olevista taulukoista voi täsmätä vertailun tulokseen.
 Niinpä jos algoritmilla käy huono tuuri, se voi enintään puolittaa
 taulukoiden määrän joka askeleella.
 Tämä tarkoittaa, että algoritmi joutuu tekemään pahimmassa
@@ -661,7 +674,7 @@ että jokaisen termin suuruus on vain $\log(n/2)$. Tuloksena on alaraja
 \log(n!) \ge (n/2) \log(n/2),
 \]
 mikä tarkoittaa, että algoritmi joutuu tekemään
-pahimmassa tapauksessa $\Omega(n \log n)$ vertailua pahimmassa tapauksessa.
+pahimmassa tapauksessa $\Omega(n \log n)$ vertailua.
 
 \subsection{Laskemisjärjestäminen}
 
