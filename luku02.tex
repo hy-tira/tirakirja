@@ -360,11 +360,11 @@ avulla että mittaamalla todellisia suoritusaikoja.
 
 \subsection{Esimerkki: Merkkijonot}
 
-Seuraavassa esimerkissä vertailemme kahta
-erilaista algoritmia samaan tehtä\-vään.
-Ensimmäinen algoritmi on suoraviivainen raa'an voiman
+Tehtävän ratkaisemiseen on usein monenlaisia algoritmeja.
+Seuraavaksi ratkaisemme saman tehtävän kahdella algoritmilla,
+joista ensimmäinen on suoraviivainen raa'an voiman
 algoritmi, joka toimii ajassa $O(n^2)$.
-Toinen algoritmi taas on tehokas algoritmi,
+Toinen algoritmi on puolestaan tehokas algoritmi,
 joka toimii ajassa $O(n)$.
 
 Tehtävämme on seuraava: Annettuna on merkkijono,
@@ -434,11 +434,13 @@ joten sen aikavaativuus on $O(n)$.
 
 Meillä on nyt siis kaksi algoritmia, joiden aikavaativuudet ovat
 $O(n^2)$ ja $O(n)$, mutta mitä tämä tarkoittaa käytännössä?
-Seuraavassa testissä olemme toteuttaneet algoritmit
-Javalla ja mitanneet niiden suoritusaikoja
-satunnaisilla syötteillä eri $n$:n arvoilla.
+Saamme tämän selville toteuttamalla algoritmit jollakin
+oikealla ohjelmointikielellä
+ja mittaamalla niiden suoritusaikoja erikokoisilla syötteillä.
 
-Taulukko \ref{tab:algver} näyttää testin tulokset.
+Taulukko \ref{tab:algver} näyttää vertailun tulokset,
+kun algoritmit on toteutettu Javalla ja syötteinä
+on satunnaisia merkkijonoja.
 Pienillä $n$:n arvoilla molemmat algoritmit toimivat
 hyvin tehokkaasti, mutta suuremmilla syötteillä on
 nähtävissä huomattavia eroja.
