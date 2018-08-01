@@ -6,131 +6,143 @@ Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
 tai säveltää hyvää musiikkia.
 Algoritmien suunnittelu on taito, jonka oppiminen vie aikaa.
 
-Keskitymme tässä luvussa tavoitteeseen
-saada aikaan algoritmi, jonka aikavaativuus on $O(n)$ tai $O(n \log n)$
-eli joka toimii tehokkaasti myös silloin, kun $n$ on suuri.
-Tavoitteen asettaminen etukäteen on hyödyllistä,
-koska voimme ottaa sen algoritmin suunnittelun
-lähtökohdaksi ja rajata sen avulla mahdollisia
-lähestymistapoja, joita voimme käyttää.
+Hyvän algoritmin luomisessa on usein kaksi vaihetta.
+Ensimmäinen vaihe on \emph{keksiä yleisidea},
+johon algoritmin toiminta perustuu.
+Tämä vaatii havaintoja ja oivalluksia ratkaistavasta ongelmasta.
+Toinen vaihe on \emph{tehostaa algoritmia}
+käyttämällä esimerkiksi järjestämistä tai sopivia
+tietorakenteita niin, että algoritmista tulee nopea.
 
-\section{Algoritmin tehostaminen}
+\section{Esimerkki: Maailmanpyörä}
 
-Millainen on algoritmi, joka vie aikaa $O(n)$ tai $O(n \log n)$?
-Tämä tarkoittaa,
-että kun algoritmille annetaan syötteenä $n$ alkiota,
-se saa käyttää jokaisen alkion käsittelyyn
-vain pienen määrän aikaa.
-Niinpä algoritmissa tulisi esiintyä seuraavan kaltaisia silmukoita:
+Tarkastellaan esimerkkinä tehtävää,
+jossa $n$ lasta haluaa mennä maailmanpyörään.
+Jokaisessa korissa voi istua yksi tai kaksi lasta.
+Tiedämme jokaisen lapsen painon ja lisäksi 
+suurimman sallitun korissa istujien painon.
+Mikä on pienin mahdollinen määrä koreja,
+joka riittää lapsille?
+Oletamme, ettei yhdenkään lapsen paino ylitä
+korin maksimipainoa.
 
-\begin{code}
-for i = 0 to n-1
-    // tee jotain nopeaa
-\end{code}
+Esimerkiksi jos $n=5$, painot ovat $[2,2,4,5,8]$
+ja korin maksimipaino on $8$,
+pienin korien määrä on kolme.
+Tässä tapauksessa voimme valita parit
+$[2,4]$, $[2,5]$ ja $[8]$.
+Tämä on optimaalinen ratkaisu, koska selvästikään
+ei ole mahdollista, että koreja olisi vain kaksi.
 
-Tässä ''jotain nopeaa'' tarkoittaa koodia, joka vie aikaa
-$O(1)$ tai $O(\log n)$.
-Algoritmi voi myös järjestää aineistoa,
-koska tehokkaat järjestämisalgoritmit vievät aikaa $O(n \log n)$.
-Kovin paljon muuta tehokas algoritmi ei sitten voikaan tehdä.
+\subsubsection{Vaihe 1: Yleisidean keksiminen}
+
+On valtava määrä mahdollisia tapoja,
+miten voimme sijoittaa lapsia koreihin,
+minkä vuoksi olisi liian hidasta käydä läpi
+kaikkia vaihtoehtoja.
+Jotta saamme aikaan tehokkaan algoritmin,
+meidän tulee keksiä jokin periaate,
+jonka avulla voimme jakaa nopeasti lapsia koreihin.
+
+Itse asiassa meidän riittää keskittyä ongelmaan,
+jossa haluamme löytää \emph{seuraavaan} koriin
+tulevat lapset.
+Jos onnistumme tässä, voimme vain toistaa samaa,
+kunnes kaikki lapset ovat koreissa.
+Vaikeutena on kuitenkin, kuinka saamme tehtyä valinnan niin,
+että tuloksena on varmasti optimaalinen ratkaisu.
+Jos valitsemme väärällä tavalla koriin tulevat lapset,
+saatamme vahingossa käyttää liikaa koreja.
+
+Osoittautuu, että tässä tehtävässä toimiva algoritmi
+on seuraava:
+Valitsemme aina seuraavaan koriin
+\emph{kevyimmän} lapsen sekä sen pariksi
+toisen lapsen niin, että painojen summa ei ylitä
+korin maksimipainoa ja toinen lapsi on
+mahdollisimman painava.
+Jos ei ole mitään tapaa valita toista lasta,
+laitamme kevyimmän lapsen koriin yksin.
+Tällainen algoritmi on \emph{ahne}, eli teemme aina jonkin hyvältä
+tuntuvan valinnan, joka vie ratkaisua eteenpäin,
+emmekä peruuta tehtyjä valintoja missään vaiheessa.
+
+Tarkastellaan taas esimerkkiä,
+jossa lasten painot ovat $[2,2,4,5,8]$
+ja korin maksimipaino on 8.
+Kun käytämme yllä kuvattua algoritmia,
+aloitamme lapsesta, jonka paino on 2,
+ja valitsemme sille pariksi lapsen, jonka paino on 5.
+Tämän jälkeen vuoroon tulee lapsi, jonka paino on 2,
+ja valitsemme sille pariksi lapsen, jonka paino on 4.
+Lopuksi lapsi, jonka paino on 8, saa oman korin.
+Tuloksena on ratkaisu,
+jossa on korit $[2,5]$, $[2,4]$ ja $[8]$.
+
+Mutta miksi tämä ahne algoritmi toimii?
+Miksi on varmaa, että saamme optimaalisen ratkaisun,
+kun muodostamme korit näin?
+
+Tässä auttaa tarkastella, mitä tapahtuu,
+kun algoritmi tekee ensimmäisen valintansa.
+Ensinnäkin on olemassa varmasti optimaalinen ratkaisu,
+jossa kevein lapsi on samassa korissa jonkin toisen lapsen kanssa
+(jos jossakin korissa on kaksi lasta).
+Lisäksi kun valitsemme toisen lapsen niin,
+että sen paino on raskain mahdollinen,
+emme ainakaan huononna mahdollisuuksia tehdä tulevia valintoja.
+Niinpä algoritmin ensimmäinen askel on optimaalinen.
+Tämän jälkeen voimme toistaa vastaavan päättelyn
+algoritmin seuraavissa askelissa, mikä tarkoittaa,
+että algoritmi toimii oikein.
+
+Helppo tapa toteuttaa algoritmi on säilyttää lasten
+painoja taulukossa ja etsiä joka askeleella ensin
+kevyin lapsi käymällä taulukko läpi ja sitten sen 
+pariksi tuleva toinen lapsi käymällä taulukko läpi.
+Tällöin jokainen askel vie aikaa $O(n)$,
+ja algoritmin kokonaisaikavaativuus on $O(n^2)$.
+
+\subsubsection{Vaihe 2: Algoritmin tehostaminen}
+
+Olemme saaneet aikaan toimivan algoritmin, joka vie aikaa $O(n^2)$.
+Tämä on hyvä lähtökohta, mutta algoritmi on vielä liian hidas,
+jotta sillä voisi käsitellä suuria syötteitä.
+Seuraava vaihe onkin tehostaa algoritmia niin,
+että se vie aikaa vain $O(n)$ tai $O(n \log n)$.
+Kokemus on osoittanut, että tämä yleensä onnistuu tavalla
+tai toisella, kunhan mietimme huolellisesti asiaa.
+
+Millainen on sitten algoritmi, joka vie aikaa $O(n)$ tai $O(n \log n)$?
+Tällainen algoritmi voi lähinnä käydä syötettä läpi silmukalla,
+järjestää syötteen sekä käyttää tietorakenteita,
+joissa on nopeita operaatioita.
 Tämä rajoittaa paljon, mitä aineksia voimme laittaa algoritmiin,
-mutta voimme ajatella asiaa myös myönteisesti:
-vaatimus tehokkuudesta rajaa pois suuren määrän lähestymistapoja,
-eli meidän on helpompaa löytää hyvä algoritmi,
-kun vaihtoehtojen määrä on pienempi.
+mutta hyvänä puolena saamme rajattua pois monia lähestymistapoja,
+jotka olisivat liian hitaita.
 
-Tavallinen tilanne algoritmien suunnittelussa on,
-että pystymme ratkaisemaan annetun ongelman
-helposti $O(n^2)$-ajassa ensimmäisellä mieleen tulevalla algoritmilla,
-mutta haluaisimme tehokkaamman algoritmin,
-joka toimisi ajassa $O(n)$ tai $O(n \log n)$.
-Kokemus on osoittanut, että tämä on hyvä tilanne:
-yleensä \emph{pystymme} tehostamaan
-tavalla tai toisella algoritmia,
-kunhan mietimme huolellisesti asiaa.
-Donald Knuth kuvailee samaa ilmiötä teoksessaan
-\emph{The Art of Computer Programming} (osa 4A, esipuhe):
+Tässä tehtävässä meidän tulee joka askeleella löytää
+ensin kevyin lapsi ja sen jälkeen raskain lapsi,
+joka voi istua samassa korissa.
+Ehkä helpoin tapa tehdä tämä tehokkaasti
+on luoda binäärihakupuun avulla joukko, jossa on lasten painoja.
+Tällöin voimme joka askeleella etsiä ensin kevyimmän
+lapsen ajassa $O(\log n)$ ja sen jälkeen sen pariksi
+tulevan toisen lapsen myös ajassa $O(\log n)$.
+Koska algoritmissa on $O(n)$ askelta, algoritmin
+kokonaisaikavaativuudeksi tulee $O(n \log n)$.
 
-\begin{quote}
-Starting about 1970, computer scientists began to experience
-a phenomenon that we called ''Floyd's Lemma'':
-Problems that seemed to need $n^3$ operations could actually be
-solved in $O(n^2)$; problems that seemed to require $n^2$
-could be handled in $O(n \log n)$; and $n \log n$ was often
-reducible to $O(n)$.
-\end{quote}
-
-Tarkastellaan esimerkkinä seuraavaa tehtävää:
-Annettuna on taulukko, joka sisältää luvut $1,2,\dots,n$
-jossakin järjestyksessä,
-ja haluamme kerätä luvut järjestyksessä pienimmästä suurimpaan.
-Joka kierroksella käym\-me läpi taulukon sisällön vasemmalta
-oikealle ja keräämme mahdollisimman monta seuraavaa lukua.
-Montako kierrosta tarvitsemme yhteensä?
-Esimerkiksi taulukossa $[4,3,1,5,2]$
-tarvitsemme kolme kierrosta:
-ensimmäisellä kierroksella keräämme luvut $1$ ja $2$,
-toisella luvun $3$ ja kolmannella luvut $4$ ja $5$.
-
-Voimme ratkaista tehtävän helposti $O(n^2)$-ajassa
-simuloimalla lukujen keräämistä tehtävänannon kuvaamalla tavalla:
-
-\begin{code}
-luku = 1
-laskuri = 0
-while luku <= n
-    laskuri++
-    for i = 0 to n-1
-        if taulu[i] == luku
-            luku++
-print(laskuri)
-\end{code}
-
-Tässä muuttuja \texttt{luku} kertoo,
-minkä luvun haluamme kerätä seuraavaksi,
-ja muuttuja \texttt{laskuri} laskee,
-montako kierrosta tarvitaan.
-Kierroksia tarvitaan aina korkeintaan $n$,
-koska saamme kerättyä joka kierroksella
-ainakin yhden luvun,
-joten algoritmi toimii ajassa $O(n^2)$.
-
-Kuinka voisimme sitten tehostaa algoritmia niin,
-että se veisi aikaa vain $O(n)$ tai $O(n \log n)$?
-Yllä olevan algoritmin hitaus johtuu pohjimmiltaan siitä,
-että algoritmilla menee kauan aikaa löytää,
-missä kohdassa taulukossa on seuraava luku,
-jonka haluamme kerätä.
-Niinpä jotta voimme ratkaista tehtävän tehokkaasti,
-meidän täytyy jollakin tavalla löytää seuraava kerät\-tävä luku nopeammin.
-Kätevä ratkaisu tähän on luoda aputaulukko \texttt{kohta},
-joka kertoo jokaisen luvun kohdan:
-
-\begin{code}
-for i = 0 to n-1
-    kohta[taulu[i]] = i
-\end{code}
-
-Tämän taulukon avulla saamme selville $O(1)$-ajassa,
-missä kohdassa taulukkoa on seuraava kerättävä luku.
-Entä mistä tiedämme, montako kierrosta tarvitsemme?
-Meidän täytyy aloittaa uusi kierros aina silloin,
-kun viimeksi keräämämme luku on myöhemmin taulukossa
-kuin seuraava kerättävä luku.
-Niinpä voimme laskea kierrosten määrän näin:
-
-\begin{code}
-laskuri = 1
-for i = 2 to n
-    if kohta[i-1] > kohta[i]
-        laskuri++
-print(laskuri)
-\end{code}
-
-Tuloksena on algoritmi, jossa on kaksi silmukkaa,
-joista molemmat vievät aikaa vain $O(n)$.
-Niinpä algoritmin aikavaativuus on $O(n)$,
-eli olemme saavuttaneet tavoitteemme.
+Toinen tapa toteuttaa algoritmi tehokkaasti on käyttää
+järjestämistä.
+Tällöin voimme ensin järjestää painot ja sitten käydä
+läpi taulukkoa rinnakkain vasemmalta ja oikealta.
+Valitsemme vasemmalta seuraavaksi kevyimmän lapsen
+ja oikealta sille pariksi tulevan lapsen.
+Tässä algoritmissa järjestäminen vie aikaa $O(n \log n)$
+ja parien etsiminen vie aikaa $O(n)$,
+joten algoritmin kokonaisaikavaativuus on $O(n \log n)$.
+Algoritmi on hieman vaikeampi toteuttaa kuin joukkoon
+perustuva algoritmi, mutta sen vakiokertoimet ovat pienemmät.
 
 \section{Algoritmien aineksia}
 
@@ -143,19 +155,9 @@ ongelman ratkaisemisessa.
 
 \subsection{Järjestäminen}
 
-Tehokas algoritmi perustuu usein tavalla tai toisella järjestämiseen.
-Monessa tilanteessa meidän on helpompaa lähestyä ongelmaa,
-jos voimme olettaa, että syöte on järjestyksessä.
-Järjestäminen vie aikaa $O(n \log n)$, joten voimme käyttää sitä
-huoletta tehokkaassa algoritmissa.
-
-Jotta voimme käyttää järjestämistä, meidän täytyy usein havaita
-ongelmasta jokin ominaisuus, jonka ansiosta voimme ratkaista
-ongelman \emph{ahneesti}.
-Meillä täytyy siis olla syy, miksi voimme käsitellä aineiston
-pienimmästä suurimpaan tai suurimmasta pienimpään ja
-olla varmoja,
-että saamme oikean ratkaisun tällä tavalla.
+Tehokas algoritmi perustuu usein tavalla tai
+toisella järjestämiseen, joka voi näyttäytyä
+monella tavalla algoritmissa.
 
 Tarkastellaan esimerkkinä tehtävää, jossa annettuna on
 $n$ kolikkoa ja haluamme löytää pienimmän rahamäärän,
@@ -163,11 +165,11 @@ jota \emph{emme} voi muodostaa summana kolikoista.
 Jokaisella kolikolla on tietty kokonaislukuarvo, ja
 muodostettava rahamäärä on myös kokonaisluku.
 Esimerkiksi jos kolikot ovat $[1,2,2,7]$,
-voimme muodostaa rahamäärät $1,2,\dots,5$,
-mutta emme voi muodostaa rahamäärää $6$,
-joten tässä tapauksessa oikea vastaus on $6$.
+voimme muodostaa rahamäärät 1, 2, 3, 4 ja 5,
+mutta emme voi muodostaa rahamäärää 6,
+joten oikea vastaus on 6.
 
-Algoritmien suunnittelussa on usein hyödyllistä
+Algoritmien suunnittelussa auttaa usein
 lähteä liikkeelle helpoista tapauksista.
 Kun meillä on käytössämme tietyt kolikot,
 hyvä ensimmäinen tavoite on koettaa muodostaa rahamäärä $1$.
@@ -235,8 +237,11 @@ Nämä ovat operaatioita, joita voimme käyttää tehokkaissa algoritmeissa.
 Tarkastellaan esimerkkinä tehtävää, jossa haluamme laskea,
 monellako tavalla voimme valita taulukosta yhtenäisen osataulukon,
 jossa lukujen summa on $x$.
+Esimerkiksi jos taulukko on $[3,1,3,4,5]$ ja $x=4$,
+niin tapoja on kolme: $[3,1]$, $[1,3]$ ja $[4]$.
+
 Voimme alkajaisiksi ratkaista tehtävän suoraviivaisesti ajassa $O(n^2)$
-käymällä läpi kaikki osataulukot kahdella silmukalla:
+käy\-mällä läpi kaikki osataulukot kahdella silmukalla:
 
 \begin{code}
 laskuri = 0
@@ -249,7 +254,7 @@ for i = 0 to n-1
 print(laskuri)
 \end{code}
 
-Entä kuinka voisimme ratkaista tehtävän tehokkaasti?
+Mutta miten saisimme aikaan tehokkaan algoritmin?
 Tässä meitä auttaa muotoilla hieman toisin, mitä tarkoittaa,
 että osataulukon summa on $x$.
 Merkitään $s(i)$:llä osataulukon summaa taulukon alusta
@@ -287,8 +292,8 @@ print(laskuri)
 
 Tässä rakenne \texttt{summat} pitää kirjaa,
 montako kertaa mikäkin alkuosan summa on esiintynyt tähän mennessä.
-Koska summat voivat olla suuria, emme voi käyttää tavallista taulukkoa,
-mutta voimme sen sijaan käyttää hajautustauluun tai binäärihakupuuhun
+Koska summat voivat olla suuria, tavallinen taulukko ei kelpaa,
+mutta voimme käyttää hajautustauluun tai binäärihakupuuhun
 perustuvaa hakemistoa.
 Näin saamme aikaan ratkaisun, joka vie aikaa $O(n)$ tai $O(n \log n)$
 riippuen valitusta tietorakenteesta.
