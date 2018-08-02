@@ -65,11 +65,11 @@ Jos valitsemme väärällä tavalla koriin tulevat lapset,
 saatamme vahingossa käyttää liikaa koreja.
 
 Osoittautuu, että tässä tehtävässä toimiva algoritmi
-on valita aina seuraavaan koriin \emph{raskain} lapsi sekä sen pariksi
+on valita aina seuraavaan koriin \emph{painavin} lapsi sekä sen pariksi
 jokin toinen lapsi niin, että painojen summa ei ylitä
 korin maksimipainoa.
 Jos ei ole mitään tapaa valita toista lasta,
-laitamme raskaimman lapsen koriin yksin.
+laitamme painavimman lapsen koriin yksin.
 Tällainen algoritmi on \emph{ahne}, eli se tekee aina jonkin
 hyvältä tuntuvan valinnan, joka vie ratkaisua eteenpäin,
 eikä peruuta koskaan tehtyjä valintoja.
@@ -90,12 +90,12 @@ Tuloksena on ratkaisu, jossa on korit $[8]$, $[2,5]$ ja $[2,4]$.
 Mutta miksi tämä ahne algoritmi toimii?
 Tässä auttaa tarkastella, mitä tapahtuu,
 kun algoritmi tekee ensimmäisen valintansa.
-Raskain lapsi täytyy sijoittaa johonkin koriin,
+Painavin lapsi täytyy sijoittaa johonkin koriin,
 ja meidän kannattaa tietenkin laittaa samaan koriin toinenkin lapsi,
 jos tämä on mahdollista.
 Tässä ei ole väliä, minkä toisen lapsen valitsemme,
 koska jos jokin lapsi on riittävän kevyt toimiakseen
-parina raskaimman lapsen kanssa, niin se voi toimia parina
+parina painavimman lapsen kanssa, niin se voi toimia parina
 myös minkä tahansa muun lapsen kanssa.
 Niinpä algoritmin ensimmäinen askel on optimaalinen.
 Tämän jälkeen voimme toistaa vastaavan päättelyn
@@ -106,9 +106,9 @@ että koko algoritmi toimii oikein.
 
 Meillä on nyt toimiva algoritmi,
 mutta meidän täytyy vielä keksiä hyvä tapa toteuttaa se.
-Jotta saamme aikaan tehokkaan algoritmin,
+Jotta algoritmista tulee tehokas,
 meidän tulee joka askeleella löytää nopeasti seuraavaan
-koriin tuleva raskain lapsi sekä mahdollinen sen pariksi tuleva lapsi.
+koriin tuleva painavin lapsi sekä mahdollinen sen pariksi tuleva lapsi.
 Ehkä helpoin tapa saavuttaa tämä tavoite on käyttää apuna järjestämistä.
 
 Seuraava algoritmi järjestää ensin lasten painot ja alkaa sitten
@@ -116,9 +116,9 @@ jakaa lapsi koreihin.
 Muuttuja $a$ lähtee liikkeelle taulukon alusta ja
 osoittaa aina kevyimmän lapsen painoon.
 Muuttuja $b$ puolestaan lähtee liikkeelle taulukon lopusta ja
-osoittaa aina raskaimman lapsen painoon.
+osoittaa aina painavimman lapsen painoon.
 Algoritmi laskee muuttujaan $k$, montako koria tarvitaan yhteensä.
-Jos kevyimmän ja raskaimman lapsen
+Jos kevyimmän ja painavimman lapsen
 painojen summa on enintään $x$, lapset sijoitetaan samaan koriin,
 $a$ liikkuu oikealle ja $b$ liikkuu vasemmalle.
 Jos taas painojen summa on suurempi kuin $x$,
@@ -227,8 +227,8 @@ joten algoritmin aikavaativuus on $O(n \log n)$.
 
 \subsection{Tietorakenteet}
 
-Olemme tutustuneet jo kirjassa moniin tietorakenteisiin:
-listoihin, hajautustauluun, binäärihakupuuhun ja kekoon.
+Olemme tutustuneet kirjassa jo moniin tietorakenteisiin:
+listaan, hajautustauluun, binäärihakupuuhun ja kekoon.
 Näissä tietorakenteissa kannattaa kiinnittää erityisesti huomiota siihen,
 mitkä operaatiot toimivat tehokkaasti $O(1)$- tai $O(\log n)$-ajassa.
 Nämä ovat operaatioita, joita voimme käyttää tehokkaissa algoritmeissa.
@@ -242,7 +242,7 @@ On helppoa ratkaista tehtävä kahdella silmukalla ajassa $O(n^2)$,
 mutta miten saisimme aikaan tehokkaan algoritmin?
 
 Tässä auttaa muotoilla hieman toisin, mitä tarkoittaa,
-että osataulukon summa on $x$.
+että osataulukolla on tietty summa.
 Merkitään $s(i)$:llä osataulukon summaa taulukon alusta
 kohtaan $i$ asti, ja oletetaan lisäksi, että $s(-1)=0$.
 Tätä merkintää käyttäen osataulukon summa
@@ -261,8 +261,9 @@ joille pätee
 \[s(i)-s(j-1)=x\]
 eli
 \[s(j-1)=s(i)-x.\]
-Tämä onnistuu tehokkaasti, kun pidämme taulukon läpikäynnissä
-kirjaa, montako kertaa mikäkin summa on esiintynyt taulukon alkuosassa.
+Saamme laskettua tällaisten kohtien määrän tehokkaasti,
+kun pidämme taulukon läpikäynnissä kirjaa,
+montako kertaa mikäkin summa on esiintynyt taulukon alkuosassa.
 Voimme toteuttaa algoritmin seuraavasti:
 
 \begin{code}
@@ -364,7 +365,7 @@ Viimeisenä pysähtyy kone 1, kun aloittamisesta
 on kulunut kahdeksan minuuttia.
 
 Voimme pukea tehtävän binäärihaulle sopivaan muotoon määrittämällä,
-että $\texttt{ok}(x)=\texttt{true}$ tarkalleen silloin, kun voimme muodostaa
+että $\texttt{ok}(x)=\texttt{true}$ tarkalleen silloin, kun voimme valmistaa
 \emph{ainakin} $m$ tavaraa ajassa $x$.
 Tällöin funktion muutoskohta $k$ vastaa tehtävän ratkaisua.
 Entä miten voimme laskea funktion \texttt{ok} arvon?
@@ -499,21 +500,10 @@ sen kohdalla on merkki $-$.
 \label{fig:pielah}
 \end{figure}
 
-Seuraava koodi ratkaisee tehtävän $O(n^2)$-ajassa ja muodostaa
-taulukon \texttt{edeltaja}, jossa on jokaisen luvun lähin pienempi edeltäjä:
-
-\begin{code}
-for i = 0 to n-1
-    for j = i-1 to 0
-        if taulu[j] < taulu[i]
-            edeltaja[i] = taulu[j]
-            break
-\end{code}
-
-Nyt haluamme kuitenkin saada aikaan tehokkaamman algoritmin.
-Onnistumme tässä, kun käymme läpi taulukon
-vasemmalta oikealle ja pidämme yllä \emph{pinoa}, jossa on
-kasvava lista taulukon lukuja.
+Saamme ratkaistua tehtävän tehokkaasti algoritmilla,
+joka käy läpi taulukkoa vasemmalta oikealle ja pitää yllä \emph{pinoa},
+jossa on lista taulukon lukuja.
+Pino on muodostettu niin, että jokainen alkio on edellistä suurempi.
 Jokaisessa kohdassa $i$ poistamme ensin pinon lopusta lukuja
 niin kauan kuin pinon viimeinen luku on suurempi tai yhtä
 suuri kuin kohdan $i$ luku.
@@ -550,4 +540,4 @@ korkeintaan niin monta alkiota kuin olemme lisänneet siihen,
 eli emme voi kutsua \texttt{pop}-funktiota useammin kuin \texttt{push}-funktiota.
 Koska lisäämme pinoon $n$ alkiota, suoritamme \texttt{while}-silmukassa
 olevaa koodia siis enintään $n$ kertaa algoritmin aikana.
-Tämän ansiosta koko algoritmi vie aikaa vain $O(n)$.
+Niinpä koko algoritmi vie aikaa vain $O(n)$.
