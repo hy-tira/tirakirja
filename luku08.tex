@@ -6,35 +6,37 @@ Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
 tai säveltää hyvää musiikkia.
 Algoritmien suunnittelu on taito, jonka oppiminen vie aikaa.
 
-Tässä luvussa käymme läpi algoritmien suunnittelun prosessia
-sekä joukon tekniikoita, joita esiintyy usein tehokkaissa algoritmeissa.
-Kuten aiemminkin, keskitymme algoritmeihin,
-jotka toimivat ajassa $O(n)$ tai $O(n \log n)$ ja
-joita voi käyttää suurten aineistojen käsittelyyn.
-
-\section{Ratkaisun vaiheet}
-
 Algoritmisen ongelman ratkaisemisessa on usein kaksi vaihetta.
-Ensimmäinen vaihe on keksiä algoritmin \emph{yleisidea},
-mikä vaatii havaintoja ja oivalluksia ratkaistavasta ongelmasta.
-Meidän tulee löytää jokin tapa lähestyä ongelmaa niin,
-ettemme joudu käymään läpi kaikkia mahdollisia ratkaisuja.
-Toinen vaihe on löytää tapa toteuttaa algoritmi \emph{tehokkaasti}.
+Ensim\-mäinen vaihe on keksiä algoritmin yleisidea,
+mikä vaatii havaintoja ja oivalluksia ongelmasta.
+Tämän jälkeen toinen vaihe on löytää hyvä ja tehokas tapa
+toteuttaa algoritmi.
 Tässä voimme käyttää apuna järjestämistä, tietorakenteita
 ja muita tekniikoita.
+
+Kuten aiemminkin, haluamme saada aikaan tehokkaita algoritmeja,
+jotka vievät aikaa $O(n)$ tai $O(n \log n)$.
+Tämä tarkoittaa käytännössä sitä, että voimme käydä läpi ja
+järjestää syötettä sekä käyttää tietorakenteita,
+joissa on tehokkaita operaatioita.
+Tämä rajaa sitä, mitä voimme tehdä algoritmissa, ja ohjaa
+algoritmin suunnittelua.
+
+\section{Ratkaisun vaiheet}
 
 Tarkastellaan esimerkkinä tehtävää,
 jossa $n$ lasta haluaa mennä maailmanpyörään.
 Jokaisessa korissa voi istua yksi tai kaksi lasta.
-Tiedämme jokaisen lapsen painon ja lisäksi 
-suurimman sallitun korissa istujien painon.
+Tiedämme jokaisen lapsen painon,
+ja jokaisessa korissa suurin istujien
+yhteispaino saa olla $x$.
 Mikä on pienin mahdollinen määrä koreja,
 joka riittää lapsille?
 Oletamme, ettei yhdenkään lapsen paino ylitä
 korin maksimipainoa.
 
-Esimerkiksi jos $n=5$, painot ovat $[2,2,4,5,8]$
-ja korin maksimipaino on $8$,
+Esimerkiksi jos lasten määrä on $n=5$,
+lasten painot ovat $[2,2,4,5,8]$ ja korin painoraja on $x=8$,
 pienin mahdollinen korien määrä on kolme.
 Tässä tapauksessa voimme muodostaa korit
 $[2,4]$, $[2,5]$ ja $[8]$.
@@ -49,7 +51,8 @@ minkä vuoksi olisi liian hidasta käydä läpi
 kaikkia vaihtoehtoja.
 Jotta saamme aikaan tehokkaan algoritmin,
 meidän tulee keksiä jokin periaate,
-jonka avulla voimme löytää nopeasti koreja lapsille.
+jonka avulla voimme päättää nopeasti,
+ketkä lapset ovat yhdessä koreissa.
 
 Itse asiassa meidän riittää keskittyä ongelmaan,
 jossa haluamme löytää \emph{seuraavaan} koriin
@@ -62,99 +65,88 @@ Jos valitsemme väärällä tavalla koriin tulevat lapset,
 saatamme vahingossa käyttää liikaa koreja.
 
 Osoittautuu, että tässä tehtävässä toimiva algoritmi
-on seuraava:
-Valitsemme aina seuraavaan koriin
-\emph{kevyimmän} lapsen sekä sen pariksi
-toisen lapsen niin, että painojen summa ei ylitä
-korin maksimipainoa ja toinen lapsi on
-mahdollisimman painava.
+on valita aina seuraavaan koriin \emph{raskain} lapsi sekä sen pariksi
+jokin toinen lapsi niin, että painojen summa ei ylitä
+korin maksimipainoa.
 Jos ei ole mitään tapaa valita toista lasta,
-laitamme kevyimmän lapsen koriin yksin.
-Tällainen algoritmi on \emph{ahne}, eli teemme aina jonkin hyvältä
-tuntuvan valinnan, joka vie ratkaisua eteenpäin,
-emmekä peruuta tehtyjä valintoja missään vaiheessa.
+laitamme raskaimman lapsen koriin yksin.
+Tällainen algoritmi on \emph{ahne}, eli se tekee aina jonkin
+hyvältä tuntuvan valinnan, joka vie ratkaisua eteenpäin,
+eikä peruuta koskaan tehtyjä valintoja.
 
 Tarkastellaan taas esimerkkiä,
 jossa lasten painot ovat $[2,2,4,5,8]$
 ja korin maksimipaino on 8.
 Kun käytämme yllä kuvattua algoritmia,
-aloitamme lapsesta, jonka paino on 2,
-ja valitsemme sille pariksi lapsen, jonka paino on 5.
-Tämän jälkeen vuoroon tulee lapsi, jonka paino on 2,
-ja valitsemme sille pariksi lapsen, jonka paino on 4.
-Lopuksi lapsi, jonka paino on 8, saa oman korin.
-Tuloksena on ratkaisu,
-jossa on korit $[2,5]$, $[2,4]$ ja $[8]$.
+aloitamme lapsesta, jonka paino on 8.
+Tämä lapsi saa oman korin, koska emme voi laittaa
+samaan koriin ketään toista lasta.
+Tämän jälkeen vuoroon tulee lapsi, jonka paino on 5,
+ja se saa pariksi lapsen, jonka paino on 2.
+Lopuksi käsittelemme lapsen, jonka paino on 4,
+ja sen pariksi tulee lapsi, jonka paino on 2.
+Tuloksena on ratkaisu, jossa on korit $[8]$, $[2,5]$ ja $[2,4]$.
 
 Mutta miksi tämä ahne algoritmi toimii?
-Miksi on varmaa, että saamme optimaalisen ratkaisun,
-kun muodostamme korit näin?
-
 Tässä auttaa tarkastella, mitä tapahtuu,
 kun algoritmi tekee ensimmäisen valintansa.
-Ensinnäkin on olemassa varmasti optimaalinen ratkaisu,
-jossa kevyin lapsi on samassa korissa jonkin toisen lapsen kanssa
-(jos jossakin korissa on kaksi lasta).
-Lisäksi kun valitsemme toisen lapsen niin,
-että sen paino on raskain mahdollinen,
-emme ainakaan huononna mahdollisuuksia tehdä tulevia valintoja.
+Raskain lapsi täytyy sijoittaa johonkin koriin,
+ja meidän kannattaa tietenkin laittaa samaan koriin toinenkin lapsi,
+jos tämä on mahdollista.
+Tässä ei ole väliä, minkä toisen lapsen valitsemme,
+koska jos jokin lapsi on riittävän kevyt toimiakseen
+parina raskaimman lapsen kanssa, niin se voi toimia parina
+myös minkä tahansa muun lapsen kanssa.
 Niinpä algoritmin ensimmäinen askel on optimaalinen.
 Tämän jälkeen voimme toistaa vastaavan päättelyn
 algoritmin seuraavissa askelissa, mikä tarkoittaa,
 että koko algoritmi toimii oikein.
 
-Helppo tapa toteuttaa algoritmi on säilyttää lasten
-painoja taulukossa ja etsiä joka askeleella ensin
-kevyin lapsi käymällä taulukko läpi ja sitten sen 
-pariksi tuleva toinen lapsi käymällä taulukko läpi.
-Tällöin jokainen askel vie aikaa $O(n)$,
-ja algoritmin kokonaisaikavaativuus on $O(n^2)$.
-
 \subsubsection{Vaihe 2: Tehokas toteutus}
 
-Olemme saaneet aikaan toimivan algoritmin, joka vie aikaa $O(n^2)$.
-Tämä on hyvä lähtökohta, mutta algoritmi on vielä liian hidas,
-jotta sillä voisi käsitellä suuria syötteitä.
-Seuraava vaihe onkin tehostaa algoritmia niin,
-että se vie aikaa vain $O(n)$ tai $O(n \log n)$.
-Kokemus on osoittanut, että tämä yleensä onnistuu tavalla
-tai toisella, kunhan mietimme huolellisesti asiaa.
+Meillä on nyt toimiva algoritmi,
+mutta meidän täytyy vielä keksiä hyvä tapa toteuttaa se.
+Jotta saamme aikaan tehokkaan algoritmin,
+meidän tulee joka askeleella löytää nopeasti seuraavaan
+koriin tuleva raskain lapsi sekä mahdollinen sen pariksi tuleva lapsi.
+Ehkä helpoin tapa saavuttaa tämä tavoite on käyttää apuna järjestämistä.
 
-Millainen on sitten algoritmi, joka vie aikaa $O(n)$ tai $O(n \log n)$?
-Tällainen algoritmi voi lähinnä käydä syötettä läpi silmukalla,
-järjestää syötteen sekä käyttää tietorakenteita,
-joissa on nopeita operaatioita.
-Tämä rajoittaa paljon, mitä aineksia voimme laittaa algoritmiin,
-mutta hyvänä puolena saamme rajattua pois monia lähestymistapoja,
-jotka olisivat liian hitaita.
+Seuraava algoritmi järjestää ensin lasten painot ja alkaa sitten
+jakaa lapsi koreihin.
+Muuttuja $a$ lähtee liikkeelle taulukon alusta ja
+osoittaa aina kevyimmän lapsen painoon.
+Muuttuja $b$ puolestaan lähtee liikkeelle taulukon lopusta ja
+osoittaa aina raskaimman lapsen painoon.
+Algoritmi laskee muuttujaan $k$, montako koria tarvitaan yhteensä.
+Jos kevyimmän ja raskaimman lapsen
+painojen summa on enintään $x$, lapset sijoitetaan samaan koriin,
+$a$ liikkuu oikealle ja $b$ liikkuu vasemmalle.
+Jos taas painojen summa on suurempi kuin $x$,
+painavin lapsi saa oman korin ja vain $b$ liikkuu vasemmalle.
 
-Tässä tehtävässä meidän tulee joka askeleella löytää
-ensin kevyin lapsi ja sen jälkeen raskain lapsi,
-joka voi istua samassa korissa.
-Ehkä helpoin tapa tehdä tämä tehokkaasti
-on luoda binäärihakupuun avulla joukko, jossa on lasten painoja.
-Tällöin voimme joka askeleella etsiä ensin kevyimmän
-lapsen ajassa $O(\log n)$ ja sen jälkeen sen pariksi
-tulevan toisen lapsen myös ajassa $O(\log n)$.
-Koska algoritmissa on $O(n)$ askelta, algoritmin
-kokonaisaikavaativuudeksi tulee $O(n \log n)$.
+\begin{code}
+sort(painot)
+a = 0, b = n-1
+k = 0
+while a <= b
+    if painot[a]+painot[b] <= x
+        a++, b--
+    else
+        b--
+    k++
+print(k)
+\end{code}
 
-Toinen tapa toteuttaa algoritmi tehokkaasti on käyttää
-järjestämistä.
-Tällöin voimme ensin järjestää painot ja sitten käydä
-läpi taulukkoa rinnakkain vasemmalta ja oikealta.
-Valitsemme vasemmalta seuraavaksi kevyimmän lapsen
-ja oikealta sille pariksi tulevan lapsen.
-Tässä algoritmissa järjestäminen vie aikaa $O(n \log n)$
-ja parien etsiminen vie aikaa $O(n)$,
-joten algoritmin kokonaisaikavaativuus on $O(n \log n)$.
-Algoritmi on hieman vaikeampi toteuttaa kuin joukkoon
-perustuva algoritmi, mutta sen vakiokertoimet ovat pienemmät.
+Algoritmi järjestää ensin taulukon, missä menee aikaa $O(n \log n)$.
+Tämän jälkeen \texttt{while}-silmukka vie aikaa $O(n)$,
+koska joka kierroksella muuttujat $a$ ja $b$ siirtyvät
+ainakin askeleen lähemmäs toisiaan.
+Niinpä algoritmin kokonais\-aikavaativuus on $O(n \log n)$.
 
 \section{Algoritmien aineksia}
 
 Seuraavaksi käymme läpi \emph{aineksia},
-joita näkee usein tehokkaissa algoritmeissa.
+joita esiintyy usein tehokkaissa algoritmeissa.
 Nämä ainekset muodostavat hyvän perustan algoritmien
 suunnittelemiseen: kun saamme vastaamme uuden ongelman,
 voimme miettiä, voisimmeko hyödyntää aineksia jotenkin
@@ -242,27 +234,14 @@ mitkä operaatiot toimivat tehokkaasti $O(1)$- tai $O(\log n)$-ajassa.
 Nämä ovat operaatioita, joita voimme käyttää tehokkaissa algoritmeissa.
 
 Tarkastellaan esimerkkinä tehtävää, jossa haluamme laskea,
-monellako tavalla voimme valita taulukosta yhtenäisen osataulukon,
+montako tapaa on valita taulukosta yhtenäinen osataulukko,
 jossa lukujen summa on $x$.
 Esimerkiksi jos taulukko on $[3,1,3,4,5]$ ja $x=4$,
 niin tapoja on kolme: $[3,1]$, $[1,3]$ ja $[4]$.
+On helppoa ratkaista tehtävä kahdella silmukalla ajassa $O(n^2)$,
+mutta miten saisimme aikaan tehokkaan algoritmin?
 
-Voimme alkajaisiksi ratkaista tehtävän suoraviivaisesti ajassa $O(n^2)$
-käy\-mällä läpi kaikki osataulukot kahdella silmukalla:
-
-\begin{code}
-laskuri = 0
-for i = 0 to n-1
-    summa = 0
-    for j = i to n-1
-        summa += taulu[j]
-        if summa == x:
-            laskuri++
-print(laskuri)
-\end{code}
-
-Mutta miten saisimme aikaan tehokkaan algoritmin?
-Tässä meitä auttaa muotoilla hieman toisin, mitä tarkoittaa,
+Tässä auttaa muotoilla hieman toisin, mitä tarkoittaa,
 että osataulukon summa on $x$.
 Merkitään $s(i)$:llä osataulukon summaa taulukon alusta
 kohtaan $i$ asti, ja oletetaan lisäksi, että $s(-1)=0$.
@@ -291,13 +270,15 @@ summat[0] = 1
 laskuri = 0
 summa = 0
 for i = 0 to n-1
-    laskuri += summat[taulu[i]-x]
     summa += taulu[i]
+    laskuri += summat[summa-x]
     summat[summa]++
 print(laskuri)
 \end{code}
 
-Tässä rakenne \texttt{summat} pitää kirjaa,
+Joka askeleella muuttuja \texttt{summa} sisältää
+summan $s(i)$.
+Rakenne \texttt{summat} pitää kirjaa,
 montako kertaa mikäkin alkuosan summa on esiintynyt tähän mennessä.
 Koska summat voivat olla suuria, tavallinen taulukko ei kelpaa,
 mutta voimme käyttää hajautustauluun tai binäärihakupuuhun
@@ -336,7 +317,7 @@ k = a
 \end{code}
 
 Haun joka vaiheessa tiedämme, että muutoskohta on välillä $[a,b]$.
-Laskemme keskikohdan $u=(a+b)/2$ ja tutkimme funktion arvoa kohdassa $u$.
+Laskemme keskikohdan $u=\lfloor (a+b)/2 \rfloor$ ja tutkimme funktion arvoa kohdassa $u$.
 Jos pätee $\texttt{ok}(u)$, niin muutoskohdan on oltava välillä $[a,u]$,
 ja muuten sen täytyy olla välillä $[u+1,b]$.
 Lopulta välillä on vain yksi alkio, jolloin olemme löytäneet muutoskohdan.
