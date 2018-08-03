@@ -466,16 +466,62 @@ että jokaisen kaaren päätesolmut ovat eri värisiä?
 \item onko verkossa polkua, joka kulkee tasan kerran jokaisen
 verkon solmun kautta (eli \emph{Hamiltonin polkua})?
 \item voiko annetuista $n$ luvusta valita osajoukon, jonka summa on $x$?
+\item onko olemassa enintään $k$-merkkistä merkkijonoa,
+jonka alijonoja ovat kaikki annetut merkkijonot?
 \end{itemize}
 
-Entä millainen olisi ongelma, jonka ei tiedetä kuuluvan luokkaan P
-eikä olevan NP-täydellinen?
-Klassinen esimerkki on ongelma, jossa haluamme tutkia,
-ovatko kaksi verkkoa \emph{isomorfiset} eli onko niiden
-rakenne samanlainen.
-Tähän ongelmaan ei tunneta polynomiaikaista algoritmia,
-mutta ei ole myöskään tiedossa tapaa palauttaa
-jotain NP-täydellistä ongelmaa siihen.
+Entä millainen olisi luokan NP ongelma, joka ei kuulu luokkaan P
+eikä ole NP-täydellinen?
+Kukaan ei tiedä, onko tällaista ongelmaa olemassa,
+koska ei edes tiedetä, ovatko P ja NP eri luokat.
+Yksi ehdokas tällaiseksi ongelmaksi on kuitenkin ongelma,
+jossa haluamme tarkastaa,
+ovatko kaksi verkkoa \emph{isomorfiset} eli
+onko verkkojen rakenne samanlainen,
+jos solmut asetetaan vastaamaan toisiaan sopivalla tavalla.
+Esimerkiksi kuvassa \ref{fig:veriso} olevat verkot ovat isomorfiset,
+koska voimme valita solmuille vastaavuudet $(1,c)$, $(2,a)$, $(3,d)$ ja $(4,b)$.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\begin{scope}
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (2.5,0) {$2$};
+\node[draw, circle] (3) at (5,0) {$3$};
+\node[draw, circle] (4) at (7.5,0) {$4$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (3);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (1) edge [bend right=35] (3);
+\path[draw,thick,-] (2) edge [bend left=35] (4);
+\end{scope}
+\begin{scope}[xshift=12cm,yshift=1.25cm]
+\node[draw, circle, minimum size=7.5mm] (1) at (0,0) {$a$};
+\node[draw, circle, minimum size=7.5mm] (2) at (2.5,0) {$b$};
+\node[draw, circle, minimum size=7.5mm] (3) at (0,-2.5) {$c$};
+\node[draw, circle, minimum size=7.5mm] (4) at (2.5,-2.5) {$d$};
+\path[draw,thick,-] (1) -- (2);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (4) -- (3);
+\path[draw,thick,-] (3) -- (1);
+\path[draw,thick,-] (1) -- (4);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Kaksi verkkoa, jotka ovat isomorfiset.}
+\label{fig:veriso}
+\end{figure}
+
+
+Verkkojen isomorfisuuden ongelma kuuluu luokkaan NP,
+koska on helppoa tarkastaa, onko verkoilla sama rakenne,
+jos tiedämme solmujen vastaavuudet.
+Ongelmaan ei kuitenkaan tunneta polynomiaikaista algoritmia,
+joten sen ei tiedetä kuuluvan luokkaan P.
+Toisaalta emme myöskään osaa tehdä mitään palautusta,
+joka osoittaisi ongelman olevan NP-täydellinen.
 
 \subsection{Optimointiongelmat}
 
