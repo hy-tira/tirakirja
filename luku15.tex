@@ -1,8 +1,8 @@
 \chapter{NP-ongelmat}
 
-Olemme tässä kirjassa tutustuneet menetelmiin, joiden avulla voimme
-ratkaista tehokkaasti ongelmia.
-Kuitenkin on myös monia ongelmia, joiden ratkaisemiseen ei tällä
+Olemme tässä kirjassa tutustuneet moniin algoritmeihin,
+jotka toimivat tehokkaasti.
+Kuitenkin on myös suuri määrä ongelmia, joiden ratkaisemiseen ei tällä
 hetkellä tunneta mitään tehokasta algoritmia.
 Jos vastaamme tulee tällainen ongelma, hyvät neuvot ovat kalliit.
 
@@ -38,7 +38,7 @@ polynomisessa ajassa.
 Voimme vaikkapa aloittaa syvyyshaun solmusta $a$ ja tarkastaa,
 pääsemmekö solmuun $b$.
 Tuloksena on algoritmi, jolla on polynominen aikavaativuus
-$O(n+m)$, joten ongelma kuuluu luokkaan P.
+$O(n)$, joten ongelma kuuluu luokkaan P.
 
 Luokan P tarkoituksena on kuvata ongelmia, jotka voimme
 ratkaista jossain mielessä \emph{tehokkaasti}.
@@ -88,11 +88,11 @@ koko ongelman alusta alkaen polynomisessa ajassa.
 
 \subsubsection{P vs. NP}
 
-Äkkiseltään tuntuu selvältä, että luokassa NP täytyy olla
+Äkkiseltään voisi kuvitella, että luokassa NP täytyy olla
 enemmän ongelmia kuin luokassa P.
 Luokassa NP meidän riittää vain tarkastaa ''kyllä''-vastauksen
 todiste, mikä tuntuu helpommalta kuin muodostaa ongelman ratkaisu tyhjästä (kuva \ref{fig:pvsnpp}).
-Monet uskovatkin, että luokka NP on suurempi kuin luokka P --
+Monet uskovatkin, että luokka NP on suurempi kuin luokka P,
 mutta kukaan ei ole onnistunut todistamaan asiaa.
 
 Tietojenkäsittelytieteen merkittävä avoin ongelma on,
@@ -205,7 +205,7 @@ ei ole tosi, vaikka valitsisimme muuttujien arvot miten tahansa.
 Kun haluamme osoittaa, että SAT on NP-täydellinen ongelma,
 meidän täytyy näyttää, että se kuuluu luokkaan NP ja mikä
 tahansa luokan NP ongelma voidaan palauttaa siihen.
-Luokkaan NP kuuluminen on helppoa näyttää:
+Luokkaan NP kuuluminen on helppoa nähdä:
 ''kyllä''-tapauksessa todiste on kullekin muuttujalle valittu arvo.
 Huomattavasti vaikeampaa on osoittaa, että \emph{jokainen} luokan
 NP ongelma voidaan palauttaa SAT-ongelmaan polynomisessa ajassa.
@@ -217,23 +217,19 @@ joka meidän täytyy pystyä palauttamaan SAT-ongelmaan.
 Koska ongelma voi olla mikä tahansa luokkaan NP kuuluva, tiedämme siitä vain,
 että on olemassa algoritmi, joka tarkastaa
 polynomisessa ajassa ''kyllä''-tapauksen todisteen.
-Tämä vastaa sitä, että on olemassa \emph{epädeterministinen}
-Turingin kone, joka ratkaisee ongelman polynomisessa ajassa.
-Ideana on muodostaa looginen kaava, joka luonnehtii tällaisen
-Turing-koneen laskentaa ''kyllä''-tapauksessa:
-koneen tulee käsitellä syöte jollakin tavalla niin,
-että askelten määrä on polynominen.
-Kaavan tarkka sisältö riippuu siitä, miten kone on rakentunut,
-mutta voimme aina muodostaa kaavan, kunhan tiedämme koneen rakenteen
-ja annetun syötteen.
-Tuloksena on looginen kaava, jonka voi saada todeksi tarkalleen silloin,
-kun vastaus syötteeseen on ''kyllä'',
-joten olemme palauttaneet ongelman SAT-ongelmaan.
+Tämä vastaa sitä, että on olemassa \emph{epädeterministinen} Turingin kone,
+joka rakentaa ja tarkastaa tällaisen todisteen polynomisessa ajassa.
+Nyt kun haluamme tarkastaa annetusta syötteestä, onko vastaus siihen ''kyllä'',
+voimme muodostaa konjunktiivisessa normaalimuodossa olevan loogisen kaavan,
+joka luonnehtii Turingin koneen laskentaa, kun koneelle annetaan kyseinen syöte.
+Voimme muodostaa kaavan niin, että sen voi saada todeksi tarkalleen silloin,
+kun vastaus syötteeseen on ''kyllä''.
+Niinpä olemme onnistuneet palauttamaan alkuperäisen ongelman SAT-ongelmaan.
 
 \subsection{Ongelmien palautukset}
 
-Nyt kun tiedämme, että SAT-ongelma on NP-täydellinen,
-voimme alkaa osoittaa muita ongelmia NP-täydellisiksi palautusten avulla.
+Kun tiedämme, että SAT-ongelma on NP-täydellinen,
+voimme osoittaa muita ongelmia NP-täydellisiksi palautusten avulla.
 Ideana on, että jos ongelma $A$ on NP-täydellinen ja
 voimme palauttaa sen polynomisessa ajassa ongelmaksi $B$,
 myös ongelma $B$ on NP-täydellinen.
@@ -243,7 +239,7 @@ myös ongelma $B$ on NP-täydellinen.
 Aloitamme osoittamalla, että 3SAT-ongelma on NP-täydellinen.
 3SAT-on\-gelma on SAT-ongelman erikoistapaus, jossa jokaisessa
 $\land$-merkeillä yhdistetyssä lausekkeessa on tarkalleen kolme muuttujaa.
-Esimerkiksi
+Esimerkiksi kaava
 \[(x_1 \lor x_2 \lor x_3) \land (\neg x_1 \lor x_2 \lor \neg x_3)\]
 on kelvollinen 3SAT-ongelman syöte.
 Jotta saamme palautettua SAT-ongel\-man 3SAT-ongelmaan,
@@ -251,11 +247,11 @@ meidän on näytettävä, että voimme muuttaa polynomisessa ajassa
 minkä tahansa SAT-ongelman syötteen 3SAT-ongelman syötteeksi,
 jonka totuusarvo on sama.
 
-Ideana on muokata jokaista SAT-ongelman lauseketta niin, 
+Ideana on muokata jokaista SAT-ongelman syötteen lauseketta niin, 
 että tuloksena on yksi tai useampia kolmen muuttujan lausekkeita.
 Merkitään $k$:lla lausekkeen muuttujien määrää.
 Jos $k=1$ tai $k=2$, toistamme viimeistä muuttujaa uudestaan,
-jotta saamme aikaan kolme muuttujaa.
+jotta saamme lausekkeeseen kolme muuttujaa.
 Esimerkiksi jos lauseke on $(x_1)$, muutamme sen muotoon
 $(x_1 \lor x_1 \lor x_1)$, ja jos lauseke on $(x_1 \lor x_2)$, muutamme
 sen muotoon $(x_1 \lor x_2 \lor x_2)$.
@@ -269,9 +265,8 @@ Esimerkiksi jos lauseke on $(x_1 \lor x_2 \lor x_3 \lor x_4 \lor x_5)$,
 muutamme sen kolmeksi lausekkeeksi $(x_1 \lor x_2 \lor a_1)$,
 $(\neg a_1 \lor x_3 \lor a_2)$ ja $(\neg a_2 \lor x_4 \lor x_5)$.
 
-Tämä palautus osoittaa, että 3SAT on NP-täydellinen ongelma --
-eli saimme tietää, että
-SAT-ongelman oleellinen vaikeus syntyy jo siitä, että lausekkeissa
+Tämä palautus osoittaa, että 3SAT on NP-täydellinen ongelma,
+eli SAT-ongelman oleellinen vaikeus syntyy jo siitä, että lausekkeissa
 voi olla kolme muuttujaa\footnote{Entä ongelma 2SAT, jossa jokaisessa lausekkeessa
 on kaksi muuttujaa? Tämä \emph{ei} ole NP-täydellinen ongelma,
 vaan kuuluu luokkaan P.}.
@@ -315,22 +310,23 @@ johon kuuluu kolme solmua.
 Kun haluamme palauttaa 3SAT-ongelman solmupeiteongelmaan,
 meidän täytyy näyttää, että voimme tulkita minkä tahansa
 3SAT-ongelman tapauksen verkon solmupeitteen etsimisenä.
-Meidän tulee siis keksiä systemaattinen tapa
+Meidän tulee keksiä systemaattinen tapa
 muuttaa looginen kaava verkoksi,
-jonka jokin solmupeite vastaa sitä, että kaava on totta.
+jonka $k$ solmun tai pienempi solmupeite vastaa sitä, että kaava on totta.
 
 Oletamme, että kaavassa esiintyy $n$ muuttujaa $x_1,x_2,\dots,x_n$
 ja siinä on $m$ lauseketta.
-Muodostamme verkon, jossa on ensinnäkin $n$ paria solmuja,
-jotka vastaavat muuttujia ja niiden negaatioita.
-Jokaisen solmun $x_i$ ja $\neg x_i$ välillä on kaari.
+Muodostamme verkon, jossa on ensinnäkin $n$ solmuparia,
+jotka vastaavat kaavan muuttujia.
+Kussakin solmuparissa on muuttujat $x_i$ ja $\neg x_i$,
+joiden välillä on kaari.
 Lisäksi verkossa on $m$ kolmen solmun ryhmää,
 jotka vastaavat lausekkeita.
-Kussakin ryhmässä kaikki solmut ovat yhteydessä toisiinsa,
+Jokaisessa ryhmässä kaikki solmut ovat yhteydessä toisiinsa,
 minkä lisäksi kukin solmu on yhteydessä sitä vastaavaan solmuun pareissa.
-Esimerkiksi jos kaava on
+Esimerkiksi kaavaa
 \[(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor \neg x_3 \lor x_4),\]
-muodostamme siitä kuvan \ref{fig:solko1} mukaisen verkon.
+vastaa kuvan \ref{fig:solko1} mukainen verkko.
 
 \begin{figure}
 \center
@@ -441,9 +437,9 @@ muodostamme siitä kuvan \ref{fig:solko1} mukaisen verkon.
 \end{figure}
 
 Osoittautuu, että voimme saada kaavan todeksi tarkalleen silloin,
-kun verkossa on solmupeite, jossa on enintään $n+2m$ solmua.
+kun verkossa on solmupeite, jossa on enintään $k=n+2m$ solmua.
 Tällaiseen peitteeseen kuuluu toinen solmu jokaisesta
-parista $x_i$ ja $\neg x_i$, mikä määrittää, miten muuttujien
+parista $x_i$ ja $\neg x_i$. Tämä määrittää, miten muuttujien
 arvot asetetaan.
 Lisäksi peitteeseen kuuluu kaksi solmua jokaisesta kolmen solmun ryhmästä.
 Koska ryhmässä on yksi solmu, joka ei kuulu peitteeseen,
@@ -466,7 +462,7 @@ Esimerkiksi myös seuraavat ongelmat ovat NP-täydellisiä:
 \item onko verkossa $k$-kokoista \emph{klikkiä} eli $k$ solmun joukkoa,
 jossa jokaisen kahden solmun välillä on kaari?
 \item voimmeko värittää verkon solmut kolmella värillä niin,
-että jokaisen kaaren päätesolmut ovat erivärisiä?
+että jokaisen kaaren päätesolmut ovat eri värisiä?
 \item onko verkossa polkua, joka kulkee tasan kerran jokaisen
 verkon solmun kautta (eli \emph{Hamiltonin polkua})?
 \item voiko annetuista $n$ luvusta valita osajoukon, jonka summa on $x$?
@@ -508,13 +504,13 @@ tehokkaasti kuin päätösongelman.
 
 Sanomme, että ongelma on \emph{NP-vaikea}, jos voimme palauttaa
 kaikki luokan NP ongelmat siihen mutta ongelman ei
-tarvitse itse kuulua luokkaan NP.
+tarvitse kuulua luokkaan NP.
 Jos ongelma on NP-vaikea, se on siis ainakin yhtä vaikea
 kuin luokan NP vaikeimmat ongelmat.
 Tyypillisiä NP-vaikeita ongelmia ovat NP-täydellisten
 päätösongelmien optimointiversiot,
-koska voimme palauttaa niihin NP-täydellisiä ongelmia
-mutta ne eivät itse kuulu luokkaan NP.
+koska voimme palauttaa niihin NP-täy\-dellisiä ongelmia
+mutta ne eivät kuulu luokkaan NP.
 
 Käytännössä termejä ei käytetä aina näin täsmällisesti
 ja optimointiongelmaa saatetaan sanoa NP-täydelliseksi,
