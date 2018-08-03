@@ -13,7 +13,12 @@ Hankalalta tuntuvasta ongelmasta saatetaan arvella, että
 se on NP-täydellinen tai NP-vaikea.
 Nyt on aika selvittää, mitä nämä käsitteet oikeastaan tarkoittavat.
 
-\section{Luokat P ja NP}
+\section{Vaativuusluokat}
+
+Laskennallisia ongelmia voi luokitella \emph{vaativuusluokkiin},
+joista jokaisessa on joukko ongelmia,
+joiden ratkaisemisen vaikeudessa on jotain yhteistä.
+Tunnetuimmat vaativuusluokat ovat P ja NP.
 
 Keskitymme tässä luvussa \emph{päätösongelmiin}, joissa algoritmin tulee
 antaa aina vastaus ''kyllä'' tai ''ei''.
@@ -22,7 +27,7 @@ Esimerkiksi ongelma
 Tulemme huomaamaan, että voimme muotoilla monenlaisia ongelmia
 päätösongelmina eikä tämä rajoita juurikaan, mitä ongelmia voimme tarkastella.
 
-\subsubsection{Luokka P}
+\subsection{Luokka P}
 
 Luokka P sisältää päätösongelmat, joiden ratkaisemiseen on
 olemassa \emph{polynominen} algoritmi eli algoritmi, jonka aikavaativuus
@@ -50,7 +55,7 @@ Ei, mutta käytännössä vakio $k$ on yleensä pieni ja
 polynominen aikavaativuus on osoittautunut
 toimivaksi tehokkuuden mittariksi.
 
-\subsubsection{Luokka NP}
+\subsection{Luokka NP}
 
 Luokka NP sisältää päätösongelmat, joissa jokaisessa
 ''kyllä''-tapauksessa on olemassa
@@ -86,7 +91,7 @@ voimme tarkastaa ''kyllä''-vastauksen
 \emph{tyhjän} todisteen avulla: voimme saman tien ratkaista
 koko ongelman alusta alkaen polynomisessa ajassa.
 
-\subsubsection{P vs. NP}
+\subsection{P vs. NP}
 
 Äkkiseltään voisi kuvitella, että luokassa NP täytyy olla
 enemmän ongelmia kuin luokassa P.
@@ -164,6 +169,32 @@ Vaikka moni on koettanut tuloksetta ratkoa
 tunnettuja NP-ongelmia, kysymys saattaa silti olla siitä,
 että tehokas algoritmi olisi olemassa mutta kukaan ei
 vain ole vielä löytänyt sitä.
+
+\subsection{Muita luokkia}
+
+P ja NP ovat tunnetuimmat vaativuusluokat,
+mutta niiden lisäksi on suuri määrä muitakin luokkia.
+Yksi tällainen luokka on PSPACE,
+joka sisältää ongelmat, joiden ratkaisuun riittää
+polynominen määrä \emph{muistia}.
+PSPACE sisältää kaikki luokan NP ongelmat,
+mutta siinä on myös ongelmia,
+joiden ei tiedetä kuuluvan luokkaan NP.
+
+Luokat BPP ja ZPP puolestaan liittyvät satunnaisuuteen.
+Luokka BPP sisältää ongelmat, joiden ratkaisuun on polynomiaikainen algoritmi,
+joka antaa oikean vastauksen ainakin todennäköisyydellä 2/3.
+Luokka ZPP taas sisältää ongelmat, joiden ratkaisuun on algoritmi,
+jonka suoritusajan \emph{odotusarvo} on polynominen.
+Sekä BPP että ZPP sisältävät luokan P, jonka ongelmat
+voi ratkaista polynomisessa ajassa ilman satunnaisuuttakin.
+
+Vaativuusluokkien suhteet toisiinsa tunnetaan yleensä ottaen huonosti.
+Vaikka kysymys P vs. NP on saanut eniten huomiota,
+myös vastaavat kysymykset esimerkiksi luokkien PSPACE, BPP ja ZPP
+kohdalla ovat avoimia ongelmia.
+Kukaan ei tiedä, onko näissä luokissa loppujen lopuksi mitään ongelmaa,
+joka ei kuuluisi myös luokkaan P.
 
 \section{NP-täydellisyys}
 
