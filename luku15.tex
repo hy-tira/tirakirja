@@ -593,59 +593,117 @@ Käytännössä termejä ei käytetä aina näin täsmällisesti
 ja optimointiongelmaa saatetaan sanoa NP-täydelliseksi,
 vaikka se oikeastaan on NP-vaikea.
 Voimme myös vain puhua yleisesti NP-ongelmista,
-kun tarkoitamme NP-täydellisiä tai NP-vaikeita ongelmia.
+kun tarkoitamme NP-täydellisiä ja NP-vaikeita ongelmia.
 
 \section{Ongelmien ratkaiseminen}
 
-Jos saamme ratkaistavaksemme NP-ongelman,
+Jos saamme ratkaistavaksemme NP-vaikean ongelman,
 tilanne ei näytä hy\-vältä, koska edessämme on silloin ongelma,
 johon ei tunneta mitään tehokasta algoritmia.
 Emme voi toivoa, että osaisimme ratkaista tehokkaasti ongelmaa,
-jota kukaan muukaan ei ole osannut,
-etenkin kun yleisesti uskotaan, että $\textrm{P} \neq \textrm{NP}$.
-Peli ei ole kuitenkaan välttämättä menetetty.
+jota kukaan muukaan ei ole osannut.
+Peli ei ole kuitenkaan välttämättä vielä menetetty,
+vaan voimme koettaa lähestyä ongelmaa monella tavalla.
 
-Suoraviivainen tapa koettaa ratkaista NP-ongelmaa on 
-käyttää peruuttavaa hakua, joka käy läpi kaikki mahdolliset
-ratkaisut raa'alla voimalla.
-Tässä tulee kuitenkin ongelmaksi haun hitaus,
-eikä haku löydä välttämättä mitään järkevää ratkaisua alkuvaiheessa.
-Onneksi voimme käytännössä usein tyytyä siihen,
-että löydämme nopeasti \emph{melko hyvän} ratkaisun,
-vaikka se ei olisi optimaalinen.
-Voimme koettaa muodostaa ratkaisua ahneesti niin,
-että käytämme sopivaa \emph{heuristiikkaa},
-joka ohjaa hakua hyvältä näyttävään suuntaan.
-Voimme myös hyödyntää \emph{satunnaisuutta} niin,
-että algoritmi arpoo suuren määrän ratkaisuja
-ja valitsee niistä parhaan.
-Näiden ainesten avulla on saatu aikaan käytännössä
-hyviä ratkaisuja monissa vaikeissa ongelmissa.
+Tarkastellaan seuraavaksi ongelmaa, jossa meille annetaan $n$
+kokonaislukua ja haluamme jakaa luvut kahteen ryhmään niin,
+että ryhmien summat ovat mahdollisimman lähellä toisiaan.
+Esimerkiksi jos $n=5$ ja luvut ovat $[1,2,4,5,7]$,
+paras ratkaisu on muodostaa ryhmät $[1,2,7]$ ja $[4,5]$,
+joiden summat ovat $1+2+7=10$ ja $4+5=9$.
+Tällöin summien ero on 1,
+eikä ole olemassa ratkaisua, jossa ero olisi 0.
 
-Esimerkiksi jos haluamme löytää verkosta suuren klikin,
-voimme järjestää verkon solmut satunnaiseen järjestykseen
-ja muodostaa sitten klikin ahneesti käymällä solmut läpi ja lisäämällä
-solmun klikkiin, jos siitä on kaari kaikkiin klikissä
-tällä hetkellä oleviin solmuihin.
-Kun toistamme tätä monta kertaa, löydämme todennäköisesti
-jonkin klikin, jonka koko on lähellä verkon suurinta klikkiä.
-Toisaalta emme voi tietää koskaan varmasti,
-onko suurin löytynyt klikki suurin mahdollinen,
-koska käymme läpi vain satunnaisia järjestyksiä emmekä
-kaikkia mahdollisia vaihtoehtoja, mikä olisi liian hidasta.
+Tämä ongelma on NP-vaikea, joten kukaan ei tiedä tehokasta
+algoritmia sen ratkaisemiseen.
+Seuraavaksi käymme läpi joukon tapoja, joiden avulla
+voimme kuitenkin yrittää ratkaista ongelmaa.
 
-Joskus voimme saada aikaan NP-ongelmaan \emph{pseudopolynomisen}
-ratkaisun dynaamisen ohjelmoinnin avulla.
-Tämä tarkoittaa, että algoritmi näyttää päältä päin polynomiselta,
-mutta sen tehokkuus perustuu siihen,
-että teemme oletuksia syötteen lukujen suuruudesta.
-Tyypillinen esimerkki on NP-täydellinen ongelma,
-jossa haluamme muodostaa $n$ kokonaisluvusta osajoukon,
-jonka summa on $x$.
-Voimme ratkaista tehtävän dynaamisella ohjelmoinnilla niin,
-että ratkaisun aikavaativuus on $O(ns)$, missä $s$
-on lukujen summa.
-Tällainen ratkaisu on tehokas monissa käytännön tilanteissa,
-kunhan $s$ on riittävän pieni.
-Kuitenkin yleisessä tilanteessa luvut voivat olla
-suuria emmekä voi enää käyttää dynaamista ohjelmointia.
+\subsubsection{Raaka voima}
+
+Vaikka ongelma olisi NP-vaikea, voimme silti ratkaista sen
+pieniä tapauksia.
+Tässä tehtävässä voimme tehdä algoritmin,
+joka käy läpi kaikki tavat jakaa luvut kahteen ryhmään
+ja valitsee parhaan vaihtoehdon.
+Tämä vastaa sitä, että käymme läpi kaikki tavat valita
+toiseen ryhmään tulevat luvut
+eli kaikki lukujen osajoukot.
+
+Koska $n$ luvusta voi muodostaa $2^n$ osajoukkoa,
+tällainen algoritmi vie aikaa $O(2^n)$.
+Voimme toteuttaa algoritmin esimerkiksi rekursiolla
+samaan tapaan kuin teimme luvussa 1.
+Tuloksena oleva algoritmi on käyttökelpoinen, jos $n$ on niin pieni,
+että ehdimme käydä kaikki osajoukot läpi.
+Käytännössä voimme ratkaista tehokkaasti tapauksia,
+joissa $n$ on enintään noin 25.
+
+\subsubsection{Heuristiikat}
+
+Yksi mahdollisuus selviytyä vaikeasta ongelmasta on tyytyä
+optimaalisen ratkaisun sijasta johonkin oletettavasti
+melko hyvään ratkaisuun.
+Saamme tällaisen ratkaisun aikaan keksimällä jonkin
+\emph{heuristiikan}, joka muodostaa ratkaisun.
+Heuristiikka on jokin järkevä sääntö, jonka avulla
+algoritmi rakentaa ratkaisua eteenpäin askel kerrallaan.
+
+Tässä tehtävässä yksinkertainen heuristiikka on
+käydä luvut läpi suurimmasta pienimpään ja sijoittaa
+luku aina ryhmään, jonka summa on sillä hetkellä pienempi.
+Jos kummankin ryhmän summa on yhtä suuri,
+sijoitamme luvun ensimmäiseen ryhmään.
+Tämä on järkevä heuristiikka, koska näin saamme monessa tapauksessa
+jaettua lukuja melko tasaisesti ryhmiin.
+
+Esimerkiksi jos luvut ovat $[1,2,4,5,7]$, sijoitamme ensin
+luvun 7 ensim\-mäiseen ryhmään, sitten luvut 5 ja 4 toiseen ryhmään,
+sitten luvun 2 ensimmäiseen ryhmään ja lopuksi luvun 1 ensimmäiseen ryhmään.
+Saamme tässä tapauksessa muodostettua ryhmät $[1,2,7]$ ja $[4,5]$,
+joiden summien ero on 1 eli ratkaisu on optimaalinen.
+
+Tällainen algoritmi ei kuitenkaan tuota aina optimaalista ratkaisua.
+Kun tunnemme algoritmin toiminnan, voimme keksiä tilanteita,
+joissa se antaa huonomman ratkaisun.
+Tällainen tapaus on esimerkiksi $[2,2,2,3,3]$.
+Heuristiikkaa käyttävä algoritmi tuottaa ryhmät $[2,3]$ ja $[2,2,3]$,
+joiden summien ero on 2.
+Kuitenkin optimaalinen ratkaisu olisi muodostaa ryhmät
+$[2,2,2]$ ja $[3,3]$, joiden summien ero on 0.
+
+\subsubsection{Satunnaisuus}
+
+Voimme hyödyntää ongelman ratkaisemisessa myös
+\emph{satunnaisuutta}.
+Voimme tehdä algoritmin, joka tekee satunnaisia valintoja,
+ja lisäksi toistaa algoritmia monta kertaa ja valita
+parhaan ratkaisun.
+
+Esimerkiksi voimme parantaa äskeistä heuristista algoritmia niin,
+että se sekoittaa alussa lukujen järjestyksen. Tämän jälkeen voimme toistaa
+algoritmia vaikkapa miljoona kertaa ja valita parhaan ratkaisun.
+Tämä voi parantaa merkittävästi algoritmin toimintaa, ja on
+vaikeampaa keksiä tapauksia, joissa algoritmi toimii huonosti.
+
+\subsubsection{Rajoittaminen}
+
+Joskus voimme saada aikaan tehokkaan algoritmin,
+kun rajoitamme sopivalla tavalla tehtävää.
+Esimerkiksi tässä tehtävässä on mahdollista luoda
+tehokas dynaamisen ohjelmoinnin ratkaisu,
+kunhan oletamme, että luvut ovat sopivan pieniä kokonaislukuja.
+
+Ideana on laskea tarkastella osaongelmia muotoa
+''voimmeko valita $a$ ensimmäisestä luvusta osajoukon,
+jonka lukujen summa on $b$?''
+Jos luvut ovat pieniä, niin myös summat ovat pieniä,
+joten voimme ratkaista kaikki tällaiset osaongelmat rekursiivisesti.
+Tämän jälkeen riittää etsiä mahdollinen jako, jossa $a=n$
+ja $b$ on mahdollisimman lähellä lukujen summan puoliväliä.
+
+Tällainen ratkaisu vie aikaa $O(ns)$, missä $s$ on lukujen summa.
+Sanomme, että ratkaisun aikavaativuus on \emph{pseudopolynominen},
+koska se on polynominen mutta riippuu lukuarvojen suuruudesta.
+Yleisessä tapauksessa luvut voivat olla suuria kokonaislukuja,
+jolloin emme voi käyttää tällaista ratkaisua.
