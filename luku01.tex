@@ -26,26 +26,19 @@ mutta myös osata toteuttaa niitä käytännössä.
 
 Algoritmi on toimintaohje, jota seuraamalla voimme ratkaista
 jonkin laskennallisen ongelman.
-Esimerkiksi ''onko luku $n$ alkuluku?'' on laskennallinen ongelma,
-jossa algoritmille annetaan \emph{syötteenä} luku $n$
-ja sen täytyy ilmoittaa \emph{tulosteena} ''kyllä'' tai ''ei'' riippuen siitä,
-onko $n$ alkuluku vai ei.
-Esimerkiksi jos algoritmille annetaan luku $7$,
-sen täytyy ilmoittaa ''kyllä'',
-ja jos algoritmille annetaan luku $12$,
-sen täytyy ilmoittaa ''ei''.
+Algoritmille annetaan \emph{syöte},
+joka kuvaa ratkaistavan ongelman tapauksen,
+ja algoritmin tulee tuottaa \emph{tuloste},
+joka on vastaus sille annettuun syötteeseen.
 
-Voimme tarkastaa, onko annettu luku $n$ alkuluku, seuraavalla algoritmilla:
-Käymme läpi kaikki luvut $2,3,\dots,n-1$ ja koetamme
-jakaa lukua $n$ jokaisella niistä.
-Jos $n$ on jaollinen jollain luvuista, se ei ole alkuluku,
-ja muuten se on alkuluku.
-Esimerkiksi luku $7$ on alkuluku, koska se ei ole jaollinen
-millään luvuista $2,3,\dots,6$,
-ja luku $12$ puolestaan ei ole alkuluku, koska se on
-jaollinen luvuilla $3$ ja $4$.
-Voimme tutkia tämän algoritmin avulla mistä tahansa luvusta,
-onko se alkuluku vai ei.
+Tarkastellaan esimerkkinä laskennallista ongelmaa,
+jossa syötteenä on $n$ kokonaislukua ja haluttu
+tuloste on lukujen summa.
+Esimerkiksi jos syöte on $[2,4,1,8]$,
+haluttu tuloste on 15, koska $2+4+1+8=15$.
+Voimme ratkaista tämän ongelman algoritmilla,
+joka käy luvut läpi silmukalla ja laskee niiden
+summan muuttujaan.
 
 Algoritmin toiminnan esittämiseen on useita mahdollisuuksia.
 Yksi tapa on selostaa sanallisesti, kuinka algoritmi toimii,
@@ -53,17 +46,15 @@ kuten teimme äsken.
 Toinen tapa taas on antaa koodi, joka toteuttaa algoritmin.
 Tällöin meidän täytyy valita jokin ohjelmointikieli,
 jonka avulla esitämme algoritmin.
-Esimerkiksi voimme tarkastaa seuraavasti Java-kielellä,
-onko luku $n$ alkuluku:
+Esimerkiksi seuraava Java-koodi kuvaa algoritmin,
+joka laskee lukujen summan:
 
 \begin{code}
-boolean alkuluku = true;
-for (int i = 2; i < n; i++) {
-    if (n%i == 0) {
-        alkuluku = false;
-        break;
-    }
+int summa = 0;
+for (int i = 0; i < n; i++) {
+    summa += luvut[i];
 }
+System.out.println(summa);
 \end{code}
 
 Voimme myös esittää algoritmin \emph{pseudokoodina}
@@ -75,11 +66,10 @@ joiden ansiosta voimme kuvata algoritmin mukavammin.
 Voisimme esimerkiksi esittää äskeisen algoritmin pseudokoodina seuraavasti:
 
 \begin{code}
-alkuluku = true
-for i = 2 to n-1
-    if n%i == 0
-        alkuluku = false
-        break
+summa = 0
+for i = 0 to n-1
+    summa += luvut[i]
+print(summa)
 \end{code}
 
 Tässä kirjassa esitämme algoritmeja sekä Java-koodina että pseudokoodina
@@ -88,171 +78,94 @@ Käytämme Java-koodia silloin, kun haluamme erityisesti kiinnittää huomiota s
 miten jokin asia toteutetaan käytännössä Javassa.
 Pseudokoodia käytämme taas silloin, kun haluamme kuvata algoritmin yleisen
 idean eikä käytetyllä kielellä ole merkitystä.
-Taulukko \ref{tab:psekoo} esittää yhteenvedon käyttämämme pseudokoodin syntaksista.
 
-\lstnewenvironment{smallcode}[1][]%
-{
-   \noindent
-   \small
-   \minipage{0.47\linewidth} 
-   \vspace{0.5\baselineskip}
-   \lstset{#1,xleftmargin=0pt}}
-{\endminipage}
-
-\begin{table}
-\center
-\begin{tabular}{ll}
-pseudokoodi & Java-koodi \\
-\hline
-\begin{smallcode}[xleftmargin=0pt]
-x = 5
-s = "abc"
-t = [1,2,3]
-\end{smallcode}
-&
-\begin{smallcode}
-int x = 5;
-String s = "abc";
-int[] t = {1,2,3};
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-if a == b
-    // koodia
-\end{smallcode}
-&
-\begin{smallcode}
-if (a == b) {
-    // koodia
-}
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-while a == b
-    // koodia
-\end{smallcode}
-&
-\begin{smallcode}
-while (a == b) {
-    // koodia
-}
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-for i = 1 to n
-    // koodia
-\end{smallcode}
-&
-\begin{smallcode}
-for (int i = 1; i <= n; i++) {
-    // koodia
-}
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-for i = n to 1
-    // koodia
-\end{smallcode}
-&
-\begin{smallcode}
-for (int i = n; i >= 1; i--) {
-    // koodia
-}
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-sort(x)
-\end{smallcode}
-&
-\begin{smallcode}
-Arrays.sort(x);
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-print(x)
-\end{smallcode}
-&
-\begin{smallcode}
-System.out.println(x);
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-swap(a,b)
-\end{smallcode}
-&
-\begin{smallcode}
-t = a;
-a = b;
-b = t;
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-a = min(x,y)
-b = max(x,y)
-\end{smallcode}
-&
-\begin{smallcode}
-a = Math.min(x,y);
-b = Math.max(x,y);
-\end{smallcode}
-\\
-\begin{smallcode}[xleftmargin=0pt]
-function summa(a,b)
-    return a+b
-\end{smallcode}
-&
-\begin{smallcode}
-int summa(int a, int b) {
-    return a+b;
-}
-\end{smallcode}
-\\
-\end{tabular}
-\caption{Kirjassa käytetty pseudokoodin syntaksi.}
-\label{tab:psekoo}
-\end{table}
-
-Ensimmäinen vaihe ohjelmoinnin oppimisessa on oppia
-ohjelmoinnin perustaidot niin, että osaamme laatia
-\emph{jonkin} toimivan algoritmin annetun ongelman ratkaisemiseen.
-On arvokas taito sinänsä, että osaamme ratkaista
-ongelman jollakin tavalla.
-Toinen vaihe, johon keskitymme tällä kurssilla,
-on oppia suunnittelemaan \emph{tehokkaita} algoritmeja.
-Tämä tarkoittaa, että haluamme saada aikaan mahdollisuuksien mukaan
-jotain parempaa kuin suoraviivaisia
-raakaan voimaan perustuvia algoritmeja.
+\section{Ohjelmoinnin peruspalikat}
 
 Kiehtova seikka ohjelmoinnissa on, että monimutkaisetkin algoritmit
-syntyvät yksinkertaisista aineksista. Keskeiset käsitteet ovat
+syntyvät yksinkertaisista aineksista.
+Käymme seuraavaksi läpi ohjelmoinnin peruspalikat,
+jotka muodostavat pohjan algoritmien suunnittelulle.
+Tutustumme myös samalla tarkemmin kirjassa käytettävään pseudokoodiin.
 
-\begin{itemize}
-\item muuttuja, jossa voimme säilyttää tietoa ohjelmassa,
-\item ehtolause (\texttt{if}), jonka avulla voimme haarautua ohjelmassa,
-\item silmukat (\texttt{for} ja \texttt{while}), joiden avulla voimme
-toistaa laskentaa, sekä
-\item taulukko, joka on ohjelmoinnin perustietorakenne.
-\end{itemize}
+\subsubsection{Muuttuja}
 
-Itse asiassa voimme toteuttaa \emph{minkä tahansa} algoritmin
-vain näitä aineksia käyttäen.
-Tämä on huojentava tieto, koska meidän ei siis tarvitse opetella
-suurta määrää ohjelmointikielten ominaisuuksia,
-ennen kuin voimme alkaa suunnitella tehokkaita algoritmeja.
-Vaikeutena on kuitenkin \emph{keksiä}, kuinka käyttää näitä
-tekniikoita eri tilanteessa.
+Muuttujat säilyttävät algoritmissa tarvittavia tietoja.
+Useimmissa algoritmeissa muuttujissa on kokonaislukuja.
 
-Tärkeä osa algoritmien suunnittelua on taito valita käyttöön
-sopivia \emph{tietorakenteita}.
-Tietorakenne on tapa säilyttää tietoa tietokoneen muistissa
-niin, että pääsemme tehokkaasti käsiksi siihen.
-Tutustumme kirjan alku\-osassa moniin tietorakenteisiin,
-jotka auttavat meitä algoritmien suunnittelussa.
-Toisaalta voimme loppujen
-lopuksi toteuttaa minkä tahansa tietorakenteen taulukkona,
-koska tietokoneen muisti vastaa taulukkoa.
+\begin{code}
+a = 1
+b = 2*a+3
+\end{code}
 
-\section{Rekursiiviset algoritmit}
+\subsubsection{Ehtolause}
+
+Ehtolauseen avulla saamme ohjelman toiminnan
+riippumaan muuttujista.
+Esimerkiksi seuraava koodi kertoo, onko $x$ parillinen vai pariton:
+
+\begin{code}
+if x%2 == 0
+    print("parillinen")
+else
+    print("pariton")
+\end{code}
+
+\subsubsection{Silmukka}
+
+Silmukoiden avulla voimme toistaa koodia.
+Seuraava for-silmukka tulostaa luvut $1 \dots 10$:
+
+\begin{code}
+for i = 1 to 10
+    print(i)
+\end{code}
+
+Seuraava while-silmukka puolestaan puolittaa lukua $x$,
+kunnes se saavuttaa nollan:
+
+\begin{code}
+while x > 0
+    print(x)
+    x /= 2
+\end{code}
+
+\subsubsection{Taulukko}
+
+Taulukko on ohjelmoinnin tavallisin \emph{tietorakenne}
+eli tapa säilyttää kokoelmaa tietoa.
+Taulukossa on $n$ alkiota, joiden kohdat ovat $0,1,\dots,n-1$.
+
+\begin{code}
+x = [4,2,7,5,1]
+print(x[2]) // 7
+x[2] = 3
+print(x[2]) // 3
+\end{code}
+
+Tutustumme kirjan aikana moniin tietorakenteisiin,
+joista on hyötyä algoritmien suunnittelussa.
+Kaikki tietorakenteet perustuvat kuitenkin pohjimmiltaan taulukkoon.
+
+\subsubsection{Funktio}
+
+Funktioiden avulla voimme jakaa koodia osiin.
+Javassa sanan funktio sijaan käytetään yleensä sanaa metodi.
+
+\begin{code}
+function summa(a,b)
+    return a+b
+\end{code}
+
+\subsubsection{***}
+
+Olemme nyt käyneet läpi ohjelmoinnin peruspalikat,
+joiden avulla voimme toteuttaa \emph{minkä tahansa} algoritmin.
+On huojentava tieto, että näinkin pieni määrä tekniikoita
+riittää algoritmien suunnittelussa.
+Nyt kaikki on vain kiinni siitä, miten osaamme \emph{soveltaa}
+näitä tekniikoita eri tilanteissa.
+
+\section{Rekursio}
 
 Rekursio on hyödyllinen ohjelmointitekniikka,
 joka jää kuitenkin usein sivurooliin ohjelmoinnin perusteiden opiskelussa.
