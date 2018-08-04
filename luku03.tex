@@ -134,10 +134,10 @@ Seuraava koodi toteuttaa lisäysjärjestämisen:
 
 \begin{code}
 for i = 1 to n-1
-    for j = i-1 to 0
-        if taulu[j] < taulu[j+1]
-            break
+    j = i-1
+    while j >= 0 and taulu[j] > taulu[j+1]
         swap(taulu[j],taulu[j+1])
+        j--
 \end{code}
 
 Koodissa komento \texttt{swap} vaihtaa keskenään
