@@ -1,5 +1,7 @@
 \chapter{NP-ongelmat}
 
+\index{NP-ongelma}
+
 Olemme tässä kirjassa tutustuneet moniin algoritmeihin,
 jotka toimivat tehokkaasti.
 Kuitenkin on myös suuri määrä ongelmia, joiden ratkaisemiseen ei tällä
@@ -15,10 +17,14 @@ Nyt on aika selvittää, mitä nämä käsitteet oikeastaan tarkoittavat.
 
 \section{Vaativuusluokat}
 
+\index{vaativuusluokka}
+
 Laskennallisia ongelmia voi luokitella \emph{vaativuusluokkiin},
 joista jokaisessa on joukko ongelmia,
 joiden ratkaisemisen vaikeudessa on jotain yhteistä.
 Tunnetuimmat vaativuusluokat ovat P ja NP.
+
+\index{päätösongelma}
 
 Keskitymme tässä luvussa \emph{päätösongelmiin}, joissa algoritmin tulee
 antaa aina vastaus ''kyllä'' tai ''ei''.
@@ -28,6 +34,9 @@ Tulemme huomaamaan, että voimme muotoilla monenlaisia ongelmia
 päätösongelmina eikä tämä rajoita juurikaan, mitä ongelmia voimme tarkastella.
 
 \subsection{Luokka P}
+
+\index{P-luokka}
+\index{polynominen algoritmi}
 
 Luokka P sisältää päätösongelmat, joiden ratkaisemiseen on
 olemassa \emph{polynominen} algoritmi eli algoritmi, jonka aikavaativuus
@@ -56,6 +65,9 @@ polynominen aikavaativuus on osoittautunut
 toimivaksi tehokkuuden mittariksi.
 
 \subsection{Luokka NP}
+
+\index{NP-luokka}
+\index{todiste}
 
 Luokka NP sisältää päätösongelmat, joissa jokaisessa
 ''kyllä''-tapauksessa on olemassa
@@ -92,6 +104,8 @@ voimme tarkastaa ''kyllä''-vastauksen
 koko ongelman alusta alkaen polynomisessa ajassa.
 
 \subsection{P vs. NP}
+
+\index{P vs. NP}
 
 Äkkiseltään voisi kuvitella, että luokassa NP täytyy olla
 enemmän ongelmia kuin luokassa P.
@@ -172,6 +186,8 @@ vain ole vielä löytänyt sitä.
 
 \subsection{Muita luokkia}
 
+\index{PSPACE-luokka}
+
 P ja NP ovat tunnetuimmat vaativuusluokat,
 mutta niiden lisäksi on suuri määrä muitakin luokkia.
 Yksi tällainen luokka on PSPACE,
@@ -180,6 +196,9 @@ polynominen määrä \emph{muistia}.
 PSPACE sisältää kaikki luokan NP ongelmat,
 mutta siinä on myös ongelmia,
 joiden ei tiedetä kuuluvan luokkaan NP.
+
+\index{BPP-luokka}
+\index{ZPP-luokka}
 
 Luokat BPP ja ZPP puolestaan liittyvät satunnaisuuteen.
 Luokka BPP sisältää ongelmat, joiden ratkaisuun on polynomiaikainen algoritmi,
@@ -198,6 +217,8 @@ joka ei kuuluisi myös luokkaan P.
 
 \section{NP-täydellisyys}
 
+\index{NP-täydellinen ongelma}
+
 Sanomme, että ongelma on \emph{NP-täydellinen},
 jos se kuuluu luokkaan NP ja mikä tahansa luokan NP
 ongelma voidaan \emph{palauttaa} siihen polynomisessa ajassa.
@@ -213,6 +234,8 @@ ratkaisun, olisimme samalla onnistuneet todistamaan,
 että $\textrm{P}=\textrm{NP}$.
 
 \subsection{SAT-ongelma}
+
+\index{SAT-ongelma}
 
 Ensimmäinen löydetty NP-täydellinen ongelma oli
 SAT-ongelma, jossa annettuna on konjunktiivisessa
@@ -259,6 +282,8 @@ Niinpä olemme onnistuneet palauttamaan alkuperäisen ongelman SAT-ongelmaan.
 
 \subsection{Ongelmien palautukset}
 
+\index{palautus}
+
 Kun tiedämme, että SAT-ongelma on NP-täydellinen,
 voimme osoittaa muita ongelmia NP-täydellisiksi palautusten avulla.
 Ideana on, että jos ongelma $A$ on NP-täydellinen ja
@@ -266,6 +291,8 @@ voimme palauttaa sen polynomisessa ajassa ongelmaksi $B$,
 myös ongelma $B$ on NP-täydellinen.
 
 \subsubsection{Palautus SAT $\rightarrow$ 3SAT}
+
+\index{3SAT-ongelma}
 
 Aloitamme osoittamalla, että 3SAT-ongelma on NP-täydellinen.
 3SAT-on\-gelma on SAT-ongelman erikoistapaus, jossa jokaisessa
@@ -306,6 +333,8 @@ meidän on helpompaa käsitellä kolmen muuttujan lausekkeita
 kuin vaihtelevan pituisia lausekkeita.
 
 \subsubsection{Palautus 3SAT $\rightarrow$ solmupeite}
+
+\index{solmupeite}
 
 \begin{figure}
 \center
@@ -489,6 +518,10 @@ joten solmupeiteongelma on NP-täydellinen.
 Palautusten avulla on onnistuttu löytämään tuhansia NP-täydellisiä ongelmia.
 Esimerkiksi myös seuraavat ongelmat ovat NP-täydellisiä:
 
+\index{klikki}
+\index{väritys}
+\index{Hamiltonin polku}
+
 \begin{itemize}
 \item onko verkossa $k$-kokoista \emph{klikkiä} eli $k$ solmun joukkoa,
 jossa jokaisen kahden solmun välillä on kaari?
@@ -500,6 +533,8 @@ verkon solmun kautta (eli \emph{Hamiltonin polkua})?
 \item onko olemassa enintään $k$-merkkistä merkkijonoa,
 jonka alijonoja ovat kaikki annetut merkkijonot?
 \end{itemize}
+
+\index{isomorfiset verkot}
 
 Entä millainen olisi luokan NP ongelma, joka ei kuulu luokkaan P
 eikä ole NP-täydellinen?
@@ -545,7 +580,6 @@ koska voimme valita solmuille vastaavuudet $(1,c)$, $(2,a)$, $(3,d)$ ja $(4,b)$.
 \label{fig:veriso}
 \end{figure}
 
-
 Verkkojen isomorfisuuden ongelma kuuluu luokkaan NP,
 koska on helppoa tarkastaa, onko verkoilla sama rakenne,
 jos tiedämme solmujen vastaavuudet.
@@ -555,6 +589,8 @@ Toisaalta emme myöskään osaa tehdä mitään palautusta,
 joka osoittaisi ongelman olevan NP-täydellinen.
 
 \subsection{Optimointiongelmat}
+
+\index{optimointiongelma}
 
 Käytännössä haluamme usein ratkaista päätösongelman
 sijasta \emph{optimointiongelman}: haluamme etsiä pienimmän
@@ -578,6 +614,8 @@ Koska käytämme binäärihakua, meidän riittää ratkaista
 päätösongelma vain logaritminen määrä kertoja,
 joten saamme ratkaistua optimointiongelman lähes yhtä
 tehokkaasti kuin päätösongelman.
+
+\index{NP-vaikea ongelma}
 
 Sanomme, että ongelma on \emph{NP-vaikea}, jos voimme palauttaa
 kaikki luokan NP ongelmat siihen mutta ongelman ei
@@ -641,6 +679,8 @@ joissa $n$ on enintään noin 25.
 
 \subsubsection{Heuristiikat}
 
+\index{heuristiikka}
+
 Yksi mahdollisuus selviytyä vaikeasta ongelmasta on tyytyä
 optimaalisen ratkaisun sijasta johonkin oletettavasti
 melko hyvään ratkaisuun.
@@ -674,6 +714,8 @@ $[2,2,2]$ ja $[3,3]$, joiden summien ero on 0.
 
 \subsubsection{Satunnaisuus}
 
+\index{satunnainen algoritmi}
+
 Voimme hyödyntää ongelman ratkaisemisessa myös
 \emph{satunnaisuutta}.
 Voimme tehdä algoritmin, joka tekee satunnaisia valintoja,
@@ -687,6 +729,8 @@ Tämä voi parantaa merkittävästi algoritmin toimintaa, ja on
 vaikeampaa keksiä tapauksia, joissa algoritmi toimii huonosti.
 
 \subsubsection{Rajoittaminen}
+
+\index{pseudopolynominen algoritmi}
 
 Joskus voimme saada aikaan tehokkaan algoritmin,
 kun rajoitamme sopivalla tavalla tehtävää.

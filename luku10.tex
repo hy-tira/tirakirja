@@ -1,5 +1,7 @@
 \chapter{Verkkojen perusteet}
 
+\index{verkko}
+
 Voimme ratkaista monia algoritmiikan ongelmia
 esittämällä tilanteen \emph{verkkona} ja käyttämällä sitten
 sopivaa verkkoalgoritmia.
@@ -17,6 +19,9 @@ Seuraavissa kirjan luvuissa jatkamme verkkojen käsittelyä ja
 opimme lisää verkkoalgoritmeja.
 
 \section{Verkkojen käsitteitä}
+
+\index{solmu}
+\index{kaari}
 
 Verkko muodostuu \emph{solmuista} ja
 niitä yhdistävistä \emph{kaarista}.
@@ -51,6 +56,9 @@ $1,2,\dots,n$.
 \caption{Verkko, jossa on viisi solmua ja seitsemän kaarta.}
 \label{fig:veresi}
 \end{figure}
+
+\index{naapuri}
+\index{aste}
 
 Sanomme, että kaksi solmua ovat \emph{vierekkäin} verkossa,
 jos niiden välillä on kaari.
@@ -110,6 +118,8 @@ joten solmun aste on 3.
 \label{fig:verpoe}
 \end{figure}
 
+\index{polku}
+
 Verkossa oleva \emph{polku} on kaaria pitkin kulkeva reitti
 lähtösolmusta kohdesolmuun.
 Kuva \ref{fig:verpoe} näyttää kaksi
@@ -145,6 +155,9 @@ ja toinen polku on $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 \label{fig:versyk}
 \end{figure}
 
+\index{sykli}
+\index{syklitön verkko}
+
 Polku on \emph{sykli}, jos sen alku- ja loppusolmu on sama,
 siinä on ainakin yksi kaari 
 eikä se kulje kahta kertaa saman solmun tai kaaren kautta.
@@ -154,11 +167,15 @@ Jos verkossa ei ole yhtään sykliä, sanomme, että verkko on \emph{syklitön}.
 
 \subsubsection{Yhtenäisyys ja komponentit}
 
+\index{yhtenäinen verkko}
+
 Verkko on \emph{yhtenäinen},
 jos minkä tahansa kahden solmun välillä on polku.
 Kuvan \ref{fig:veresi} verkko on yhtenäinen,
 mutta kuvan \ref{fig:veryht} verkko ei ole yhtenäinen,
 koska esimerkiksi solmujen $1$ ja $2$ välillä ei ole polkua.
+
+\index{komponentti}
 
 Voimme esittää verkon aina kokoelmana yhtenäisiä \emph{komponentteja}.
 Kuvassa \ref{fig:veryht} yhtenäiset komponentit
@@ -184,6 +201,8 @@ ovat $\{1,3\}$ ja $\{2,4,5\}$.
 \caption{Verkon yhtenäiset komponentit ovat $\{1,3\}$ ja $\{2,4,5\}$.}
 \label{fig:veryht}
 \end{figure}
+
+\index{puu}
 
 Verkko on \emph{puu}, jos se on sekä yhtenäinen
 että syklitön.
@@ -215,6 +234,8 @@ jossa on viisi solmua ja neljä kaarta.
 \end{figure}
 
 \subsubsection{Suunnattu verkko}
+
+\index{suunnattu verkko}
 
 \emph{Suunnatussa} verkossa
 jokaisella kaarella on tietty suunta,
@@ -251,6 +272,8 @@ mutta emme voi kulkea mitenkään solmusta $5$ solmuun $1$.
 \end{figure}
 
 \subsubsection{Painotettu verkko}
+
+\index{painotettu verkko}
 
 \emph{Painotetussa} verkossa
 jokaiseen kaareen liittyy jokin paino,
@@ -342,6 +365,8 @@ Seuraavaksi käymme läpi kolme tavallista esitystapaa.
 \label{fig:vervil}
 \end{figure}
 
+\index{vieruslista}
+
 Vieruslistaesityksessä luomme kullekin verkon solmulle
 \emph{vieruslistan}, joka kertoo, mihin solmuihin voimme
 siirtyä solmusta kaaria pitkin.
@@ -393,6 +418,8 @@ Jos taas verkko on painotettu, voimme tallentaa jokaisesta
 kaaresta sekä kohdesolmun että painon.
 
 \subsection{Kaarilistaesitys}
+
+\index{kaarilista}
 
 Kaarilistaesityksessä luomme listan,
 jossa on kaikki verkon kaaret.
@@ -470,6 +497,8 @@ selvittää tietystä solmusta lähteviä kaaria.
 \label{fig:vervim}
 \end{figure}
 
+\index{vierusmatriisi}
+
 \emph{Vierusmatriisi} on kaksiulotteinen taulukko,
 joka kertoo jokaisesta verkon kaaresta,
 esiintyykö se verkossa.
@@ -515,6 +544,8 @@ verkon läpikäyntiin, ja sen jälkeen leveyshakua,
 jonka avulla voimme löytää lyhimpiä polkuja verkossa.
 
 \subsection{Syvyyshaku}
+
+\index{syvyyshaku}
 
 Syvyyshaku on verkkojen käsittelyn yleistyökalu,
 jonka avulla voimme selvittää monia asioita verkon rakenteesta.
@@ -669,6 +700,8 @@ Jokainen syvyyshaku muodostaa yhden komponentin.
 
 \subsubsection{Syklin etsiminen}
 
+\index{syklin etsiminen}
+
 Jos suuntaamaton verkko sisältää syklin,
 huomaamme tämän syvyyshaun aikana siitä,
 että tulemme tulemme toista kautta johonkin solmuun,
@@ -745,12 +778,17 @@ syklin, jos sellainen on olemassa.
 \label{fig:levhak}
 \end{figure}
 
+\index{leveyshaku}
+
 Leveyshaku käy syvyyshaun tavoin läpi kaikki verkon solmut,
 joihin pääsee kulkemaan kaaria pitkin annetusta lähtösolmusta.
 Erona on kuitenkin, missä järjestyksessä solmut käydään läpi.
 Leveyshaku käy solmuja läpi \emph{kerroksittain} niin,
 että se käsittelee solmut siinä järjestyksessä kuin ne
 ovat tulleet ensimmäistä kertaa vastaan haun aikana.
+
+\index{lyhin polku}
+\index{etäisyys}
 
 Vaikka voisimme käyttää leveyshakua yleisenä
 algoritmina verkon läpi\-käyntiin syvyyshaun tavoin,
@@ -865,6 +903,8 @@ kun vastaavat verkon solmut kuuluvat samaan yhtenäiseen komponenttiin.
 Voimme siis tarkastaa syvyyshaulla, onko ruudusta $A$ reittiä ruutuun $B$.
 Lyhin reitti ruudusta $A$ ruutuun $B$ löytyy
 puolestaan leveyshaulla, joka lähtee liikkeelle ruudusta $A$.
+
+\index{implisiittinen verkko}
 
 Huomaa, että meidän ei tarvitse erikseen muuttaa labyrinttia
 verkoksi, vaan voimme toteuttaa haut \emph{implisiittiseen} verkkoon.

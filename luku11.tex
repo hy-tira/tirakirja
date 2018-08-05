@@ -1,5 +1,8 @@
 \chapter{Lyhimmät polut}
 
+\index{lyhin polku}
+\index{etäisyys}
+
 Monissa verkkoihin liittyvissä ongelmissa on kysymys siitä,
 että haluamme löytää \emph{lyhimmän polun} verkon solmusta toiseen.
 Esimerkiksi voimme haluta selvittää,
@@ -78,6 +81,8 @@ Käytämme tätä verkkoa esimerkkinä, kun tutustumme
 seuraavaksi kahteen algoritmiin lyhimpien polkujen etsimiseen.
 
 \subsection{Bellman–Fordin algoritmi}
+
+\index{Bellman–Fordin algoritmi}
 
 Bellman–Fordin algoritmi etsii lyhimmät polut
 annetusta lähtösolmusta kaikkiin verkon solmuihin.
@@ -284,6 +289,8 @@ Jos jokin etäisyys paranee vielä viimeisellä kierroksella,
 olemme löytäneet negatiivisen syklin.
 
 \subsection{Dijkstran algoritmi}
+
+\index{Dijkstran algoritmi}
 
 Dijkstran algoritmi on Bellman–Fordin algoritmin tehostettu versio,
 jonka toiminta perustuu oletukseen, että verkossa ei ole
@@ -504,7 +511,9 @@ Floyd–Warshallin algoritmilla.
 
 \subsection{Floyd–Warshallin algoritmi}
 
-Floyd-Warshallin algoritmi muodostaa $n \times n$ -kokoisen
+\index{Floyd–Warshallin algoritmi}
+
+Floyd–Warshallin algoritmi muodostaa $n \times n$ -kokoisen
 \emph{etäisyysmatriisin},
 jossa rivin $a$ sarakkeessa $b$ on lyhimmän polun pituus
 solmusta $a$ solmuun $b$.

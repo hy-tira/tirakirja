@@ -1,5 +1,7 @@
 \chapter{Järjestäminen}
 
+\index{järjestäminen}
+
 \emph{Järjestäminen} on keskeinen algoritmiikan ongelma,
 jossa tehtävänä on jär\-jestää $n$ alkiota sisältävä
 aineisto suuruusjärjestykseen.
@@ -29,6 +31,8 @@ Tämän jälkeen meidän riittää käydä taulukko läpi
 ja etsiä siitä pisin samaa alkiota toistava osuus.
 
 \section{Järjestäminen ajassa $O(n^2)$}
+
+\index{lisäysjärjestäminen}
 
 Tutustumme aluksi yksinkertaiseen järjestämisalgoritmiin
 nimeltä \emph{lisäysjär\-jestäminen},
@@ -163,6 +167,8 @@ taulukon alkuun ja aikaa kuluu $O(n^2)$.
 
 \subsection{Inversiot}
 
+\index{inversio}
+
 Hyödyllinen käsite järjestämisalgoritmien analysoinnissa
 on \emph{inversio}: kaksi taulukossa olevaa alkiota,
 jotka ovat väärässä järjestyksessä.
@@ -215,8 +221,9 @@ ja järjestämme ne rekursiivisesti.
 Tämän jälkeen yhdistämme järjestetyt osataulukot
 kokonaiseksi järjestetyksi taulukoksi.
 
-
 \subsection{Lomitusjärjestäminen}
+
+\index{lomitusjärjestäminen}
 
 \begin{figure}
 \center
@@ -388,6 +395,8 @@ aikaa $O(n)$.
 Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
 
 \subsection{Pikajärjestäminen}
+
+\index{pikajärjestäminen}
 
 Pikajärjestäminen tarjoaa toisenlaisen rekursiivisen
 lähestymistavan taulukon järjestämiseen.
@@ -604,6 +613,8 @@ tapauksen aikavaativuus on $O(n^2)$.
 Käytännössä pahin tapaus on kuitenkin harvinainen,
 jos jakoalkion valinta ja alkioiden siirtäminen on toteutettu huolellisesti.
 
+\index{hybridialgoritmi}
+
 Jos taulukko on pieni, $O(n^2)$-aikainen lisäysjärjestäminen
 toimii käytän\-nössä nopeammin kuin rekursiiviset algoritmit,
 koska sen vakiokertoimet ovat hyvin pienet.
@@ -681,6 +692,8 @@ mikä tarkoittaa, että algoritmi joutuu tekemään
 pahimmassa tapauksessa $\Omega(n \log n)$ vertailua.
 
 \subsection{Laskemisjärjestäminen}
+
+\index{laskemisjärjestäminen}
 
 Millainen olisi sitten järjestämisalgoritmi,
 joka ei perustu vertailuihin ja toimii
@@ -893,6 +906,8 @@ for-silmukka vie aikaa $O(n)$, joten algoritmin
 kokonaisaikavaativuus on $O(n \log n)$.
 
 \subsection{Binäärihaku}
+
+\index{binäärihaku}
 
 Binäärihaku on menetelmä, jonka avulla voimme löytää alkion
 järjestetystä taulukosta ajassa $O(\log n)$.

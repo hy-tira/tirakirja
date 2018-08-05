@@ -24,6 +24,10 @@ mutta myös osata toteuttaa niitä käytännössä.
 
 \section{Mitä algoritmit ovat?}
 
+\index{algoritmi}
+\index{syöte}
+\index{tuloste}
+
 Algoritmi on toimintaohje, jota seuraamalla voimme ratkaista
 jonkin laskennallisen ongelman.
 Algoritmille annetaan \emph{syöte},
@@ -56,6 +60,8 @@ for (int i = 0; i < n; i++) {
 }
 System.out.println(summa);
 \end{code}
+
+\index{pseudokoodi}
 
 Voimme myös esittää algoritmin \emph{pseudokoodina}
 todellisen ohjelmointikielen sijasta.
@@ -130,6 +136,9 @@ while x > 0
 
 \subsubsection{Taulukko}
 
+\index{taulukko}
+\index{tietorakenne}
+
 Taulukko on ohjelmoinnin tavallisin \emph{tietorakenne}
 eli tapa säilyttää kokoelmaa tietoa.
 Taulukossa on $n$ alkiota, joiden kohdat ovat $0,1,\dots,n-1$.
@@ -166,6 +175,8 @@ näitä tekniikoita eri tilanteissa.
 
 \section{Rekursio}
 
+\index{rekursio}
+
 Rekursio on hyödyllinen ohjelmointitekniikka,
 joka jää kuitenkin usein sivurooliin ohjelmoinnin peruskursseilla.
 Nyt onkin sopiva hetki perehtyä kunnolla siihen,
@@ -173,6 +184,8 @@ mitä hyötyä meille on rekursiosta.
 Tulemme tarvitsemaan rekursiota useassa vaiheessa kurssin aikana.
 
 \subsection{Osajoukkojen muodostaminen}
+
+\index{osajoukko}
 
 Aloitamme ongelmasta, jossa haluamme muodostaa
 kaikki \emph{osajoukot} luvuista $1,2,\dots,n$.
@@ -279,6 +292,8 @@ kuten olemme havainneet.
 
 \subsection{Permutaatioiden muodostaminen}
 
+\index{permutaatio}
+
 Tarkastellaan sitten toista ongelmaa, jossa haluammekin
 käydä läpi lukujen $1,2,\dots,n$ \emph{permutaatiot}
 eli kaikki mahdolliset tavat asettaa luvut johonkin järjestykseen.
@@ -332,6 +347,8 @@ kaikkiaan $n!$ permutaatiota.
 Esimerkiksi tapauksessa $n=3$ permutaatioiden määrä on $3!=6$.
 
 \subsection{Peruuttava haku}
+
+\index{peruuttava haku}
 
 Peruuttava haku on yleinen rekursiivinen menetelmä,
 jota käyttäen voimme muodostaa järjestelmällisesti

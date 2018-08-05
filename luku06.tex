@@ -1,5 +1,7 @@
 \chapter{Binäärihakupuu}
 
+\index{binäärihakupuu}
+
 Binäärihakupuu on tietorakenne, joka pitää yllä
 alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
 Binäärihakupuu eroaa hajautustaulusta kuitenkin siinä,
@@ -19,16 +21,25 @@ ja lopuksi vertailemme joukkorakenteita ja järjestämistä.
 
 \section{Taustaa binääripuista}
 
+\index{binääripuu}
+
 Binäärihakupuun taustalla on yleisempi tietorakenne \emph{binääripuu}.
 Ennen kuin tutustumme binäärihakupuuhun,
 meidän onkin hyvä selvittää ensin, mikä on binääripuu ja mitä
 ominaisuuksia siihen liittyy.
+
+\index{juuri}
+\index{lapsi}
+\index{vanhempi}
+\index{lehti}
 
 Binääripuu muodostuu $n$ solmusta, jotka on yhdistetty toisiinsa.
 Puussa ylimpänä on solmu, jota kutsutaan \emph{juureksi}.
 Jokaisella solmulla voi olla vasen ja oikea \emph{lapsi},
 ja kaikilla solmuilla juurta lukuun ottamatta on yksikäsitteinen \emph{vanhempi}.
 Puun \emph{lehtiä} ovat solmut, joilla ei ole lapsia.
+
+\index{alipuu}
 
 Binääripuun rakenne on rekursiivinen:
 jokainen solmu toimii juurena \emph{alipuulle},
@@ -162,6 +173,10 @@ function korkeus(puu)
 Voimme käydä läpi binääripuun solmut rekursiivisesti
 juuresta alkaen.
 Solmujen läpikäyntiin on kolme tavallista järjestystä:
+
+\index{esijärjestys}
+\index{sisäjärjestys}
+\index{jälkijärjestys}
 
 \begin{itemize}
 \item \emph{esijärjestys}: käsittelemme ensin solmun, sitten vasemman alipuun
@@ -477,6 +492,8 @@ käyte\-tään kuitenkin muita rakenteita, kuten punamustaa puuta.
 
 \section{AVL-puu}
 
+\index{AVL-puu}
+
 \emph{AVL-puu} on tasapainoinen binäärihakupuu, jonka
 korkeus on aina $O(\log n)$, minkä ansiosta puun operaatiot
 toimivat tehokkaasti ajassa $O(\log n)$.
@@ -497,6 +514,8 @@ Oikea puu ei ole AVL-puu, koska esimerkiksi solmussa 1
 vasemman lapsen alipuun korkeus on $-1$ mutta oikean lapsen
 alipuun korkeus on 3.
 Korkeuksien erona on siis 4, vaikka ero saisi olla enintään 1.
+
+\emph{AVL-ehto}
 
 Kutsumme AVL-puun tasapainoehtoa \emph{AVL-ehdoksi}.
 Osoittautuu, että jos binäärihakupuu täyttää AVL-ehdon,
@@ -619,6 +638,8 @@ mikä tarkoittaa samaa kuin $h = O(\log n)$.
 \caption{Kierrot, joiden avulla korjaamme AVL-puuta.}
 \label{fig:avlkie}
 \end{figure}
+
+\index{kierto}
 
 Voimme toteuttaa AVL-puun operaatiot muuten samaan tapaan
 kuin yleisessä binäärihakupuussa, mutta meidän täytyy varmistaa
