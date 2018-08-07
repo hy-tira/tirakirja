@@ -2,7 +2,7 @@
 
 \index{binäärihakupuu}
 
-Binäärihakupuu on tietorakenne, joka pitää yllä
+\emph{Binäärihakupuu} on tietorakenne, joka pitää yllä
 alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
 Binäärihakupuu eroaa hajautustaulusta kuitenkin siinä,
 että se säilyttää alkioita \emph{järjestyksessä}.
@@ -192,9 +192,11 @@ esijärjestys on $[1,2,4,3,5,6,7,8]$,
 sisäjärjes\-tys on $[4,2,1,5,3,7,6,8]$ ja
 jälkijärjestys on $[4,2,5,7,8,6,3,1]$.
 
-Seuraava funktio tulostaa binääripuun solmut
+Voimme käydä binääripuun solmut läpi kaikissa yllä mainituissa
+järjes\-tyksissä rekursion avulla.
+Esimerkiksi seuraava funktio tulostaa puun solmut
 sisäjärjestyksessä, kun sille annetaan parametrina
-puun juuri.
+puun juuri:
 
 \begin{code}
 function tulosta(solmu)
@@ -210,9 +212,9 @@ function tulosta(solmu)
 Binäärihakupuu on binääripuu, jonka kukin solmu
 vastaa yhtä joukon alkiota.
 Solmut on järjestetty niin, että jokaisessa solmussa
-kaikki vasemman alipuun alkiot ovat solmun alkiota pienempiä
-ja vastaavasti kaikki oikean alipuun alkiot
-ovat solmun alkiota suurempia.
+kaikki vasemman alipuun solmut ovat arvoltaan pienempiä
+ja vastaavasti kaikki oikean alipuun solmut
+ovat arvoltaan suurempia.
 Tämän ansiosta voimme löytää kätevästi halutun
 alkion puusta aloittamalla haun puun juuresta.
 
@@ -243,7 +245,7 @@ pienemmät alkiot, eli se vastaa joukkoa $\{2,3\}$.
 Oikeassa alipuussa taas on kaikki alkiota 5
 suuremmat alkiot, eli se vastaa joukkoa $\{7,8,9\}$.
 Huomaa, että tämä on yksi monista tavoista muodostaa
-binäärihakupuu joukolle ja voisimme valita myös
+binäärihakupuu kyseiselle joukolle ja voisimme valita myös
 minkä tahansa muun alkion puun juureksi.
 
 \subsection{Operaatioiden toteutus}
@@ -469,6 +471,8 @@ Vasemman puun korkeus on 2 ja oikean puun korkeus on 4.}
 \label{fig:bihkor}
 \end{figure}
 
+\index{tasapainoinen puu}
+
 Jotta binäärihakupuu toimisi tehokkaasti, haluamme,
 että puun korkeus ei kasva liian suureksi.
 Tarkemmin ottaen tavoitteemme on, että
@@ -515,7 +519,7 @@ vasemman lapsen alipuun korkeus on $-1$ mutta oikean lapsen
 alipuun korkeus on 3.
 Korkeuksien erona on siis 4, vaikka ero saisi olla enintään 1.
 
-\emph{AVL-ehto}
+\index{AVL-ehto}
 
 Kutsumme AVL-puun tasapainoehtoa \emph{AVL-ehdoksi}.
 Osoittautuu, että jos binäärihakupuu täyttää AVL-ehdon,
@@ -965,6 +969,14 @@ ja \texttt{compareTo} kertoo kahden olion suuruusjärjestyksen.
 Jälkimmäisen metodin ansiosta luokka toteuttaa rajapinnan
 \texttt{Comparable}.
 
+Miksi oikeastaan metodi \texttt{equals} on tarpeen?
+Metodi \texttt{compareTo} palauttaa arvon 0 tarkalleen silloin,
+kun alkiot ovat yhtä suuret, joten myös sen avulla voi
+tarkastaa asian.
+Syynä on, että \texttt{TreeSet} toteuttaa rajapinnan \texttt{Set},
+joka edellyttää, että luokassa on oikein toimiva metodi \texttt{equals},
+vaikka siitä ei sinänsä olekaan hyötyä tässä tapauksessa.
+
 \section{Tehokkuusvertailu}
 
 Monissa ongelmissa meillä on kaksi mahdollista lähestymistapaa:
@@ -1021,11 +1033,11 @@ Tämä ratkaisu vie aikaa $O(n \log n)$, koska taulukon järjestäminen
 vie aikaa $O(n \log n)$.
 
 \begin{code}
-int[] lista = taulu.clone();
-Arrays.sort(lista);
+int[] kopio = taulu.clone();
+Arrays.sort(kopio);
 int laskuri = 1;
-for (int i = 1; i < lista.length; i++) {
-    if (lista[i-1] != lista[i]) laskuri++;
+for (int i = 1; i < kopio.length; i++) {
+    if (kopio[i-1] != kopio[i]) laskuri++;
 }
 System.out.println(laskuri);
 \end{code}
