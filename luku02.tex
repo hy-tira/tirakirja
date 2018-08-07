@@ -13,7 +13,7 @@ Tässä luvussa tutustumme työkaluihin, joiden avulla
 voimme arvioida algoritmien tehokkuutta.
 Keskeinen käsite on \emph{aikavaativuus}, joka antaa
 tiiviissä muodossa kuvan algoritmin ajankäytöstä.
-Aikavaativuuden avulla voimme muodostaa pika-arvion
+Aikavaativuuden avulla voimme muodostaa arvion
 algoritmin tehokkuudesta sen rakenteen perusteella,
 eikä meidän tarvitse toteuttaa ja testata algoritmia
 vain saadaksemme tietää, miten nopea se on.
@@ -22,9 +22,7 @@ vain saadaksemme tietää, miten nopea se on.
 
 \index{aikavaativuus}
 
-Algoritmin tehokkuus riippuu siitä,
-montako askelta siihen kuuluu eli
-montako kertaa sen koodissa olevia rivejä suoritetaan.
+Algoritmin tehokkuus riippuu siitä, montako askelta se suorittaa.
 Tavoitteemme on nyt arvioida algoritmin askelten määrää
 suhteessa syötteen kokoon $n$.
 Esimerkiksi jos syötteenä on taulukko,
@@ -44,7 +42,7 @@ for i = 0 to n-1
 \end{code}
 
 Voimme arvioida algoritmin tehokkuutta tutkimalla
-jokaisesta rivistä, montako kertaa se suoritetaan algoritmin aikana.
+jokaisesta rivistä, montako kertaa algoritmi suorittaa sen.
 Rivi 1 suoritetaan vain kerran algoritmin alussa.
 Tämän jälkeen alkaa silmukka, jossa
 rivit 2 ja 3 suoritetaan molemmat $n$ kertaa
@@ -64,12 +62,12 @@ Esimerkiksi yllä oleva algoritmi toimii ajassa $O(n)$,
 koska se suorittaa selkeästi enintään $4n$ askelta
 kaikilla $n$:n arvoilla.
 
+\subsection{Laskusääntöjä}
+
 Aikavaativuuden mukavana puolena on, että voimme yleensä
 päätellä aikavaativuuden helposti algoritmin
 rakenteesta. Tutustumme seuraavaksi laskusääntöihin,
 joiden avulla tämä on mahdollista.
-
-\subsection{Laskusääntöjä}
 
 \subsubsection{Yksittäiset komennot}
 
@@ -144,7 +142,7 @@ for i = 1 to n
 
 Joskus aikavaativuus riippuu useammasta tekijästä,
 jolloin kaavassa on monta muuttujaa.
-Seuraavan koodin aikavaativuus on $O(nm)$:
+Esimerkiksi seuraavan koodin aikavaativuus on $O(nm)$:
 
 \begin{code}
 for i = 1 to n
@@ -156,7 +154,7 @@ for i = 1 to n
 
 Rekursiivisessa algoritmissa laskemme,
 montako rekursiivista kutsua teh\-dään ja kauanko
-kutsut vievät aikaa.
+yksittäinen kutsu vie aikaa.
 Tarkastellaan esimerkkinä seuraavaa
 funktiota, jota kutsutaan parametrilla $n$:
 
@@ -167,8 +165,9 @@ function f(n)
     f(n-1)
 \end{code}
 
-Funktiota kutsutaan yhteensä $n$ kertaa ja jokainen
-kutsu vie aikaa $O(1)$, joten funktion aikavaativuus on $O(n)$.
+Funktiota kutsutaan yhteensä $n$ kertaa ja jokainen kutsu vie aikaa $O(1)$.
+Saamme selville funktion aikavaativuuden kertomalla nämä arvot keskenään,
+joten funktio vie aikaa $O(n)$.
 
 Tarkastellaan sitten seuraavaa funktiota:
 
@@ -180,15 +179,18 @@ function g(n)
     g(n-1)
 \end{code}
 
-Koska jokainen kutsu tuottaa kaksi uutta kutsua,
-funktiota kutsutaan kaikkiaan $O(2^n)$ kertaa.
-Jokainen kutsu vie aikaa $O(1)$,
-joten funktion aikavaativuus on $O(2^n)$.
+Tässä tapauksessa jokainen funktion kutsu tuottaa kaksi uutta kutsua,
+joten funktiota kutsutaan kaikkiaan
+\[1+2+4+\dots+2^{n-1}=2^n-1\]
+kertaa. Jokainen kutsu vie aikaa $O(1)$,
+joten aikavaativuus on $O(2^n)$.
 
 \subsection{Yleisiä aikavaativuuksia}
 
 Tietyt aikavaativuudet esiintyvät usein algoritmeissa.
-Seuraavassa listassa on joukko tällaisia aikavaativuuksia.
+Käymme seuraavaksi läpi joukon tällaisia aikavaativuuksia.
+
+\index{vakioaikainen algoritmi}
 
 \subsubsection{$O(1)$ (vakioaikainen)}
 
@@ -200,6 +202,8 @@ vakioajassa summakaavan $n(n+1)/2$ avulla:
 \begin{code}
 summa = n*(n+1)/2
 \end{code}
+
+\index{logaritminen algoritmi}
 
 \subsubsection{$O(\log n)$ (logaritminen)}
 
@@ -217,9 +221,12 @@ while n > 0
 Tärkeä seikka logaritmeihin liittyen on, että
 $\log n$ on \emph{pieni} luku, kun $n$ on mikä tahansa 
 tyypillinen algoritmeissa esiintyvä luku.
-Esimerkiksi $\log 10^6 \approx 20$ ja $\log 10^9 \approx 30$.
+Esimerkiksi $\log 10^6 \approx 20$ ja $\log 10^9 \approx 30$,
+kun logaritmin kantaluku on 2.
 Niinpä jos algoritmi tekee jotain logaritmisessa ajassa,
 siinä ei kulu kauan aikaa.
+
+\index{lineaarinen algoritmi}
 
 \subsubsection{$O(n)$ (lineaarinen)}
 
@@ -261,6 +268,11 @@ Järjestäminen vie aikaa $O(n \log n)$
 ja silmukka vie aikaa $O(n)$, joten algoritmi vie
 yhteensä aikaa $O(n \log n)$.
 
+Tutustumme tarkemmin järjestämiseen ja sitä käyttäviin
+algoritmeihin seuraavassa luvussa 3.
+
+\index{neliöllinen algoritmi}
+
 \subsubsection{$O(n^2)$ (neliöllinen)}
 
 \emph{Neliöllinen} algoritmi voi käydä läpi kaikki tavat valita
@@ -269,12 +281,14 @@ Esimerkiksi seuraava $O(n^2)$-algoritmi tutkii, onko taulukossa
 kahta lukua, joiden summa on $x$.
 
 \begin{code}
-kaksi = false
+ok = false
 for i = 0 to n-1
     for j = i+1 to n-1
         if taulu[i]+taulu[j] == x
-            kaksi = true
+            ok = true
 \end{code}
+
+\index{kuutiollinen algoritmi}
 
 \subsubsection{$O(n^3)$ (kuutiollinen)}
 
@@ -284,12 +298,12 @@ Esimerkiksi seuraava $O(n^3)$-algoritmi tutkii, onko taulukossa
 kolmea lukua, joiden summa on $x$.
 
 \begin{code}
-kolme = false
+ok = false
 for i = 0 to n-1
     for j = i+1 to n-1
         for k = j+1 to n-1
             if taulu[i]+taulu[j]+taulu[k] == x
-                kolme = true
+                ok = true
 \end{code}
 
 \subsubsection{$O(2^n)$ (osajoukot)}
@@ -305,7 +319,7 @@ että algoritmi käy läpi syötteen alkioiden permutaatiot.
 \subsection{Tehokkuuden arviointi}
 
 Mitä hyötyä on määrittää algoritmin aikavaativuus?
-Hyötynä on, että aikavaativuus antaa meille pika-arvion siitä,
+Hyötynä on, että aikavaativuus antaa meille arvion siitä,
 kuinka \emph{hyvä} algoritmi on eli miten suuria syötteitä
 sillä voi käsitellä tehokkaasti.
 Kun meille kertyy kokemusta algoritmien suunnittelusta,
@@ -340,9 +354,8 @@ suuri & $O(1)$ tai $O(\log n)$ \\
 \end{table}
 
 Yksi kiinnostava näkökulma algoritmin tehokkuuteen on,
-miten suuren syötteen algoritmi voi käsitellä nopeasti.
-Tässä ''nopeasti'' tarkoittaa, että algoritmi käsittelee
-sille annetun syötteen \emph{silmänräpäyksessä}.
+miten suuren syötteen algoritmi voi käsitellä \emph{nopeasti}
+(alle sekunnissa).
 Tämä on hyvä vaatimus, kun haluamme käyttää algoritmia
 jossakin käytännön sovelluksessa.
 Taulukossa \ref{tab:algteh} on joitakin hyödyllisiä arvioita,
@@ -369,7 +382,7 @@ Seuraavaksi ratkaisemme saman tehtävän kahdella algoritmilla,
 joista ensimmäinen on suoraviivainen raa'an voiman
 algoritmi, joka toimii ajassa $O(n^2)$.
 Toinen algoritmi on puolestaan tehokas algoritmi,
-joka toimii ajassa $O(n)$.
+joka vie aikaa vain $O(n)$.
 
 Tehtävämme on seuraava: Annettuna on merkkijono,
 jonka pituus on $n$ ja jokainen merkki on 0 tai 1.
@@ -402,7 +415,7 @@ sisäkkäistä silmukkaa, jotka käyvät läpi syötteen.
 \subsubsection{$O(n)$-algoritmi}
 
 Kuinka voisimme ratkaista tehtävän tehokkaammin?
-Meidän tulisi käytän\-nössä keksiä tapa, jolla saisimme
+Meidän tulisi keksiä tapa, jolla saisimme
 pois toisen silmukan koodista.
 
 Tässä auttaa lähestyä ongelmaa hieman toisesta
@@ -497,7 +510,7 @@ että luokkaa $\Omega(f(n))$.
 \end{itemize}
 
 Vakion $c$ tarkoituksena on, että saamme arvion kasvunopeuden suuruusluokalle välittämättä
-vakiokertoimista. Vakion $n_0$ tarkoituksena on, että keskitymme tarkastelemaan
+vakiokertoimista. Vakion $n_0$ ansiosta meidän riittää tarkastella
 kasvunopeutta suurilla $n$:n arvoilla.
 Voimme myös kirjoittaa $g(n)=O(f(n))$, kun haluamme ilmaista,
 että funktio $g(n)$ on luokkaa $O(f(n))$,
