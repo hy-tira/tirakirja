@@ -4,15 +4,15 @@
 
 \emph{Järjestäminen} on keskeinen algoritmiikan ongelma,
 jossa tehtävänä on jär\-jestää $n$ alkiota sisältävä
-aineisto suuruusjärjestykseen.
-Esimerkiksi jos meillä on taulukko $[5,2,4,2,6,1]$ ja
-järjestämme alkiot pienimmästä suurimpaan,
+taulukko suuruusjärjestykseen.
+Esimerkiksi jos meil\-lä on taulukko $[5,2,4,2,6,1]$ ja
+järjestämme sen alkiot pienimmästä suurimpaan,
 tuloksena on taulukko $[1,2,2,4,5,6]$.
 
 Tavoitteemme on toteuttaa järjestäminen
 \emph{tehokkaasti}.
 On helppoa järjes\-tää taulukko ajassa $O(n^2)$,
-mutta tämä on liian hidasta suurella aineistolla.
+mutta tämä on liian hidasta suurella taulukolla.
 Tässä luvussa opimme kaksi tehokasta
 järjestämisalgoritmia, jotka vievät aikaa vain $O(n \log n)$.
 Toisaalta osoittautuu, että ei ole olemassa
@@ -25,7 +25,7 @@ Usein voimme helpottaa ongelman ratkaisemista
 järjestämällä ensin aineiston.
 Esimerkiksi jos haluamme tutkia,
 mikä alkio esiintyy useimmiten taulukossa,
-voimme järjestää ensin taulukon sisällön,
+voimme järjestää ensin taulukon,
 jolloin yhtä suuret alkiot päätyvät vierekkäin.
 Tämän jälkeen meidän riittää käydä taulukko läpi
 ja etsiä siitä pisin samaa alkiota toistava osuus.
@@ -34,16 +34,15 @@ ja etsiä siitä pisin samaa alkiota toistava osuus.
 
 \index{lisäysjärjestäminen}
 
-Tutustumme aluksi yksinkertaiseen järjestämisalgoritmiin
-nimeltä \emph{lisäysjär\-jestäminen},
-joka järjestää $n$-alkioisen aineiston ajassa $O(n^2)$.
+Tutustumme aluksi yksinkertaiseen järjestämisalgoritmiin,
+joka järjestää $n$-alkioisen taulukon ajassa $O(n^2)$ kahden silmukan avulla.
 Vaikka algoritmi ei ole nopea, se on tutustumisen arvoinen
 ja antaa hyvän lähtökohdan tehokkaampien algoritmien
 suunnittelemiselle.
 
 \subsection{Lisäysjärjestäminen}
 
-Lisäysjärjestäminen käy läpi taulukon
+\emph{Lisäysjärjestäminen} käy läpi taulukon
 vasemmalta oikealle.
 Kun algoritmi tulee tiettyyn taulukon kohtaan,
 se siirtää kyseisessä kohdassa olevan alkion
@@ -192,7 +191,7 @@ Olemme jo todenneet, että pahin mahdollinen syöte
 lisäysjärjestämiselle on käänteisessä järjestyksessä oleva taulukko.
 Tällaisessa taulukossa jokainen alkiopari muodostaa inversion,
 joten inversioiden määrä on
-\[1+2+\dots+(n-1)=\frac{n(n-1)}{2}=O(n^2).\]
+\[\frac{n(n-1)}{2}=O(n^2).\]
 Entä kuinka hyvin algoritmi toimii \emph{keskimäärin}?
 Jos oletamme, että taulukossa on $n$ eri alkiota satunnaisessa
 järjestyksessä, alkiopari muodostaa inversion todennäköisyydellä $1/2$.
@@ -304,12 +303,12 @@ kokonaiseksi järjestetyksi taulukoksi.
 \label{fig:lomjar}
 \end{figure}
 
-Lomitusjärjestäminen on rekursiivinen järjestämisalgoritmi,
+\emph{Lomitusjärjestäminen} on rekursiivinen järjestämisalgoritmi,
 joka perustuu taulukon puolituksiin.
 Kun saamme järjestettäväksi $n$-kokoisen taulukon,
 jaamme sen keskeltä kahdeksi osataulukoksi,
 joissa molemmissa on noin $n/2$ alkiota.
-Tämän jälkeen järjestämme molemmat osataulukot erikseen rekursiivisesti
+Tämän jälkeen järjestämme osataulukot erikseen rekursiivisesti
 ja \emph{lomitamme} sitten järjestetyt osataulukot niin,
 että niistä muodostuu kokonainen järjestetty taulukko.
 Rekursio päättyy tapaukseen $n=1$, jolloin
@@ -398,15 +397,16 @@ Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
 
 \index{pikajärjestäminen}
 
-Pikajärjestäminen tarjoaa toisenlaisen rekursiivisen
+\emph{Pikajärjestäminen} tarjoaa toisenlaisen rekursiivisen
 lähestymistavan taulukon järjestämiseen.
 Kun saamme järjestettäväksi taulukon, valitsemme ensin jonkin
 sen alkioista \emph{jakoalkioksi}.
 Tämän jälkeen siirrämme alkioita niin,
 että jakoalkiota pienemmät alkiot ovat sen vasemmalla puolella,
-jakoalkiota suuremmat alkiot ovat sen oikealla puolella ja
-jakoalkion kanssa yhtä suuret alkiot voivat olla kummalla tahansa puolella.
-Lopuksi järjestämme rekursiivisesti vasemman ja oikean osataulukon.
+suuremmat alkiot ovat sen oikealla puolella ja
+yhtä suuret alkiot voivat olla kummalla tahansa puolella.
+Lopuksi järjestämme rekursiivisesti osataulukot,
+jotka muodostuvat jakoalkion vasemmalle ja oikealle puolelle.
 
 Seuraava koodi esittää pikajärjestämisen toiminnan:
 
@@ -437,10 +437,9 @@ Käy\-tämme tässä esimerkkinä seuraavaa toteutusta:
 
 \begin{code}
 function jako(a,b):
-    x = taulu[a]
     k = a
     for i = a+1 to b
-        if taulu[i] < x
+        if taulu[i] < taulu[a]
             k += 1
             swap(taulu[i],taulu[k])
     swap(taulu[a],taulu[k])
@@ -448,7 +447,7 @@ function jako(a,b):
 \end{code}
 
 Tässä jakoalkio on aina välin ensimmäinen alkio,
-joka tallennetaan muuttujaan $x$.
+joka on kohdassa $a$.
 Funktio käy läpi välin alkiot ja siirtää
 jakoalkiota pienempiä alkioita taulukon alkuosaan.
 Muuttuja $k$ määrittää kohdan,
@@ -604,6 +603,8 @@ tai kaikki alkiot ovat samoja.
 Miksi haluaisimme koskaan käyttää epävarmaa pikajärjestämistä,
 kun voimme käyttää myös varmasti tehokasta lomitusjärjestämistä?
 
+\index{vakiokerroin}
+
 Syynä on, että pikajärjestämisen \emph{vakiokertoimet} ovat pienet.
 Kokemus on osoittanut, että kun toteutamme lomitusjärjestämisen ja
 pikajärjestämisen ja mittaamme algoritmien todellisia suoritusaikoja,
@@ -698,7 +699,7 @@ pahimmassa tapauksessa $\Omega(n \log n)$ vertailua.
 Millainen olisi sitten järjestämisalgoritmi,
 joka ei perustu vertailuihin ja toimii
 tehokkaammin kuin $O(n \log n)$?
-Laskemisjärjestäminen on $O(n)$-aikainen järjestämisalgoritmi,
+\emph{Laskemisjärjestäminen} on $O(n)$-aikainen järjestämisalgoritmi,
 jonka toiminta perustuu oletukseen, että taulukon alkiot
 ovat sopivan pieniä kokonaislukuja.
 Tarkemmin ottaen algoritmi olettaa, että jokainen luku on
@@ -766,7 +767,7 @@ Jos taas alkiot ovat oliotyyppisiä
 (esimerkiksi \texttt{String}),
 algoritmina on optimoitu lomitusjärjestäminen.
 
-Kun \texttt{Arrays.sort} järjestää taulukon,
+Kun \texttt{Arrays.sort} järjestää olioita sisältävän taulukon,
 se kutsuu metodia \texttt{compareTo} aina, kun se haluaa selvittää
 kahden alkion suuruusjärjestyksen.
 Metodin tulee palauttaa negatiivinen arvo, nolla tai positiivinen arvo
@@ -849,7 +850,7 @@ tavalla tai toisella järjestystä algoritmin loppuosassa.
 \label{sec:taukas}
 
 Järjestämisen avulla voimme ratkaista ajassa
-$O(n \log n)$ monia taulukkoihin liittyviä tehtäviä.
+$O(n \log n)$ monia taulukoihin liittyviä tehtäviä.
 Käymme seuraavaksi läpi kaksi tällaista tehtävää.
 
 Ensimmäinen tehtävämme on laskea,
@@ -909,9 +910,9 @@ kokonaisaikavaativuus on $O(n \log n)$.
 
 \index{binäärihaku}
 
-Binäärihaku on menetelmä, jonka avulla voimme löytää alkion
+\emph{Binäärihaku} on menetelmä, jonka avulla voimme löytää alkion
 järjestetystä taulukosta ajassa $O(\log n)$.
-Ideana on pitää yllä väliä, jossa etsittävä alkio voi olla,
+Ideana on pitää yllä hakuväliä, jossa etsittävä alkio voi olla,
 ja puolittaa väli joka askeleella tutkimalla välin
 keskimmäisenä olevaa alkiota.
 Koska taulukko on järjestyksessä, voimme aina päätellä,
