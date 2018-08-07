@@ -2,11 +2,11 @@
 
 \index{keko}
 
-Keko on tietorakenne, joka toteuttaa erikoistuneen joukon,
-jossa voimme lisätä alkioita vapaasti, mutta voimme
-etsiä ja poistaa vain pienimmän tai suurimman alkion,
-riippuen keon tyypistä.
-Keon etuna on, että saamme aikaan
+\emph{Keko} on tietorakenne, jonka operaatiot ovat
+alkion lisääminen sekä
+pienimmän tai suurimman alkion etsiminen ja poistaminen.
+Vaikka voisimme toteuttaa nämä operaatiot myös
+binäärihakupuun avulla, keon etuna on, että saamme aikaan
 yleistä joukkorakennetta \emph{kevyemmän} rakenteen, kun
 rajoitumme tilanteeseen, jossa käytössämme on vain nämä operaatiot.
 
@@ -22,14 +22,10 @@ joka perustuu binäärikekoon.
 
 \index{binäärikeko}
 
-Binäärikeko on binääripuu, jonka jokaisessa solmussa on
-yksi joukkoon kuuluva alkio.
-Puu on rakennettu niin, että sen kaikki tasot alinta
-tasoa lukuun ottamatta ovat täynnä solmuja,
-eli kaikilla solmuilla on vasen ja oikea lapsi.
-Alin taso on puolestaan täytetty niin,
-että solmut on sijoitettu mahdollisimman vasemmalle
-ylempien solmujen lapsiksi.
+\emph{Binäärikeko} on binääripuu, jonka kaikki tasot
+alinta tasoa lukuun ottamatta ovat täynnä solmuja.
+Alimman tason solmut on puolestaan sijoitettu
+mahdollisimman vasemmalle ylempien solmujen lapsiksi.
 
 \index{minimikeko}
 \index{maksimikeko}
@@ -41,10 +37,10 @@ Minimikeossa voimme etsiä ja poistaa pienimmän alkion,
 kun taas maksimikeossa voimme etsiä ja poistaa suurimman alkion.
 Keon toiminta perustuu siihen, että jokainen
 keon solmu täyttää \emph{kekoehdon}.
-Minimikeossa ehtona on,
-että solmun arvo on suurempi tai yhtä suuri kuin vanhemman arvo,
-ja maksimikeossa solmun arvon tulee olla
-pienempi tai yhtä suuri kuin vanhemman arvon.
+Minimikeossa ehtona on, että jokaisen solmun arvo on
+pienempi tai yhtä suuri kuin sen lapsen arvo.
+Maksimikeossa puolestaan jokaisen solmun arvo
+on suurempi tai yhtä suuri kuin sen lapsen arvo.
 Kekoehdon ansiosta minimikeon juuressa on keon
 pienin alkio ja maksimikeon juuressa on keon suurin alkio.
 
@@ -81,11 +77,8 @@ Keon kolme ensimmäistä tasoa ovat täynnä
 ja neljännellä tasolla kolme ensimmäistä kohtaa on käytetty.
 Keon juurena on joukon pienin alkio $1$,
 ja kaikki solmut täyttävät kekoehdon.
-
-Huomaa, että toisin kuin aiemmissa joukkorakenteissamme,
-sama alkio voi esiintyä keossa useasti.
-Esimerkiksi kuvan \ref{fig:minkek} keko
-sisältää monta kertaa alkiot $5$ ja $8$.
+Huomaa, että sama alkio voi esiintyä monta kertaa keossa,
+kuten tässä keossa alkiot $5$ ja $8$.
 
 \subsection{Keon tallentaminen}
 
@@ -115,11 +108,11 @@ Lisäksi jos tiedämme, että tietty solmu on kohdassa $k$,
 niin solmun vasen lapsi on kohdassa $2k$,
 solmun oikea lapsi on kohdassa $2k+1$ ja
 solmun vanhempi on kohdassa $\lfloor k/2 \rfloor$.
-Esimerkissämme solmu 4
-on taulukossa kohdassa $4$,
-joten sen vasen lapsi on kohdassa $8$,
-oikea lapsi on kohdassa $9$ ja
-vanhempi on kohdassa $2$.
+Esimerkissämme solmu $3$
+on taulukossa kohdassa $2$,
+joten sen vasen lapsi on kohdassa $4$,
+oikea lapsi on kohdassa $5$ ja
+vanhempi on kohdassa $1$.
 
 Käytännössä haluamme yleensä,
 että pystymme lisäämään kekoon uusia alkioita,
@@ -274,9 +267,9 @@ Kun haluamme poistaa keon juuressa olevan alkion,
 siirrämme ensin keon viimeisen alkion keon juureksi
 ja poistamme sille kuuluneen solmun.
 Tämän jälkeen lasketamme juureen nostettua alkiota
-alaspäin keossa, kunnes kekoehto tulee jälleen voimaan.
+alaspäin keossa, kunnes kekoehto on jälleen voimassa kaikkialla.
 Koska solmulla voi olla kaksi lasta,
-meillä voi olla kaksi vaihtoehtoa,
+voi olla kaksi vaihtoehtoa,
 kumman lapsista nostamme ylemmäs.
 Jos keko on minimikeko, valitsemme lapsen,
 jossa on pienempi arvo,
@@ -454,7 +447,7 @@ vain pienimmän tai suurimman alkion, voi siis olla hyvä
 ratkaisu käyttää kekoa binäärihakupuun sijasta.
 Mutta kuinka suuria erot ovat käytännössä?
 
-Tämän selvittämiseksi teemme testin,
+Tästä antaa kuvaa seuraava testi,
 jossa vertailemme keskenään Javan tietorakenteita
 \texttt{PriorityQueue} ja \texttt{TreeSet}.
 Testissä meillä on taulukko,
@@ -639,7 +632,7 @@ koko taulukossa.
 Kuva \ref{fig:taukek} näyttää esimerkin, jossa muutamme taulukon
 $[7,4,6,1,3,5,2]$ minimikeoksi.
 Kun tulkitsemme taulukon kekona, kekoehto on aluksi
-rikki monessa kohdassa taulukossa.
+rikki monessa taulukon kohdassa.
 Ensin korjaamme kekoehdon tason 2 alipuissa vaihtamalla
 keskenään alkiot 2 ja 6 ja sitten alkiot 1 ja 4.
 Tämän jälkeen korjaamme kekoehdon tason 1 alipuussa
@@ -669,7 +662,7 @@ joten aikaa kuluu vain $O(n)$.
 
 \index{kekojärjestäminen}
 
-Kekojärjestäminen on järjestämisalgoritmi,
+\emph{Kekojärjestäminen} on järjestämisalgoritmi,
 jonka toiminta perustuu kekoon.
 Ideana on muuttaa järjestettävä taulukko ensin keoksi
 ja sen jälkeen poistaa alkiot keosta yksi kerrallaan
