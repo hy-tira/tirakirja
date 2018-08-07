@@ -2,16 +2,16 @@
 
 \index{hajautustaulu}
 
-Hajautustaulu on tietorakenne,
+\emph{Hajautustaulu} on tietorakenne,
 joka pitää yllä alkioiden joukkoa.
 Voimme tarkastaa,
 kuuluuko tietty alkio joukkoon,
 sekä lisätä ja poistaa alkioita.
 Kuten matematiikassa, jokainen alkio
 voi esiintyä enintään kerran joukossa.
-Hajautustaulu toteuttaa kaikki yllä mainitut
-operaatiot tehokkaasti, mikä tekee siitä
-kätevän työkalun algoritmien suunnittelussa.
+Hajautustaulussa kaikki yllä mainitut
+operaatiot toimivat tehokkaasti, mikä tekee siitä
+kätevän työkalun algoritmien toteuttamisessa.
 
 Tutustumme tässä luvussa ensin hajautustaulun
 toimintaan ja sen tehokkuuteen
@@ -240,7 +240,7 @@ taulu["aaa"] = 8
 \end{code}
 
 Tässä tapauksessa hakemiston avaimet ovat merkkijonoja
-ja avaimet ovat kokonaislukuja.
+ja arvot ovat kokonaislukuja.
 Hajautustaulun ansiosta voimme käsitellä hakemistoa
 taulukon tavoin niin, että operaatiot vievät aikaa $O(1)$.
 
@@ -259,6 +259,13 @@ taulukon tavoin niin, että operaatiot vievät aikaa $O(1)$.
 \caption{Hakemiston tallentaminen hajautustauluun.}
 \label{fig:hajhak}
 \end{figure}
+
+Voimme myös toteuttaa hakemiston, jonka avaimet ovat kokonaislukuja.
+Tällaisessa tietorakenteessa on järkeä, jos avaimet ovat niin suuria,
+että emme voi käyttää sen sijasta tavallista taulukkoa.
+Kuitenkin jos avaimet ovat pieniä kokonaislukuja,
+taulukko on paljon parempi valinta, koska sen vakiokertoimet
+ovat huomattavasti pienemmät.
 
 \section{Javan toteutukset}
 
@@ -449,12 +456,12 @@ että meille annetaan $n$ lukua ja meidän tulee ilmoittaa
 jokaisen luvun jälkeen, montako eri lukua olemme saaneet
 tähän mennessä, ennen kuin saamme seuraavan luvun.
 Voimme ratkaista tehtävän seuraavasti olettaen,
-että voimme hakea lukuja funktiolla \texttt{hae\_luku}.
+että voimme hakea lukuja funktiolla \texttt{haeLuku}.
 
 \begin{code}
 alkiot = []
 for i = 1 to n
-    luku = hae_luku()
+    luku = haeLuku()
     alkiot.add(luku)
     print(alkiot.size())
 \end{code}
