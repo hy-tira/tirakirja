@@ -8,7 +8,7 @@ jotka ovat peräkkäin tietyssä järjestyksessä.
 Esimerkiksi $[3,7,2,5]$ on lista, joka sisältää neljä alkiota.
 Haluamme toteuttaa listan niin,
 että pääsemme käsiksi tietyssä kohdassa olevaan alkioon
-ja pystymme lisäämään ja poistamaan alkioita.
+ja lisäksi pystymme lisäämään ja poistamaan alkioita.
 
 Tässä luvussa tutustumme kahteen lähestymistapaan listan luomiseen.
 Ensin toteutamme taulukkolistan,
@@ -22,7 +22,7 @@ hyvät ja huonot puolensa.
 
 \index{taulukkolista}
 
-Taulukkolista on lista, joka on tallennettu taulukkona.
+\emph{Taulukkolista} on lista, joka on tallennettu taulukkona.
 Koska taulukon alkiot sijaitsevat aina peräkkäin muistissa,
 pääsemme käsiksi mihin tahansa listan alkioon ajassa $O(1)$.
 Haasteena toteutuksessa on kuitenkin,
@@ -257,16 +257,6 @@ kohdassa ja listan sisältö voi tarvittaessa jatkua taulukon lopusta alkuun.
 \label{fig:lismol}
 \end{figure}
 
-Kuva \ref{fig:lismol} näyttää esimerkin listan $[3,7,2,5]$
-uudesta tallennustavasta.
-Merkki $\rightarrow$ osoittaa kohdan, josta lista alkaa,
-ja merkki $\leftarrow$ osoittaa kohdan, johon lista päättyy.
-Kun haluamme lisätä alkion listan alkuun,
-siirrymme vasemmalle kohdasta $\rightarrow$,
-ja kun haluamme lisätä alkion listan loppuun,
-siirrymme oikealle kohdasta $\leftarrow$.
-Kun haluamme poistaa alkioita listasta,
-menettelemme käänteisesti.
 
 \begin{figure}
 \center
@@ -285,10 +275,21 @@ menettelemme käänteisesti.
 \node at (4.5,-0.5) {$\rightarrow$};
 \end{scope}
 \end{tikzpicture}
-\caption{Lista $[2,5,3,7,2,5,4,1]$ täyttää koko taulukon, emmekä voi lisätä uutta alkiota.
-Ratkaisuna on varata suurempi taulukko.}
+\caption{Lista täyttää koko taulukon, emmekä voi lisätä uutta alkiota.
+Ratkaisuna on varata listalle uusi suurempi taulukko.}
 \label{fig:lismol2}
 \end{figure}
+
+Kuva \ref{fig:lismol} näyttää esimerkin listan $[3,7,2,5]$
+uudesta tallennustavasta.
+Merkki $\rightarrow$ osoittaa kohdan, josta lista alkaa,
+ja merkki $\leftarrow$ osoittaa kohdan, johon lista päättyy.
+Kun haluamme lisätä alkion listan alkuun,
+siirrymme vasemmalle kohdasta $\rightarrow$,
+ja kun haluamme lisätä alkion listan loppuun,
+siirrymme oikealle kohdasta $\leftarrow$.
+Kun haluamme poistaa alkioita listasta,
+menettelemme käänteisesti.
 
 Jos kohdat $\rightarrow$ ja $\leftarrow$ ovat vierekkäin,
 taulukko on täynnä, emmekä voi enää lisätä uutta alkiota
@@ -297,14 +298,14 @@ Kuva \ref{fig:lismol2} näyttää esimerkin tällaisesta tilanteesta.
 Tällöin meidän täytyy varata uusi suurempi taulukko,
 johon listan sisältö siirretään.
 Voimme menetellä samalla tavalla kuin aiemmin ja
-kaksinkertaistaa taulukon koon joka vaiheessa,
+esimerkiksi kaksinkertaistaa taulukon koon joka vaiheessa,
 jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \section{Linkitetty lista}
 
 \index{linkitetty lista}
 
-Linkitetty lista muodostuu solmuista, joista jokainen sisältää
+\emph{Linkitetty lista} muodostuu solmuista, joista jokainen sisältää
 yhden listan alkion.
 Linkitetty lista voi olla yhteen tai kahteen suuntaan linkitetty.
 Yhteen suuntaan linkitetyssä listassa jokaisesta solmusta
@@ -393,8 +394,15 @@ kenttä \texttt{seuraava} osoittaa seuraavaan solmuun
 ja kenttä \texttt{edellinen} osoittaa edelliseen solmuun.
 Jos seuraavaa tai edellistä solmua ei ole,
 viittauksen tilalla on arvo \texttt{null}.
-Tämän luokan avulla voisimme luoda linkitetyn listan $[3,7,2,5]$
-seuraavasti:
+Esimerkiksi seuraava koodi luo solmun,
+jonka arvona on 5 ja joka ei viittaa mihinkään:
+
+\begin{code}
+Solmu s = new Solmu(5, null, null);
+\end{code}
+
+Seuraava koodi puolestaan näyttää, kuinka voimme luoda
+tämän luokan avulla linkitetyn listan $[3,7,2,5]$:
 
 \begin{code}
 Solmu s1, s2, s3, s4;
@@ -790,6 +798,8 @@ System.out.println(lista); // [2, 1, 3]
 lista.removeFirst();
 System.out.println(lista); // [1, 3]
 \end{code}
+
+\index{iteraattori}
 
 Jos haluamme tehdä lisäyksiä ja poistoja muualla listassa,
 meidän täytyy ottaa käyttöön \emph{iteraattori}, joka osoittaa haluttuun kohtaan.
