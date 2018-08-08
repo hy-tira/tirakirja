@@ -62,7 +62,7 @@ verkon solmujen välillä.
 \end{figure}
 
 Tavallisin tilanne käytännön verkko-ongelmissa on,
-että haluamme löytää lyhimmän polun verkon solmusta toiseen.
+että haluamme löytää lyhimmän polun solmusta $a$ solmuun $b$.
 Yksittäisen lyhimmän polun etsiminen vaatii usein kuitenkin,
 että etsimme sitä ennen muitakin lyhimpiä polkuja.
 Niinpä keskitymme alusta asti yleisempään ongelmaan,
@@ -84,7 +84,7 @@ seuraavaksi kahteen algoritmiin lyhimpien polkujen etsimiseen.
 
 \index{Bellman–Fordin algoritmi}
 
-Bellman–Fordin algoritmi etsii lyhimmät polut
+\emph{Bellman–Fordin algoritmi} etsii lyhimmät polut
 annetusta lähtösolmusta kaikkiin verkon solmuihin.
 Algoritmi muodostaa taulukon, joka kertoo jokaiselle
 verkon solmulle sen etäisyyden lähtösolmusta.
@@ -228,7 +228,7 @@ Toinen havainto on,
 että $n$ solmun verkossa jokainen lyhin polku voi
 sisältää enintään $n-1$ kaarta,
 kun oletamme, että verkossa ei ole negatiivista sykliä.
-Jos polkuun kuuluisi $n$ tai enemmän kaaria,
+Jos polkuun kuuluisi $n$ kaarta tai enemmän,
 jokin solmu esiintyisi polulla monta kertaa.
 Tämä ei ole kuitenkaan mahdollista,
 koska ei olisi järkeä kulkea monta kertaa saman solmun kautta,
@@ -292,7 +292,7 @@ olemme löytäneet negatiivisen syklin.
 
 \index{Dijkstran algoritmi}
 
-Dijkstran algoritmi on Bellman–Fordin algoritmin tehostettu versio,
+\emph{Dijkstran algoritmi} on Bellman–Fordin algoritmin tehostettu versio,
 jonka toiminta perustuu oletukseen, että verkossa ei ole
 negatiivisen painoisia kaaria.
 Bellman–Fordin algoritmin tapaan Dijkstran algoritmi pitää
@@ -413,7 +413,7 @@ verkon vieruslistaesitystä.
 Voimme toteuttaa algoritmin seuraavasti:
 
 \begin{code}
-keko.push([0,alku])
+keko.push((0,alku))
 while not keko.empty()
     solmu = keko.pop()[1]
     if kasitelty[solmu]
@@ -424,7 +424,7 @@ while not keko.empty()
         uusi = etaisyys[solmu]+kaari.paino
         if uusi < nyky
             etaisyys[kaari.loppu] = uusi
-            keko.push([uusi,kaari.loppu])
+            keko.push((uusi,kaari.loppu))
 \end{code}
 
 Huomaa, että keossa voi olla samaan aikaan \emph{useita} etäisyyksiä
@@ -486,7 +486,7 @@ Algoritmin kokonaisaikavaativuus on siis $O(n + m \log m)$.
 
 Voimme vielä hieman siistiä aikavaativuutta, kun
 teemme luontevan oletuksen,
-että verkossa ei ole kahta kaarta, joiden alku- ja loppusolmu on sama.
+että verkossa ei ole kahta kaarta, joiden alku- ja loppusolmu ovat samat.
 Tällöin $m \le n^2$, jolloin $\log m = \log (n^2) = 2 \log n$
 ja saamme algoritmin aikavaativuudeksi $O(n+m \log n)$.
 
@@ -512,8 +512,9 @@ Floyd–Warshallin algoritmilla.
 \subsection{Floyd–Warshallin algoritmi}
 
 \index{Floyd–Warshallin algoritmi}
+\index{etäisyysmatriisi}
 
-Floyd–Warshallin algoritmi muodostaa $n \times n$ -kokoisen
+\emph{Floyd–Warshallin algoritmi} muodostaa $n \times n$ -kokoisen
 \emph{etäisyysmatriisin},
 jossa rivin $a$ sarakkeessa $b$ on lyhimmän polun pituus
 solmusta $a$ solmuun $b$.
@@ -631,7 +632,7 @@ ajatella algoritmin toimintaa ''käänteisesti'' rekursiivisesti:
 kun verkossa on lyhin polku solmusta $a$ solmuun $b$,
 millainen tämä polku voi olla?
 
-Jos solmu $x$ kuuluu polkuun, meille syntyy kaksi osaongelmaa:
+Jos jokin solmu $x$ kuuluu polkuun, meille syntyy kaksi osaongelmaa:
 meidän tulee etsiä ensin lyhin polku solmusta $a$ solmuun $x$
 ja sitten lyhin polku solmusta $x$ solmuun $b$.
 Näiden polkujen muodostamisessa voimme jälleen käydä läpi tapauksia,
@@ -687,6 +688,9 @@ Floyd–Warshallin algoritmi & $O(n^3)$ & etsii kaikki polut \\
 \caption{Algoritmit lyhimpien polkujen etsimiseen.}
 \label{tab:reiver}
 \end{table}
+
+\index{harva verkko}
+\index{tiheä verkko}
 
 Miten sitten Floyd–Warshallin algoritmi vertautuu muihin algoritmeihin?
 Tämä riippuu siitä, onko verkko \emph{harva} vai \emph{tiheä}.
