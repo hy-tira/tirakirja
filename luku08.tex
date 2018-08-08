@@ -19,17 +19,17 @@ jotka vievät aikaa $O(n)$ tai $O(n \log n)$.
 Tämä tarkoittaa käytännössä sitä, että voimme käydä läpi ja
 järjestää syötettä sekä käyttää tietorakenteita,
 joissa on tehokkaita operaatioita.
-Tämä rajaa sitä, mitä voimme tehdä algoritmissa, ja ohjaa
-algoritmin suunnittelua.
+Tämä ohjaa algoritmin suunnittelua,
+koska vaatimus tehokkuudesta rajoittaa,
+mitä voimme tehdä algoritmissa.
 
 \section{Ratkaisun vaiheet}
 
-Tarkastellaan esimerkkinä tehtävää,
+Aloitamme ongelmasta,
 jossa $n$ lasta haluaa mennä maailmanpyörään.
-Jokaisessa korissa voi istua yksi tai kaksi lasta.
-Tiedämme jokaisen lapsen painon,
-ja jokaisessa korissa suurin istujien
-yhteispaino saa olla $x$.
+Jokaisessa korissa voi istua yksi tai kaksi lasta,
+ja korissa istujien yhteispaino saa olla enintään $x$.
+Lisäksi tiedämme jokaisen lapsen painon.
 Mikä on pienin mahdollinen määrä koreja,
 joka riittää lapsille?
 Oletamme, ettei yhdenkään lapsen paino ylitä
@@ -63,6 +63,8 @@ Vaikeutena on kuitenkin, kuinka saamme tehtyä valinnan niin,
 että tuloksena on varmasti optimaalinen ratkaisu.
 Jos valitsemme väärällä tavalla koriin tulevat lapset,
 saatamme vahingossa käyttää liikaa koreja.
+
+\index{ahne algoritmi}
 
 Osoittautuu, että tässä tehtävässä toimiva algoritmi
 on valita aina seuraavaan koriin \emph{painavin} lapsi sekä sen pariksi
@@ -107,12 +109,12 @@ että koko algoritmi toimii oikein.
 Meillä on nyt toimiva algoritmi,
 mutta meidän täytyy vielä keksiä hyvä tapa toteuttaa se.
 Jotta algoritmista tulee tehokas,
-meidän tulee joka askeleella löytää nopeasti seuraavaan
+sen täytyy löytää joka askeleella nopeasti seuraavaan
 koriin tuleva painavin lapsi sekä mahdollinen sen pariksi tuleva lapsi.
 Ehkä helpoin tapa saavuttaa tämä tavoite on käyttää apuna järjestämistä.
 
 Seuraava algoritmi järjestää ensin lasten painot ja alkaa sitten
-jakaa lapsi koreihin.
+jakaa lapsia koreihin.
 Muuttuja $a$ lähtee liikkeelle taulukon alusta ja
 osoittaa aina kevyimmän lapsen painoon.
 Muuttuja $b$ puolestaan lähtee liikkeelle taulukon lopusta ja
@@ -260,7 +262,7 @@ hyvä tavoite olisi käydä taulukko läpi vain kerran.
 Kun olemme taulukon kohdassa $i$,
 monessako tähän kohtaan päättyvässä osataulukossa
 lukujen summa on $x$?
-Tämä tarkoittaa, että haluamme etsiä kohdat $j \le i$,
+Tämä tarkoittaa, että haluamme etsiä kohdat $0 \le j \le i$,
 joille pätee
 \[s(i)-s(j-1)=x\]
 eli
@@ -271,23 +273,22 @@ montako kertaa mikäkin summa on esiintynyt taulukon alkuosassa.
 Voimme toteuttaa algoritmin seuraavasti:
 
 \begin{code}
-summat[0] = 1
+kerrat[0] = 1
 laskuri = 0
 summa = 0
 for i = 0 to n-1
     summa += taulu[i]
-    laskuri += summat[summa-x]
-    summat[summa]++
+    laskuri += kerrat[summa-x]
+    kerrat[summa]++
 print(laskuri)
 \end{code}
 
 Joka askeleella muuttuja \texttt{summa} sisältää
 summan $s(i)$.
-Rakenne \texttt{summat} pitää kirjaa,
+Hakemisto \texttt{kerrat} puolestaan pitää kirjaa siitä,
 montako kertaa mikäkin alkuosan summa on esiintynyt tähän mennessä.
-Koska summat voivat olla suuria, tavallinen taulukko ei kelpaa,
-mutta voimme käyttää hajautustauluun tai binäärihakupuuhun
-perustuvaa hakemistoa.
+Voimme toteuttaa hakemiston hajautustaulun tai
+binäärihakupuun avulla.
 Näin saamme aikaan ratkaisun, joka vie aikaa $O(n)$ tai $O(n \log n)$
 riippuen valitusta tietorakenteesta.
 
@@ -298,35 +299,35 @@ riippuen valitusta tietorakenteesta.
 Binäärihaun tunnetuin käyttötarkoitus on alkion etsiminen
 järjestetystä taulukosta ajassa $O(\log n)$.
 Tämä on kuitenkin vain alkusoittoa sille,
-mitä binää\-rihaulla pystyy tekemään ja mikä on sen
-merkitys algoritmien suunnittelussa.
+mitä binää\-rihaulla pystyy tekemään ja mikä
+sen merkitys on algoritmien suunnittelussa.
 Binääri\-haun todellinen hyöty piilee siinä,
 että pystymme etsimään sen avulla tehokkaasti funktion \emph{muutoskohdan}.
 
 Oletetaan, että meillä on funktio $\texttt{ok}(x)$,
 joka kertoo, onko $x$ kelvollinen ratkaisu tehtävään.
-Lisäksi pätee $\texttt{ok}(x)=\texttt{false}$, kun $x<k$,
-ja $\texttt{ok}(x)=\texttt{true}$, kun $x \ge k$.
+Lisäksi pätee $\texttt{ok}(x)=\texttt{false}$, kun $x<u$,
+ja $\texttt{ok}(x)=\texttt{true}$, kun $x \ge u$.
 Binäärihaun avulla voimme etsiä tehokkaasti,
-mikä on funktion muutoskohta $k$
+mikä on funktion muutoskohta $u$
 eli ensimmäinen kohta, jossa funktio saa arvon \texttt{true}.
-Seuraava koodi toteuttaa haun, kun oletamme, että $k$ on välillä $1 \dots N$:
+Seuraava koodi toteuttaa haun, kun oletamme, että $u$ on välillä $1 \dots N$:
 
 \begin{code}
 a = 1, b = N
 while a < b
-    u = (a+b)/2
-    if ok(u)
-        b = u
+    k = (a+b)/2
+    if ok(k)
+        b = k
     else
-        a = u+1
-k = a
+        a = k+1
+u = a
 \end{code}
 
 Haun joka vaiheessa tiedämme, että muutoskohta on välillä $[a,b]$.
-Laskemme keskikohdan $u=\lfloor (a+b)/2 \rfloor$ ja tutkimme funktion arvoa kohdassa $u$.
-Jos pätee $\texttt{ok}(u)$, niin muutoskohdan on oltava välillä $[a,u]$,
-ja muuten sen täytyy olla välillä $[u+1,b]$.
+Laskemme keskikohdan $k=\lfloor (a+b)/2 \rfloor$ ja tutkimme funktion arvoa kohdassa $k$.
+Jos pätee $\texttt{ok}(k)$, niin muutoskohdan on oltava välillä $[a,k]$,
+ja muuten sen täytyy olla välillä $[k+1,b]$.
 Lopulta välillä on vain yksi alkio, jolloin olemme löytäneet muutoskohdan.
 Koska välin koko puolittuu joka askeleella,
 kutsumme funktiota \texttt{ok} yhteensä $O(\log N)$ kertaa.
@@ -362,9 +363,9 @@ montako minuuttia kestää valmistaa yksi tavara konetta käyttäen,
 ja haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
 $m$ tavaraa mahdollisimman nopeasti.
 
-Kuva \ref{fig:optkon} näyttää parhaan aikataulun esimerkkitilanteessa,
-jossa koneiden nopeudet ovat $[2,3,7]$ ja haluamme
-valmistaa seitsemän tavaraa (eli $m=7$).
+Kuva \ref{fig:optkon} näyttää parhaan aikataulun esimerkkitapauksessa,
+jossa koneiden määrä on $n=3$, koneiden nopeudet ovat $[2,3,7]$ ja
+valmistettavien tavaroiden määrä on $m=7$.
 Käynnistämme koneen 1 neljästi kahden minuutin välein,
 koneen 2 kahdesti kolmen minuutin välein ja koneen 3 kerran.
 Viimeisenä pysähtyy kone 1, kun aloittamisesta
@@ -373,34 +374,34 @@ on kulunut kahdeksan minuuttia.
 Voimme pukea tehtävän binäärihaulle sopivaan muotoon määrittämällä,
 että $\texttt{ok}(x)=\texttt{true}$ tarkalleen silloin, kun voimme valmistaa
 \emph{ainakin} $m$ tavaraa ajassa $x$.
-Tällöin funktion muutoskohta $k$ vastaa tehtävän ratkaisua.
+Tällöin funktion muutoskohta $u$ vastaa tehtävän ratkaisua.
 Entä miten voimme laskea funktion \texttt{ok} arvon?
-Jos meillä on $u$ minuuttia aikaa ja koneella $i$ kestää $x_i$
+Jos meillä on $x$ minuuttia aikaa ja koneella $i$ kestää $a_i$
 minuuttia valmistaa yksi tavara, pystymme valmistamaan
-$\lfloor u/x_i \rfloor$ tavaraa kyseistä konetta käyttäen.
+$\lfloor x/a_i \rfloor$ tavaraa kyseistä konetta käyttäen.
 Kun sitten käytössämme on kaikki koneet,
 pystymme valmistamaan yhteensä
-\[ s = \sum_{i=1}^n \lfloor u/x_i \rfloor \]
-tavaraa. Niinpä $\texttt{ok}(u)=\texttt{false}$, jos $s<m$,
-ja $\texttt{ok}(u)=\texttt{true}$, jos $s \ge m$.
+\[ s = \sum_{i=1}^n \lfloor x/a_i \rfloor \]
+tavaraa. Niinpä $\texttt{ok}(x)=\texttt{false}$, jos $s<m$,
+ja $\texttt{ok}(x)=\texttt{true}$, jos $s \ge m$.
 Voimme toteuttaa tämän käytännössä seuraavasti:
 
 \begin{code}
-function ok(u)
+function ok(x)
     s = 0
     for i = 1 to n
-        s += u/x[i]
+        s += x/a[i]
     return s >= m
 \end{code}
 
 Voimme kytkeä tämän funktion suoraan binäärihakuun,
 jolloin tuloksena on tehokas algoritmi tehtävän ratkaisemiseen.
 Meidän täytyy kuitenkin vielä valita arvo $N$,
-joka on jokin yläraja kohdalle $k$.
+joka on jokin yläraja kohdalle $u$.
 Tässä tehtävässä helppo valinta on
-\[N = x_1 \cdot m,\]
+\[N = a_1 \cdot m,\]
 mikä vastaa ratkaisua, jossa käytämme vain ensimmäistä konetta.
-On varmaa, että oikea $k$:n arvo on korkeintaan $N$,
+On varmaa, että oikea $u$:n arvo on korkeintaan $N$,
 joten binäärihaku kutsuu $O(\log N)$ kertaa funktiota $\texttt{ok}$.
 Koska jokainen funktion kutsu vie aikaa $O(n)$,
 tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
@@ -408,7 +409,7 @@ tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
 Huomaa, että $\log N$ on käytännössä pieni luku riippumatta
 siitä, kuinka suuri luku $N$ on.
 Niinpä meidän ei tarvitse murehtia siitä,
-kuinka suuria $x_1$ ja $m$ ovat,
+kuinka suuria $a_1$ ja $m$ ovat,
 vaan voimme luottaa siihen, että algoritmi on tehokas.
 
 \subsection{Tasoitettu analyysi}
@@ -509,6 +510,8 @@ sen kohdalla on merkki $-$.
 \caption{Etsimme lähimmät pienemmät edeltäjät pinon avulla.}
 \label{fig:pielah}
 \end{figure}
+
+\index{pino}
 
 Saamme ratkaistua tehtävän tehokkaasti algoritmilla,
 joka käy läpi taulukkoa vasemmalta oikealle ja pitää yllä \emph{pinoa},
