@@ -162,10 +162,10 @@ Huomaa, että jos puu on tyhjä, tulkintana on,
 että sen korkeus on $-1$.
 
 \begin{code}
-function korkeus(puu)
-    if puu == null
+function korkeus(solmu)
+    if solmu == null
         return -1
-    return 1 + max(korkeus(puu.vasen), korkeus(puu.oikea))
+    return 1 + max(korkeus(solmu.vasen), korkeus(solmu.oikea))
 \end{code}
 
 \subsection{Läpikäyntijärjestykset}
@@ -179,12 +179,12 @@ Solmujen läpikäyntiin on kolme tavallista järjestystä:
 \index{jälkijärjestys}
 
 \begin{itemize}
-\item \emph{esijärjestys}: käsittelemme ensin solmun, sitten vasemman alipuun
+\item \emph{esijärjestys}: käsittelemme ensin juuren, sitten vasemman alipuun
 ja lopuksi oikean alipuun
-\item \emph{sisäjärjestys}: käsittelemme ensin vasemman alipuun, sitten solmun
+\item \emph{sisäjärjestys}: käsittelemme ensin vasemman alipuun, sitten juuren
 ja lopuksi oikean alipuun
 \item \emph{jälkijärjestys}: käsittelemme ensin vasemman alipuun,
-sitten oikean alipuun ja lopuksi solmun
+sitten oikean alipuun ja lopuksi juuren
 \end{itemize}
 
 Esimerkiksi kuvan \ref{fig:binpuu} puussa
