@@ -9,7 +9,7 @@ hetkellä tunneta mitään tehokasta algoritmia.
 Jos vastaamme tulee tällainen ongelma, hyvät neuvot ovat kalliit.
 
 Vaikeiden ongelmien yhteydessä esiintyy usein kirjainyhdistelmä NP.
-Erityisen tunnettu on P vs. NP -ongelma,
+Erityisen tunnettu on kysymys P vs. NP,
 jonka ratkaisijalle on luvattu miljoonan dollarin potti.
 Hankalalta tuntuvasta ongelmasta saatetaan arvella, että
 se on NP-täydellinen tai NP-vaikea.
@@ -19,7 +19,7 @@ Nyt on aika selvittää, mitä nämä käsitteet oikeastaan tarkoittavat.
 
 \index{vaativuusluokka}
 
-Laskennallisia ongelmia voi luokitella \emph{vaativuusluokkiin},
+Laskennallisia ongelmia luokitellaan \emph{vaativuusluokkiin},
 joista jokaisessa on joukko ongelmia,
 joiden ratkaisemisen vaikeudessa on jotain yhteistä.
 Tunnetuimmat vaativuusluokat ovat P ja NP.
@@ -42,7 +42,7 @@ Luokka P sisältää päätösongelmat, joiden ratkaisemiseen on
 olemassa \emph{polynominen} algoritmi eli algoritmi, jonka aikavaativuus
 on enintään $O(n^k)$, missä $k$ on vakio.
 Lähes kaikki tässä kirjassa esitetyt algoritmit
-ovat toimineet polynomisessa ajassa.
+ovat olleet polynomisia.
 Tuttuja polynomisia aikavaativuuksia ovat esimerkiksi
 $O(1)$, $O(\log n)$ $O(n)$, $O(n \log n)$, $O(n^2)$ ja $O(n^3)$.
 
@@ -51,8 +51,8 @@ kuuluu luokkaan P, koska voimme ratkaista sen monellakin tavalla
 polynomisessa ajassa.
 Voimme vaikkapa aloittaa syvyyshaun solmusta $a$ ja tarkastaa,
 pääsemmekö solmuun $b$.
-Tuloksena on algoritmi, jolla on polynominen aikavaativuus
-$O(n)$, joten ongelma kuuluu luokkaan P.
+Tuloksena on algoritmi, joka toimii lineaarisessa ajassa,
+joten ongelma kuuluu luokkaan P.
 
 Luokan P tarkoituksena on kuvata ongelmia, jotka voimme
 ratkaista jossain mielessä \emph{tehokkaasti}.
@@ -114,7 +114,7 @@ todiste, mikä tuntuu helpommalta kuin muodostaa ongelman ratkaisu tyhjästä (k
 Monet uskovatkin, että luokka NP on suurempi kuin luokka P,
 mutta kukaan ei ole onnistunut todistamaan asiaa.
 
-Tietojenkäsittelytieteen merkittävä avoin ongelma on,
+Tietojenkäsittelytieteen merkittävä avoin kysymys on,
 päteekö $\textrm{P}=\textrm{NP}$ vai $\textrm{P} \neq \textrm{NP}$.
 Monet tutkijat ovat tarttuneet haasteeseen
 70-luvulta lähtien, mutta tähän mennessä kaikki ovat epäonnistuneet.
@@ -360,9 +360,9 @@ kuin vaihtelevan pituisia lausekkeita.
 \end{figure}
 
 Seuraavaksi osoitamme, että on NP-täydellinen ongelma tarkastaa,
-onko verkossa \emph{solmupeitettä}, jossa on enintään $k$ solmua.
-Solmupeite on verkon solmujen osajoukko, joka on valittu niin,
-että jokaisessa kaaressa ainakin toinen päätesolmu kuuluu
+onko verkossa \emph{solmupeitettä}, jossa on $k$ solmua.
+Solmupeite on verkon solmujen osa\-joukko, joka on valittu niin,
+että jokaisessa kaaressa ainakin toinen pääte\-solmu kuuluu
 solmupeitteeseen.
 Esimerkiksi kuvassa \ref{fig:solpei} on verkko ja sen solmupeite,
 johon kuuluu kolme solmua.
@@ -372,7 +372,7 @@ meidän täytyy näyttää, että voimme tulkita minkä tahansa
 3SAT-ongelman tapauksen verkon solmupeitteen etsimisenä.
 Meidän tulee keksiä systemaattinen tapa
 muuttaa looginen kaava verkoksi,
-jonka $k$ solmun tai pienempi solmupeite vastaa sitä, että kaava on totta.
+jonka $k$ solmun solmupeite vastaa sitä, että kaava on totta.
 
 Oletamme, että kaavassa esiintyy $n$ muuttujaa $x_1,x_2,\dots,x_n$
 ja siinä on $m$ lauseketta.
@@ -508,6 +508,8 @@ Tämä varmistaa, että jokaisessa lausekkeessa ainakin yksi kolmesta
 muuttujasta on asetettu oikein.
 Kuva \ref{fig:solko2} näyttää esimerkin solmupeitteestä,
 joka saa kaavan todeksi.
+Tämä vastaa ratkaisua, jossa $x_1$, $x_2$ ja $x_4$ ovat tosia
+ja $x_3$ on epätosi.
 
 Olemme siis onnistuneet palauttamaan 3SAT-ongelman solmupeiteongelmaksi
 niin, että verkon koko on polynominen suhteessa kaavan pituuteen,
@@ -530,7 +532,7 @@ että jokaisen kaaren päätesolmut ovat eri värisiä?
 \item onko verkossa polkua, joka kulkee tasan kerran jokaisen
 verkon solmun kautta (eli \emph{Hamiltonin polkua})?
 \item voiko annetuista $n$ luvusta valita osajoukon, jonka summa on $x$?
-\item onko olemassa enintään $k$-merkkistä merkkijonoa,
+\item onko olemassa $k$-merkkistä merkkijonoa,
 jonka alijonoja ovat kaikki annetut merkkijonot?
 \end{itemize}
 
@@ -602,16 +604,16 @@ Osoittautuu kuitenkin, että päätösongelmat ja optimointiongelmat
 ovat loppujen lopuksi hyvin lähellä toisiaan.
 
 Oletetaan, että meillä on keino tarkastaa tehokkaasti,
-onko verkossa enin\-tään $k$ solmun solmupeitettä.
+onko verkossa $k$ solmun solmupeitettä.
 Miten voimme menetellä, jos haluammekin etsiä pienimmän
 solmupeitteen?
 Ratkaisuna on käyttää \emph{binäärihakua}:
 etsimme pienimmän arvon $x$, jolle pätee,
-että verkossa on enintään $x$ solmun solmupeite.
+että verkossa on $x$ solmun solmupeite.
 Tämä tarkoittaa, että verkon pienin solmupeite
 sisältää $x$ solmua.
 Koska käytämme binäärihakua, meidän riittää ratkaista
-päätösongelma vain logaritminen määrä kertoja,
+päätösongelma vain logaritminen mää\-rä kertoja,
 joten saamme ratkaistua optimointiongelman lähes yhtä
 tehokkaasti kuin päätösongelman.
 
@@ -682,8 +684,8 @@ joissa $n$ on enintään noin 25.
 \index{heuristiikka}
 
 Yksi mahdollisuus selviytyä vaikeasta ongelmasta on tyytyä
-optimaalisen ratkaisun sijasta johonkin oletettavasti
-melko hyvään ratkaisuun.
+optimaalisen ratkaisun sijasta johonkin \emph{melko hyvään} ratkaisuun,
+joka ei välttämättä ole optimaalinen.
 Saamme tällaisen ratkaisun aikaan keksimällä jonkin
 \emph{heuristiikan}, joka muodostaa ratkaisun.
 Heuristiikka on jokin järkevä sääntö, jonka avulla
@@ -698,9 +700,9 @@ Tämä on järkevä heuristiikka, koska näin saamme monessa tapauksessa
 jaettua lukuja melko tasaisesti ryhmiin.
 
 Esimerkiksi jos luvut ovat $[1,2,4,5,7]$, sijoitamme ensin
-luvun 7 ensim\-mäiseen ryhmään, sitten luvut 5 ja 4 toiseen ryhmään,
-sitten luvun 2 ensimmäiseen ryhmään ja lopuksi luvun 1 ensimmäiseen ryhmään.
-Saamme tässä tapauksessa muodostettua ryhmät $[1,2,7]$ ja $[4,5]$,
+luvun 7 ensim\-mäiseen ryhmään, sitten luvut 5 ja 4 toiseen ryhmään
+ja lopuksi luvut 2 ja 1 ensimmäiseen ryhmään.
+Saamme muodostettua näin ryhmät $[1,2,7]$ ja $[4,5]$,
 joiden summien ero on 1 eli ratkaisu on optimaalinen.
 
 Tällainen algoritmi ei kuitenkaan tuota aina optimaalista ratkaisua.
@@ -747,7 +749,8 @@ Tämän jälkeen riittää etsiä mahdollinen jako, jossa $a=n$
 ja $b$ on mahdollisimman lähellä lukujen summan puoliväliä.
 
 Tällainen ratkaisu vie aikaa $O(ns)$, missä $s$ on lukujen summa.
-Sanomme, että ratkaisun aikavaativuus on \emph{pseudopolynominen},
-koska se on polynominen mutta riippuu lukuarvojen suuruudesta.
-Yleisessä tapauksessa luvut voivat olla suuria kokonaislukuja,
+Sanomme, että algoritmi on \emph{pseudopolynominen},
+koska sen aikavaativuus on polynominen mutta riippuu lukuarvojen suuruudesta.
+Yleisessä tapauksessa syötteenä annetut luvut voivat
+kuitenkin olla suuria kokonaislukuja,
 jolloin emme voi käyttää tällaista ratkaisua.
