@@ -65,7 +65,7 @@ jos niiden välillä on kaari.
 Solmun \emph{naapureja} ovat kaikki solmut,
 joihin se on yhteydessä kaarella,
 ja solmun \emph{aste} on sen naapureiden määrä.
-Kuvassa \ref{fig:veresi} solmun 2 naapurit ovat 1, 4 ja 5,
+Esimerkiksi kuvassa \ref{fig:veresi} solmun 2 naapurit ovat 1, 4 ja 5,
 joten solmun aste on 3.
 
 \subsubsection{Polku ja sykli}
@@ -176,6 +176,7 @@ mutta kuvan \ref{fig:veryht} verkko ei ole yhtenäinen,
 koska esimerkiksi solmujen $1$ ja $2$ välillä ei ole polkua.
 
 \index{komponentti}
+\index{yhtenäinen komponentti}
 
 Voimme esittää verkon aina kokoelmana yhtenäisiä \emph{komponentteja}.
 Kuvassa \ref{fig:veryht} yhtenäiset komponentit
@@ -282,9 +283,9 @@ Kun kuljemme polkua painotetussa verkossa,
 polun pituus on kaarten painojen summa.
 Kuvassa \ref{fig:verpae} on esimerkkinä painotettu verkko,
 jossa polun $1 \rightarrow 2 \rightarrow 5$
-paino on $5+8=13$ ja polun
+pituus on $5+8=13$ ja polun
 $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$
-paino on $2+4+3=9$.
+pituus on $2+4+3=9$.
 
 \begin{figure}
 \center
@@ -367,8 +368,8 @@ Seuraavaksi käymme läpi kolme tavallista esitystapaa.
 
 \index{vieruslista}
 
-Vieruslistaesityksessä luomme kullekin verkon solmulle
-\emph{vieruslistan}, joka kertoo, mihin solmuihin voimme
+Tavallisin tapa esittää verkko on luoda kullekin solmulle
+\emph{vieruslista}, joka kertoo, mihin solmuihin voimme
 siirtyä solmusta kaaria pitkin.
 Kuva \ref{fig:vervil} näyt\-tää esimerkkinä verkon
 ja sitä vastaavan vieruslistaesityksen.
@@ -421,8 +422,8 @@ kaaresta sekä kohdesolmun että painon.
 
 \index{kaarilista}
 
-Kaarilistaesityksessä luomme listan,
-jossa on kaikki verkon kaaret.
+Toinen tapa tallentaa verkko on luoda \emph{kaarilista},
+joka sisältää kaikki verkon kaaret.
 Javassa voimme luoda listan
 
 \begin{code}
@@ -502,14 +503,12 @@ selvittää tietystä solmusta lähteviä kaaria.
 \emph{Vierusmatriisi} on kaksiulotteinen taulukko,
 joka kertoo jokaisesta verkon kaaresta,
 esiintyykö se verkossa.
-Tavallinen tapa on muodostaa vierusmatriisi niin,
-että sen jokainen alkio on 0 tai 1.
-Jos verkossa pääsee kaarella solmusta
-$a$ solmuun $b$,
-niin matriisin rivin $a$ sarakkeessa $b$
-lukee 1, ja muuten 0.
+Matriisin rivin $a$ sarakkeessa $b$ oleva arvo
+ilmaisee, onko verkossa kaarta solmusta $a$ solmuun $b$.
 Kuvassa \ref{fig:vervim} on esimerkki
 verkon vierusmatriisiesityksestä.
+Tässä tapauksessa matriisin jokainen arvo on
+0 (ei kaarta) tai 1 (kaari).
 
 Javassa voimme määritellä vierusmatriisin seuraavasti:
 
@@ -517,8 +516,7 @@ Javassa voimme määritellä vierusmatriisin seuraavasti:
 int[][] verkko = new int[n+1][n+1];
 \end{code}
 
-Tämän jälkeen merkitsemme, miten voimme kulkea
-solmujen välillä kaaria pitkin:
+Tämän jälkeen muodostamme matriisiin näin:
 
 \begin{code}
 verkko[1][2] = 1;
@@ -530,6 +528,8 @@ verkko[3][4] = 1;
 verkko[4][5] = 1;
 \end{code}
 
+Jos verkko on painotettu, voimme vastaavasti merkitä
+kaarten painot vierusmatriisiin.
 Vierusmatriisin etuna on, että voimme tarkastaa helposti,
 onko tietty kaari verkossa.
 Esitystapa kuluttaa kuitenkin paljon muistia,
@@ -547,11 +547,11 @@ jonka avulla voimme löytää lyhimpiä polkuja verkossa.
 
 \index{syvyyshaku}
 
-Syvyyshaku on verkkojen käsittelyn yleistyökalu,
+\emph{Syvyyshaku} on verkkojen käsittelyn yleistyökalu,
 jonka avulla voimme selvittää monia asioita verkon rakenteesta.
 Kun alamme tutkia verkkoa syvyyshaulla,
 meidän tulee päättää ensin, mistä solmusta haku lähtee liikkeelle.
-Etenemme vuorollaan kaikkiin solmuihin, jotka ovat saavutettavissa
+Haku etenee vuorollaan kaikkiin solmuihin, jotka ovat saavutettavissa
 lähtösolmusta kulkemalla kaaria pitkin.
 
 Syvyyshaku pitää yllä jokaisesta verkon solmusta tietoa,
@@ -694,8 +694,8 @@ Voimmekin tarkastaa verkon yhtenäisyyden aloittamalla
 syvyyshaun jostakin solmusta ja tutkimalla,
 saavuttaako haku kaikki verkon solmut.
 Lisäksi voimme löytää verkon yhtenäiset komponentit
-käymällä läpi solmut ja aloittamalla syvyyshaun aina,
-kun vastaan tulee uusi solmu.
+käymällä läpi solmut ja aloittamalla uuden syvyyshaun aina,
+kun vastaan tulee vierailematon solmu.
 Jokainen syvyyshaku muodostaa yhden komponentin.
 
 \subsubsection{Syklin etsiminen}
@@ -780,7 +780,7 @@ syklin, jos sellainen on olemassa.
 
 \index{leveyshaku}
 
-Leveyshaku käy syvyyshaun tavoin läpi kaikki verkon solmut,
+\emph{Leveyshaku} käy syvyyshaun tavoin läpi kaikki verkon solmut,
 joihin pääsee kulkemaan kaaria pitkin annetusta lähtösolmusta.
 Erona on kuitenkin, missä järjestyksessä solmut käydään läpi.
 Leveyshaku käy solmuja läpi \emph{kerroksittain} niin,
@@ -848,7 +848,7 @@ solmun ja kaaren enintään kerran.
 \subsection{Esimerkki: Labyrintti}
 
 Olemme labyrintissa ja haluamme päästä ruudusta $A$ ruutuun $B$.
-Joka askeleella voimme siirtyä yhden ruudun verran ylöspäin, alaspäin,
+Joka vuorolla voimme siirtyä yhden askeleen ylöspäin, alaspäin,
 vasemmalle tai oikealle.
 Pystymmekö pääsemään ruudusta $A$ ruutuun $B$, ja jos pystymme,
 mikä on lyhin mahdollinen reitti?
