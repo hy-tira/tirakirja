@@ -651,6 +651,8 @@ alkion lisäämisen ja poistamisen jälkeen, että AVL-ehto
 on edelleen voimassa.
 Tämä onnistuu tekemällä sopivia \emph{kiertoja},
 jotka muuttavat puun rakennetta.
+Jotta voimme toteuttaa kierrot, pidämme jokaisessa
+solmussa tietoa siitä, mikä on solmusta alkavan alipuun korkeus.
 
 Osoittautuu, että voimme korjata puun rakenteen kaikissa
 tilanteessa käyttäen kahta kiertotyyppiä,
@@ -812,17 +814,14 @@ eikä AVL-ehto enää päde.
 \label{fig:avlta2}
 \end{figure}
 
-Solmun lisäämisen jälkeen meidän täytyy mahdollisesti
-muuttaa puun rakennetta niin, että AVL-ehto tulee taas
-voimaan kaikissa solmuissa.
-Tämän vuoksi kuljemme puussa ylöspäin lisätystä solmusta lähtien,
-kunnes tulemme ensimmäiseen solmuun, jossa ehto ei ole voimassa.
-Jos tällainen solmu löytyy, palautamme ehdon voimaan tekemällä yhden
-tai kaksi kiertoa riippuen lisätyn solmun sijainnista.
+Solmun lisäämisen jälkeen kuljemme puussa ylöspäin
+lisätystä solmusta juureen ja päivitämme solmujen korkeudet.
+Jos jokin solmu ei täytä AVL-ehtoa, korjaamme asian tekemällä yhden
+tai kaksi kiertoa.
 Oletetaan, että $x$ on alimpana puussa oleva solmu, jossa AVL-ehto ei päde,
 $y$ on $x$:n lapsi, jonka alipuussa on lisätty solmu,
 ja $z$ on puolestaan $y$:n lapsi, jonka alipuussa on lisätty solmu.
-Tapauksia on kaksi: jos $y$ ja $z$ ovat saman puoleisia lapsia,
+Tapauksia on kaksi: jos $y$ ja $z$ ovat samanpuoleisia lapsia,
 kierrämme solmua $y$ kerran ylöspäin (kuva \ref{fig:avlta1}),
 ja muuten kierrämme solmua $z$ kahdesti ylöspäin (kuva \ref{fig:avlta2}).
 Tämän korjauksen jälkeen AVL-ehto on jälleen
@@ -863,17 +862,20 @@ kuin lisäämisessä.
 Nyt on mahdollista, että ennen poistoa
 jossakin solmussa lasten alipuiden korkeudet ovat $h$ ja $h-1$
 ja poiston jälkeen $h$ ja $h-2$.
-Poiston jälkeen nousemme puussa ylöspäin ja jos löydämme
-tällaisen solmun, korjaamme ehdon niin, että kummankin alipuun
-korkeus on $h-1$.
-Tällä kertaa valitsemme solmut $x$, $y$ ja $z$ niin,
+Poiston jälkeen nousemme puussa ylöspäin
+poistetun solmun vanhemmasta alkaen, ja jos vastaan tulee solmu $x$,
+jossa AVL-ehto ei päde, korjaamme asian.
+Tällä kertaa valitsemme solmut $y$ ja $z$ niin,
 että $y$ on $x$:n lapsi, jonka korkeus on suurin,
 ja samoin $z$ on $y$:n lapsi, jonka korkeus on suurin.
-Toisin kuin lisäämisessä, jatkamme tämän jälkeen ylöspäin
-ja korjaamme tarvittaessa ehtoa muissa solmuissa,
-koska ehdon korjaaminen yhdessä solmussa saattaa rikkoa
+Jos $y$:n kummankin lapsen korkeus on sama,
+valitsemme $z$:n niin, että se on samanpuoleinen lapsi kuin $y$.
+Sitten korjaamme AVL-ehdon kierroilla kuten solmun lisäämisessä.
+Toisin kuin lisäämisessä, saatamme joutua korjaamaan ehdon
+useassa solmussa,
+koska ehdon korjaaminen yhdessä solmussa voi rikkoa
 sen jossain ylemmässä solmussa.
-Kun lopulta saavumme juureen, ehto pätee jälleen kaikissa solmuissa.
+Kun lopulta saavumme juureen, AVL-ehto pätee jälleen kaikissa solmuissa.
 
 Koska AVL-puun korkeus on $O(\log n)$ ja jokainen kierto
 tapahtuu vakioajassa,
