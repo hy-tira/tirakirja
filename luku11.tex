@@ -498,10 +498,117 @@ että pienin etäisyys solmusta 1 solmuun 4 on 8.
 Kuitenkin parempi tapa olisi kulkea alempaa polkua,
 jolloin polun pituus on vain 5.
 
+\subsection{Esimerkki: Reittiopas}
+
+Nyt meillä on tarvittavat tiedot,
+joiden avulla voimme luoda \emph{reittioppaan}
+eli järjestelmän, jonka avulla voi etsiä
+eri kulkuvälineitä käyttäviä reittejä kaupungissa.
+Voimme mallintaa kaupungin verkkona,
+jonka solmut ovat kaupungin paikkoja ja kaaret
+ovat mahdollisia yhteyksiä paikkojen välillä.
+Reittioppaan tulisi ilmoittaa \emph{nopein} reitti
+paikasta $a$ paikkaan $b$.
+
+Reittioppaan toteuttamiseen liittyy yksi lisähaaste:
+kulkuvälineillä on tietyt aikataulut,
+jotka rajoittavat niiden käyttöä.
+Esimerkiksi bussilinjan lähtöjä saattaa olla
+10 minuutin välein.
+Meidän tulee siis ottaa huomioon reitin etsimisessä,
+mihin aikaan saavumme mihinkin paikkaan.
+Voimme toteuttaa tämän tallentamalla verkon kaaret
+muodossa ''matka alkaa ajanhetkenä $x$ ja
+päättyy ajanhetkenä $y$''.
+
+Koska kaikissa matkoissa kuluu positiivinen määrä aikaa,
+voimme etsiä reittejä Dijkstran algoritmin avulla.
+Toteutamme algoritmin niin,
+että määritämme jokaiseen paikkaan \emph{varhaisimman}
+ajan, jolloin voimme päästä kyseiseen paikkaan.
+Alussa tiedämme, että olemme lähtöpaikassa
+matkamme alkuhetkenä.
+Sitten kun otamme käsittelyyn uuden paikan,
+käymme läpi siitä lähteviä yhteyksiä,
+joihin ehdimme optimaalista aikataulua noudattaen.
+Saamme tehostettua hakua merkittävästi ottamalla
+huomioon jokaisesta linjasta vain ensimmäisen lähdön,
+johon ehdimme.
+Tämä on perusteltua, koska ei voi missään tilanteessa
+olla hyvä idea odottaa myöhempään lähtöön.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
+\begin{scope}
+\small
+\node[draw, circle] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (3,1) {$2$};
+\node[draw, circle] (3) at (4,-1) {$3$};
+\node at (0,-1) {13:15};
+\node at (3,2) {?};
+\node at (4,-2) {?};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (2) -- (3);
+\node at (2,-3) {(a)};
+\end{scope}
+\begin{scope}[xshift=8cm]
+\small
+\node[draw, circle, fill=lightgray] (1) at (0,0) {$1$};
+\node[draw, circle] (2) at (3,1) {$2$};
+\node[draw, circle] (3) at (4,-1) {$3$};
+\node at (0,-1) {13:15};
+\node at (3,2) {13:27};
+\node at (4,-2) {13:40};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (2) -- (3);
+\node at (2,-3) {(b)};
+\end{scope}
+\begin{scope}[xshift=16cm]
+\small
+\node[draw, circle, fill=lightgray] (1) at (0,0) {$1$};
+\node[draw, circle, fill=lightgray] (2) at (3,1) {$2$};
+\node[draw, circle] (3) at (4,-1) {$3$};
+\node at (0,-1) {13:15};
+\node at (3,2) {13:27};
+\node at (4,-2) {13:32};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (2) -- (3);
+\node at (2,-3) {(c)};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Nopeimman reitin etsiminen paikasta $1$ paikkaan $3$.
+(a) Matka alkaa kello 13:15. (b) Käymme läpi paikasta 2 lähtevät yhteydet.
+(c) Käymme läpi paikasta 3 lähtevät yhteydet.}
+\label{fig:reiopa}
+\end{figure}
+
+Kuva \ref{fig:reiopa} näyttää esimerkkitilanteen,
+jossa haluamme kulkea paikasta $1$ paikkaan $3$ ja
+lähdemme matkaan kello 13:15.
+Paikasta $1$ lähtee 10 minuutin välein
+yhteys paikkaan $2$ (kesto 7 minuuttia)
+sekä 30 minuutin välein yhteys paikkaan $3$ (kesto 10 minuuttia).
+Niinpä pääsemme paikkaan $2$ kello 13:27 ja paikkaan 3 kello 13:40.
+Sitten paikasta $2$ lähtee 5 minuutin välein yhteys paikkaan $3$
+(kesto 2 minuuttia).
+Tämän avulla pääsemme paikkaan $3$ kello 13:32,
+eli nopein reitti kulkee paikan $2$ kautta.
+
+Käytännössä hakua voisi vielä tehostaa monella tavalla.
+Esimerkiksi kun löydämme jonkin reitin kohdepaikkaan,
+voimme siitä lähtien hylätä kaikki paikat,
+joihin ehdimme myöhemmin kuin kohdepaikkaan.
+
 \section{Kaikki lyhimmät polut}
 
-Muutamme nyt ongelman asettelua niin,
-että haluamme etsiä lyhimmät polut verkon
+Tarkastellaan seuraavaksi ongelmaa, jossa
+haluamme etsiä lyhimmät polut verkon
 \emph{kaikista} solmuista \emph{kaikkiin} solmuihin.
 Yksi tapa ratkaista tehtävä olisi suorittaa Bellman–Fordin
 tai Dijkstran algoritmi jokaisesta verkon solmusta alkaen.
