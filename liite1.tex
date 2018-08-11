@@ -1,5 +1,25 @@
 \chapter{Matemaattinen tausta}
 
+Tämä liite käy läpi matematiikan merkintöjä ja käsitteitä,
+joita käytetään kirjassa algoritmien analysoinnissa.
+
+\section*{Merkintöjä}
+
+Merkinnät $\lfloor x \rfloor$ ja $\lceil x \rceil$ tarkoittavat,
+että pyöristämme luvun $x$ alaspäin ja ylöspäin kokonaisluvuksi.
+Esimerkiksi $\lfloor 5.23 \rfloor = 5$ ja $\lceil 5.23 \rceil = 6$.
+
+\index{kertoma}
+
+Kertoma $n!$ lasketaan $1 \cdot 2 \cdot 3 \cdots n$.
+Esimerkiksi $5! = 1 \cdot 2 \cdot 3 \cdot 4 \cdot 5 = 120$.
+
+\index{jakojäännös}
+
+Merkintä $a \bmod b$ tarkoittaa,
+mikä on jakojäännös, kun $a$ jaetaan $b$:llä.
+Esimerkiksi $32 \bmod 5 = 2$, koska $32 = 6 \cdot 5 + 2$.
+
 \section*{Summakaavat}
 
 \index{summakaava}
@@ -19,22 +39,7 @@ Tässä voimme ajatella, että aloitamme luvusta $2^n$
 ja lisäämme siihen aina puolet pienemmän luvun lukuun $1$ asti.
 Tämän seurauksena pääsemme yhtä vaille lukuun $2^{n+1}$ asti.
 
-Esitämme joskus summia merkinnän $\sum$ avulla.
-Siinä on ideana antaa muuttujan ala- ja yläraja sekä
-joka askeleella summaan lisättävä arvo.
-Esimerkiksi voimme merkitä
-\[1^2 + 2^2 + \dots + n^2 = \sum_{i=1}^n i^2.\]
-
-Tämä merkintä on itse asiassa hyvin lähellä ohjelmoinnin
-for-silmukkaa, koska seuraava koodi ajaa saman asian:
-
-\begin{code}
-summa = 0
-for i = 1 to n
-    summa += i*i
-\end{code}
-
-\section*{Logaritmit}
+\section*{Logaritmi}
 
 \index{logaritmi}
 
@@ -59,3 +64,18 @@ Ylemmästä kaavasta seuraa myös
 \[\log_b(x^k) = k \log_b(x).\]
 Lisäksi voimme vaihtaa logaritmin kantalukua kaavalla
 \[\log_u(x) = \frac{\log_b(x)}{\log_b(u)}.\]
+
+\section*{Odotusarvo}
+
+\index{odotusarvo}
+
+\emph{Odotusarvo} kuvaa, mikä on keskimääräinen tulos,
+jos satunnainen tapahtuma toistuu monta kertaa eli mitä
+tulosta voimme tavallaan odottaa.
+
+Kun tapahtumalla on $n$ mahdollista tulosta,
+odotusarvo lasketaan kaavalla
+\[p_1 t_1 + p_2 t_2 + \dots + p_n t_n,\]
+missä $p_i$ ja $t_i$ ovat tapahtuman $i$ todennäköisyys ja tulos.
+Esimerkiksi kun heitämme noppaa, tuloksen odotusarvo on
+\[1/6 \cdot (1+2+3+4+5+6) = 7/2.\]
