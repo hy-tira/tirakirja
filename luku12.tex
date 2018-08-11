@@ -244,18 +244,20 @@ Tässä verkossa on sykli $2 \rightarrow 4 \rightarrow 3 \rightarrow 2$,
 jonka olemassaolon huomaamme siitä, että tulemme uudestaan
 harmaaseen solmuun 2.
 
-Miten voimme tietää, että algoritmimme on toimiva?
+\subsubsection{Algoritmin analyysi}
+
+Miksi algoritmi toimii?
 Tarkastellaan ensin tilannetta, jossa verkossa on sykli.
-Jos algoritmi saapuu toista reittiä harmaaseen solmuun,
+Jos algoritmi saapuu uudestaan harmaaseen solmuun,
 on selvää, että verkossa on sykli,
 koska algoritmi on onnistunut pääsemään harmaasta solmusta
 itseensä kulkemalla jotain polkua verkossa.
 Toisaalta jos verkossa on sykli, algoritmi tulee
-jossain vaiheessa ensimmäistä kertaa johonkin sykliin
-kuuluvaan solmuun $x$. Tämän jälkeen se käy läpi solmusta
+jossain vaiheessa ensimmäistä kertaa johonkin syklin
+solmuun $x$. Tämän jälkeen se käy läpi solmusta
 lähtevät kaaret ja aikanaan käy varmasti läpi kaikki syklin
 solmut ja saapuu uudestaan solmuun $x$.
-Niinpä algoritmi tunnistaa kaikissa tilanteissa verkossa olevan syklin.
+Niinpä algoritmi tunnistaa kaikissa tilanteissa oikein verkossa olevan syklin.
 
 Jos sitten verkossa ei ole sykliä, algoritmi lisää jokaisen
 solmun listalle sen jälkeen, kun se on käsitellyt
@@ -267,6 +269,10 @@ tulee ennen solmua $b$.
 Tämän ansiosta jokaiselle kaarelle $a \rightarrow b$ pätee,
 että solmu $a$ tulee järjestykseen ennen solmua $b$,
 eli algoritmi muodostaa kelvollisen topologisen järjestyksen.
+
+Algoritmin aikavaativuus on $O(n+m)$,
+koska se käy kaikki verkon solmut ja kaaret
+läpi syvyyshaun avulla.
 
 \subsection{Esimerkki: Kurssivalinnat}
 
@@ -801,10 +807,13 @@ solmujen 5 ja 6 alueelle.
 \label{fig:kostok}
 \end{figure}
 
-Keskeinen kysymys Kosarajun algoritmiin liittyen on,
-miten voimme olla varmoja, että algoritmin toinen vaihe
-muodostaa vahvasti yhtenäisiä komponentteja,
-joihin ei tule ylimääräisiä solmuja.
+\subsubsection{Algoritmin analyysi}
+
+Kosarajun algoritmin kriittinen osa on sen toinen vaihe,
+jossa algoritmi muodostaa vahvasti yhtenäiset komponentit.
+On selvää, että jokainen syvyyshaku löytää
+vahvasti yhtenäiseen komponenttiin kuuluvat solmut,
+mutta miksi komponenttiin ei voi tulla lisäksi ylimääräisiä solmuja?
 
 Voimme tarkastella asiaa muodostettavan
 komponenttiverkon näkökul\-masta.
@@ -822,6 +831,9 @@ koska verkon kaaret on käännetty.
 Sitten kun myöhemmin muodostamme komponentin $B$,
 emme mene käännettyä kaarta komponenttiin $A$,
 koska komponentti $A$ on jo muodostettu.
+
+Algoritmin aikavaativuus on $O(n+m)$,
+koska se käy kahdesti verkon solmut ja kaaret läpi syvyyshaun avulla.
 
 \subsection{Esimerkki: Luolapeli}
 
