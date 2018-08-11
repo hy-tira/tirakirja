@@ -8,8 +8,8 @@ jossa haluamme välittää mahdollisimman paljon
 \emph{virtausta} verkon solmusta toiseen,
 kun jokaisella kaarella on tietty kapasiteetti,
 jota emme saa ylittää.
-Voimme esimerkiksi haluta laskea, kuinka tehokkaasti
-voimme siirtää tietoa verkossa kahden koneen välillä,
+Voimme esimerkiksi haluta siirtää tietokoneverkossa tietoa
+mahdollisimman tehokkaasti koneesta toiseen,
 kun tiedämme verkon rakenteen ja yhteyksien nopeudet.
 
 Tutustumme aluksi Ford–Fulkersonin algoritmiin,
@@ -17,7 +17,7 @@ jonka avulla voimme sekä selvittää maksimivirtauksen
 että ymmärtää paremmin, mistä ongelmassa on kysymys.
 Tämän jälkeen tarkastelemme joitakin verkko-ongelmia,
 jotka pystymme ratkaisemaan \emph{palauttamalla}
-ongelmat maksimivirtaukseen.
+ne maksimivirtaukseen.
 
 \section{Maksimivirtauksen laskeminen}
 
@@ -293,7 +293,7 @@ Ensinnäkin voimme havaita, että \emph{mikä tahansa}
 verkon leikkaus on yhtä suuri tai suurempi
 kuin maksimivirtaus.
 Tämä johtuu siitä, että virtauksen täytyy ylittää
-leikkaukseen kuuluvat kaaret, jotta se pääsee
+jokin leikkaukseen kuuluva kaari, jotta se pääsee
 lähtösolmusta kohdesolmuun.
 Esimerkiksi kuvassa \ref{fig:minlei} virtaus voi
 päästä solmusta $1$ solmuun $5$
@@ -381,7 +381,7 @@ Voiko todella käydä niin, että jokainen polku parantaa
 virtausta vain yhdellä?
 Tämä on mahdollista, ja kuva \ref{fig:polhuo} tarjoaa esimerkin asiasta.
 Jos muodostamme polut syvyyshaulla ja valitsemme haussa aina solmun,
-jonka numero on pienin,
+jonka tunnus on pienin,
 muodostamme vuorotellen polkuja $1 \rightarrow 2 \rightarrow 3 \rightarrow 4$
 ja $1 \rightarrow 3 \rightarrow 2 \rightarrow 4$ niin, että
 lisäämme ja peruutamme edestakaisin kaarta $2 \rightarrow 3$ kulkevaa virtausta.
@@ -404,7 +404,7 @@ Kun käytämme Edmonds–Karpin algoritmia,
 meidän täytyy muodostaa aina vain $O(nm)$ polkua,
 joten algoritmi vie aikaa $O(nm^2)$.
 Saamme tämän rajan tarkastelemalla kullakin polulla
-jotain kaarta, jonka kapasiteetti on käytetty kokonaan polulla.
+jotakin kaarta, jonka kapasiteetti on käytetty kokonaan polulla.
 Jotta voimme käyttää kyseistä kaarta uudestaan jollain tulevalla polulla,
 meidän täytyy sitä ennen peruuttaa virtausta
 kulkemalla kaarta käänteiseen suuntaan,
