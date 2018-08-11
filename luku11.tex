@@ -209,6 +209,8 @@ sekä mikä on uusi etäisyys, jos kuljemmekin solmuun kaaren kautta.
 Jos uusi etäisyys on pienempi, päivitämme
 sen solmun etäisyysarvioksi.
 
+\subsubsection{Algoritmin analyysi}
+
 Olemme nyt kuvailleet ja toteuttaneet Bellman–Fordin
 algoritmin, mutta miten voimme olla varmoja,
 että se löytää kaikissa tilanteissa lyhimmät polut $n-1$ kierroksen kuluessa?
@@ -220,7 +222,7 @@ $s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_k$ on
 lyhin polku solmusta $s_1$ solmuun $s_k$,
 niin myös $s_1 \rightarrow s_2$ on lyhin polku solmusta $s_1$ solmuun $s_2$,
 $s_1 \rightarrow s_2 \rightarrow s_3$ on lyhin polku solmusta $s_1$ solmuun $s_3$, jne.,
-eli jokainen polun alkuosa on myös lyhin polku vastaavaan solmuun.
+eli jokainen lyhimmän polun alkuosa on myös lyhin polku vastaavaan solmuun.
 Jos näin ei olisi, voisimme parantaa lyhintä polkua solmusta $s_1$ solmuun $s_k$
 parantamalla jotain polun alkuosaa, mikä aiheuttaisi ristiriidan.
 
@@ -283,10 +285,11 @@ Tässä tilanteessa Bellman–Fordin algoritmi ei anna oikeaa tulosta,
 koska voimme lyhentää loputtomasti syklin kautta kulkevia polkuja.
 Oikeastaan ongelma on siinä, että lyhin polku ei ole mielekäs käsite,
 jos polun osana on negatiivinen sykli.
-Voimme kuitenkin havaita negatiivisen syklin suorittamalla
-algoritmia $n$ kierrosta tavallisen $n-1$ kierroksen sijaan.
+Voimme kuitenkin tarkastaa, onko verkossa negatiivista sykliä,
+suorittamalla Bellman–Fordin algoritmia
+$n$ kierrosta tavallisen $n-1$ kierroksen sijasta.
 Jos jokin etäisyys paranee vielä viimeisellä kierroksella,
-olemme löytäneet negatiivisen syklin.
+verkossa on negatiivinen sykli.
 
 \subsection{Dijkstran algoritmi}
 
@@ -434,8 +437,11 @@ Käsittelemme kuitenkin jokaisen solmun vain kerran,
 koska aina kun olemme hakeneet uuden solmun keosta käsittelyä varten,
 varmistamme ensin, että emme ole käsitelleet sitä aiemmin.
 
+\subsubsection{Algoritmin analyysi}
+
 Dijkstran algoritmi on ahne algoritmi,
-koska se valitsee joka vaiheessa käsittelyyn solmun,
+koska se etsii joka vaiheessa
+vielä käsittelemättömän solmun,
 jonka etäisyys on pienin, minkä jälkeen kyseisen
 solmun etäisyys ei enää muutu.
 Miten voimme olla varmoja, että olemme löytäneet
@@ -733,27 +739,33 @@ for k = 1 to n
 
 Algoritmin aikavaativuus on selkeästi $O(n^3)$,
 koska se muodostuu kolmesta sisäkkäisestä for-silmukasta.
-Mutta miksi algoritmi onnistuu määrittämään kaikki etäisyydet?
-Yksi tapa ymmärtää algoritmia on
-ajatella algoritmin toimintaa ''käänteisesti'' rekursiivisesti:
-kun verkossa on lyhin polku solmusta $a$ solmuun $b$,
+
+\subsubsection{Algoritmin analyysi}
+
+Miksi Floyd–Warshallin algoritmi toimii?
+Voimme ymmärtää algoritmia tarkastelemalla
+sen toimintaa ''käänteisesti'' rekursiivisesti.
+Kun verkossa on lyhin polku solmusta $a$ solmuun $b$,
 millainen tämä polku voi olla?
 
-Jos jokin solmu $x$ kuuluu polkuun, meille syntyy kaksi osaongelmaa:
-meidän tulee etsiä ensin lyhin polku solmusta $a$ solmuun $x$
-ja sitten lyhin polku solmusta $x$ solmuun $b$.
-Näiden polkujen muodostamisessa voimme jälleen käydä läpi tapauksia,
-mitkä solmut kuuluvat polkuihin.
-Esimerkiksi lyhin polku solmusta $a$ solmuun $x$
-voi kulkea vuorostaan solmun $y$ kautta,
-jolloin haluamme etsiä lyhimmät polut solmusta $a$ solmuun $y$
-ja solmusta $y$ solmuun $x$, ja niin edelleen.
+Yksi mahdollisuus on, että polku on vain kaari
+solmusta $a$ solmuun $b$.
+Tällöin sen pituus on merkitty etäisyysmatriisiin
+algoritmin alussa.
+Muussa tapauksessa polussa on yksi tai useampi välisolmu.
+Oletetaan, että $x$ on välisolmu, jonka tunnus on suurin.
+Saamme nyt kaksi osatehtävää:
+meidän tulee ensin kulkea solmusta $a$ solmuun $x$
+ja sen jälkeen solmusta $x$ solmuun $b$ niin,
+että kummallakin polulla jokaisen välisolmun
+tunnus on pienempi kuin $x$.
+Voimme käsitellä nämä osatehtävät rekursiivisesti.
 
-Floyd–Warshallin algoritmissa muodostamme joka vaiheessa
+Floyd–Warshallin algoritmi muodostaa joka vaiheessa
 polkuja, joissa voi olla välisolmuina solmuja $1,2,\dots,i$.
 Kun haluamme muodostaa lyhimmän polun solmusta $a$ solmuun $b$,
 meillä on kaksi vaihtoehtoa:
-Jos solmu $i$ on välisolmuna, yhdistämme lyhimmät polut
+Jos solmu $i$ on välisolmuna, yhdistämme lyhimmän polun
 solmusta $a$ solmuun $i$ ja solmusta $i$ solmuun $b$.
 Jos taas solmu $i$ ei ole välisolmuna, olemme käsitelleet
 polun jo aiemmin.
