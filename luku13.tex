@@ -597,8 +597,7 @@ ja on käytännössä makuasia, kumman algoritmin valitsemme.
 
 Kruskalin ja Primin algoritmit ovat ahneita algoritmeja:
 ne lisäävät joka askeleella kevyimmän mahdollisen kaaren puuhun.
-Miksi on varmaa, että algoritmit tuottavat pienimmän virittävän
-puun joka tilanteessa?
+Miksi algoritmit tuottavat pienimmän virittävän puun joka tilanteessa?
 
 Voimme ajatella asiaa näin: 
 Jos meillä on kaksi solmua $a$ ja $b$, jotka ovat eri komponenteissa,
@@ -606,19 +605,6 @@ meidän on yhdistettävä ne jotenkin samaan komponenttiin algoritmin aikana.
 Jos kevyin saatavilla oleva kaari on solmujen $a$ ja $b$ välillä,
 meidän kannattaa valita se, koska muuten joutuisimme yhdistämään komponentit
 myöhemmin käyttäen raskaampaa kaarta.
-
-Tarkastellaan esimerkkinä Kruskalin algoritmin alkua:
-mitä tapahtuu, jos emme valitse puuhun kevyintä kaarta?
-Kuvassa \ref{fig:pietod} näkyy kuvitteellinen tilanne,
-jossa katkoviivoilla esitetty pienin virittävä puu ei sisällä
-kevyintä kaarta $(2,3)$, jonka paino on 1.
-Ei ole kuitenkaan mahdollista, että tämä olisi todellisuudessa
-pienin virittävä puu, koska voisimme vaihtaa jonkin puun kaaren
-kaareen $(2,3)$, jolloin puun paino pienenee.
-Tämä tarkoittaa, että on varmasti turvallinen ratkaisu valita
-kevyin kaari puuhun Kruskalin algoritmin alussa.
-Vastaavasti voimme perustella, miksi tämän jälkeen kannattaa
-valita seuraavaksi kevyin kaari, jne.
 
 \begin{figure}
 \center
@@ -661,7 +647,94 @@ valita seuraavaksi kevyin kaari, jne.
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Pienin virittävä puu sisältää varmasti kaaren $(2,3)$,
-koska muuten voisimme pienentää puun painoa valitsemalla sen.}
-\label{fig:pietod}
+\caption{Kruskalin algoritmi:
+Pienin virittävä puu sisältää varmasti kaaren $(2,3)$,
+koska muuten saisimme paremman ratkaisun sen avulla.}
+\label{fig:krutod}
 \end{figure}
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.7,label distance=-1.5mm]
+\begin{scope}
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-] (1) -- node[font=\small,label=below:4] {} (3);
+\path[draw,thick,-] (2) -- node[font=\small,label=right:1] {} (3);
+\path[draw,thick,-] (4) -- node[font=\small,label=right:5] {} (5);
+\path[draw,thick,-] (2) -- node[font=\small,label=above:2] {} (4);
+\path[draw,thick,-] (3) -- node[font=\small,label=below:7] {} (5);
+\end{scope}
+\begin{scope}[xshift=6.5cm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-,dashed] (1) -- (3);
+\path[draw,thick,-,dashed] (2) -- (3);
+\path[draw,thick,-,dashed] (4) -- (5);
+\path[draw,thick,-,dashed] (2) -- (4);
+\end{scope}
+\begin{scope}[xshift=13cm]
+\node[draw, circle] (1) at (0,-1) {$1$};
+\node[draw, circle] (2) at (2,0) {$2$};
+\node[draw, circle] (3) at (2,-2) {$3$};
+\node[draw, circle] (4) at (4,0) {$4$};
+\node[draw, circle] (5) at (4,-2) {$5$};
+\path[draw,thick,-] (1) -- node[font=\small,label=above:2] {} (2);
+\path[draw,thick,-,dashed] (2) -- (3);
+\path[draw,thick,-,dashed] (4) -- (5);
+\path[draw,thick,-,dashed] (2) -- (4);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{Primin algoritmi:
+Pienin virittävä puu sisältää varmasti kaaren $(1,2)$,
+koska muuten saisimme paremman ratkaisun sen avulla.}
+\label{fig:pritod}
+\end{figure}
+
+Tarkastellaan ensin Kruskalin algoritmia.
+Mitä tapahtuu, jos emme valitse kevyintä kaarta
+algoritmin alussa?
+Kuvassa \ref{fig:krutod} näkyy kuvitteellinen tilanne,
+jossa katkoviivoilla esitetty pienin virittävä puu ei sisällä
+kevyintä kaarta $(2,3)$, jonka paino on 1.
+Ei ole kuitenkaan mahdollista, että tämä olisi todellisuudessa
+pienin virittävä puu, koska voisimme vaihtaa jonkin puun kaaren
+kaareen $(2,3)$, jolloin puun paino pienenee.
+Voimme siis huoletta valita kevyimmän kaaren puuhun
+Kruskalin algoritmin alussa.
+Samasta syystä voimme tämän jälkeen valita
+seuraavaksi kevyimmän kaaren, jne.
+
+Primin algoritmissa voimme käyttää melko samanlaista päättelyä.
+Oletetaan, että algoritmi lähtee liikkeelle solmusta $1$,
+ja tarkastellaan ensimmäisen kaaren valintaa.
+Kuvassa \ref{fig:pritod} näkyy kuvitteellinen
+pienin virittävä puu, jossa emme ole valinneet alussa
+kevyintä kaarta $(1,2)$.
+Saamme kuitenkin aikaan paremman ratkaisun,
+kun tutkimme, minkä kaaren kautta solmu $1$
+on yhteydessä solmuun $2$, ja korvaamme tämän
+kaaren kaarella $(1,2)$.
+Niinpä Primin algoritmin alussa on optimaalista
+valita puuhun kevyin kaari.
+Voimme soveltaa vastaavaa päättelyä algoritmin joka vaiheessa.
+
+\index{suurin virittävä puu}
+
+Huomaa, että Kruskalin ja Primin algoritmit
+toimivat myös silloin, kun verkossa on negatiivisia kaaria,
+koska ainoastaan kaarten painojärjestys merkitsee.
+Tämän ansiosta voimme etsiä algoritmien avulla myös
+verkon \emph{suurimman virittävän puun} eli virittävän puun,
+jossa kaarten painojen summa on suurin.
+Tämä onnistuu, kun valitsemme puuhun joka askeleella kaaren,
+jonka paino on suurin mahdollinen.
