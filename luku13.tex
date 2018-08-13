@@ -736,5 +736,7 @@ koska ainoastaan kaarten painojärjestys merkitsee.
 Tämän ansiosta voimme etsiä algoritmien avulla myös
 verkon \emph{suurimman virittävän puun} eli virittävän puun,
 jossa kaarten painojen summa on suurin.
-Tämä onnistuu, kun valitsemme puuhun joka askeleella kaaren,
-jonka paino on suurin mahdollinen.
+Tämä onnistuu muuttamalla ensin jokaisen verkossa olevan kaaren paino
+käänteiseksi ja etsimällä sitten pienimmän virittävän puun.
+Toinen tapa on vain toteuttaa Kruskalin tai Primin algoritmi niin,
+että joka vaiheessa valitaan painavin mahdollinen kaari.
