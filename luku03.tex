@@ -42,6 +42,8 @@ suunnittelemiselle.
 
 \subsection{Lisäysjärjestäminen}
 
+\index{invariantti}
+
 \emph{Lisäysjärjestäminen} käy läpi taulukon
 vasemmalta oikealle.
 Kun algoritmi tulee tiettyyn taulukon kohtaan,
@@ -51,6 +53,14 @@ alkuosassa niin, että taulukon alkuosa
 on tämän jälkeen järjestyksessä.
 Niinpä kun algoritmi pääsee taulukon loppuun,
 koko taulukko on järjestyksessä.
+Toisin sanoen algoritmissa on voimassa
+seuraava \emph{invariantti}:
+kun algoritmi on käsitellyt taulukon kohdan $i$,
+taulukon alkuosa kohtaan $i$ asti sisältää
+samat alkiot kuin ennenkin mutta ne ovat järjestyksessä.
+Invariantti on väittämä, joka pätee jokaisessa
+algoritmin vaiheessa ja voi auttaa perustelemaan,
+miksi algoritmi toimii oikein.
 
 \begin{figure}
 \center
