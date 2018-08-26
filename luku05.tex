@@ -452,11 +452,13 @@ tietorakennetta ja hakea sieltä tietoa.
 Tällöin emme voi enää toteuttaa algoritmia,
 joka järjestää koko aineiston kerran alussa.
 Esimerkki tällaisesta tehtävästä on,
-että meille annetaan $n$ lukua ja meidän tulee ilmoittaa
-jokaisen luvun jälkeen, montako eri lukua olemme saaneet
-tähän mennessä, ennen kuin saamme seuraavan luvun.
-Voimme ratkaista tehtävän seuraavasti olettaen,
-että voimme hakea lukuja funktiolla \texttt{haeLuku}.
+että käytössämme on funktio \texttt{haeLuku},
+joka antaa lukuja yksi kerrallaan.
+Jokaisen luvun jälkeen meidän tulee ilmoittaa,
+montako eri lukua olemme saaneet tähän mennessä,
+ennen kuin voimme pyytää funktiolta seuraavan luvun.
+Voimme ratkaista tehtävän seuraavasti ajassa $O(n)$
+hajautustaulun avulla:
 
 \begin{code}
 alkiot = []
@@ -466,9 +468,17 @@ for i = 1 to n
     print(alkiot.size())
 \end{code}
 
-Tämän algoritmin aikavaativuus on $O(n)$,
-koska se lisää jokaisella silmukan kierroksella yhden
-luvun joukkoon ja hakee joukon koon.
-Emme voisi ratkaista ongelmaa tehokkaasti
-järjestämisellä, koska lukuja tulee yksi kerrallaan
-eikä alussa ole mitään aineistoa, jonka voisi järjestää.
+\index{online-algoritmi}
+\index{offline-algoritmi}
+
+Tällaisesta algoritmista käytetään joskus nimeä
+\emph{online-algoritmi}.
+Tämä tarkoittaa, että algoritmille annetaan syötettä
+alkio kerrallaan ja algoritmi pystyy ilmoittamaan senhetkisen
+vastauksen joka alkion käsittelyn jälkeen.
+Vastaavasti \emph{offline-algoritmi} tarvitsee
+käyttöönsä heti koko syötteen,
+jotta se voi käsitellä syötettä kokonaisuutena,
+kuten järjestää sen.
+Monissa tehtävissä online-algoritmi on vaikeampi
+keksiä kuin offline-algoritmi.
