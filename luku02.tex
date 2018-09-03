@@ -12,7 +12,7 @@ kun annamme sille paljon tietoa.
 Tässä luvussa tutustumme työkaluihin, joiden avulla
 voimme arvioida algoritmien tehokkuutta.
 Keskeinen käsite on \emph{aikavaativuus}, joka antaa
-tiiviissä muodossa kuvan algoritmin ajankäytöstä.
+tiiviissä muodossa kuvauksen algoritmin ajankäytöstä.
 Aikavaativuuden avulla voimme muodostaa arvion
 algoritmin tehokkuudesta sen rakenteen perusteella,
 eikä meidän tarvitse toteuttaa ja testata algoritmia
@@ -79,8 +79,8 @@ Näin on esimerkiksi seuraavassa koodissa:
 
 \begin{code}
 c = a+b
-b = a
-a = c
+if c >= 0
+    print(c)
 \end{code}
 
 \subsubsection{Silmukat}
@@ -215,7 +215,7 @@ Esimerkiksi seuraavan algoritmin aikavaativuus on $O(\log n)$:
 
 \begin{code}
 laskuri = 0
-while n > 0
+while n >= 1
     laskuri++
     n /= 2
 \end{code}
@@ -257,7 +257,7 @@ Esimerkiksi seuraava $O(n \log n)$-aikainen
 algoritmi tarkastaa, onko taulukossa kahta samaa alkiota:
 
 \begin{code}
-sort(taulu)
+sort(taulu) // järjestäminen
 samat = false
 for i = 1 to n-1
     if taulu[i] == taulu[i-1]
@@ -553,7 +553,7 @@ for i = 0 to n-1
         break
 \end{code}
 
-Tässä algoritmin pahin ja paraus tapaus eroavat.
+Tässä algoritmin pahin ja paras tapaus eroavat.
 Ajankäytön yläraja on $O(n)$, koska algoritmi joutuu käymään
 läpi kaikki taulukon alkiot silloin, kun luku $x$
 ei esiinny taulukossa.
@@ -587,7 +587,7 @@ vaan kertoa, että autolla pystyy ajamaan 250 km/h.
 \index{tilavaativuus}
 
 Merkintöjä $O$, $\Omega$ ja $\Theta$ voi käyttää
-kaikenlaisissa yhteyksissä, ei vain algoritmin ajankäytön arvoinnissa.
+kaikenlaisissa yhteyksissä, ei vain algoritmin ajankäytön arvioinnissa.
 Esimerkiksi voimme sanoa, että algoritmi suorittaa silmukkaa $O(\log n)$ kierrosta
 tai että taulukossa on $O(n^2)$ lukua.
 
