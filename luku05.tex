@@ -252,8 +252,8 @@ taulukon tavoin niin, että operaatiot vievät aikaa $O(1)$.
 \draw[->,thick] (2.5,0) -- (2.5,-1);
 \draw[->,thick] (6.5,0) -- (6.5,-1);
 \draw[->,thick] (2.5,-2) -- (2.5,-3);
-\node at (2.5,-1.5) {$(\texttt{aaa},8)$};
-\node at (2.5,-3.5) {$(\texttt{xyz},1)$};
+\node at (2.5,-3.5) {$(\texttt{aaa},8)$};
+\node at (2.5,-1.5) {$(\texttt{xyz},1)$};
 \node at (6.5,-1.5) {$(\texttt{abc},5)$};
 \end{tikzpicture}
 \caption{Hakemiston tallentaminen hajautustauluun.}
@@ -265,7 +265,7 @@ Tällaisessa tietorakenteessa on järkeä, jos avaimet ovat niin suuria,
 että emme voi käyttää sen sijasta tavallista taulukkoa.
 Kuitenkin jos avaimet ovat pieniä kokonaislukuja,
 taulukko on paljon parempi valinta, koska sen vakiokertoimet
-ovat huomattavasti pienemmät.
+ovat huomattavasti hajautustaulua pienemmät.
 
 \section{Javan toteutukset}
 
@@ -405,8 +405,8 @@ for i = 0 to n-1
 print(alkiot.size())
 \end{code}
 
-Koska jokainen alkion lisääminen joukkoon vie aikaa $O(1)$,
-tuloksena on algoritmi, joka toimii ajassa $O(n)$.
+Tässä \texttt{alkiot} on hajautustaulua käyttävä joukko,
+minkä ansiosta algoritmi toimii ajassa $O(n)$.
 
 Tarkastellaan sitten ongelmaa, jossa haluamme selvittää
 taulukon yleisimmän alkion.
@@ -430,7 +430,7 @@ for i = 0 to n-1
 print(yleisin)
 \end{code}
 
-Yllä olevassa koodissa hakemisto \texttt{laskuri}
+Tässä hakemisto \texttt{laskuri}
 on toteutettu hajautustaulun avulla,
 jolloin avaimet voivat olla mitä tahansa lukuja
 ja operaatiot toimivat ajassa $O(1)$.
