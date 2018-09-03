@@ -136,12 +136,12 @@ miksi algoritmi toimii oikein.
 \end{figure}
 
 Kuva \ref{fig:lisjar} näyttää esimerkin lisäysjärjestämisen
-toiminnasta, kun järjes\-tämme taulukon $[5,2,4,2,6,1]$.
-Jokaisella rivillä siirrämme harmaataustaisen alkion
-sen oikealle paikalle taulukon alkuosassa.
+toiminnasta, kun järjes\-tettävänä on taulukko $[5,2,4,2,6,1]$.
+Jokaisella rivillä algoritmi siirtää harmaataustaisen
+alkion sen oikealle paikalle taulukon alkuosassa.
 Pystyviiva ilmaisee kohdan, johon asti taulukko on järjestyksessä
 siirron jälkeen.
-Lopulta saamme aikaan järjestetyn taulukon $[1,2,2,4,5,6]$.
+Algoritmin päätteeksi tuloksena on järjestetty taulukko $[1,2,2,4,5,6]$.
 
 Seuraava koodi toteuttaa lisäysjärjestämisen:
 
@@ -153,25 +153,25 @@ for i = 1 to n-1
         j--
 \end{code}
 
-Koodissa komento \texttt{swap} vaihtaa keskenään
-sille annetut alkiot.
-Jokaisen indeksin $i$ kohdalla siirrämme taulukon
-kohdassa $i$ olevan alkion sen oikealle paikalle
-taulukon alkuosassa.
-Teemme tämän vaihtamalla joka askeleella keskenään
-alkion ja sen vasemmalla puolella olevan alkion
-niin kauan, kunnes alkio on oikealla paikalla.
+Koodi käy läpi taulukon kohdat $1 \dots n-1$
+ja siirtää aina kohdassa $i$ olevan alkion
+oikeaan paikkaan.
+Tämä tapahtuu sisäsilmukalla,
+jonka jokainen askel vaihtaa keskenään alkion
+ja sen vasemmalla puolella olevan alkion.
+Tässä komento \texttt{swap} ilmaisee,
+että alkiot vaihdetaan keskenään.
 
 Lisäysjärjestämisen tehokkuus riippuu siitä,
 mikä on järjestettävän taulukon sisältö.
 Algoritmi toimii sitä paremmin, mitä lähempänä järjestystä
 taulukko on valmiiksi.
 Jos taulukko on järjestyksessä,
-aikaa kuluu vain $O(n)$, koska meidän ei tarvitse siirtää
+aikaa kuluu vain $O(n)$, koska ei tarvitse siirtää
 mitään alkioita.
 Pahin tapaus algoritmille on kuitenkin, että taulukko on
 \emph{käänteisessä} järjestyksessä,
-jolloin joudumme siirtämään jokaisen alkion
+jolloin jokainen alkio täytyy siirtää
 taulukon alkuun ja aikaa kuluu $O(n^2)$.
 
 \subsection{Inversiot}
@@ -183,7 +183,7 @@ on \emph{inversio}: kaksi taulukossa olevaa alkiota,
 jotka ovat väärässä järjestyksessä.
 Esimerkiksi taulukossa $[3,1,4,2]$ on kolme inversiota:
 $(3,1)$, $(3,2)$ ja $(4,2)$.
-Inversioiden määrä kertoo meille taulukon järjestyksestä:
+Inversioiden määrä kertoo taulukon järjestyksestä:
 mitä vähemmän inversioita taulukossa on,
 sitä lähempänä se on järjestystä.
 Erityisesti taulukko on järjestyksessä tarkalleen silloin,
@@ -191,7 +191,7 @@ kun siinä ei ole yhtään inversiota.
 
 Kun järjestämisalgoritmi järjestää taulukon,
 se \emph{poistaa} siitä inversioita.
-Lisäysjärjestämisen tapauksessa aina kun
+Tarkemmin sanoen aina kun
 algoritmi vaihtaa kaksi alkiota keskenään,
 se poistaa taulukosta yhden inversion.
 Niinpä lisäysjärjestämisen työmäärä on yhtä suuri
@@ -202,9 +202,10 @@ lisäysjärjestämiselle on käänteisessä järjestyksessä oleva taulukko.
 Tällaisessa taulukossa jokainen alkiopari muodostaa inversion,
 joten inversioiden määrä on
 \[\frac{n(n-1)}{2}=O(n^2).\]
-Entä kuinka hyvin algoritmi toimii \emph{keskimäärin}?
+Entä kuinka hyvin lisäysjärjestäminen toimii \emph{keskimäärin}?
 Jos oletamme, että taulukossa on $n$ eri alkiota satunnaisessa
-järjestyksessä, alkiopari muodostaa inversion todennäköisyydellä $1/2$.
+järjestyksessä, jokainen taulukossa oleva alkiopari muodostaa
+inversion todennäköisyydellä $1/2$.
 Niinpä inversioiden määrän \emph{odotusarvo} on
 \[\frac{n(n-1)}{4}=O(n^2),\]
 eli aikaa kuluu neliöllinen määrä myös keskimääräisessä
@@ -341,12 +342,13 @@ Funktio \texttt{jarjesta} järjestää taulukon
 välin $a \dots b$ (osataulukon kohdasta
 $a$ kohtaan $b$), eli kun haluamme järjestää koko taulukon,
 kutsumme funktiota parametreilla $a=0$ ja $b=n-1$.
-Tarkastamme ensin, onko osataulukossa vain yksi alkio,
-ja jos on, poistumme funktiosta.
-Sitten laskemme muuttujaan $k$ järjestettävän välin keskikohdan
-ja järjestämme vasemman ja oikean puoliskon rekursiivisesti.
-Lopuksi kutsumme funktiota \texttt{lomita},
-joka yhdistää järjestetyt puoliskot:
+Funktio tarkastaa ensin, onko osataulukossa vain yksi alkio,
+ja jos on, funktio päättyy heti.
+Muuten se laskee muuttujaan $k$ järjestettävän välin keskikohdan
+ja järjestää vasemman ja oikean puoliskon rekursiivisesti.
+Lopuksi funktio kutsuu funktiota \texttt{lomita},
+joka yhdistää järjestetyt puoliskot.
+Tämän funktion voi toteuttaa näin:
 
 \begin{code}
 function lomita(a1, b1, a2, b2)
@@ -382,7 +384,7 @@ Algoritmi puolittaa ensin taulukon kahdeksi osataulukoksi
 $[5,1,2,9]$ ja $[7,5,4,2]$ ja järjestää molemmat
 osataulukot kutsumalla itseään.
 Kun algoritmi saa sitten järjestettäväksi taulukon $[5,1,2,9]$,
-se jakaantuu jälleen osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
+se jakaa taulukon edelleen osataulukoiksi $[5,1]$ ja $[2,9]$, jne.
 Lopulta jäljellä on vain yhden alkion kokoisia
 osataulukoita, jotka ovat valmiiksi järjestyksessä.
 Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
@@ -517,11 +519,11 @@ kohtaan $k$, jonka funktio myös palauttaa.
 Kuva \ref{fig:pikjar} näyttää, miten pikajärjestäminen toimii, kun sille
 annetaan taulukko $[5,3,8,4,1,9,3,7]$.
 Jokaisessa vaiheessa harmaa tausta osoittaa jakoalkion sijainnin.
-Kun aloitamme järjestämisen, koko taulukon jakoalkio on 5
-ja siirrämme sen vasemmalle puolelle alkiot $[2,1,2,4]$.
-Jakoalkion oikealle puolelle jäävät puolestaan alkiot $[5,9,7]$.
-Tämän jälkeen järjestämme vastaavalla tavalla rekursiivisesti
-vasemman ja oikean osataulukon.
+Aluksi koko taulukon jakoalkio on 5 ja algoritmi siirtää
+alkioita niin, että jakoalkion vasemmalla puolella
+ovat alkiot $[2,1,2,4]$ ja oikealla puolella alkiot $[5,9,7]$.
+Tämän jälkeen vasen ja oikea osataulukko järjestetään
+vastaavasti rekursiivisesti.
 
 Pikajärjestämisen tehokkuuteen vaikuttaa, miten alkiot jakautuvat
 jakoalkion eri puolille.
@@ -532,7 +534,7 @@ ja pikajärjestäminen toimii tehokkaasti.
 Koska funktio \texttt{jako} toimii lineaarisessa ajassa,
 pikajärjestäminen vie tässä tapauksessa aikaa
 $O(n \log n)$ samaan tapaan kuin lomitusjärjestäminen.
-Uhkana on kuitenkin, että jakoalkio jakaa taulukon osiin epätasaisesti.
+Uhkana on kuitenkin, että jakoalkio jakaa taulukon osiin \emph{epätasaisesti}.
 Kuva \ref{fig:pikpah} näyttää tilanteen, jossa jokaisessa jaossa
 kaikki alkiot jäävät jakoalkion oikealle puolelle.
 Tällöin pikajärjestäminen viekin aikaa $O(n^2)$, koska rekursiivisia
@@ -580,8 +582,9 @@ alkiot jäävät jakoalkion toiselle puolelle.}
 \label{fig:pikpah}
 \end{figure}
 
-Oma lukunsa on tilanne, jossa taulukossa on paljon samoja alkioita,
-ääri\-tapauksena jokainen alkio on sama.
+Oma lukunsa on tilanne, jossa taulukossa on paljon samoja alkioita.
+Ääritapauksena \emph{jokainen} alkio on sama,
+mikä on käytännössä hyvin mahdollinen syöte.
 Tällöin tässä esitetty funktio \texttt{jako} tuottaa aina huonon jaon,
 jossa kaikki alkiot menevät jakoalkion oikealle puolelle.
 Ei siis riitä, että jakoalkio on valittu hyvin,
@@ -599,6 +602,8 @@ Parempi tapa toteuttaa alkioiden siirtäminen on puolestaan
 käydä läpi rinnakkain alkioita alusta ja lopusta ja
 pitää huoli siitä, että jakokohta jää keskelle, jos kaikki alkiot
 ovat yhtä suuria.
+Pikajärjestämisen toteuttaminen hyvin ei ole helppo tehtävä,
+vaan vaatii paljon huolellisuutta.
 
 \subsection{Algoritmien vertailua}
 
@@ -869,7 +874,7 @@ Esimerkiksi taulukko $[2,1,4,2,4,2]$ sisältää kolme
 eri alkiota: $1$, $2$ ja $4$.
 Voimme ratkaista tehtävän järjestämällä ensin taulukon,
 minkä jälkeen yhtä suuret alkiot ovat vierekkäin.
-Tämän jälkeen tehtävän ratkaisu käy helposti,
+Tämän jälkeen saamme laskettua vastauksen helposti,
 koska riittää tutkia, monessako taulukon kohdassa on
 \emph{vierekkäin} kaksi eri alkiota.
 Voimme toteuttaa algoritmin näin:
@@ -1004,11 +1009,11 @@ ja kun jatkamme vastaavasti, kahden askeleen kuluttua
 hakuvälillä on vain yksi luku, joka on juuri haettu luku 6.
 Olemme löytäneet halutun luvun ja algoritmi päättyy.
 
-Voimme ratkaista binäärihaun avulla esimerkiksi tehtävän,
-jossa annettuna on taulukko ja luku $x$ ja haluamme selvittää,
-voimmeko valita taulukosta kaksi lukua $a$ ja $b$ niin, että $a+b=x$.
-Järjestämme ensin taulukon, minkä jälkeen käymme läpi taulukon
-luvut yksi kerrallaan.
+Voimme selvittää binäärihaun avulla esimerkiksi tehokkaasti,
+onko taulukossa kahta alkiota $a$ ja $b$ niin,
+että $a+b=x$, missä $x$ on annettu arvo.
+Ideana on järjestää ensin taulukko ja käydä sitten läpi
+kaikki taulukon luvut.
 Jokaisen luvun kohdalla tutkimme, voisiko kyseinen luku olla $a$.
 Tällöin taulukossa pitäisi olla toinen luku $b$ niin, että
 $a+b=x$, eli taulukossa pitäisi olla luku $x-a$.
