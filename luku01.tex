@@ -10,9 +10,9 @@ huomiota myös siihen, miten nopeasti algoritmit toimivat.
 
 Algoritmien tehokkuudella on suuri merkitys käytännössä.
 Esimerkiksi netissä toimiva reittiopas on käyttökelpoinen sen vuoksi,
-että se antaa meille reitin kuvauksen heti sen jälkeen, kun olemme
+että se antaa ehdotuksen reitistä heti sen jälkeen, kun olemme
 ilmoittaneet, mistä mihin haluamme matkustaa.
-Jos meidän pitäisi odottaa reitin kuvausta vaikkapa minuutti tai tunti,
+Jos reittiehdotusta pitäisi odottaa vaikkapa minuutti tai tunti,
 tämä rajoittaisi paljon palvelun käyttöä.
 
 Jotta reittiopas toimisi tehokkaasti, sen taustalla on
@@ -90,7 +90,7 @@ koska haluamme usein perustella täsmällisesti,
 miksi jokin algoritmi toimii ja käyttää tietyn verran aikaa.
 Tutustumme tarvittaviin matematiikan asioihin pikkuhiljaa kirjan aikana.
 Kirjan lopussa olevassa liitteessä on lisäksi yhteenveto matematiikan
-merkinnöistä ja kaavoista, joita käytämme kirjassa.
+merkinnöistä ja kaavoista, joita kirjassa käytetään.
 
 \section{Ohjelmoinnin peruspalikat}
 
@@ -137,10 +137,10 @@ for i = 1 to 10
 \end{code}
 
 Seuraava while-silmukka puolestaan puolittaa lukua $x$,
-kunnes se saavuttaa nollan:
+kunnes se on pienempi kuin 1:
 
 \begin{code}
-while x > 0
+while x >= 1
     print(x)
     x /= 2
 \end{code}
@@ -163,7 +163,8 @@ print(x[2]) // 3
 
 Tutustumme kirjan aikana moniin tietorakenteisiin,
 joista on hyötyä algoritmien suunnittelussa.
-Kaikki tietorakenteet perustuvat kuitenkin pohjimmiltaan taulukkoon.
+Kaikki tietorakenteet perustuvat kuitenkin pohjimmiltaan taulukkoon,
+koska tietokoneen muisti on kuin suuri taulukko.
 
 \subsubsection{Funktio}
 
@@ -188,7 +189,7 @@ näitä tekniikoita eri tilanteissa.
 
 \index{rekursio}
 
-Rekursio on hyödyllinen ohjelmointitekniikka,
+\emph{Rekursio} on hyödyllinen ohjelmointitekniikka,
 joka jää kuitenkin usein sivurooliin ohjelmoinnin peruskursseilla.
 Nyt onkin sopiva hetki perehtyä kunnolla siihen,
 mitä hyötyä meille on rekursiosta.
@@ -201,16 +202,20 @@ kätevästi rekursion avulla.
 
 Aloitamme ongelmasta, jossa haluamme käydä läpi
 kaikki lukujen $1,2,\dots,n$ \emph{osajoukot}.
-Tämä tarkoittaa, että haluamme käydä läpi kaikki tavat
-valita jokin joukko lukuja.
 Esimerkiksi kun $n=3$, osajoukot ovat
 $\emptyset$ (tyhjä joukko), $\{1\}$, $\{2\}$, $\{3\}$,
 $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
+Osajoukkoja on yhteensä $2^n$,
+koska jokaisen luvun kohdalla on kaksi vaihtoehtoa:
+se tulee tai ei tule mukaan osajoukkoon.
+Esimerkiksi kun $n=3$, osajoukkoja on $2^3=8$.
 
-Voimme ajatella asiaa niin, että teemme kunkin luvun
+Seuraava rekursiivinen funktio muodostaa lukujen
+$1,2,\dots,n$ osajoukot.
+Ideana on, että teemme kunkin luvun
 kohdalla \emph{päätöksen}, tuleeko se mukaan osajoukkoon vai ei.
-Tällöin voimme toteuttaa osajoukkojen läpikäynnin
-seuraavasti rekursiolla:
+Toteutamme tämän niin,
+että funktio kutsuu itseään molemmissa tapauksissa rekursiivisesti.
 
 \begin{code}
 function haku(k)
@@ -297,11 +302,6 @@ Jokaisessa funktiokutsussa ylempi haara ottaa luvun mukaan osajoukkoon
 ja alempi haara ei ota lukua mukaan osajoukkoon.
 Kuvan oikeassa reunassa näkyy kussakin tapauksessa muodostettu osajoukko.
 
-Luvuista $1,2,\dots,n$ voidaan muodostaa $2^n$ osajoukkoa,
-koska jokaisen luvun kohdalla on kaksi vaihtoehtoa:
-se tulee tai ei tule mukaan osajoukkoon.
-Esimerkiksi tapauksessa $n=3$ osajoukkoja on $2^3=8$.
-
 \subsection{Permutaatioiden läpikäynti}
 
 \index{permutaatio}
@@ -311,10 +311,13 @@ käydä läpi lukujen $1,2,\dots,n$ \emph{permutaatiot}
 eli kaikki mahdolliset tavat asettaa luvut johonkin järjestykseen.
 Esimerkiksi tapauksessa $n=3$ permutaatiot ovat
 $(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
+Luvuista $1,2,\dots,n$ voi muodostaa kaikkiaan $n!$ permutaatiota.
+Esimerkiksi tapauksessa $n=3$ permutaatioiden määrä on
+$3!=6$.
 
 Myös permutaatioiden läpikäynti onnistuu kätevästi rekursiolla.
-Ideana on, että valitsemme joka askeleella permutaatioon
-jonkin luvun, joka ei vielä kuulu siihen.
+Ideana on valita joka askeleella permutaation loppuun
+jokin luku, joka ei vielä kuulu siihen.
 Voimme toteuttaa haun näin:
 
 \begin{code}
@@ -351,23 +354,16 @@ for i = 1 to n
     print(permutaatio[i])
 \end{code}
 
-Voimme valita permutaation ensimmäisen luvun $n$ tavalla,
-toisen luvun $n-1$ tavalla,
-kolmannen luvun $n-2$ tavalla, jne.,
-minkä vuoksi luvuista $1,2,\dots,n$ voi muodostaa
-kaikkiaan $n!$ permutaatiota.
-Esimerkiksi tapauksessa $n=3$ permutaatioiden määrä on $3!=6$.
-
 \subsection{Peruuttava haku}
 
 \index{peruuttava haku}
 
 \emph{Peruuttava haku} on yleinen rekursiivinen menetelmä,
-jota käyttäen voimme muodostaa järjestelmällisesti
-kaikki ratkaisut annettuun ongelmaan.
+jota käyttäen voimme muodostaa kaikki ratkaisut
+annettuun ongelmaan.
 Ideana on aloittaa tyhjästä ratkaisusta ja käydä
 joka askeleella läpi rekursiivisesti kaikki mahdolliset tavat,
-kuinka voimme laajentaa ratkaisua.
+kuinka ratkaisua voi laajentaa.
 
 Peruuttava haku on raa'an voiman algoritmi,
 ja voimme käyttää sitä vain silloin,
@@ -496,9 +492,11 @@ ruudukon koko $n$ & neliöiden määrä \\
 
 Kun olemme saaneet muodostettua latinalaisen neliön, voimme
 tulostaa sen sisällön taulukon \texttt{nelio} perusteella
-tai vain laskea, montako neliötä on olemassa.
+tai vain kasvattaa laskurin arvoa,
+jolloin saamme lasketuksi, montako neliötä on olemassa kaikkiaan.
 Taulukko \ref{tab:latnel} sisältää latinalaisten neliöiden
-määrät tapauksissa $n=1,2,\dots,6$, jotka pystymme laskemaan nopeasti.
-Suuremmilla $n$:n arvoilla haku alkaa kestää liian kauan
-ja meidän tulisi keksiä keino tehostaa hakua,
-jos haluaisimme laskea neliöiden määriä suuremmissa tapauksissa.
+määrät tapauksissa $n=1,2,\dots,6$, jotka pystymme laskemaan
+nopeasti tässä kuvatulla algoritmilla.
+Suuremmilla $n$:n arvoilla pelkkä peruuttava haku
+on kuitenkin liian hidas, koska ratkaisuja on valtava määrä
+emmekä voi enää käydä niitä läpi yksitellen.
