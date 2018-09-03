@@ -7,7 +7,8 @@ joka sisältää joukon alkioita,
 jotka ovat peräkkäin tietyssä järjestyksessä.
 Esimerkiksi $[3,7,2,5]$ on lista, joka sisältää neljä alkiota.
 Haluamme toteuttaa listan niin,
-että pääsemme käsiksi tietyssä kohdassa olevaan alkioon
+että pääsemme käsiksi listalla olevaan alkioon
+sen kohdan perusteella
 ja lisäksi pystymme lisäämään ja poistamaan alkioita.
 
 Tässä luvussa tutustumme kahteen lähestymistapaan listan luomiseen.
@@ -27,7 +28,7 @@ Koska taulukon alkiot sijaitsevat aina peräkkäin muistissa,
 pääsemme käsiksi mihin tahansa listan alkioon ajassa $O(1)$.
 Haasteena toteutuksessa on kuitenkin,
 että taulukon koko on \emph{kiinteä} ja jos haluamme
-muuttaa kokoa, meidän täytyy varata uusi taulukko
+muuttaa listan kokoa, meidän täytyy varata uusi taulukko
 ja kopioida sinne vanhan taulukon sisältö.
 
 \subsection{Muutokset lopussa}
@@ -45,7 +46,7 @@ vapaana oleva kohta taulukosta.
 Kuva \ref{fig:listau} näyttää esimerkin,
 jossa taulukossa on tilaa yhteensä kahdeksalle alkiolle
 ja siihen on tallennettu lista $[3,7,2,5]$.
-Taulukon neljä ensimmäistä alkiota ovat siis listan käytössä
+Taulukon neljä ensimmäistä kohtaa ovat siis listan käytössä
 ja muut ovat varalla tulevia alkioita varten.
 Kun lisäämme listan loppuun uuden alkion 6,
 otamme käyttöön taulukosta uuden kohdan, johon alkio sijoitetaan.
@@ -181,7 +182,7 @@ ja puolitamme taulukon koon.}
 
 Voimme poistaa alkion listan lopusta aina $O(1)$-ajassa,
 koska taulukon kokoa ei tarvitse koskaan suurentaa.
-Tässä voisi kuitenkin tulla ongelmaksi, että monien poistojen
+Tässä voi kuitenkin tulla ongelmaksi, että monien poistojen
 jälkeen taulukossa on turhan paljon tyhjää tilaa lopussa.
 Voimme soveltaa tässä käänteisesti samaa ideaa kuin lisäämisessä:
 jos poistamisen jälkeen vain \emph{neljännes} taulukosta on käytössä,
@@ -672,7 +673,7 @@ Selitys on siinä, että pino ja jono ovat hyödyllisiä
 Voimme usein ajatella algoritmissa tarvittavaa
 tietorakennetta pinona tai jonona ja toteuttaa sen sitten listana.
 
-Tarkastellaan esimerkkinä tehtävää, jossa meille on annettu
+Tarkastellaan esimerkkinä tehtävää, jossa annettuna on
 $n$ merkin pituinen \emph{sulkulauseke}, 
 joka muodostuu kaarisulkeista \texttt{()} sekä
 hakasulkeista \texttt{[]}.
