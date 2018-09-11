@@ -333,9 +333,9 @@ function jarjesta(a,b)
     if a == b
         return
     k = (a+b)/2
-    jarjesta(a,k-1)
-    jarjesta(k,b)
-    lomita(a,k-1,k,b)
+    jarjesta(a,k)
+    jarjesta(k+1,b)
+    lomita(a,k,k+1,b)
 \end{code}
 
 Funktio \texttt{jarjesta} järjestää taulukon
@@ -358,8 +358,8 @@ function lomita(a1, b1, a2, b2)
             apu[i] = taulu[a1]
             a1++
         else
-            apu[i] = taulu[b1]
-            b1++
+            apu[i] = taulu[a2]
+            a2++
     for i = a to b
         taulu[i] = apu[i]
 \end{code}
