@@ -400,20 +400,24 @@ Tämän perusteella saamme aikaan seuraavan
 dynaamisen ohjelmoinnin algoritmin:
 
 \begin{code}
-reitit[1][1] = 1
 for y = 1 to n
     for x = 1 to n
         if este[y][x]
             reitit[y][x] = 0
+        else if y == 1 and x == 1
+            reitit[y][x] = 1
         else
             reitit[y][x] = reitit[y-1][x]+reitit[y][x-1]
 \end{code}
 
-Aluksi merkitsemme muistiin, että vasempaan yläkulmaan on yksi reitti,
-koska lähdemme liikkeelle siitä.
-Tämän jälkeen laskemme reittien määrän kaikkiin muihin ruutuihin.
-Jos ruudussa on este, siihen ei tule mitään reittiä,
-ja muuten laskemme yhteen ylhäältä ja vasemmalta tulevat reitit.
+Koodi laskee jokaiseen ruutuun reittien määrän
+vasemmasta yläkulmasta kyseiseen ruutuun.
+Jos ruudussa on este, reittien määrä on 0,
+koska mitään reittiä ei ole olemassa.
+Jos ruutu on vasen yläkulma (eli $y=1$ ja $x=1$),
+reittien määrä on 1, koska reitti alkaa siitä ruudusta.
+Muuten reittien määrä saadaan laskemalla yhteen
+ylhäältä ja vasemmalta tulevat reitit.
 Tuloksena on algoritmi, joka vie aikaa $O(n^2)$.
 
 Huomaa, että tässä käytämme taulukon kohtia $1,2,\dots,n$
