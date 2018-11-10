@@ -72,7 +72,7 @@ jokin toinen lapsi niin, että painojen summa ei ylitä
 korin maksimipainoa.
 Jos ei ole mitään tapaa valita toista lasta,
 laitamme painavimman lapsen koriin yksin.
-Tällainen algoritmi on \emph{ahne}, eli se tekee aina jonkin
+Tällainen algoritmi on \emph{ahne} (\emph{greedy}), eli se tekee aina jonkin
 hyvältä tuntuvan valinnan, joka vie ratkaisua eteenpäin,
 eikä peruuta koskaan tehtyjä valintoja.
 
@@ -424,7 +424,8 @@ oikeaa kuvaa algoritmin tehokkuudesta,
 koska silmukan suorituskertojen määrä saattaa vaihdella
 algoritmin eri vaiheissa.
 Tutustumme seuraavaksi tekniikkaan nimeltä
-\emph{tasoitettu analyysi}, jossa koetamme arvioida tarkemmin,
+\emph{tasoitettu analyysi} (\emph{amortized analysis}),
+jossa koetamme arvioida tarkemmin,
 montako kertaa silmukassa olevaa koodia suoritetaan
 \emph{yhteensä} algoritmin aikana.
 

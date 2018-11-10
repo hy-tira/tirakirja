@@ -2,7 +2,7 @@
 
 \index{järjestäminen}
 
-\emph{Järjestäminen} on keskeinen algoritmiikan ongelma,
+\emph{Järjestäminen} (\emph{sorting}) on keskeinen algoritmiikan ongelma,
 jossa tehtävänä on jär\-jestää $n$ alkiota sisältävä
 taulukko suuruusjärjestykseen.
 Esimerkiksi jos meil\-lä on taulukko $[5,2,4,2,6,1]$ ja
@@ -44,7 +44,7 @@ suunnittelemiselle.
 
 \index{invariantti}
 
-\emph{Lisäysjärjestäminen} käy läpi taulukon
+\emph{Lisäysjärjestäminen} (\emph{insertion sort}) käy läpi taulukon
 vasemmalta oikealle.
 Kun algoritmi tulee tiettyyn taulukon kohtaan,
 se siirtää kyseisessä kohdassa olevan alkion
@@ -314,7 +314,7 @@ kokonaiseksi järjestetyksi taulukoksi.
 \label{fig:lomjar}
 \end{figure}
 
-\emph{Lomitusjärjestäminen} on rekursiivinen järjestämisalgoritmi,
+\emph{Lomitusjärjestäminen} (\emph{merge sort}) on rekursiivinen järjestämisalgoritmi,
 joka perustuu taulukon puolituksiin.
 Kun saamme järjestettäväksi $n$-kokoisen taulukon,
 jaamme sen keskeltä kahdeksi osataulukoksi,
@@ -409,11 +409,11 @@ Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
 
 \index{pikajärjestäminen}
 
-\emph{Pikajärjestäminen} tarjoaa toisenlaisen rekursiivisen
-lähestymistavan taulukon järjestämiseen.
+\emph{Pikajärjestäminen} (\emph{quick sort}) tarjoaa toisenlaisen rekursiivisen
+lähestymis\-tavan taulukon järjestämiseen.
 Kun saamme järjestettäväksi taulukon, valitsemme ensin jonkin
-sen alkioista \emph{jakoalkioksi}.
-Tämän jälkeen siirrämme alkioita niin,
+sen alkioista \emph{jakoalkioksi} (\emph{pivot}).
+Tämän jälkeen siirräm\-me alkioita niin,
 että jakoalkiota pienemmät alkiot ovat sen vasemmalla puolella,
 suuremmat alkiot ovat sen oikealla puolella ja
 yhtä suuret alkiot voivat olla kummalla tahansa puolella.
@@ -714,10 +714,11 @@ pahimmassa tapauksessa $\Omega(n \log n)$ vertailua.
 Millainen olisi sitten järjestämisalgoritmi,
 joka ei perustu vertailuihin ja toimii
 tehokkaammin kuin $O(n \log n)$?
-\emph{Laskemisjärjestäminen} on $O(n)$-aikainen järjestämisalgoritmi,
+\emph{Laskemisjärjestäminen} (\emph{counting sort})
+on $O(n)$-aikainen järjestämisalgoritmi,
 jonka toiminta perustuu oletukseen, että taulukon alkiot
 ovat sopivan pieniä kokonaislukuja.
-Tarkemmin ottaen algoritmi olettaa, että jokainen luku on
+Algoritmi olettaa, että jokainen alkio on
 kokonaisluku välillä $0 \dots k$, missä $k=O(n)$.
 
 Algoritmi luo \emph{kirjanpidon}, joka kertoo,
@@ -925,7 +926,7 @@ kokonaisaikavaativuus on $O(n \log n)$.
 
 \index{binäärihaku}
 
-\emph{Binäärihaku} on menetelmä, jonka avulla voimme löytää alkion
+\emph{Binäärihaku} (\emph{binary search}) on menetelmä, jonka avulla voimme löytää alkion
 järjestetystä taulukosta ajassa $O(\log n)$.
 Ideana on pitää yllä hakuväliä, jossa etsittävä alkio voi olla,
 ja puolittaa väli joka askeleella tutkimalla välin

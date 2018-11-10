@@ -71,7 +71,8 @@ vaikka se ei olisikaan alun perin syklitön.
 \index{topologinen järjestys}
 \index{syklin etsiminen}
 
-\emph{Topologinen järjestys} on suunnatun verkon solmujen järjestys,
+\emph{Topologinen järjestys} (\emph{topological sort})
+on suunnatun verkon solmujen järjes\-tys,
 jossa pätee, että jos solmusta $a$ on kaari solmuun $b$,
 niin solmu $a$ on ennen solmua $b$ järjestyksessä.
 Topologinen järjestys voidaan esittää listana,
@@ -81,7 +82,7 @@ järjestys $[1,3,5,2,4]$.
 
 Osoittautuu, että voimme muodostaa suunnatulle verkolle
 topologisen järjestyksen tarkalleen silloin,
-kun verkko on syklitön.
+kun verkko on syklitön (\emph{directed acyclic graph} eli \emph{DAG}).
 Tutustumme seuraavaksi tehokkaaseen algoritmiin,
 joka muodostaa topologisen järjestyksen
 tai toteaa, ettei järjestystä voi muodostaa
@@ -546,7 +547,8 @@ Mikä neuvoksi, jos kuitenkin haluaisimme tehdä näin?
 
 Joskus voimme selviytyä tilanteesta käsittelemällä
 verkon vahvasti yhtenäisiä komponentteja.
-Sanomme, että suunnattu verkko on \emph{vahvasti yhtenäinen},
+Sanomme, että suunnattu verkko on \emph{vahvasti yhtenäinen}
+(\emph{strongly connected}),
 jos mistä tahansa solmusta on polku mihin tahansa solmuun.
 Voimme esittää suunnatun verkon aina yhtenä tai
 useampana vahvasti yhtenäisenä komponenttina,

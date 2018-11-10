@@ -299,7 +299,7 @@ aikaa $O((n+m) \log m)$.
 \index{virittävä puu}
 \index{pienin virittävä puu}
 
-Verkon \emph{virittävä puu} on kokoelma verkon kaaria,
+Verkon \emph{virittävä puu} (\emph{spanning tree}) on kokoelma verkon kaaria,
 jotka kytkevät kaikki verkon solmut toisiinsa.
 Kuten puut yleensäkin, virittävä puu on yhtenäinen ja syklitön eli
 jokaisen kahden solmun välillä on yksikäsitteinen polku.
@@ -343,7 +343,7 @@ Kuvassa \ref{fig:virpuu} on esimerkkinä verkko ja yksi sen virittävistä puist
 \end{figure}
 
 Jos verkko on painotettu, kiinnostava ongelma on etsiä verkon
-\emph{pienin virittävä puu}.
+\emph{pienin virittävä puu} (\emph{minimum spanning tree}).
 Tämä on virittävä puu, jonka kaarten painojen summa on
 mahdollisimman pieni.
 Esimerkiksi kuvassa \ref{fig:pievir} on painotettu verkko ja kaksi sen virittävää puuta,
@@ -734,8 +734,8 @@ Huomaa, että Kruskalin ja Primin algoritmit
 toimivat myös silloin, kun verkossa on negatiivisia kaaria,
 koska ainoastaan kaarten painojärjestys merkitsee.
 Tämän ansiosta voimme etsiä algoritmien avulla myös
-verkon \emph{suurimman virittävän puun} eli virittävän puun,
-jossa kaarten painojen summa on suurin.
+verkon \emph{suurimman virittävän puun} (\emph{maximum spanning tree})
+eli virittävän puun, jossa kaarten painojen summa on suurin.
 Tämä onnistuu muuttamalla ensin jokaisen verkossa olevan kaaren paino
 käänteiseksi ja etsimällä sitten pienimmän virittävän puun.
 Toinen tapa on vain toteuttaa Kruskalin tai Primin algoritmi niin,

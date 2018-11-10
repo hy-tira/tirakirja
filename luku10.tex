@@ -3,7 +3,7 @@
 \index{verkko}
 
 Voimme ratkaista monia algoritmiikan ongelmia
-esittämällä tilanteen \emph{verkkona} ja käyttämällä sitten
+esittämällä tilanteen \emph{verkkona} (\emph{graph}) ja käyttämällä sitten
 sopivaa verkkoalgoritmia.
 Tyypillinen esimerkki verkosta on tieverkosto,
 joka muodostuu kaupungeista ja niiden välisistä teistä.
@@ -23,9 +23,9 @@ opimme lisää verkkoalgoritmeja.
 \index{solmu}
 \index{kaari}
 
-Verkko muodostuu \emph{solmuista} ja
-niitä yhdistävistä \emph{kaarista}.
-Esimerkiksi kuvassa \ref{fig:veresi} on verkko,
+Verkko muodostuu \emph{solmuista} (\emph{node} tai \emph{vertex}) ja
+niiden välisistä \emph{kaarista} (\emph{edge}).
+Kuvassa \ref{fig:veresi} on verkko,
 jossa on viisi solmua ja seitsemän kaarta.
 Merkitsemme verkon solmujen
 määrää kirjaimella $n$ ja kaarten määrää
@@ -60,12 +60,12 @@ $1,2,\dots,n$.
 \index{naapuri}
 \index{aste}
 
-Sanomme, että kaksi solmua ovat \emph{vierekkäin} verkossa,
+Sanomme, että kaksi solmua ovat \emph{vierekkäin} (\emph{adjacent}),
 jos niiden välillä on kaari.
-Solmun \emph{naapureja} ovat kaikki solmut,
+Solmun \emph{naapureja} (\emph{neighbor}) ovat kaikki solmut,
 joihin se on yhteydessä kaarella,
-ja solmun \emph{aste} on sen naapureiden määrä.
-Esimerkiksi kuvassa \ref{fig:veresi} solmun 2 naapurit ovat 1, 4 ja 5,
+ja solmun \emph{aste} (\emph{degree}) on sen naapureiden määrä.
+Kuvassa \ref{fig:veresi} solmun 2 naapurit ovat 1, 4 ja 5,
 joten solmun aste on 3.
 
 \subsubsection{Polku ja sykli}
@@ -120,7 +120,7 @@ joten solmun aste on 3.
 
 \index{polku}
 
-Verkossa oleva \emph{polku} on kaaria pitkin kulkeva reitti
+Verkossa oleva \emph{polku} (\emph{path}) on kaaria pitkin kulkeva reitti
 lähtösolmusta kohdesolmuun.
 Kuva \ref{fig:verpoe} näyttää kaksi
 mahdollista polkua solmusta $1$ solmuun $5$ esimerkkiverkossamme.
@@ -158,18 +158,19 @@ ja toinen polku on $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 \index{sykli}
 \index{syklitön verkko}
 
-Polku on \emph{sykli}, jos sen alku- ja loppusolmu on sama,
+Polku on \emph{sykli} (\emph{cycle}), jos sen alku- ja loppusolmu on sama,
 siinä on ainakin yksi kaari 
 eikä se kulje kahta kertaa saman solmun tai kaaren kautta.
 Kuvassa \ref{fig:versyk} on esimerkkinä sykli
 $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$.
-Jos verkossa ei ole yhtään sykliä, sanomme, että verkko on \emph{syklitön}.
+Jos verkossa ei ole yhtään sykliä, sanomme, että verkko on \emph{syklitön}
+(\emph{acyclic}).
 
 \subsubsection{Yhtenäisyys ja komponentit}
 
 \index{yhtenäinen verkko}
 
-Verkko on \emph{yhtenäinen},
+Verkko on \emph{yhtenäinen} (\emph{connected}),
 jos minkä tahansa kahden solmun välillä on polku.
 Kuvan \ref{fig:veresi} verkko on yhtenäinen,
 mutta kuvan \ref{fig:veryht} verkko ei ole yhtenäinen,
@@ -178,7 +179,8 @@ koska esimerkiksi solmujen $1$ ja $2$ välillä ei ole polkua.
 \index{komponentti}
 \index{yhtenäinen komponentti}
 
-Voimme esittää verkon aina kokoelmana yhtenäisiä \emph{komponentteja}.
+Voimme esittää verkon aina kokoelmana yhtenäisiä \emph{komponentteja}
+(\emph{component}).
 Kuvassa \ref{fig:veryht} yhtenäiset komponentit
 ovat $\{1,3\}$ ja $\{2,4,5\}$.
 
@@ -205,7 +207,7 @@ ovat $\{1,3\}$ ja $\{2,4,5\}$.
 
 \index{puu}
 
-Verkko on \emph{puu}, jos se on sekä yhtenäinen
+Verkko on \emph{puu} (\emph{tree}), jos se on sekä yhtenäinen
 että syklitön.
 Puussa kaarten määrä on aina yhden pienempi
 kuin solmujen määrä, ja jokaisen kahden solmun
@@ -238,7 +240,7 @@ jossa on viisi solmua ja neljä kaarta.
 
 \index{suunnattu verkko}
 
-\emph{Suunnatussa} verkossa
+\emph{Suunnatussa} (\emph{directed}) verkossa
 jokaisella kaarella on tietty suunta,
 jonka mukaisesti meidän täytyy kulkea kaarta pitkin.
 Suunnat rajoittavat siis kulkemistamme verkossa.
@@ -276,7 +278,7 @@ mutta emme voi kulkea mitenkään solmusta $5$ solmuun $1$.
 
 \index{painotettu verkko}
 
-\emph{Painotetussa} verkossa
+\emph{Painotetussa} (\emph{weighted}) verkossa
 jokaiseen kaareen liittyy jokin paino,
 joka kuvaa tyypillisesti kaaren pituutta.
 Kun kuljemme polkua painotetussa verkossa,
@@ -369,10 +371,10 @@ Seuraavaksi käymme läpi kolme tavallista esitystapaa.
 \index{vieruslista}
 
 Tavallisin tapa esittää verkko on luoda kullekin solmulle
-\emph{vieruslista}, joka kertoo, mihin solmuihin voimme
+\emph{vieruslista} (\emph{adjacency list}), joka kertoo, mihin solmuihin voimme
 siirtyä solmusta kaaria pitkin.
-Kuva \ref{fig:vervil} näyt\-tää esimerkkinä verkon
-ja sitä vastaavan vieruslistaesityksen.
+Kuvassa \ref{fig:vervil} on verkko
+ja sitä vastaava vieruslistaesitys.
 Jos haluamme tallentaa verkon vieruslistoina Javassa,
 voimme luoda taulukon
 
@@ -422,7 +424,8 @@ kaaresta sekä kohdesolmun että painon.
 
 \index{kaarilista}
 
-Toinen tapa tallentaa verkko on luoda \emph{kaarilista},
+Toinen tapa tallentaa verkko on luoda \emph{kaarilista}
+(\emph{edge list}),
 joka sisältää kaikki verkon kaaret.
 Javassa voimme luoda listan
 
@@ -500,7 +503,7 @@ selvittää tietystä solmusta lähteviä kaaria.
 
 \index{vierusmatriisi}
 
-\emph{Vierusmatriisi} on kaksiulotteinen taulukko,
+\emph{Vierusmatriisi} (\emph{adjacency matrix}) on kaksiulotteinen taulukko,
 joka kertoo jokaisesta verkon kaaresta,
 esiintyykö se verkossa.
 Matriisin rivin $a$ sarakkeessa $b$ oleva arvo
@@ -547,7 +550,8 @@ jonka avulla voimme löytää lyhimpiä polkuja verkossa.
 
 \index{syvyyshaku}
 
-\emph{Syvyyshaku} on verkkojen käsittelyn yleistyökalu,
+\emph{Syvyyshaku} (\emph{depth-first search} eli \emph{DFS})
+on verkkojen käsittelyn yleistyökalu,
 jonka avulla voimme selvittää monia asioita verkon rakenteesta.
 Kun alamme tutkia verkkoa syvyyshaulla,
 meidän tulee päättää ensin, mistä solmusta haku lähtee liikkeelle.
@@ -780,7 +784,8 @@ syklin, jos sellainen on olemassa.
 
 \index{leveyshaku}
 
-\emph{Leveyshaku} käy syvyyshaun tavoin läpi kaikki verkon solmut,
+\emph{Leveyshaku} (\emph{breadth-first search} eli \emph{BFS})
+käy syvyyshaun tavoin läpi kaikki verkon solmut,
 joihin pääsee kulkemaan kaaria pitkin annetusta lähtösolmusta.
 Erona on kuitenkin, missä järjestyksessä solmut käydään läpi.
 Leveyshaku käy solmuja läpi \emph{kerroksittain} niin,

@@ -2,7 +2,8 @@
 
 \index{binäärihakupuu}
 
-\emph{Binäärihakupuu} on tietorakenne, joka pitää yllä
+\emph{Binäärihakupuu} (\emph{binary search tree})
+on tietorakenne, joka pitää yllä
 alkioiden joukkoa, samaan tapaan kuin hajautustaulu.
 Binäärihakupuu eroaa hajautustaulusta kuitenkin siinä,
 että se säilyttää alkioita \emph{järjestyksessä}.
@@ -23,7 +24,8 @@ ja lopuksi vertailemme joukkorakenteita ja järjestämistä.
 
 \index{binääripuu}
 
-Binäärihakupuun taustalla on yleisempi tietorakenne \emph{binääripuu}.
+Binäärihakupuun taustalla on yleisempi tietorakenne \emph{binääripuu}
+(\emph{binary tree}).
 Ennen kuin tutustumme binäärihakupuuhun,
 meidän onkin hyvä selvittää ensin, mikä on binääripuu ja mitä
 ominaisuuksia siihen liittyy.
@@ -33,16 +35,17 @@ ominaisuuksia siihen liittyy.
 \index{vanhempi}
 \index{lehti}
 
-Binääripuu muodostuu $n$ solmusta, jotka on yhdistetty toisiinsa.
-Puussa ylimpänä on solmu, jota kutsutaan \emph{juureksi}.
-Jokaisella solmulla voi olla vasen ja oikea \emph{lapsi},
-ja kaikilla solmuilla juurta lukuun ottamatta on yksikäsitteinen \emph{vanhempi}.
-Puun \emph{lehtiä} ovat solmut, joilla ei ole lapsia.
+Binääripuu muodostuu $n$ solmusta.
+Puussa ylimpänä on solmu, jota kutsutaan \emph{juureksi} (\emph{root}).
+Jokaisella solmulla voi olla vasen ja oikea \emph{lapsi} (\emph{child}),
+ja kaikilla solmuilla juurta lukuun ottamatta on yksikäsitteinen
+\emph{vanhempi} (\emph{parent}).
+Puun \emph{lehtiä} (\emph{leaf}) ovat solmut, joilla ei ole lapsia.
 
 \index{alipuu}
 
 Binääripuun rakenne on rekursiivinen:
-jokainen solmu toimii juurena \emph{alipuulle},
+jokainen solmu toimii juurena \emph{alipuulle} (\emph{subtree}),
 joka on myös binääripuu.
 Solmun $x$ alipuu sisältää solmun $x$ sekä kaikki
 solmut, joihin pääsemme laskeutumalla alaspäin solmusta $x$.
@@ -79,9 +82,9 @@ Solmun 3 vasen lapsi on solmu 5, oikea lapsi on solmu 6
 ja vanhempi on solmu 1.
 Solmun 3 alipuu sisältää solmut 3, 5, 6, 7 ja 8.
 
-Binääripuun juuren \emph{syvyys} on 0 ja jokaisen muun solmun syvyys on yhtä
+Binääripuun juuren \emph{syvyys} (\emph{depth}) on 0 ja jokaisen muun solmun syvyys on yhtä
 suurempi kuin sen vanhemman syvyys.
-Binääripuun \emph{korkeus} on puolestaan
+Binääripuun \emph{korkeus} (\emph{height}) on puolestaan
 suurin puun solmussa esiintyvä syvyys
 eli toisin sanoen suurin askelten määrä juuresta alaspäin lehteen.
 Esimerkiksi kuvan \ref{fig:binpuu} puun korkeus on 3,
@@ -179,11 +182,11 @@ Solmujen läpikäyntiin on kolme tavallista järjestystä:
 \index{jälkijärjestys}
 
 \begin{itemize}
-\item \emph{esijärjestys}: käsittelemme ensin juuren, sitten vasemman alipuun
+\item \emph{esijärjestys} (\emph{pre-order}): käsittelemme ensin juuren, sitten vasemman alipuun
 ja lopuksi oikean alipuun
-\item \emph{sisäjärjestys}: käsittelemme ensin vasemman alipuun, sitten juuren
+\item \emph{sisäjärjestys} (\emph{in-order}): käsittelemme ensin vasemman alipuun, sitten juuren
 ja lopuksi oikean alipuun
-\item \emph{jälkijärjestys}: käsittelemme ensin vasemman alipuun,
+\item \emph{jälkijärjestys} (\emph{post-order}): käsittelemme ensin vasemman alipuun,
 sitten oikean alipuun ja lopuksi juuren
 \end{itemize}
 
@@ -478,7 +481,7 @@ että puun korkeus ei kasva liian suureksi.
 Tarkemmin ottaen tavoitteemme on, että
 solmut ovat jakautuneet tasaisesti puun eri puolille
 ja puun korkeus on $O(\log n)$.
-Tällöin sanomme, että puu on \emph{tasapainoinen}.
+Tällöin sanomme, että puu on \emph{tasapainoinen} (\emph{balanced}).
 Jos onnistumme tässä, kaikki puun operaatiot toimivat
 tehokkaasti ajassa $O(\log n)$.
 Saavutamme tavoitteemme
@@ -498,7 +501,7 @@ käyte\-tään kuitenkin muita rakenteita, kuten punamustaa puuta.
 
 \index{AVL-puu}
 
-\emph{AVL-puu} on tasapainoinen binäärihakupuu, jonka
+\emph{AVL-puu} (\emph{AVL tree}) on tasapainoinen binäärihakupuu, jonka
 korkeus on aina $O(\log n)$, minkä ansiosta puun operaatiot
 toimivat tehokkaasti ajassa $O(\log n)$.
 AVL-puussa jokaiseen solmuun liittyy \emph{tasapainoehto},
@@ -649,7 +652,7 @@ Voimme toteuttaa AVL-puun operaatiot muuten samaan tapaan
 kuin yleisessä binäärihakupuussa, mutta meidän täytyy varmistaa
 alkion lisäämisen ja poistamisen jälkeen, että AVL-ehto
 on edelleen voimassa.
-Tämä onnistuu tekemällä sopivia \emph{kiertoja},
+Tämä onnistuu tekemällä sopivia \emph{kiertoja} (\emph{rotation}),
 jotka muuttavat puun rakennetta.
 Jotta voimme toteuttaa kierrot, pidämme jokaisessa
 solmussa tietoa siitä, mikä on solmusta alkavan alipuun korkeus.

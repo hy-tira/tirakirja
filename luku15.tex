@@ -19,14 +19,16 @@ Nyt on aika selvittää, mitä nämä käsitteet oikeastaan tarkoittavat.
 
 \index{vaativuusluokka}
 
-Laskennallisia ongelmia luokitellaan \emph{vaativuusluokkiin},
+Laskennallisia ongelmia luokitellaan \emph{vaativuusluokkiin}
+(\emph{complexity class}),
 joista jokaisessa on joukko ongelmia,
 joiden ratkaisemisen vaikeudessa on jotain yhteistä.
 Tunnetuimmat vaativuusluokat ovat P ja NP.
 
 \index{päätösongelma}
 
-Keskitymme tässä luvussa \emph{päätösongelmiin}, joissa algoritmin tulee
+Keskitymme tässä luvussa \emph{päätösongelmiin}
+(\emph{decision problem}), joissa algoritmin tulee
 antaa aina vastaus ''kyllä'' tai ''ei''.
 Esimerkiksi ongelma 
 ''onko verkossa polkua solmusta $a$ solmuun $b$?'' on päätösongelma.
@@ -219,7 +221,7 @@ joka ei kuuluisi myös luokkaan P.
 
 \index{NP-täydellinen ongelma}
 
-Sanomme, että ongelma on \emph{NP-täydellinen},
+Sanomme, että ongelma on \emph{NP-täydellinen} (\emph{NP-complete}),
 jos se kuuluu luokkaan NP ja mikä tahansa luokan NP
 ongelma voidaan \emph{palauttaa} siihen polynomisessa ajassa.
 NP-täydelliset ongelmat ovat luokan NP vaikeimpia ongelmia:
@@ -360,7 +362,7 @@ kuin vaihtelevan pituisia lausekkeita.
 \end{figure}
 
 Seuraavaksi osoitamme, että on NP-täydellinen ongelma tarkastaa,
-onko verkossa \emph{solmupeitettä}, jossa on $k$ solmua.
+onko verkossa \emph{solmupeitettä} (\emph{vertex cover}), jossa on $k$ solmua.
 Solmupeite on verkon solmujen osa\-joukko, joka on valittu niin,
 että jokaisessa kaaressa ainakin toinen pääte\-solmu kuuluu
 solmupeitteeseen.
@@ -525,12 +527,13 @@ Esimerkiksi myös seuraavat ongelmat ovat NP-täydellisiä:
 \index{Hamiltonin polku}
 
 \begin{itemize}
-\item onko verkossa $k$-kokoista \emph{klikkiä} eli $k$ solmun joukkoa,
+\item onko verkossa $k$-kokoista \emph{klikkiä} (\emph{clique})
+eli $k$ solmun joukkoa,
 jossa jokaisen kahden solmun välillä on kaari?
 \item voimmeko värittää verkon solmut kolmella värillä niin,
 että jokaisen kaaren päätesolmut ovat eri värisiä?
 \item onko verkossa polkua, joka kulkee tasan kerran jokaisen
-verkon solmun kautta (eli \emph{Hamiltonin polkua})?
+verkon solmun kautta (eli \emph{Hamiltonin polkua} (\emph{Hamiltonian path}))?
 \item voiko annetuista $n$ luvusta valita osajoukon, jonka summa on $x$?
 \item onko olemassa $k$-merkkistä merkkijonoa,
 jonka alijonoja ovat kaikki annetut merkkijonot?
@@ -595,7 +598,7 @@ joka osoittaisi ongelman olevan NP-täydellinen.
 \index{optimointiongelma}
 
 Käytännössä haluamme usein ratkaista päätösongelman
-sijasta \emph{optimointiongelman}: haluamme etsiä pienimmän
+sijasta \emph{optimointiongelman} (\emph{optimization problem}): haluamme etsiä pienimmän
 tai suurimman mahdollisen ratkaisun.
 Esimerkiksi emme halua tarkastaa, onko verkossa
 enintään $k$ solmun solmupeitettä (päätösongelma),
@@ -619,7 +622,7 @@ tehokkaasti kuin päätösongelman.
 
 \index{NP-vaikea ongelma}
 
-Sanomme, että ongelma on \emph{NP-vaikea}, jos voimme palauttaa
+Sanomme, että ongelma on \emph{NP-vaikea} (\emph{NP-hard}), jos voimme palauttaa
 kaikki luokan NP ongelmat siihen mutta ongelman ei
 tarvitse kuulua luokkaan NP.
 Jos ongelma on NP-vaikea, se on siis ainakin yhtä vaikea
@@ -687,7 +690,7 @@ Yksi mahdollisuus selviytyä vaikeasta ongelmasta on tyytyä
 optimaalisen ratkaisun sijasta johonkin \emph{melko hyvään} ratkaisuun,
 joka ei välttämättä ole optimaalinen.
 Saamme tällaisen ratkaisun aikaan keksimällä jonkin
-\emph{heuristiikan}, joka muodostaa ratkaisun.
+\emph{heuristiikan} (\emph{heuristic}), joka muodostaa ratkaisun.
 Heuristiikka on jokin järkevä sääntö, jonka avulla
 algoritmi rakentaa ratkaisua eteenpäin askel kerrallaan.
 

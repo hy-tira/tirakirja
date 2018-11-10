@@ -4,7 +4,8 @@
 \index{etäisyys}
 
 Monissa verkkoihin liittyvissä ongelmissa on kysymys siitä,
-että haluamme löytää \emph{lyhimmän polun} verkon solmusta toiseen.
+että haluamme löytää \emph{lyhimmän polun} (\emph{shortest path})
+verkon solmusta toiseen.
 Esimerkiksi voimme haluta selvittää,
 mikä on nopein reitti kahden katuosoitteen välillä
 tai mikä on halvin tapa lentää kaupungista toiseen.
@@ -628,10 +629,10 @@ Floyd–Warshallin algoritmilla.
 \index{etäisyysmatriisi}
 
 \emph{Floyd–Warshallin algoritmi} muodostaa $n \times n$ -kokoisen
-\emph{etäisyysmatriisin},
+\emph{etäisyysmatriisin} (\emph{distance matrix}),
 jossa rivin $a$ sarakkeessa $b$ on lyhimmän polun pituus
 solmusta $a$ solmuun $b$.
-Algoritmi alustaa ensin etäisyysmatriisin niin,
+Algoritmi alustaa ensin matriisin niin,
 että siihen on merkitty vain etäisyydet,
 jotka toteutuvat kulkemalla yksittäistä kaarta,
 ja kaikissa muissa matriisin kohdissa etäisyys on ääretön.
@@ -812,7 +813,8 @@ Floyd–Warshallin algoritmi & $O(n^3)$ & etsii kaikki polut \\
 \index{tiheä verkko}
 
 Miten sitten Floyd–Warshallin algoritmi vertautuu muihin algoritmeihin?
-Tämä riippuu siitä, onko verkko \emph{harva} vai \emph{tiheä}.
+Tämä riippuu siitä, onko verkko \emph{harva} (\emph{sparse}) vai
+\emph{tiheä} (\emph{dense}).
 Harvassa verkossa on vähän kaaria ja $m \approx n$,
 kun taas tiheässä verkossa on paljon kaaria ja $m \approx n^2$.
 Floyd–Warshallin algoritmi on parhaimmillaan silloin,

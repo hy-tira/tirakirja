@@ -2,7 +2,7 @@
 
 \index{lista}
 
-\emph{Lista} on taulukkoa muistuttava tietorakenne,
+\emph{Lista} (\emph{list}) on taulukkoa muistuttava tietorakenne,
 joka sisältää joukon alkioita,
 jotka ovat peräkkäin tietyssä järjestyksessä.
 Esimerkiksi $[3,7,2,5]$ on lista, joka sisältää neljä alkiota.
@@ -23,7 +23,7 @@ hyvät ja huonot puolensa.
 
 \index{taulukkolista}
 
-\emph{Taulukkolista} on lista, joka on tallennettu taulukkona.
+\emph{Taulukkolista} (\emph{array list}) on lista, joka on tallennettu taulukkona.
 Koska taulukon alkiot sijaitsevat aina peräkkäin muistissa,
 pääsemme käsiksi mihin tahansa listan alkioon ajassa $O(1)$.
 Haasteena toteutuksessa on kuitenkin,
@@ -306,7 +306,7 @@ jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \index{linkitetty lista}
 
-\emph{Linkitetty lista} muodostuu solmuista, joista jokainen sisältää
+\emph{Linkitetty lista} (\emph{linked list}) muodostuu solmuista, joista jokainen sisältää
 yhden listan alkion.
 Linkitetty lista voi olla yhteen tai kahteen suuntaan linkitetty.
 Yhteen suuntaan linkitetyssä listassa jokaisesta solmusta
@@ -646,7 +646,8 @@ poistamme yhden alkion ja lisäämme vielä alkion 3.}
 
 \index{pino}
 
-\emph{Pino} on tietorakenne, jossa on kolme operaatiota:
+\emph{Pino} (\emph{stack}) on tietorakenne,
+jonka operaatiot ovat
 alkion lisääminen pinon päälle (\texttt{push}),
 ylimmän alkion poistaminen (\texttt{pop})
 sekä ylimmän alkion hakeminen.
@@ -655,9 +656,9 @@ poistamme sitten kaksi alkiota ja lisäämme vielä yhden alkion.
 
 \index{jono}
 
-\emph{Jono} on tietorakenne, jossa voimme lisätä alkioita
-loppuun (\texttt{enqueue}),
-poistaa alkioita alusta (\texttt{dequeue})
+\emph{Jono} (\emph{queue}) on tietorakenne, jossa voimme lisätä alkioita
+jonon loppuun (\texttt{enqueue}),
+poistaa alkioita jonon alusta (\texttt{dequeue})
 ja hakea alkioita molemmista päistä.
 Esimerkiksi kuvassa \ref{fig:jonesi} lisäämme ensin tyhjään jonoon
 kolme alkiota, poistamme sitten yhden alkion ja lisämme vielä yhden alkion.

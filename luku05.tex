@@ -2,7 +2,7 @@
 
 \index{hajautustaulu}
 
-\emph{Hajautustaulu} on tietorakenne,
+\emph{Hajautustaulu} (\emph{hash table}) on tietorakenne,
 joka pitää yllä alkioiden joukkoa.
 Voimme tarkastaa,
 kuuluuko tietty alkio joukkoon,
@@ -50,8 +50,8 @@ Hajautusfunktiona on $f(x)=x \bmod 10$.}
 Toteutamme hajautustaulun taulukkona,
 jonka jokaisessa kohdassa on lista joukkoon kuuluvia alkioita.
 Jotta voimme käyttää hajautustaulua,
-tarvitsemme \emph{hajautusfunktion} $f$,
-joka antaa \emph{hajautusarvon}
+tarvitsemme \emph{hajautusfunktion} (\emph{hash function}) $f$,
+joka antaa \emph{hajautusarvon} (\emph{hash value})
 $f(x)$ mille tahansa joukon alkiolle $x$.
 Hajautusarvo on kokonaisluku väliltä
 $0,1,\dots,N-1$, missä $N$ on hajautustaulun koko.
@@ -173,7 +173,8 @@ summaan \emph{kertoimet} käyttäen kaavaa
 missä $A$ on vakio.
 Esimerkiksi jos $A=7$, saamme merkkijonon \texttt{apina} hajautusarvoksi
 \[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=277325.\]
-Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus},
+Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus}
+(\emph{polynomial hashing}),
 on käytän\-nössä hyvä merkkijonon hajautustapa,
 joka on käytössä esimerkiksi Javan standardikirjastossa.
 
@@ -225,7 +226,7 @@ siitä käytännössä.
 Voimme tallentaa hajautustauluun myös
 avain-arvo-pareja, joissa avaimen hajautusarvo määrittää,
 mihin hajautustaulun listaan pari sijoitetaan.
-Saamme näin aikaan tietorakenteen \emph{hakemisto},
+Saamme näin aikaan tietorakenteen \emph{hakemisto} (\emph{dictionary}),
 jota voi ajatella taulukon yleistyksenä.
 Taulukossa avaimet ovat kokonaisluvut $0,1,\dots,n-1$,
 mutta hakemistossa ne voivat olla mitä tahansa arvoja.

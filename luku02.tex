@@ -57,7 +57,7 @@ askelta.
 Näin tarkka analyysi ei ole kuitenkaan yleensä tarpeen,
 vaan meille riittää määrittää karkea \emph{yläraja} ajankäytölle.
 Sanomme, että algoritmi toimii ajassa $O(f(n))$ eli sen
-\emph{aikavaativuus} on $O(f(n))$, jos se suorittaa
+\emph{aikavaativuus} (\emph{time complexity}) on $O(f(n))$, jos se suorittaa
 enintään $c f(n)$ askelta aina silloin kun $n \ge n_0$,
 missä $c$ ja $n_0$ ovat vakioita.
 Esimerkiksi yllä oleva algoritmi toimii ajassa $O(n)$,
@@ -196,10 +196,10 @@ Käymme seuraavaksi läpi joukon tällaisia aikavaativuuksia.
 
 \subsubsection{$O(1)$ (vakioaikainen)}
 
-\emph{Vakioaikainen} algoritmi suorittaa kiinteän määrän komentoja,
+\emph{Vakioaikainen} (\emph{constant time}) algoritmi suorittaa kiinteän määrän komentoja,
 eikä syötteen suuruus vaikuta algoritmin nopeuteen.
 Esimerkiksi seuraava algoritmi laskee summan $1+2+\dots+n$
-vakioajassa summakaavan $n(n+1)/2$ avulla:
+vakioajassa kaavalla $n(n+1)/2$:
 
 \begin{code}
 summa = n*(n+1)/2
@@ -209,7 +209,7 @@ summa = n*(n+1)/2
 
 \subsubsection{$O(\log n)$ (logaritminen)}
 
-\emph{Logaritminen} algoritmi puolittaa usein syötteen koon
+\emph{Logaritminen} (\emph{logarithmic}) algoritmi puolittaa usein syötteen koon
 joka askeleella.
 Esimerkiksi seuraavan algoritmin aikavaativuus on $O(\log n)$:
 
@@ -232,7 +232,7 @@ siinä ei kulu kauan aikaa.
 
 \subsubsection{$O(n)$ (lineaarinen)}
 
-\emph{Lineaarinen} algoritmi voi käydä läpi syötteen kiinteän määrän kertoja.
+\emph{Lineaarinen} (\emph{linear}) algoritmi voi käydä läpi syötteen kiinteän määrän kertoja.
 Esimerkiksi seuraava $O(n)$-algoritmi laskee taulukon lukujen summan:
 
 \begin{code}
@@ -277,7 +277,7 @@ algoritmeihin seuraavassa luvussa 3.
 
 \subsubsection{$O(n^2)$ (neliöllinen)}
 
-\emph{Neliöllinen} algoritmi voi käydä läpi kaikki tavat valita
+\emph{Neliöllinen} (\emph{quadratic}) algoritmi voi käydä läpi kaikki tavat valita
 kaksi alkiota syöt\-teestä.
 Esimerkiksi seuraava $O(n^2)$-algoritmi tutkii, onko taulukossa
 kahta lukua, joiden summa on $x$.
@@ -294,7 +294,7 @@ for i = 0 to n-1
 
 \subsubsection{$O(n^3)$ (kuutiollinen)}
 
-\emph{Kuutiollinen} algoritmi voi käydä läpi kaikki tavat valita
+\emph{Kuutiollinen} (\emph{cubic}) algoritmi voi käydä läpi kaikki tavat valita
 kolme alkiota syöt\-teestä.
 Esimerkiksi seuraava $O(n^3)$-algoritmi tutkii, onko taulukossa
 kolmea lukua, joiden summa on $x$.
@@ -592,10 +592,10 @@ Esimerkiksi voimme sanoa, että algoritmi suorittaa silmukkaa $O(\log n)$ kierro
 tai että taulukossa on $O(n^2)$ lukua.
 
 Aikavaativuuden lisäksi kiinnostava tieto algoritmista voi olla sen
-\emph{tilavaativuus}. Tämä kuvaa sitä, miten paljon algoritmi
+\emph{tilavaativuus} (\emph{space complexity}). Tämä kuvaa sitä, miten paljon algoritmi
 käyttää muistia syötteen \emph{lisäksi}.
 Jos tilavaativuus on $O(1)$, algoritmi tarvitsee muistia
-vain yksittäisille muuttujille syötteen lisäksi.
+vain yksittäisille muuttujille.
 Jos tilavaativuus on $O(n)$, algoritmi voi varata esimerkiksi aputaulukon,
 jonka koko vastaa syötteen kokoa.
 

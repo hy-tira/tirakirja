@@ -5,7 +5,7 @@
 
 Tässä luvussa tarkastelemme ongelmaa,
 jossa haluamme välittää mahdollisimman paljon
-\emph{virtausta} verkon solmusta toiseen,
+\emph{virtausta} (\emph{flow}) verkon solmusta toiseen,
 kun jokaisella kaarella on tietty kapasiteetti,
 jota emme saa ylittää.
 Voimme esimerkiksi haluta siirtää tietokoneverkossa tietoa
@@ -25,7 +25,7 @@ Käsittelemme suunnattua verkkoa,
 jossa on kaksi erityistä solmua:
 \emph{lähtösolmu} ja \emph{kohdesolmu}.
 Haluamme muodostaa verkkoon mahdollisimman
-suuren virtauksen eli \emph{maksimivirtauksen}
+suuren virtauksen eli \emph{maksimivirtauksen} (\emph{maximum flow})
 lähtösolmusta kohdesolmuun niin, että
 jokaiseen välisolmuun tuleva virtaus on
 yhtä suuri kuin solmusta lähtevä virtaus.
@@ -252,12 +252,12 @@ joka antaa meille uuden näkökulman maksimivirtaukseen.
 
 Lähtökohtanamme on edelleen suunnattu verkko,
 jossa on lähtösolmu ja kohdesolmu.
-Sanomme, että joukko kaaria muodostaa \emph{leikkauksen},
+Sanomme, että joukko kaaria muodostaa \emph{leikkauksen} (\emph{cut}),
 jos niiden poistaminen verkosta estää kulkemisen
 lähtösolmusta kohdesolmuun.
-\emph{Minimileikkaus} on puolestaan leikkaus,
+\emph{Minimileikkaus} (\emph{minimum cut}) on puolestaan leikkaus,
 jossa kaarten yhteispaino on mahdollisimman pieni.
-Kuvassa \ref{fig:minlei} näkyy esimerkkiverkkomme minimileikkaus,
+Kuvassa \ref{fig:minlei} on minimileikkaus,
 jossa poistamme kaaret $2 \rightarrow 4$ ja $3 \rightarrow 5$
 ja jonka paino on $3+4=7$.
 
@@ -520,12 +520,12 @@ ovat yhtä suuret.
 \index{maksimiparitus}
 \index{kaksijakoinen verkko}
 
-Verkon \emph{paritus} on joukko kaaria, joille pätee,
+Verkon \emph{paritus} (\emph{matching}) on joukko kaaria, joille pätee,
 että jokainen solmu on enintään yhden kaaren päätepisteenä.
-\emph{Maksimiparitus} on puolestaan paritus,
+\emph{Maksimiparitus} (\emph{maximum matching}) on puolestaan paritus,
 jossa on mahdollisimman paljon kaaria.
 Keskitymme tapaukseen,
-jossa verkko on \emph{kaksijakoinen} eli
+jossa verkko on \emph{kaksijakoinen} (\emph{bipartite}) eli
 voimme jakaa verkon solmut
 vasempaan ja oikeaan ryhmään niin, että jokainen
 kaari kulkee ryhmien välillä.
@@ -610,7 +610,7 @@ maksimiparitusta.
 \index{polkupeite}
 \index{pienin polkupeite}
 
-\emph{Polkupeite} on joukko verkon polkuja,
+\emph{Polkupeite} (\emph{path cover}) on joukko verkon polkuja,
 jotka kattavat yhdessä kaikki verkon solmut.
 Oletamme, että verkko on suunnattu ja syklitön,
 ja haluamme muodostaa mahdollisimman pienen polkupeitteen
