@@ -190,9 +190,11 @@ Toteutamme algoritmin niin,
 että se muodostuu \emph{kierroksista},
 joista jokainen käy läpi kaikki verkon kaaret
 ja koettaa parantaa etäisyysarvioita niiden avulla.
-Kuten pian huomaamme, algoritmia riittää suorittaa $n-1$
-kierrosta, minkä jälkeen se on varmasti löytänyt
-kaikki lyhimmät polut. Voimme siis toteuttaa algoritmin seuraavasti:
+Kuten pian huomaamme, algoritmia riittää suorittaa $n-1$ kierrosta,
+missä $n$ on verkon solmujen määrä.
+Tämän jälkeen algoritmi on varmasti löytänyt
+kaikki lyhimmät polut lähtösolmusta alkaen.
+Voimme siis toteuttaa algoritmin seuraavasti:
 
 \begin{code}
 for i = 1 to n-1
