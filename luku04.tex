@@ -142,15 +142,18 @@ kun varaamme uuden taulukon.
 Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
 
-Voimme ajatella asian näin: Jokainen listalle lisättävä alkio
-maksaa \emph{pääsy\-maksuna} kolme euroa.
-Tästä yksi euro menee listalle liittymiseen ja kaksi euroa jäävät säästöön.
-Sitten kun aikanaan listalle täytyy varata suurempi taulukko,
-jokainen viime erässä lisätty alkio maksaa yhden euron omasta siirrostaan
-ja yhden euron aiemmin lisätyn alkion siirrosta.
+Miksi aikaa kuluu keskimäärin vain $O(1)$?
+Tarkastellaan tilannetta, jossa listaan lisätään alkioita
+ja taulukkoa kasvatetaan viimeisen kerran,
+kun listassa on $n$ alkiota.
+Haluamme arvioida, montako alkiota kopioidaan
+taulukosta toiseen prosessin aikana.
 Koska taulukon koko kaksinkertaistuu joka vaiheessa,
-kolmen euron kiinteä pääsymaksu riittää siihen, että kaikki tulevat
-siirrot saadaan kustannettua.
+kopioinnista tuleva lisäkustannus on
+$n+n/2+n/4+n/8+\dots = O(n)$,
+eli keskimääräinen kustannus alkiota kohden on $O(1)$.
+Taulukon kasvattamisen vaikutus kokonaisuuteen
+on siis pieni.
 
 \begin{figure}
 \center
