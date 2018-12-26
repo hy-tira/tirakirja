@@ -84,13 +84,146 @@ Käytämme Java-koodia silloin, kun haluamme kiinnittää huomiota siihen,
 miten jokin asia toteutetaan tarkalleen Javassa.
 Pseudokoodia käytämme taas silloin, kun haluamme kuvata algoritmin yleisen
 idean eikä käytetyllä kielellä ole merkitystä.
+Taulukko \ref{tab:psekoo} näyttää vertailun kirjan pseudokoodin
+ja Java-koodin merkintätavoista.
 
 Tärkeä työkalu algoritmien suunnittelussa on \emph{matematiikka},
-koska haluamme usein perustella täsmällisesti,
+jonka avulla voi perustella täsmällisesti,
 miksi jokin algoritmi toimii ja käyttää tietyn verran aikaa.
 Tutustumme tarvittaviin matematiikan asioihin pikkuhiljaa kirjan aikana.
 Kirjan lopussa olevassa liitteessä on lisäksi yhteenveto matematiikan
 merkinnöistä ja kaavoista, joita kirjassa käytetään.
+
+\lstnewenvironment{smallcode}[1][]%
+{
+   \noindent
+   \small
+   \minipage{0.47\linewidth} 
+   \vspace{0.5\baselineskip}
+   \lstset{#1,xleftmargin=0pt}}
+{\endminipage}
+
+\begin{table}
+\center
+\begin{tabular}{ll}
+pseudokoodi & Java-koodi \\
+\hline
+\begin{smallcode}[xleftmargin=0pt]
+x = 5
+t = [1,2,3]
+\end{smallcode}
+&
+\begin{smallcode}
+int x = 5;
+int[] t = {1,2,3};
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+if a == b
+    // koodia
+\end{smallcode}
+&
+\begin{smallcode}
+if (a == b) {
+    // koodia
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+while a <= b
+    // koodia
+\end{smallcode}
+&
+\begin{smallcode}
+while (a <= b) {
+    // koodia
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+for i = 1 to n
+    // koodia
+\end{smallcode}
+&
+\begin{smallcode}
+for (int i = 1; i <= n; i++) {
+    // koodia
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+for i = n to 1
+    // koodia
+\end{smallcode}
+&
+\begin{smallcode}
+for (int i = n; i >= 1; i--) {
+    // koodia
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+sort(x)
+\end{smallcode}
+&
+\begin{smallcode}
+Arrays.sort(x);
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+print(x)
+\end{smallcode}
+&
+\begin{smallcode}
+System.out.println(x);
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+swap(a,b)
+\end{smallcode}
+&
+\begin{smallcode}
+t = a; a = b; b = t;
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+a = min(x,y)
+b = max(x,y)
+\end{smallcode}
+&
+\begin{smallcode}
+a = Math.min(x,y);
+b = Math.max(x,y);
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+procedure toisto(x)
+    print(x)
+    print(x)
+\end{smallcode}
+&
+\begin{smallcode}
+void testi(int x) {
+    System.out.println(x);
+    System.out.println(x);
+}
+\end{smallcode}
+\\
+\begin{smallcode}[xleftmargin=0pt]
+function summa(a,b)
+    return a+b
+\end{smallcode}
+&
+\begin{smallcode}
+int summa(int a, int b) {
+    return a+b;
+}
+\end{smallcode}
+\\
+\end{tabular}
+\caption{Pseudokoodin ja Java-koodin vertailu.}
+\label{tab:psekoo}
+\end{table}
 
 \section{Ohjelmoinnin peruspalikat}
 
@@ -101,7 +234,9 @@ jotka muodostavat pohjan algoritmien suunnittelulle.
 
 \subsubsection{Muuttuja}
 
-Muuttujat säilyttävät algoritmissa tarvittavia tietoja.
+\index{muuttuja}
+
+\emph{Muuttuja} (\emph{variable}) säilyttää algoritmissa tarvittavia tietoja.
 Esimerkiksi seuraavassa koodissa on kaksi muuttujaa:
 
 \begin{code}
@@ -110,12 +245,15 @@ b = 4
 print(a+b)
 \end{code}
 
-Emme merkitse pseudokoodissa muuttujien tyyppejä,
-vaan ne voi päätellä käyttötilanteesta.
+Pseudokoodissa käytäntönä on,
+ettei muuttujia tarvitse määritellä vaan
+voimme alkaa käyttää niitä suoraan.
 
 \subsubsection{Ehtolause}
 
-Ehtojen avulla saamme ohjelman toiminnan
+\index{ehtolause}
+
+\emph{Ehtolause} (\emph{conditional statement}) saa ohjelman toiminnan
 riippumaan muuttujista.
 Esimerkiksi seuraava koodi kertoo, onko $x$ parillinen vai pariton:
 
@@ -128,8 +266,10 @@ else
 
 \subsubsection{Silmukka}
 
-Silmukoiden avulla voimme toistaa koodia.
-Seuraava for-silmukka tulostaa luvut $1 \dots 10$:
+\index{silmukka}
+
+\emph{Silmukka} (\emph{loop}) toistaa koodia.
+Esimerkiksi seuraava for-silmukka tulostaa luvut $1,2,3,\dots,10$.
 
 \begin{code}
 for i = 1 to 10
@@ -150,10 +290,13 @@ while x >= 1
 \index{taulukko}
 \index{tietorakenne}
 
-Taulukko on ohjelmoinnin tavallisin \emph{tietorakenne}
+\emph{Taulukko} (\emph{array}) on ohjelmoinnin tavallisin \emph{tietorakenne}
 (\emph{data structure})
-eli tapa säilyttää kokoelmaa tietoa.
+eli tapa säilyttää kokoelmaa tietoa ohjelmassa.
 Taulukossa on $n$ alkiota, joiden kohdat ovat $0,1,\dots,n-1$.
+
+Esimerkiksi seuraava koodi luo taulukon ja käsittelee
+sen kohdassa 2 olevaa alkiota:
 
 \begin{code}
 x = [4,2,7,5,1]
@@ -162,15 +305,47 @@ x[2] = 3
 print(x[2]) // 3
 \end{code}
 
+Seuraava koodi puolestaan tulostaa kaikki
+$n$-kokoisen taulukon alkiot:
+
+\begin{code}
+for i = 0 to n-1
+    print(x[i])
+\end{code}
+
 Tutustumme kirjan aikana moniin tietorakenteisiin,
 joista on hyötyä algoritmien suunnittelussa.
-Kaikki tietorakenteet perustuvat kuitenkin pohjimmiltaan taulukkoon,
-koska tietokoneen muisti on kuin suuri taulukko.
+Pystymme kuitenkin halutessamme toteuttamaan
+minkä tahansa tietorakenteen taulukon avulla.
+Tämä johtuu siitä, että tietokoneen muisti
+on pohjimmiltaan suuri taulukko.
 
-\subsubsection{Funktio}
+\subsubsection{Aliohjelma}
 
-Funktioiden avulla voimme jakaa koodia osiin.
-Javassa funktioita kutsutaan yleensä metodeiksi.
+\index{aliohjelma}
+\index{metodi}
+\index{proseduuri}
+\index{funktio}
+
+\emph{Aliohjelma} (\emph{subprogram}) on ohjelman osa, jota voi kutsua parametreilla.
+Javassa aliohjelmasta käytetään nimeä \emph{metodi} (\emph{method}).
+
+Tässä kirjassa käytäntönä on,
+että \emph{proseduuri} (\emph{procedure}) on aliohjelma,
+joka ei palauta mitään (Javassa \texttt{void}),
+ja \emph{funktio} (\emph{function}) on aliohjelma,
+jolla on palautusarvo.
+
+Esimerkiksi seuraava proseduuri tulostaa kahdesti parametrinsa:
+
+\begin{code}
+procedure toisto(x)
+    print(x)
+    print(x)
+\end{code}
+
+Seuraava funktio puolestaan palauttaa
+parametriensa summan:
 
 \begin{code}
 function summa(a,b)
@@ -192,10 +367,46 @@ näitä tekniikoita eri tilanteissa.
 
 \emph{Rekursio} (\emph{recursion}) on hyödyllinen ohjelmointitekniikka,
 joka jää kuitenkin usein sivurooliin ohjelmoinnin peruskursseilla.
-Nyt onkin sopiva hetki perehtyä kunnolla siihen,
-mitä hyötyä meille on rekursiosta.
+Nyt on aika perehtyä kunnolla siihen,
+mitä hyötyä rekursiosta on.
 Osoittautuu, että voimme toteuttaa monia algoritmeja
 kätevästi rekursion avulla.
+
+Rekursiossa on ideana tehdä aliohjelma, joka kutsuu itseään.
+Yksi tapa ajatella rekursiota on, että voimme muuttaa sen avulla
+silmukan sarjaksi aliohjelman kutsuja.
+Tarkastellaan esimerkkinä seuraavaa silmukkaa:
+
+\begin{code}
+for i = 1 to 10
+    print(i)
+\end{code}
+
+Tämä silmukka tulostaa luvut $1,2,3,\dots,10$.
+Voimme toteuttaa samalla tavalla toimivan ohjelman
+seuraavasti rekursion avulla:
+
+\begin{code}
+procedure testi(x)
+    if x > 10
+        return
+    print(x)
+    testi(x+1)
+    
+testi(1)
+\end{code}
+
+Tässä \texttt{testi} on rekursiivinen proseduuri,
+jolle annetaan parametrina luku $x$.
+Jos $x$ on yli 10, proseduuri ei tee mitään (rekursion loppuehto).
+Muuten proseduuri tulostaa luvun $x$ ja kutsuu sitten
+itseään parametrilla $x+1$ (rekursiivinen kutsu).
+Kun proseduuria kutsutaan parametrilla 1,
+se tulostaa luvut $1,2,3,\dots,10$ samalla tavalla kuin aiempi silmukka.
+
+Mutta mitä hyötyä rekursiosta on?
+Se selviää seuraavista esimerkeistä,
+joissa käytämme rekursiota aidoissa ongelmissa.
 
 \subsection{Osajoukkojen läpikäynti}
 
@@ -211,15 +422,15 @@ koska jokaisen luvun kohdalla on kaksi vaihtoehtoa:
 se tulee tai ei tule mukaan osajoukkoon.
 Esimerkiksi kun $n=3$, osajoukkoja on $2^3=8$.
 
-Seuraava rekursiivinen funktio muodostaa lukujen
+Seuraava rekursiivinen proseduuri muodostaa lukujen
 $1,2,\dots,n$ osajoukot.
 Ideana on, että teemme kunkin luvun
 kohdalla \emph{päätöksen}, tuleeko se mukaan osajoukkoon vai ei.
 Toteutamme tämän niin,
-että funktio kutsuu itseään molemmissa tapauksissa rekursiivisesti.
+että proseduuri kutsuu itseään molemmissa tapauksissa rekursiivisesti.
 
 \begin{code}
-function haku(k)
+procedure haku(k)
     if k == n+1
         // käsittele osajoukko
     else
@@ -229,14 +440,14 @@ function haku(k)
         haku(k+1)
 \end{code}
 
-Funktion \texttt{haku} parametri $k$ ilmaisee,
+Proseduurin \texttt{haku} parametri $k$ ilmaisee,
 minkä luvun kohtalon päätämme seuraavaksi.
-Kutsumme aluksi funktiota parametrilla $k=1$.
+Kutsumme aluksi proseduuria parametrilla $k=1$.
 Jos $k=n+1$, olemme saaneet osajoukon valmiiksi
 ja voimme käsitellä sen haluamallamme tavalla.
 Muuten haaraudumme kahteen osaan sen mukaan,
 tuleeko luku $k$ mukaan osajoukkoon vai ei.
-Molemmissa tapauksissa kutsumme funktiota parametrilla $k+1$,
+Molemmissa tapauksissa kutsumme proseduuria parametrilla $k+1$,
 jolloin siirrymme käsittelemään seuraavan luvun.
 
 \begin{figure}
@@ -285,10 +496,10 @@ jolloin siirrymme käsittelemään seuraavan luvun.
 \label{fig:osajou}
 \end{figure}
 
-Funktio merkitsee taulukkoon \texttt{mukana},
+Proseduuri merkitsee globaaliin taulukkoon \texttt{mukana},
 mitkä luvut ovat mukana osajoukossa.
 Voimme hyödyntää tämän taulukon sisältöä,
-kun käsittelemme osa\-joukon tapauksessa $k=n+1$.
+kun käsitte\-lemme osa\-joukon tapauksessa $k=n+1$.
 Esimerkiksi voimme tulostaa osajoukossa olevat luvut seuraavasti:
 
 \begin{code}
@@ -299,7 +510,7 @@ for i = 1 to n
 
 Kuva \ref{fig:osajou} näyttää,
 miten osajoukot muodostuvat tapauksessa $n=3$.
-Jokaisessa funktiokutsussa ylempi haara ottaa luvun mukaan osajoukkoon
+Jokaisessa proseduurin kutsussa ylempi haara ottaa luvun mukaan osajoukkoon
 ja alempi haara ei ota lukua mukaan osajoukkoon.
 Kuvan oikeassa reunassa näkyy kussakin tapauksessa muodostettu osajoukko.
 
@@ -322,7 +533,7 @@ jokin luku, joka ei vielä kuulu siihen.
 Voimme toteuttaa haun näin:
 
 \begin{code}
-function haku(k)
+procedure haku(k)
     if k == n+1
         // käsittele permutaatio
     else
@@ -334,9 +545,9 @@ function haku(k)
                 mukana[i] = false
 \end{code}
 
-Funktion parametri $k$ tarkoittaa, mihin permutaation kohtaan
+Parametri $k$ tarkoittaa, mihin permutaation kohtaan
 valitsemme seuraavaksi luvun.
-Haku alkaa, kun kutsumme funktiota parametrilla $k=1$.
+Haku alkaa, kun kutsumme proseduuria parametrilla $k=1$.
 Jos $k=n+1$, olemme saaneet permutaation valmiiksi
 ja voimme käsitellä sen.
 Muuten valitsemme permutaation kohtaan $k$ tulevan luvun
@@ -393,7 +604,7 @@ Seuraava rekursiivinen algoritmi toteuttaa haun,
 kun sitä kutsutaan parametreilla $(1,1)$:
 
 \begin{code}
-function haku(y,x)
+procedure haku(y,x)
     if y == n+1
         // käsittele ratkaisu
     else if x == n+1
