@@ -159,7 +159,7 @@ $c_3=110$ ja $c_4=97$.
 Yksi tapa muuttaa merkkijono kokonaisluvuksi
 on laskea merkkikoodien summa
 \[ c_0 + c_1 + \dots + c_{k-1},\]
-jolloin merkkijonon \texttt{apina} hajautusarvo on
+jolloin merkkijonoa \texttt{apina} vastaa kokonaisluku
 \[97+112+105+110+97=521.\]
 
 \index{polynominen hajautus}
@@ -171,7 +171,7 @@ Pystymme parantamaan hajautusarvon laskentaa lisäämällä
 summaan \emph{kertoimet} käyttäen kaavaa
 \[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
 missä $A$ on vakio.
-Esimerkiksi jos $A=7$, saamme merkkijonon \texttt{apina} hajautusarvoksi
+Esimerkiksi jos $A=7$, merkkijonoa \texttt{apina} vastaa kokonaisluku
 \[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=277325.\]
 Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus}
 (\emph{polynomial hashing}),
