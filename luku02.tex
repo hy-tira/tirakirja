@@ -158,31 +158,31 @@ Rekursiivisessa algoritmissa laskemme,
 montako rekursiivista kutsua teh\-dään ja kauanko
 yksittäinen kutsu vie aikaa.
 Tarkastellaan esimerkkinä seuraavaa
-funktiota, jota kutsutaan parametrilla $n$:
+aliohjelmaa, jota kutsutaan parametrilla $n$:
 
 \begin{code}
-function f(n)
+procedure f(n)
     if n == 1
         return
     f(n-1)
 \end{code}
 
-Funktiota kutsutaan yhteensä $n$ kertaa ja jokainen kutsu vie aikaa $O(1)$.
-Saamme selville funktion aikavaativuuden kertomalla nämä arvot keskenään,
-joten funktio vie aikaa $O(n)$.
+Aliohjelmaa kutsutaan yhteensä $n$ kertaa ja jokainen kutsu vie aikaa $O(1)$.
+Saamme selville aliohjelman aikavaativuuden kertomalla nämä arvot keskenään,
+joten aliohjelma vie aikaa $O(n)$.
 
-Tarkastellaan sitten seuraavaa funktiota:
+Tarkastellaan sitten seuraavaa aliohjelmaa:
 
 \begin{code}
-function g(n)
+procedure g(n)
     if n == 1
         return
     g(n-1)
     g(n-1)
 \end{code}
 
-Tässä tapauksessa jokainen funktion kutsu tuottaa kaksi uutta kutsua,
-joten funktiota kutsutaan kaikkiaan
+Tässä tapauksessa jokainen aliohjelman kutsu tuottaa kaksi uutta kutsua,
+joten aliohjelmaa kutsutaan kaikkiaan
 \[1+2+4+\dots+2^{n-1}=2^n-1\]
 kertaa. Jokainen kutsu vie aikaa $O(1)$,
 joten aikavaativuus on $O(2^n)$.

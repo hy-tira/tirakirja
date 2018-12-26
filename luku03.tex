@@ -329,7 +329,7 @@ tarvitse tehdä mitään.
 Seuraava koodi esittää tarkemmin lomitusjärjestämisen toiminnan:
 
 \begin{code}
-function jarjesta(a,b)
+procedure jarjesta(a,b)
     if a == b
         return
     k = (a+b)/2
@@ -338,20 +338,20 @@ function jarjesta(a,b)
     lomita(a,k,k+1,b)
 \end{code}
 
-Funktio \texttt{jarjesta} järjestää taulukon
+Proseduuri \texttt{jarjesta} järjestää taulukon
 välin $a \dots b$ (osataulukon kohdasta
 $a$ kohtaan $b$), eli kun haluamme järjestää koko taulukon,
-kutsumme funktiota parametreilla $a=0$ ja $b=n-1$.
-Funktio tarkastaa ensin, onko osataulukossa vain yksi alkio,
+kutsumme proseduuria parametreilla $a=0$ ja $b=n-1$.
+Proseduuri tarkastaa ensin, onko osataulukossa vain yksi alkio,
 ja jos on, funktio päättyy heti.
 Muuten se laskee muuttujaan $k$ järjestettävän välin keskikohdan
 ja järjestää vasemman ja oikean puoliskon rekursiivisesti.
-Lopuksi funktio kutsuu funktiota \texttt{lomita},
+Lopuksi se kutsuu proseduuria \texttt{lomita},
 joka yhdistää järjestetyt puoliskot.
-Tämän funktion voi toteuttaa näin:
+Tämän proseduurin voi toteuttaa näin:
 
 \begin{code}
-function lomita(a1, b1, a2, b2)
+procedure lomita(a1, b1, a2, b2)
     a = a1, b = b2
     for i = a to b
         if a2 > b2 or (a1 <= b1 and taulu[a1] < taulu[a2])
@@ -364,17 +364,17 @@ function lomita(a1, b1, a2, b2)
         taulu[i] = apu[i]
 \end{code}
 
-Funktiolle annetaan välit $a_1 \dots b_1$ ja $a_2 \dots b_2$,
+Parametreina annetaan välit $a_1 \dots b_1$ ja $a_2 \dots b_2$,
 missä $b_1+1=a_2$.
-Funktio olettaa, että näillä väleillä olevat 
+Proseduuri olettaa, että näillä väleillä olevat 
 taulukon alkiot on järjestetty,
 ja se lomittaa alkiot niin, että funktion suorituksen jälkeen
 taulukon koko väli $a_1 \dots b_2$ on järjestetty.
-Funktion perustana on silmukka, joka käy läpi välejä
+Proseduurin perustana on silmukka, joka käy läpi välejä
 $a_1 \dots b_1$ ja $a_2 \dots b_2$ rinnakkain ja valitsee
 aina seuraavaksi pienimmän alkion lopulliseen järjestykseen.
 Jotta lomitus ei sotke taulukkoa,
-funktio käyttää globaalia aputaulukkoa,
+proseduuri käyttää globaalia aputaulukkoa,
 johon se ensin muodostaa järjestetyn osataulukon,
 ja kopioi sitten alkiot aputaulukosta varsinaiseen taulukkoon.
 
@@ -391,7 +391,7 @@ Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
 alkaa koota järjestettyjä osataulukkoja pienimmästä suurimpaan.
 
 Nyt voimme määrittää, kuinka tehokas lomitusjärjestäminen on.
-Koska jokainen funktion \texttt{jarjesta} kutsu
+Koska jokainen proseduurin \texttt{jarjesta} kutsu
 puolittaa taulukon koon, rekursiosta muodostuu
 $O(\log n)$ tasoa  (kuva \ref{fig:lomjar}).
 Ylimmällä tasolla on taulukko,
@@ -400,7 +400,7 @@ seuraavalla tasolla on kaksi taulukkoa,
 joissa on $n/2$ alkiota,
 seuraavalla tasolla on neljä taulukkoa,
 joissa on $n/4$ alkiota, jne.
-Funktio \texttt{lomita} toimii lineaarisessa ajassa,
+Proseduuri \texttt{lomita} toimii lineaarisessa ajassa,
 joten kullakin tasolla taulukoiden lomittamiset vievät yhteensä
 aikaa $O(n)$.
 Niinpä algoritmin kokonaisaikavaativuus on $O(n \log n)$.
@@ -423,7 +423,7 @@ jotka muodostuvat jakoalkion vasemmalle ja oikealle puolelle.
 Seuraava koodi esittää pikajärjestämisen toiminnan:
 
 \begin{code}
-function jarjesta(a, b)
+procedure jarjesta(a, b)
     if a >= b
         return
     k = jako(a,b)
@@ -431,11 +431,11 @@ function jarjesta(a, b)
     jarjesta(k+1,b)
 \end{code}
 
-Funktio \texttt{jarjesta} järjestää taulukon välillä
+Proseduuri \texttt{jarjesta} järjestää taulukon välillä
 $a \dots b$ olevat alkiot.
 Jos väli on tyhjä tai siinä on vain yksi alkio,
-funktio ei tee mitään.
-Muuten funktio kutsuu funktiota \texttt{jako}, joka valitsee jakoalkion,
+proseduuri ei tee mitään.
+Muuten se kutsuu funktiota \texttt{jako}, joka valitsee jakoalkion,
 siirtää taulukon alkioita sen mukaisesti
 ja palauttaa sitten kohdan $k$,
 jossa jakoalkio on siirtojen jälkeen.
@@ -827,7 +827,7 @@ Metodin \texttt{compareTo} avulla voimme myös konkreettisesti
 tarkastella, mitä Java tekee järjestäessään taulukon.
 Seuraava luokka sisältää vain yhden luvun,
 mutta ilmoittaa meille aina, kun Java kutsuu
-\texttt{compareTo}-funktiota:
+\texttt{compareTo}-metodia:
 
 \begin{code}
 public class Luku implements Comparable<Luku> {

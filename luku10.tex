@@ -660,7 +660,7 @@ joihin pääsee solmusta 1.
 Syvyyshaku on mukavaa toteuttaa rekursiivisesti seuraavaan tapaan:
 
 \begin{code}
-function haku(solmu)
+procedure haku(solmu)
     if vierailtu[solmu]
         return
     vierailtu[solmu] = true
@@ -668,14 +668,14 @@ function haku(solmu)
         haku(naapuri)
 \end{code}
 
-Haku käynnistyy, kun kutsumme funktiota
+Haku käynnistyy, kun kutsumme aliohjelmaa
 \texttt{haku} parametrina haun lähtö\-solmu.
-Jokaisessa kutsussa funktio tarkistaa ensin,
-olemmeko jo käyneet parametrina annetussa solmussa,
+Jokaisessa kutsussa aliohjelma tarkistaa ensin,
+olemmeko jo käy\-neet parametrina annetussa solmussa,
 ja päättyy heti tässä tilanteessa.
-Muuten funktio merkitsee, että olemme nyt käyneet solmussa
+Muuten aliohjelma merkitsee, että olemme nyt käyneet solmussa
 ja etenee rekursiivisesti kaikkiin sen naapureihin.
-Haku vie aikaa $O(n+m)$, koska käsittelemme jokaisen
+Haku vie aikaa $O(n+m)$, koska käsitte\-lemme jokaisen
 solmun ja kaaren enintään kerran.
 
 Mihin voisimme sitten käyttää syvyyshakua?
@@ -919,7 +919,7 @@ taulukkona, joka kertoo, mitkä ruudut ovat seinäruutuja.
 Tällöin voimme toteuttaa esimerkiksi syvyyshaun seuraavan tyylisesti:
 
 \begin{code}
-function haku(y,x)
+procedure haku(y,x)
     if y < 0 or x < 0 or y >= n or x >= n
         return
     if seina[y][x] or vierailtu[y][x]
