@@ -343,7 +343,7 @@ välin $a \dots b$ (osataulukon kohdasta
 $a$ kohtaan $b$), eli kun haluamme järjestää koko taulukon,
 kutsumme proseduuria parametreilla $a=0$ ja $b=n-1$.
 Proseduuri tarkastaa ensin, onko osataulukossa vain yksi alkio,
-ja jos on, funktio päättyy heti.
+ja jos on, se päättyy heti.
 Muuten se laskee muuttujaan $k$ järjestettävän välin keskikohdan
 ja järjestää vasemman ja oikean puoliskon rekursiivisesti.
 Lopuksi se kutsuu proseduuria \texttt{lomita},
@@ -368,7 +368,7 @@ Parametreina annetaan välit $a_1 \dots b_1$ ja $a_2 \dots b_2$,
 missä $b_1+1=a_2$.
 Proseduuri olettaa, että näillä väleillä olevat 
 taulukon alkiot on järjestetty,
-ja se lomittaa alkiot niin, että funktion suorituksen jälkeen
+ja se lomittaa alkiot niin, että
 taulukon koko väli $a_1 \dots b_2$ on järjestetty.
 Proseduurin perustana on silmukka, joka käy läpi välejä
 $a_1 \dots b_1$ ja $a_2 \dots b_2$ rinnakkain ja valitsee
