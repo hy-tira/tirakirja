@@ -1,557 +1,527 @@
-\chapter{Algoritmien suunnittelu}
+\chapter{Peruuttava haku}
 
-Kuinka voi suunnitella hyvän algoritmin?
-On selvää, ettei tähän kysymykseen ole yhtä helppoa vastausta.
-Yhtä hyvin voisi kysyä, kuinka voi kirjoittaa hyvän kirjan
-tai säveltää hyvää musiikkia.
-Algoritmien suunnittelu on taito, jonka oppiminen vie aikaa.
+\index{backtracking}
+\emph{Peruuttava haku} (\emph{backtracking}) on menetelmä,
+jossa on ideana käydä läpi kaikki mahdolliset tavat 
+ratkaista annettu tehtävä.
+Peruuttava haku on luontevaa toteuttaa rekursion avulla,
+jolloin jokainen rekursion haara vastaa yhtä tapaa
+viedä ratkaisua eteenpäin.
 
-Algoritmisen ongelman ratkaisemisessa on usein kaksi vaihetta.
-Ensim\-mäinen vaihe on keksiä algoritmin yleisidea,
-mikä vaatii havaintoja ja oivalluksia ongelmasta.
-Tämän jälkeen toinen vaihe on löytää hyvä ja tehokas tapa
-toteuttaa algoritmi.
-Tässä voimme käyttää apuna järjestämistä, tietorakenteita
-ja muita tekniikoita.
+\emph{Peruuttava haku} (\emph{backtracking}) on menetelmä,
+jossa on ideana käydä läpi kaikki mahdolliset tavat 
+ratkaista annettu tehtävä.
+Peruuttava haku on luontevaa toteuttaa rekursion avulla,
+jolloin jokainen rekursion haara vastaa yhtä tapaa
+viedä ratkaisua eteenpäin.
 
-Kuten aiemminkin, haluamme saada aikaan tehokkaita algoritmeja,
-jotka vievät aikaa $O(n)$ tai $O(n \log n)$.
-Tämä tarkoittaa käytännössä sitä, että voimme käydä läpi ja
-järjestää syötettä sekä käyttää tietorakenteita,
-joissa on tehokkaita operaatioita.
-Tämä ohjaa algoritmin suunnittelua,
-koska vaatimus tehokkuudesta rajoittaa,
-mitä voimme tehdä algoritmissa.
+\section{Kuningatarongelma}
 
-\section{Ratkaisun vaiheet}
+Ensimmäinen tehtävämme on
+laskea, monellako tavalla $n \times n$ -shakkilaudalle voidaan
+sijoittaa $n$ kuningatarta niin, etteivät mitkään kaksi kuningatarta
+uhkaa toisiaan. Kaksi kuningatarta voivat uhata toisiaan
+pysty-, vaaka- tai vinosuuntaisesti.
+Esimerkiksi tapauksessa $n=4$ mahdollisia sijoitustapoja on 2,
+jotka on esitetty kuvassa \ref{fig:kuning}.
 
-Aloitamme ongelmasta,
-jossa $n$ lasta haluaa mennä maailmanpyörään.
-Jokaisessa korissa voi istua yksi tai kaksi lasta,
-ja korissa istujien yhteispaino saa olla enintään $x$.
-Lisäksi tiedämme jokaisen lapsen painon.
-Mikä on pienin mahdollinen määrä koreja,
-joka riittää lapsille?
-Oletamme, ettei yhdenkään lapsen paino ylitä
-korin maksimipainoa.
-
-Esimerkiksi jos lasten määrä on $n=5$,
-lasten painot ovat $[2,2,4,5,8]$ ja korin painoraja on $x=8$,
-pienin mahdollinen korien määrä on kolme.
-Tässä tapauksessa voimme muodostaa korit
-$[2,4]$, $[2,5]$ ja $[8]$.
-Tämä on optimaalinen ratkaisu, koska selvästikään
-ei riitä, että koreja olisi vain kaksi.
-
-\subsubsection{Vaihe 1: Yleisidean keksiminen}
-
-On valtava määrä mahdollisia tapoja,
-miten voimme sijoittaa lapsia koreihin,
-minkä vuoksi olisi liian hidasta käydä läpi
-kaikkia vaihtoehtoja.
-Jotta saamme aikaan tehokkaan algoritmin,
-meidän tulee keksiä jokin periaate,
-jonka avulla voimme päättää nopeasti,
-ketkä lapset ovat yhdessä koreissa.
-
-Itse asiassa meidän riittää keskittyä ongelmaan,
-jossa haluamme löytää \emph{seuraavaan} koriin
-tulevat lapset.
-Jos onnistumme tässä, voimme vain toistaa samaa,
-kunnes kaikki lapset ovat koreissa.
-Vaikeutena on kuitenkin, kuinka saamme tehtyä valinnan niin,
-että tuloksena on varmasti optimaalinen ratkaisu.
-Jos valitsemme väärällä tavalla koriin tulevat lapset,
-saatamme vahingossa käyttää liikaa koreja.
-
-\index{ahne algoritmi}
-
-Osoittautuu, että tässä tehtävässä toimiva algoritmi
-on valita aina seuraavaan koriin \emph{painavin} lapsi sekä sen pariksi
-jokin toinen lapsi niin, että painojen summa ei ylitä
-korin maksimipainoa.
-Jos ei ole mitään tapaa valita toista lasta,
-laitamme painavimman lapsen koriin yksin.
-Tällainen algoritmi on \emph{ahne} (\emph{greedy}), eli se tekee aina jonkin
-hyvältä tuntuvan valinnan, joka vie ratkaisua eteenpäin,
-eikä peruuta koskaan tehtyjä valintoja.
-
-Tarkastellaan taas esimerkkiä,
-jossa lasten painot ovat $[2,2,4,5,8]$
-ja korin maksimipaino on 8.
-Kun käytämme yllä kuvattua algoritmia,
-aloitamme lapsesta, jonka paino on 8.
-Tämä lapsi saa oman korin, koska emme voi laittaa
-samaan koriin ketään toista lasta.
-Tämän jälkeen vuoroon tulee lapsi, jonka paino on 5,
-ja se saa pariksi lapsen, jonka paino on 2.
-Lopuksi käsittelemme lapsen, jonka paino on 4,
-ja sen pariksi tulee lapsi, jonka paino on 2.
-Tuloksena on ratkaisu, jossa on korit $[8]$, $[2,5]$ ja $[2,4]$.
-
-Mutta miksi tämä ahne algoritmi toimii?
-Tässä auttaa tarkastella, mitä tapahtuu,
-kun algoritmi tekee ensimmäisen valintansa.
-Painavin lapsi täytyy sijoittaa johonkin koriin,
-ja meidän kannattaa tietenkin laittaa samaan koriin toinenkin lapsi,
-jos tämä on mahdollista.
-Tässä ei ole väliä, minkä toisen lapsen valitsemme,
-koska jos jokin lapsi on riittävän kevyt toimiakseen
-parina painavimman lapsen kanssa, niin se voi toimia parina
-myös minkä tahansa muun lapsen kanssa.
-Niinpä algoritmin ensimmäinen askel on optimaalinen.
-Tämän jälkeen voimme toistaa vastaavan päättelyn
-algoritmin seuraavissa askelissa, mikä tarkoittaa,
-että koko algoritmi toimii oikein.
-
-\subsubsection{Vaihe 2: Tehokas toteutus}
-
-Meillä on nyt toimiva algoritmi,
-mutta meidän täytyy vielä keksiä hyvä tapa toteuttaa se.
-Jotta algoritmista tulee tehokas,
-sen täytyy löytää joka askeleella nopeasti seuraavaan
-koriin tuleva painavin lapsi sekä mahdollinen sen pariksi tuleva lapsi.
-Ehkä helpoin tapa saavuttaa tämä tavoite on käyttää apuna järjestämistä.
-
-Seuraava algoritmi järjestää ensin lasten painot ja alkaa sitten
-jakaa lapsia koreihin.
-Muuttuja $a$ lähtee liikkeelle taulukon alusta ja
-osoittaa aina kevyimmän lapsen painoon.
-Muuttuja $b$ puolestaan lähtee liikkeelle taulukon lopusta ja
-osoittaa aina painavimman lapsen painoon.
-Algoritmi laskee muuttujaan $k$, montako koria tarvitaan yhteensä.
-Jos kevyimmän ja painavimman lapsen
-painojen summa on enintään $x$, lapset sijoitetaan samaan koriin,
-$a$ liikkuu oikealle ja $b$ liikkuu vasemmalle.
-Jos taas painojen summa on suurempi kuin $x$,
-painavin lapsi saa oman korin ja vain $b$ liikkuu vasemmalle.
-
-\begin{code}
-sort(painot)
-a = 0, b = n-1
-k = 0
-while a <= b
-    if painot[a]+painot[b] <= x
-        a++, b--
-    else
-        b--
-    k++
-print(k)
-\end{code}
-
-Algoritmi järjestää ensin taulukon, missä menee aikaa $O(n \log n)$.
-Tämän jälkeen \texttt{while}-silmukka vie aikaa $O(n)$,
-koska joka kierroksella muuttujat $a$ ja $b$ siirtyvät
-ainakin askeleen lähemmäs toisiaan.
-Niinpä algoritmin kokonais\-aikavaativuus on $O(n \log n)$.
-
-\section{Algoritmien aineksia}
-
-Seuraavaksi käymme läpi \emph{aineksia},
-joita esiintyy usein tehokkaissa algoritmeissa.
-Nämä ainekset muodostavat hyvän perustan algoritmien
-suunnittelemiseen: kun saamme vastaamme uuden ongelman,
-voimme miettiä, voisimmeko hyödyntää aineksia jotenkin
-ongelman ratkaisemisessa.
-
-\subsection{Järjestäminen}
-
-\index{järjestäminen}
-
-Tehokas algoritmi perustuu usein tavalla tai
-toisella järjestämiseen, joka voi näyttäytyä
-monella tavalla algoritmissa.
-
-Tarkastellaan esimerkkinä tehtävää, jossa annettuna on
-$n$ kolikkoa ja haluamme löytää pienimmän rahamäärän,
-jota \emph{emme} voi muodostaa summana kolikoista.
-Jokaisella kolikolla on tietty kokonaislukuarvo, ja
-muodostettava rahamäärä on myös kokonaisluku.
-Esimerkiksi jos kolikot ovat $[1,2,2,7]$,
-voimme muodostaa rahamäärät 1, 2, 3, 4 ja 5,
-mutta emme voi muodostaa rahamäärää 6,
-joten oikea vastaus on 6.
-
-Algoritmien suunnittelussa auttaa usein
-lähteä liikkeelle helpoista tapauksista.
-Kun meillä on käytössämme tietyt kolikot,
-hyvä ensimmäinen tavoite on koettaa muodostaa rahamäärä $1$.
-Jotta onnistumme tässä, meillä on pakko olla kolikko,
-jonka arvo on $1$.
-Entä milloin voimme muodostaa rahamäärän $2$,
-jos tiedämme, että voimme muodostaa rahamäärän $1$?
-Tässä on kaksi vaihtoehtoa: meillä täytyy olla
-toinen kolikko, jonka arvo on $1$, jolloin saamme
-summan $1+1=2$, tai sitten kolikko, jonka arvo on $2$.
-
-Tämä on hyvää päättelyä, mutta jotta saamme aikaan algoritmin,
-meidän täytyy pystyä yleistämään se kaikkiin tapauksiin.
-Voimme ajatella asiaa hieman toisesta näkökulmasta:
-Meillä on joukko kolikoita, joiden avulla voimme muodostaa
-rahamäärät $1,2,\dots,k$.
-Miten voisimme muodostaa myös rahamäärän $k+1$?
-Ratkaisu on, että tarvitsemme uuden kolikon,
-jonka arvo on \emph{enintään} $k+1$.
-Kun uuden kolikon arvo on $u \le k+1$,
-voimme tämän jälkeen muodostaa rahamäärät $1,2,\dots,k+u$.
-Tämän havainnon ansiosta voimme alkaa muodostaa ratkaisua
-kolikko kerrallaan.
-Lisäksi jos mahdollisia uusia kolikoita on useita,
-voimme aina valita ahneesti \emph{pienimmän} kolikon,
-koska pystymme valitsemaan suuremmat kolikot myöhemminkin.
-
-Nyt meillä on kaikki ainekset tehokasta algoritmia varten.
-Järjes\-tämme ensin kolikot ja muodostamme sitten ratkaisun
-käymällä kolikot läpi pienimmästä suurimpaan.
-Aloitamme tyhjästä ratkaisusta, jossa $k=0$.
-Jokaisen kolikon kohdalla tiedämme,
-että voimme muodostaa tällä hetkellä rahamäärät $1,2,\dots,k$,
-joten voimme parantaa ratkaisua kolikon avulla,
-jos sen arvo on enintään $k+1$.
-Muuten lopetamme ratkaisun muodostamisen,
-koska kaikki tulevat kolikot ovat vielä suurempia.
-Lopuksi toteamme, että $k+1$ on pienin rahamäärä,
-jota emme voi muodostaa.
-
-\begin{code}
-sort(kolikot)
-k = 0
-for i = 0 to n-1
-    u = kolikot[i]
-    if u <= k+1
-        k += u
-    else
-        break
-print(k+1)
-\end{code}
-
-Algoritmi järjestää ensin kolikot ajassa $O(n \log n)$
-ja tämän jälkeen käy ne läpi ajassa $O(n)$,
-joten algoritmin aikavaativuus on $O(n \log n)$.
-
-\subsection{Tietorakenteet}
-
-\index{tietorakenne}
-
-Olemme tutustuneet kirjassa jo moniin tietorakenteisiin:
-listaan, hajautustauluun, binäärihakupuuhun ja kekoon.
-Näissä tietorakenteissa kannattaa kiinnittää erityisesti huomiota siihen,
-mitkä operaatiot toimivat tehokkaasti $O(1)$- tai $O(\log n)$-ajassa.
-Nämä ovat operaatioita, joita voimme käyttää tehokkaissa algoritmeissa.
-
-Tarkastellaan esimerkkinä tehtävää, jossa haluamme laskea,
-montako tapaa on valita taulukosta yhtenäinen osataulukko,
-jossa lukujen summa on $x$.
-Esimerkiksi jos taulukko on $[3,1,3,4,5]$ ja $x=4$,
-niin tapoja on kolme: $[3,1]$, $[1,3]$ ja $[4]$.
-On helppoa ratkaista tehtävä kahdella silmukalla ajassa $O(n^2)$,
-mutta miten saisimme aikaan tehokkaan algoritmin?
-
-Tässä auttaa muotoilla hieman toisin, mitä tarkoittaa,
-että osataulukolla on tietty summa.
-Merkitään $s(i)$:llä osataulukon summaa taulukon alusta
-kohtaan $i$ asti, ja oletetaan lisäksi, että $s(-1)=0$.
-Tätä merkintää käyttäen osataulukon summa
-kohdasta $a$ kohtaan $b$ on
-\[s(b)-s(a-1),\]
-eli meidän riittää itse asiassa keskittyä vain taulukon alusta
-alkavien osataulukoiden summiin.
-
-Koska haluamme saada tehokkaan algoritmin,
-hyvä tavoite olisi käydä taulukko läpi vain kerran.
-Kun olemme taulukon kohdassa $i$,
-monessako tähän kohtaan päättyvässä osataulukossa
-lukujen summa on $x$?
-Tämä tarkoittaa, että haluamme etsiä kohdat $0 \le j \le i$,
-joille pätee
-\[s(i)-s(j-1)=x\]
-eli
-\[s(j-1)=s(i)-x.\]
-Saamme laskettua tällaisten kohtien määrän tehokkaasti,
-kun pidämme taulukon läpikäynnissä kirjaa,
-montako kertaa mikäkin summa on esiintynyt taulukon alkuosassa.
-Voimme toteuttaa algoritmin seuraavasti:
-
-\begin{code}
-kerrat[0] = 1
-laskuri = 0
-summa = 0
-for i = 0 to n-1
-    summa += taulu[i]
-    laskuri += kerrat[summa-x]
-    kerrat[summa]++
-print(laskuri)
-\end{code}
-
-Joka askeleella muuttuja \texttt{summa} sisältää
-summan $s(i)$.
-Hakemisto \texttt{kerrat} puolestaan pitää kirjaa siitä,
-montako kertaa mikäkin alkuosan summa on esiintynyt tähän mennessä.
-Voimme toteuttaa hakemiston hajautustaulun tai
-binäärihakupuun avulla.
-Näin saamme aikaan ratkaisun, joka vie aikaa $O(n)$ tai $O(n \log n)$
-riippuen valitusta tietorakenteesta.
-
-\subsection{Binäärihaku}
-
-\index{binäärihaku}
-
-Binäärihaun tunnetuin käyttötarkoitus on alkion etsiminen
-järjestetystä taulukosta ajassa $O(\log n)$.
-Tämä on kuitenkin vain alkusoittoa sille,
-mitä binää\-rihaulla pystyy tekemään ja mikä
-sen merkitys on algoritmien suunnittelussa.
-Binääri\-haun todellinen hyöty piilee siinä,
-että pystymme etsimään sen avulla tehokkaasti funktion \emph{muutoskohdan}.
-
-Oletetaan, että meillä on funktio $\texttt{ok}(x)$,
-joka kertoo, onko $x$ kelvollinen ratkaisu tehtävään.
-Lisäksi pätee $\texttt{ok}(x)=\texttt{false}$, kun $x<u$,
-ja $\texttt{ok}(x)=\texttt{true}$, kun $x \ge u$.
-Binäärihaun avulla voimme etsiä tehokkaasti,
-mikä on funktion muutoskohta $u$
-eli ensimmäinen kohta, jossa funktio saa arvon \texttt{true}.
-Seuraava koodi toteuttaa haun, kun oletamme, että $u$ on välillä $1 \dots N$:
-
-\begin{code}
-a = 1, b = N
-while a < b
-    k = (a+b)/2
-    if ok(k)
-        b = k
-    else
-        a = k+1
-u = a
-\end{code}
-
-Haun joka vaiheessa tiedämme, että muutoskohta on välillä $[a,b]$.
-Laskemme keskikohdan $k=\lfloor (a+b)/2 \rfloor$ ja tutkimme funktion arvoa kohdassa $k$.
-Jos pätee $\texttt{ok}(k)$, niin muutoskohdan on oltava välillä $[a,k]$,
-ja muuten sen täytyy olla välillä $[k+1,b]$.
-Lopulta välillä on vain yksi alkio, jolloin olemme löytäneet muutoskohdan.
-Koska välin koko puolittuu joka askeleella,
-kutsumme funktiota \texttt{ok} yhteensä $O(\log N)$ kertaa.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
-\draw[->] (-1,1.5) -- (10,1.5);
-\foreach \x in {0,...,8} \draw (\x,1.40) -- (\x,1.60);
-\foreach \x in {0,...,8} \node at (\x,2) {\scriptsize $\x$};
-\node at (-2,0) {kone $1$};
-\draw[|-|] (0.05,0) -- (1.95,0);
-\draw[|-|] (2.05,0) -- (3.95,0);
-\draw[|-|] (4.05,0) -- (5.95,0);
-\draw[|-|] (6.05,0) -- (7.95,0);
-\node at (-2,-1.5) {kone $2$};
-\draw[|-|] (0.05,-1.5) -- (2.95,-1.5);
-\draw[|-|] (3.05,-1.5) -- (5.95,-1.5);
-\node at (-2,-3) {kone $3$};
-\draw[|-|] (0.05,-3) -- (6.95,-3);
+\begin{tikzpicture}[scale=.65]
+  \begin{scope}
+    \draw (0, 0) grid (4, 4);
+    \node at (1.5,3.5) {$\symqueen$};
+    \node at (3.5,2.5) {$\symqueen$};
+    \node at (0.5,1.5) {$\symqueen$};
+    \node at (2.5,0.5) {$\symqueen$};
+
+    \draw (6, 0) grid (10, 4);
+    \node at (6+2.5,3.5) {$\symqueen$};
+    \node at (6+0.5,2.5) {$\symqueen$};
+    \node at (6+3.5,1.5) {$\symqueen$};
+    \node at (6+1.5,0.5) {$\symqueen$};
+  \end{scope}
 \end{tikzpicture}
-\caption{Optimaalinen tapa valmistaa 7 tavaraa vie 8 minuuttia,
-kun koneiden nopeudet ovat $[2,3,7]$.}
-\label{fig:optkon}
+\caption{Mahdolliset tavat asettaa 4 kuningatarta $4 \times 4$ -shakkilaudalle.}
+\label{fig:kuning}
 \end{figure}
-
-Mutta mitä hyötyä on siitä, että löydämme tehokkaasti funktion muutoskohdan?
-Tämä selviää seuraavassa tehtävässä:
-Käytössämme on $n$ konetta
-ja haluamme valmistaa niiden avulla $m$ tavaraa.
-Tiedämme jokaisesta koneesta,
-montako minuuttia kestää valmistaa yksi tavara konetta käyttäen,
-ja haluamme löytää aikataulun, jota seuraamalla pystymme valmistamaan
-$m$ tavaraa mahdollisimman nopeasti.
-
-Kuva \ref{fig:optkon} näyttää parhaan aikataulun esimerkkitapauksessa,
-jossa koneiden määrä on $n=3$, koneiden nopeudet ovat $[2,3,7]$ ja
-valmistettavien tavaroiden määrä on $m=7$.
-Käynnistämme koneen 1 neljästi kahden minuutin välein,
-koneen 2 kahdesti kolmen minuutin välein ja koneen 3 kerran.
-Viimeisenä pysähtyy kone 1, kun aloittamisesta
-on kulunut kahdeksan minuuttia.
-
-Voimme pukea tehtävän binäärihaulle sopivaan muotoon määrittämällä,
-että $\texttt{ok}(x)=\texttt{true}$ tarkalleen silloin, kun voimme valmistaa
-\emph{ainakin} $m$ tavaraa ajassa $x$.
-Tällöin funktion muutoskohta $u$ vastaa tehtävän ratkaisua.
-Entä miten voimme laskea funktion \texttt{ok} arvon?
-Jos meillä on $x$ minuuttia aikaa ja koneella $i$ kestää $a_i$
-minuuttia valmistaa yksi tavara, pystymme valmistamaan
-$\lfloor x/a_i \rfloor$ tavaraa kyseistä konetta käyttäen.
-Kun sitten käytössämme on kaikki koneet,
-pystymme valmistamaan yhteensä
-\[ s = \sum_{i=1}^n \lfloor x/a_i \rfloor \]
-tavaraa. Niinpä $\texttt{ok}(x)=\texttt{false}$, jos $s<m$,
-ja $\texttt{ok}(x)=\texttt{true}$, jos $s \ge m$.
-Voimme toteuttaa tämän käytännössä seuraavasti:
-
-\begin{code}
-function ok(x)
-    s = 0
-    for i = 1 to n
-        s += x/a[i]
-    return s >= m
-\end{code}
-
-Voimme kytkeä tämän funktion suoraan binäärihakuun,
-jolloin tuloksena on tehokas algoritmi tehtävän ratkaisemiseen.
-Meidän täytyy kuitenkin vielä valita arvo $N$,
-joka on jokin yläraja kohdalle $u$.
-Tässä tehtävässä helppo valinta on
-\[N = a_1 \cdot m,\]
-mikä vastaa ratkaisua, jossa käytämme vain ensimmäistä konetta.
-On varmaa, että oikea $u$:n arvo on korkeintaan $N$,
-joten binäärihaku kutsuu $O(\log N)$ kertaa funktiota $\texttt{ok}$.
-Koska jokainen funktion kutsu vie aikaa $O(n)$,
-tuloksena on algoritmi, jonka aikavaativuus on $O(n \log N)$.
-
-Huomaa, että $\log N$ on käytännössä pieni luku riippumatta
-siitä, kuinka suuri luku $N$ on.
-Niinpä meidän ei tarvitse murehtia siitä,
-kuinka suuria $a_1$ ja $m$ ovat,
-vaan voimme luottaa siihen, että algoritmi on tehokas.
-
-\subsection{Tasoitettu analyysi}
-
-\index{tasoitettu analyysi}
-
-Voimme yleensä määrittää algoritmin aikavaativuuden
-helposti katsomalla jokaisesta silmukasta,
-montako kertaa siinä olevaa koodia suoritetaan.
-Joskus näin suoraviivainen analyysi ei anna kuitenkaan
-oikeaa kuvaa algoritmin tehokkuudesta,
-koska silmukan suorituskertojen määrä saattaa vaihdella
-algoritmin eri vaiheissa.
-Tutustumme seuraavaksi tekniikkaan nimeltä
-\emph{tasoitettu analyysi} (\emph{amortized analysis}),
-jossa koetamme arvioida tarkemmin,
-montako kertaa silmukassa olevaa koodia suoritetaan
-\emph{yhteensä} algoritmin aikana.
-
-\index{lähin pienempi edeltäjä}
-
-Tasoitettuun analyysiin liittyy yleensä jokin tietorakenne,
-jonka operaatioiden määrää haluamme arvioida.
-Tarkastellaan esimerkkinä tehtävää,
-jossa meillä on $n$ lukua sisältävä taulukko
-ja haluamme muodostaa toisen taulukon,
-jossa on jokaisen luvun \emph{lähin pienempi edeltäjä}.
-Tämä tarkoittaa, että haluamme löytää jokaiselle luvulle
-pienemmän luvun, joka on mahdollisimman lähellä aiemmin taulukossa.
-Esimerkiksi taulukon $[1,4,5,2,3,2]$
-lähimmät pienemmät edeltäjät ovat $[-,1,4,1,2,1]$.
-Koska luvulla $1$ ei ole pienempää edeltäjää,
-sen kohdalla on merkki $-$.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.6]
-\newcommand\pino[3]{
-\node[draw,rectangle,minimum size=12pt] (#1) at (#2+0.5,-0.75) {};
-\node at (#2+0.5,-0.75) {#3};
-}
-\begin{scope}
-\fill[color=lightgray] (0,0) rectangle (1,1);
-\draw (0,0) grid (6,1);
-\foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
-\pino{1}{0}{1}
-\node at (3,-2) {vaihe $1$};
-\end{scope}
-\begin{scope}[xshift=10cm]
-\fill[color=lightgray] (1,0) rectangle (2,1);
-\draw (0,0) grid (6,1);
-\foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
-\pino{1}{0}{1}
-\pino{2}{1}{4}
-\draw[thick,->] (1) -- (2);
-\node at (3,-2) {vaihe $2$};
-\end{scope}
-\begin{scope}[yshift=-4.5cm]
-\fill[color=lightgray] (2,0) rectangle (3,1);
-\draw (0,0) grid (6,1);
-\foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
-\pino{1}{0}{1}
-\pino{2}{1}{4}
-\pino{3}{2}{5}
-\draw[thick,->] (1) -- (2);
-\draw[thick,->] (2) -- (3);
-\node at (3,-2) {vaihe $3$};
-\end{scope}
-\begin{scope}[yshift=-4.5cm,xshift=10cm]
-\fill[color=lightgray] (3,0) rectangle (4,1);
-\draw (0,0) grid (6,1);
-\foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
-\pino{1}{0}{1}
-\pino{2}{3}{2}
-\draw[thick,->] (1) -- (2);
-\node at (3,-2) {vaihe $4$};
-\end{scope}
-\begin{scope}[yshift=-9cm]
-\fill[color=lightgray] (4,0) rectangle (5,1);
-\draw (0,0) grid (6,1);
-\foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
-\pino{1}{0}{1}
-\pino{2}{3}{2}
-\pino{3}{4}{3}
-\draw[thick,->] (1) -- (2);
-\draw[thick,->] (2) -- (3);
-\node at (3,-2) {vaihe $5$};
-\end{scope}
-\begin{scope}[yshift=-9cm,xshift=10cm]
-\fill[color=lightgray] (5,0) rectangle (6,1);
-\draw (0,0) grid (6,1);
-\foreach \i/\x in {0/1,1/4,2/5,3/2,4/3,5/2} \node at (\i+0.5,0.5) {\x};
-\pino{1}{0}{1}
-\pino{2}{5}{2}
-\draw[thick,->] (1) -- (2);
-\node at (3,-2) {vaihe $6$};
-\end{scope}
+\begin{tikzpicture}[scale=.53]
+  \begin{scope}
+    \draw (0, 0) grid (4, 4);
+
+    \draw (-9, -6) grid (-5, -2);
+    \draw (-3, -6) grid (1, -2);
+    \draw (3, -6) grid (7, -2);
+    \draw (9, -6) grid (13, -2);
+
+    \node at (-9+0.5,-3+0.5) {$\symqueen$};
+    \node at (-3+1+0.5,-3+0.5) {$\symqueen$};
+    \node at (3+2+0.5,-3+0.5) {$\symqueen$};
+    \node at (9+3+0.5,-3+0.5) {$\symqueen$};
+
+    \draw (2,0) -- (-7,-2);
+    \draw (2,0) -- (-1,-2);
+    \draw (2,0) -- (5,-2);
+    \draw (2,0) -- (11,-2);
+
+    \draw (-11, -12) grid (-7, -8);
+    \draw (-6, -12) grid (-2, -8);
+    \draw (-1, -12) grid (3, -8);
+    \draw (4, -12) grid (8, -8);
+    \draw[white] (11, -12) grid (15, -8);
+    \node at (-11+1+0.5,-9+0.5) {$\symqueen$};
+    \node at (-6+1+0.5,-9+0.5) {$\symqueen$};
+    \node at (-1+1+0.5,-9+0.5) {$\symqueen$};
+    \node at (4+1+0.5,-9+0.5) {$\symqueen$};
+    \node at (-11+0+0.5,-10+0.5) {$\symqueen$};
+    \node at (-6+1+0.5,-10+0.5) {$\symqueen$};
+    \node at (-1+2+0.5,-10+0.5) {$\symqueen$};
+    \node at (4+3+0.5,-10+0.5) {$\symqueen$};
+
+    \draw (-1,-6) -- (-9,-8);
+    \draw (-1,-6) -- (-4,-8);
+    \draw (-1,-6) -- (1,-8);
+    \draw (-1,-6) -- (6,-8);
+    
+    \node at (-9,-13) {\ding{55}};
+    \node at (-4,-13) {\ding{55}};
+    \node at (1,-13) {\ding{55}};
+    \node at (6,-13) {\ding{51}};    
+  \end{scope}
 \end{tikzpicture}
-\caption{Etsimme lähimmät pienemmät edeltäjät pinon avulla.}
-\label{fig:pielah}
+\caption{Hakupuun alkua kuningatarten sijoittamisessa.}
+\label{fig:hakupuu}
 \end{figure}
 
-\index{pino}
+\index{hakupuu}
+Peruuttava haku käy läpi \emph{hakupuun} (\emph{search tree}),
+jonka solmut ovat ongelman muodosteilla olevia ratkaisuja.
+Puun juurena on tyhjä ratkaisu, jossa ei ole tehty vielä mitään valintoja.
+Joka vaiheessa haku haarautuu rekursiivisesti ja tutkii kaikki tavat,
+joilla nykyistä ratkaisua voi laajentaa.
+Tässä tehtävässä jokainen askel haussa lisää laudalle
+yhden kuningattaren.
 
-Saamme ratkaistua tehtävän tehokkaasti algoritmilla,
-joka käy läpi taulukkoa vasemmalta oikealle ja pitää yllä \emph{pinoa},
-jossa on lista taulukon lukuja.
-Pino on muodostettu niin, että jokainen alkio on edellistä suurempi.
-Jokaisessa kohdassa $i$ poistamme ensin pinon lopusta lukuja
-niin kauan kuin pinon viimeinen luku on suurempi tai yhtä
-suuri kuin kohdan $i$ luku.
-Tämän jälkeen kirjaamme muistiin, että kohdan $i$ luvun
-lähin pienempi edeltäjä on pinon viimeinen luku (jos pino ei ole tyhjä) ja
-lisäämme kohdan $i$ luvun pinon loppuun.
-Tuloksena on seuraava algoritmi:
+Kuvassa \ref{fig:hakupuu} on osa hakupuusta kuningatarongelman
+tapauksessa $n=4$.
+Ideana on käydä läpi shakkilautaa rivi kerrallaan ja sijoittaa aina
+yksi kuningatar kullekin riville.
+Ensimmäisen rivin kuningatar voidaan asettaa mihin tahansa sarakkeeseen.
+Seuraavilla riveillä aiemmat valinnat kuitenkin rajoittavat hakua.
+Kuvassa näkyy toisen kuningattaren sijoittaminen,
+kun ensimmäinen kuningatar on sarakkeessa 2.
+Tällöin ainoa vaihtoehto on, että toinen kuningatar on sarakkeessa 4,
+koska kaikissa muissa tapauksissa kuningattaret uhkaisivat toisiaan.
+
+Seuraava proseduuri \texttt{haku} antaa rungon peruuttavan haun
+algoritmille, joka etsii kuningatarongelman ratkaisut.
+Parametri $y$ kertoo, mille riville seuraava kuningatar tulee sijoittaa.
+Jos rivinä on $n+1$, kaikki kuningattaret on jo sijoitettu,
+joten yksi ratkaisu on löytynyt.
+Muuten suoritetaan silmukka, joka käy läpi mahdolliset sarakkeet
+muuttujan $x$ avulla.
+Jos kuningatar voidaan sijoittaa sarakkeeseen $x$
+(eli se ei uhkaa mitään aiemmin sijoitettua kuningatarta),
+merkitään taulukkoon \texttt{sarake},
+että kuningatar $y$ on sarakkeessa $x$,
+ja haku jatkuu eteenpäin rekursiivisesti.
 
 \begin{code}
-pino = []
-for i = 0 to n-1
-    while not pino.empty() and pino.top() >= taulu[i]
-        pino.pop()
-    if not pino.empty()
-        edeltaja[i] = pino.top()
-    pino.push(taulu[i])
+procedure haku(y)
+    if y == n+1
+        // ratkaisu löytynyt
+    else
+        for x = 1 to n
+            if voi_sijoittaa(y,x)
+                sarake[y] = x
+                haku(y+1)
 \end{code}
 
-Kuva \ref{fig:pielah} näyttää, kuinka algoritmi käsittelee taulukon $[1,4,5,2,3,2]$.
-Alussa pino on tyhjä, joten toteamme, ettei luvulla 1
-ole lähintä pienempää edeltäjää ja lisäämme sen pinoon.
-Sitten vuoroon tulee luku 4, jonka lähin pienempi edeltäjä
-on pinon päällä oleva luku 1. Tämän jälkeen lisäämme luvun 4 pinoon.
-Vastaavasti luvun 5 lähin pienempi edeltäjä on luku 4,
-ja lisäämme luvun 5 pinoon.
-Luvun 2 kohdalla poistamme pinosta luvut 5 ja 4
-ja toteamme, että luvun 2 lähin pienempi edeltäjä on luku 1.
-Lopuksi käsittelemme vielä vastaavasti luvut 3 ja 2.
+Lisäksi täytyy toteuttaa funktio \texttt{voi\_sijoittaa},
+joka tutkii, voidaanko uusi kuningatar sijoittaa
+rivin $y$ sarakkeelle $x$.
+Tämä voidaan selvittää taulukon \texttt{sarake} avulla näin:
 
-Algoritmin tehokkuus riippuu siitä, montako kertaa suoritamme
-\texttt{while}-silmukassa olevan koodin.
-Oleellinen havainto on, että voimme poistaa pinosta
-korkeintaan niin monta alkiota kuin olemme lisänneet siihen,
-eli emme voi kutsua \texttt{pop}-funktiota useammin kuin \texttt{push}-funktiota.
-Koska lisäämme pinoon $n$ alkiota, suoritamme \texttt{while}-silmukassa
-olevaa koodia siis enintään $n$ kertaa algoritmin aikana.
-Niinpä koko algoritmi vie aikaa vain $O(n)$.
+\begin{code}
+function voi_sijoittaa(y,x)
+    for i = 1 to y-1
+        if sarake[i] == x
+            return false
+        if abs(i-y) == abs(kohta[i]-x)
+            return false
+    return true
+\end{code}
+
+Funktio käy läpi kaikki aiemmin sijoitetut kuningattaret.
+Jos aiemmin sijoitettu kuningatar olisi samassa sarakkeessa
+(ensimmäinen ehto) tai samalla vinorivillä (toinen ehto)
+kuin uusi kuningatar, tällaista sijoitusta ei voida tehdä
+ja funktio palauttaa \texttt{false}.
+Jos taas mikään aiempi kuningatar ei uhkaa uutta kuningatarta,
+funktio palauttaa \texttt{true}.
+Huomaa jälkimmäisessä ehdossa kätevä tapa tarkastaa,
+ovatko kuningattaret samalla vinorivillä funktion \texttt{abs}
+(itseisarvo) avulla.
+Kuningattaret ovat samalla vinorivillä tarkalleen silloin,
+kun niiden vaaka- ja pystysuuntaiset erot ovat samat.
+
+Nyt meillä on valmis algoritmi, joiden avulla voimme etsiä
+kuningatarongelman ratkaisuja.
+Aina kun ratkaisu on valmis, taulukko \texttt{sarake} kertoo,
+missä sarakkeissa kuningattaret ovat.
+Esimerkiksi tapauksessa $n=4$ ratkaisut (kuva \ref{fig:kuning})
+vastaavat seuraavia taulukoita:
+
+\begin{itemize}
+\item $[2,4,1,3]$
+\item $[3,1,4,2]$
+\end{itemize}
+
+Taulukko \ref{tab:kuning} näyttää ratkaisujen määrät
+tapauksissa $n=1,2,\dots,10$.
+Tapauksissa $n=2$ ja $n=3$ ei ole mitään ratkaisuja,
+mutta kaikissa muissa tapauksissa ratkaisuja on olemassa.
+Tapauksessa $n=8$ eli tavallisella shakkilaudalla
+ratkaisujen määrä on 92.
+
+\begin{table}
+\center
+\begin{tabular}{rr}
+ruudukon koko $n$ & ratkaisujen määrä \\
+\hline
+1 & 1 \\
+2 & 0 \\
+3 & 0 \\
+4 & 2 \\
+5 & 10 \\
+6 & 4 \\
+7 & 40 \\
+8 & 92 \\
+9 & 352 \\
+10 & 724 \\
+\end{tabular}
+\caption{Kuningatarongelman ratkaisujen määriä.}
+\label{tab:kuning}
+\end{table}
+
+\section{Haun tehostaminen}
+
+\subsection{XXX}
+
+\subsection{XXX}
+
+\section{Pelin tekoäly}
+
+\subsection{Minmax-algoritmi}
+
+\subsection{Alfa-beta-karsinta}
+
+
+% \subsection{Osajoukkojen läpikäynti}
+% 
+% \index{osajoukko}
+% 
+% Aloitamme ongelmasta, jossa haluamme käydä läpi
+% kaikki lukujen $1,2,\dots,n$ \emph{osajoukot}.
+% Esimerkiksi kun $n=3$, osajoukot ovat
+% $\emptyset$ (tyhjä joukko), $\{1\}$, $\{2\}$, $\{3\}$,
+% $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
+% Osajoukkoja on yhteensä $2^n$,
+% koska jokaisen luvun kohdalla on kaksi vaihtoehtoa:
+% se tulee tai ei tule mukaan osajoukkoon.
+% Esimerkiksi kun $n=3$, osajoukkoja on $2^3=8$.
+% 
+% Seuraava rekursiivinen proseduuri muodostaa lukujen
+% $1,2,\dots,n$ osajoukot.
+% Ideana on, että teemme kunkin luvun
+% kohdalla \emph{päätöksen}, tuleeko se mukaan osajoukkoon vai ei.
+% Toteutamme tämän niin,
+% että proseduuri kutsuu itseään molemmissa tapauksissa rekursiivisesti.
+% 
+% \begin{code}
+% procedure haku(k)
+%     if k == n+1
+%         // käsittele osajoukko
+%     else
+%         mukana[k] = true
+%         haku(k+1)
+%         mukana[k] = false
+%         haku(k+1)
+% \end{code}
+% 
+% Proseduurin \texttt{haku} parametri $k$ ilmaisee,
+% minkä luvun kohtalon päätämme seuraavaksi.
+% Kutsumme aluksi proseduuria parametrilla $k=1$.
+% Jos $k=n+1$, olemme saaneet osajoukon valmiiksi
+% ja voimme käsitellä sen haluamallamme tavalla.
+% Muuten haaraudumme kahteen osaan sen mukaan,
+% tuleeko luku $k$ mukaan osajoukkoon vai ei.
+% Molemmissa tapauksissa kutsumme proseduuria parametrilla $k+1$,
+% jolloin siirrymme käsittelemään seuraavan luvun.
+% 
+% \begin{figure}
+% \center
+% \begin{tikzpicture}[scale=0.5]
+% \small
+% \node at (0,0) {\texttt{haku(1)}};
+% \draw[thick,->] (2,0) -- (4,2);
+% \draw[thick,->] (2,0) -- (4,-2);
+% \node at (6.0,2) {\texttt{haku(2)}};
+% \node at (6.0,-2) {\texttt{haku(2)}};
+% \draw[thick,->] (8,2) -- (10,3);
+% \draw[thick,->] (8,2) -- (10,1);
+% \draw[thick,->] (8,-2) -- (10,-1);
+% \draw[thick,->] (8,-2) -- (10,-3);
+% \node at (12.0,3) {\texttt{haku(3)}};
+% \node at (12.0,1) {\texttt{haku(3)}};
+% \node at (12.0,-1) {\texttt{haku(3)}};
+% \node at (12.0,-3) {\texttt{haku(3)}};
+% \draw[thick,->] (14,3) -- (16,3.5);
+% \draw[thick,->] (14,3) -- (16,2.5);
+% \draw[thick,->] (14,1) -- (16,1.5);
+% \draw[thick,->] (14,1) -- (16,0.5);
+% \draw[thick,->] (14,-1) -- (16,-0.5);
+% \draw[thick,->] (14,-1) -- (16,-1.5);
+% \draw[thick,->] (14,-3) -- (16,-2.5);
+% \draw[thick,->] (14,-3) -- (16,-3.5);
+% \node at (18.0,3.5) {\texttt{haku(4)}};
+% \node at (18.0,2.5) {\texttt{haku(4)}};
+% \node at (18.0,1.5) {\texttt{haku(4)}};
+% \node at (18.0,0.5) {\texttt{haku(4)}};
+% \node at (18.0,-0.5) {\texttt{haku(4)}};
+% \node at (18.0,-1.5) {\texttt{haku(4)}};
+% \node at (18.0,-2.5) {\texttt{haku(4)}};
+% \node at (18.0,-3.5) {\texttt{haku(4)}};
+% \node at (22.0,3.5) {$\{1,2,3\}$};
+% \node at (22.0,2.5) {$\{1,2\}$};
+% \node at (22.0,1.5) {$\{1,3\}$};
+% \node at (22.0,0.5) {$\{1\}$};
+% \node at (22.0,-0.5) {$\{2,3\}$};
+% \node at (22.0,-1.5) {$\{2\}$};
+% \node at (22.0,-2.5) {$\{3\}$};
+% \node at (22.0,-3.5) {$\emptyset$};
+% \end{tikzpicture}
+% \caption{Osajoukkojen muodostaminen rekursiivisesti ($n=3$).}
+% \label{fig:osajou}
+% \end{figure}
+% 
+% Proseduuri merkitsee globaaliin taulukkoon \texttt{mukana},
+% mitkä luvut ovat mukana osajoukossa.
+% Voimme hyödyntää tämän taulukon sisältöä,
+% kun käsitte\-lemme osa\-joukon tapauksessa $k=n+1$.
+% Esimerkiksi voimme tulostaa osajoukossa olevat luvut seuraavasti:
+% 
+% \begin{code}
+% for i = 1 to n
+%     if mukana[i]
+%         print(i)
+% \end{code}
+% 
+% Kuva \ref{fig:osajou} näyttää,
+% miten osajoukot muodostuvat tapauksessa $n=3$.
+% Jokaisessa proseduurin kutsussa ylempi haara ottaa luvun mukaan osajoukkoon
+% ja alempi haara ei ota lukua mukaan osajoukkoon.
+% Kuvan oikeassa reunassa näkyy kussakin tapauksessa muodostettu osajoukko.
+% 
+% \subsection{Permutaatioiden läpikäynti}
+% 
+% \index{permutaatio}
+% 
+% Tarkastellaan sitten toista ongelmaa, jossa haluammekin
+% käydä läpi lukujen $1,2,\dots,n$ \emph{permutaatiot}
+% eli kaikki mahdolliset tavat asettaa luvut johonkin järjestykseen.
+% Esimerkiksi tapauksessa $n=3$ permutaatiot ovat
+% $(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
+% Luvuista $1,2,\dots,n$ voi muodostaa kaikkiaan $n!$ permutaatiota.
+% Esimerkiksi tapauksessa $n=3$ permutaatioiden määrä on
+% $3!=6$.
+% 
+% Myös permutaatioiden läpikäynti onnistuu kätevästi rekursiolla.
+% Ideana on valita joka askeleella permutaation loppuun
+% jokin luku, joka ei vielä kuulu siihen.
+% Voimme toteuttaa haun näin:
+% 
+% \begin{code}
+% procedure haku(k)
+%     if k == n+1
+%         // käsittele permutaatio
+%     else
+%         for i = 1 to n
+%             if not mukana[i]
+%                 mukana[i] = true
+%                 permutaatio[k] = i
+%                 haku(k+1)
+%                 mukana[i] = false
+% \end{code}
+% 
+% Parametri $k$ tarkoittaa, mihin permutaation kohtaan
+% valitsemme seuraavaksi luvun.
+% Haku alkaa, kun kutsumme proseduuria parametrilla $k=1$.
+% Jos $k=n+1$, olemme saaneet permutaation valmiiksi
+% ja voimme käsitellä sen.
+% Muuten valitsemme permutaation kohtaan $k$ tulevan luvun
+% käymällä läpi silmukalla luvut $1 \dots n$.
+% Taulukko \texttt{mukana} kertoo, mitkä luvut
+% ovat jo mukana permutaatiossa
+% Jos luku $i$ ei ole vielä mukana, haaraudumme tapaukseen,
+% jossa valitsemme sen kohtaan $k$, ja jatkamme hakua kohtaan $k+1$.
+% 
+% Kun olemme saaneet permutaation valmiiksi,
+% voimme käsitellä sen esimerkiksi tulostamalla lukujen
+% järjestyksen näin:
+% 
+% \begin{code}
+% for i = 1 to n
+%     print(permutaatio[i])
+% \end{code}
+% 
+% \subsection{Peruuttava haku}
+% 
+% \index{peruuttava haku}
+% 
+% \emph{Peruuttava haku} (\emph{backtracking}) on yleinen rekursiivinen menetelmä,
+% jota käyttäen voimme muodostaa kaikki ratkaisut
+% annettuun ongelmaan.
+% Ideana on aloittaa tyhjästä ratkaisusta ja käydä
+% joka askeleella läpi rekursiivisesti kaikki mahdolliset tavat,
+% kuinka ratkaisua voi laajentaa.
+% 
+% Peruuttava haku on raa'an voiman algoritmi,
+% ja voimme käyttää sitä vain silloin,
+% kun ratkaisujen määrä on niin pieni,
+% että ehdimme käydä läpi kaikki ratkaisut.
+% Kuitenkin jos voimme käyttää peruuttavaa hakua,
+% se on mainio tekniikka,
+% koska voimme olla varmoja, että oikein toteutettu
+% peruuttava haku löytää kaikki ratkaisut.
+% 
+% \index{latinalainen neliö}
+% 
+% Tarkastellaan esimerkkinä tehtävää, jossa haluamme käydä läpi
+% kaikki kokoa $n \times n$ olevat \emph{latinalaiset neliöt}
+% eli ruudukot, joissa kullakin vaaka- ja pystyrivillä
+% esiintyy tarkalleen kerran jokainen luku $1,2,\dots,n$.
+% Kyseessä on siis yksinkertaistus tutusta sudoku-tehtävästä.
+% Esimerkiksi kuva \ref{fig:latnel} näyttää kaikki 12 latinalaista neliötä kokoa $3 \times 3$.
+% 
+% Toteutamme peruuttavan haun niin, että valitsemme joka askeleella
+% ruudukon kohtaan $(y,x)$ tulevan luvun.
+% Numeroimme ruudukon vaaka- ja pystyrivit kokonaisluvuin $1,2,\dots,n$.
+% Aloitamme haun ruudukon vasemmasta yläkul\-masta ja etenemme
+% rivi kerrallaan alaspäin.
+% Seuraava rekursiivinen algoritmi toteuttaa haun,
+% kun sitä kutsutaan parametreilla $(1,1)$:
+% 
+% \begin{code}
+% procedure haku(y,x)
+%     if y == n+1
+%         // käsittele ratkaisu
+%     else if x == n+1
+%         haku(y+1,1)
+%     else
+%         for i = 1 to n
+%             if not vaaka[y][i] and not pysty[x][i]
+%                 vaaka[y][i] = pysty[x][i] = true
+%                 nelio[y][x] = i
+%                 haku(y,x+1)
+%                 vaaka[y][i] = pysty[x][i] = false
+% \end{code}
+% 
+% Algoritmin alussa on kaksi erikoistapausta:
+% jos $y=n+1$, olemme saaneet muodostettua
+% yhden latinalaisen neliön.
+% Jos taas $x=n+1$, olemme saaneet jonkin vaakarivin
+% valmiiksi ja alamme muodostaa seuraavaa vaakariviä.
+% Muuten kyseessä on perustapaus, jossa haluamme
+% valita kohtaan $(y,x)$ tulevan luvun.
+% Käymme läpi kaikki mahdolliset tavat for-silmukalla,
+% jossa $i$ on valittava luku.
+% Koska jokainen luku saa esiintyä vain kerran kullakin
+% vaaka- ja pystyrivillä, käytämme kahta aputaulukkoa:
+% $\texttt{vaaka}[y][i]$ kertoo, onko vaakarivillä $y$
+% jo lukua $i$, ja vastaavasti $\texttt{pysty}[x][i]$ kertoo,
+% onko pystyrivillä $x$ jo lukua $i$.
+% Jos voimme sijoittaa luvun $i$ kohtaan $(y,x)$,
+% merkitsemme tämän taulukkoon $\texttt{nelio}[y][x]$
+% ja lisäksi päivitämme taulukoita $\texttt{vaaka}$ ja $\texttt{pysty}$.
+% Sitten jatkamme hakua rekursiivisesti seuraavaan
+% oikealla olevaan ruutuun.
+% 
+% \begin{figure}
+% \center
+% \begin{tikzpicture}[scale=0.5]
+% \newcommand\nelio[9]{
+% \draw (0,0) grid (3,3);
+% \foreach \x/\y/\v in {0/0/#1,1/0/#2,2/0/#3,0/1/#4,1/1/#5,2/1/#6,0/2/#7,1/2/#8,2/2/#9} \node at (0.5+\x,2.5-\y) {\v};
+% }
+% \begin{scope}
+% \nelio{1}{2}{3}{2}{3}{1}{3}{1}{2}
+% \end{scope}
+% \begin{scope}[xshift=4cm]
+% \nelio{1}{2}{3}{3}{1}{2}{2}{3}{1}
+% \end{scope}
+% \begin{scope}[xshift=8cm]
+% \nelio{1}{3}{2}{2}{1}{3}{3}{2}{1}
+% \end{scope}
+% \begin{scope}[xshift=12cm]
+% \nelio{1}{3}{2}{3}{2}{1}{2}{1}{3}
+% \end{scope}
+% \begin{scope}[xshift=16cm]
+% \nelio{2}{1}{3}{1}{3}{2}{3}{2}{1}
+% \end{scope}
+% \begin{scope}[xshift=20cm]
+% \nelio{2}{1}{3}{3}{2}{1}{1}{3}{2}
+% \end{scope}
+% \begin{scope}[yshift=-4cm]
+% \nelio{2}{3}{1}{1}{2}{3}{3}{1}{2}
+% \end{scope}
+% \begin{scope}[yshift=-4cm,xshift=4cm]
+% \nelio{2}{3}{1}{3}{1}{2}{1}{2}{3}
+% \end{scope}
+% \begin{scope}[yshift=-4cm,xshift=8cm]
+% \nelio{3}{1}{2}{1}{2}{3}{2}{3}{1}
+% \end{scope}
+% \begin{scope}[yshift=-4cm,xshift=12cm]
+% \nelio{3}{1}{2}{2}{3}{1}{1}{2}{3}
+% \end{scope}
+% \begin{scope}[yshift=-4cm,xshift=16cm]
+% \nelio{3}{2}{1}{1}{3}{2}{2}{1}{3}
+% \end{scope}
+% \begin{scope}[yshift=-4cm,xshift=20cm]
+% \nelio{3}{2}{1}{2}{1}{3}{1}{3}{2}
+% \end{scope}
+% \end{tikzpicture}
+% \caption{Kaikki 12 latinalaista neliötä kokoa $3 \times 3$.}
+% \label{fig:latnel}
+% \end{figure}
+% 
+% \begin{table}
+% \center
+% \begin{tabular}{rr}
+% ruudukon koko $n$ & neliöiden määrä \\
+% \hline
+% 1 & 1 \\
+% 2 & 2 \\
+% 3 & 12 \\
+% 4 & 576 \\
+% 5 & 161280 \\
+% 6 & 812851200 \\
+% \end{tabular}
+% \caption{Latinalaisten neliöiden määrät, kun $n=1,2,\dots,6$.}
+% \label{tab:latnel}
+% \end{table}
+% 
+% Kun olemme saaneet muodostettua latinalaisen neliön, voimme
+% tulostaa sen sisällön taulukon \texttt{nelio} perusteella
+% tai vain kasvattaa laskurin arvoa,
+% jolloin saamme lasketuksi, montako neliötä on olemassa kaikkiaan.
+% Taulukko \ref{tab:latnel} sisältää latinalaisten neliöiden
+% määrät tapauksissa $n=1,2,\dots,6$, jotka pystymme laskemaan
+% nopeasti tässä kuvatulla algoritmilla.
+% Suuremmilla $n$:n arvoilla pelkkä peruuttava haku
+% on kuitenkin liian hidas, koska ratkaisuja on valtava määrä
+% emmekä voi enää käydä niitä läpi yksitellen.
