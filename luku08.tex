@@ -15,7 +15,112 @@ Peruuttava haku on luontevaa toteuttaa rekursion avulla,
 jolloin jokainen rekursion haara vastaa yhtä tapaa
 viedä ratkaisua eteenpäin.
 
-\section{Kuningatarongelma}
+\section{Silmukoista rekursioon}
+
+Aloitamme peruuttavaan hakuun tutustumisen tehtävästä,
+jossa haluamme muodostaa kaikki yhdistelmät,
+joissa on peräkkäin $n$ kokonaislukua väliltä $1 \dots m$.
+Tällaisia yhdistelmiä on kaikkiaan $m^n$,
+koska joka kohdassa on $m$ tapaa valita luku.
+Esimerkiksi jos $n=3$ ja $m=4$, mahdollisia yhdistelmiä
+ovat esimerkiksi $[1,2,1]$ ja $[3,1,4]$
+ja yhdistelmiä on yhteensä $4^3=64$.
+
+Luonteva tapa ratkaista tehtävä tietylle $n$:n arvolle on
+luoda $n$ sisäkkäistä silmukkaa, joista jokainen käy $m$ lukua läpi.
+Esimerkiksi seuraava koodi käy läpi kaikki yhdistelmät
+tapauksessa $n=3$ ja $m=4$:
+
+\begin{code}
+for a = 1 to m
+    for b = 1 to m
+        for c = 1 to m
+            print(a,b,c)
+\end{code}
+
+Tämä on sinänsä mainio ratkaisu, mutta siinä on yksi ongelma:
+lukujen määrä $n$ vaikuttaa silmukoiden määrään.
+Jos haluaisimme muuttaa $n$:n arvoa, meidän täytyisi muuttaa
+koodin silmukoiden määrää, mikä ei ole hyvä asia.
+Peruuttavan haun avulla voimme kuitenkin toteuttaa ratkaisun
+rekursiivisesti niin, että sama koodi toimii kaikille $n$:n arvoille.
+
+\subsection{Haun toteutus}
+
+Seuraava rekursiivinen proseduuri \texttt{haku} muodostaa
+yhdistelmiä peruuttavan haun avulla.
+Parametri $k$ tarkoittaa kohtaa, johon seuraava luku asetetaan.
+Jos $k=n$, jokin yhdistelmä on valmistunut, jolloin se tulostetaan.
+Muuten haku käy läpi kaikki tavat sijoittaa kohtaan $k$ luku $1 \dots m$
+ja jatkaa rekursiivisesti kohtaan $k+1$.
+Haku lähtee käyntiin kutsulla \texttt{haku}(0),
+ja \texttt{luvut} on $n$-kokoinen taulukko, johon yhdistelmä muodostetaan.
+
+\begin{code}
+procedure haku(k)
+    if k == n
+        print(luvut)
+    else
+        for i = 1 to m
+            luvut[k] = i
+            haku(k+1)
+\end{code}
+
+Kuva \ref{fig:perhak} näyttää, miten peruuttava haku lähtee liikkeelle
+tapauksessa $n=3$ ja $m=4$.
+Merkki $-$ tarkoittaa lukua, jota ei ole vielä valittu.
+Haun ensimmäinen taso valitsee yhdistelmän
+ensimmäisen luvun kohtaan $0$.
+Tämän valintaan on neljä vaihtoehtoa ($1 \dots 4$),
+joten haku haarautuu neljään osaan valitsemaan lukua kohtaan $1$.
+Jokainen haara jatkaa vastaavasti eteenpäin
+ja valitsee muut yhdistelmään kuuluvat luvut.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=.65]
+    \draw (0,0) grid (3,1);
+    \foreach \x/\v in {0/-,1/-,2/-} \node at (\x+0.5,0.5) {$\v$};
+
+    \draw (7,-3) grid (10,-2);
+    \foreach \x/\v in {0/1,1/-,2/-} \node at (\x+7.5,3.5) {$\v$};
+    \draw (7,-1) grid (10,0);
+    \foreach \x/\v in {0/2,1/-,2/-} \node at (\x+7.5,1.5) {$\v$};
+    \draw (7,1) grid (10,2);
+    \foreach \x/\v in {0/3,1/-,2/-} \node at (\x+7.5,-0.5) {$\v$};
+    \draw (7,3) grid (10,4);
+    \foreach \x/\v in {0/4,1/-,2/-} \node at (\x+7.5,-2.5) {$\v$};
+
+    \draw[->,thick] (3.2,0.5) -- (6.8,3.5);
+    \draw[->,thick] (3.2,0.5) -- (6.8,1.5);
+    \draw[->,thick] (3.2,0.5) -- (6.8,-0.5);
+    \draw[->,thick] (3.2,0.5) -- (6.8,-2.5);
+    
+    \foreach \y in {3.5,1.5,-0.5,-2.5} \foreach \z in {0.6,0.2,-0.2,-0.6}
+        \draw[->,thick] (10.2,\y) -- (13.8,\y+\z);
+\end{tikzpicture}
+\caption{Peruuttavan haun alku tapauksessa $n=3$ ja $m=4$.}
+\label{fig:perhak}
+\end{figure}
+
+Voimme arvioida algoritmin tehokkuutta laskemalla,
+montako kertaa proseduuria \texttt{haku} kutsutaan yhteensä haun aikana.
+Proseduuria kutsutaan kerran parametrilla $0$,
+$m$ kertaa parametrilla $1$, $m^2$ kertaa parametrilla $2$, jne.,
+joten kutsujen määrä on yhteensä
+\[
+1+m+m^2+\dots+m^n = \frac{m^{n+1}-1}{m-1} = O(m^n).
+\]
+Jokainen proseduurin kutsu vie aikaa $O(m)$,
+koska se joko tulostaa $m$ luvun yhdistelmän tai
+haarautuu rekursiivisesti $m$ osaan.
+Niinpä algoritmin kokonaisaikavaativuus on $O(m^{n+1})$.
+
+\subsection{Osajoukkojen muodostus}
+
+\subsection{Permutaatioiden muodostus}
+
+\section{Esimerkki: Kuningatarongelma}
 
 Ensimmäinen tehtävämme on
 laskea, monellako tavalla $n \times n$ -shakkilaudalle voidaan
