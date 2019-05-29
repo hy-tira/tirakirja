@@ -8,20 +8,19 @@ Peruuttava haku on luontevaa toteuttaa rekursion avulla,
 jolloin jokainen rekursion haara vastaa yhtä tapaa
 viedä ratkaisua eteenpäin.
 
-\emph{Peruuttava haku} (\emph{backtracking}) on menetelmä,
-jossa on ideana käydä läpi kaikki mahdolliset tavat 
-ratkaista annettu tehtävä.
-Peruuttava haku on luontevaa toteuttaa rekursion avulla,
-jolloin jokainen rekursion haara vastaa yhtä tapaa
-viedä ratkaisua eteenpäin.
+Tässä luvussa tutustumme ensin peruuttavan haun algoritmeihin,
+jotka käyvät läpi lukujen yhdistelmiä.
+Tämän jälkeen näemme, miten peruuttavaa hakua voi käyttää
+kahdessa vaikeammassa ongelmassa ja miten hakua voi optimoida.
+Lopuksi toteutamme pelin tekoälyn minmax-algoritmilla,
+joka perustuu peruuttavaan hakuun.
 
 \section{Silmukoista rekursioon}
 
-Aloitamme peruuttavaan hakuun tutustumisen tehtävästä,
-jossa haluamme muodostaa kaikki yhdistelmät,
-joissa on peräkkäin $n$ kokonaislukua väliltä $1 \dots m$.
+Ensimmäinen tehtävämme on muodostaa kaikki yhdistelmät,
+joissa on peräk\-käin $n$ kokonaislukua väliltä $1 \dots m$.
 Tällaisia yhdistelmiä on kaikkiaan $m^n$,
-koska joka kohdassa on $m$ tapaa valita luku.
+koska joka kohdassa on $m$ tapaa valita kyseiseen kohtaan tuleva luku.
 Esimerkiksi jos $n=3$ ja $m=4$, mahdollisia yhdistelmiä
 ovat esimerkiksi $[1,2,1]$ ja $[3,1,4]$
 ja yhdistelmiä on yhteensä $4^3=64$.
@@ -68,7 +67,7 @@ procedure haku(k)
 
 Kuva \ref{fig:perhak} näyttää, miten peruuttava haku lähtee liikkeelle
 tapauksessa $n=3$ ja $m=4$.
-Merkki $-$ tarkoittaa lukua, jota ei ole vielä valittu.
+Merkki "$-$" tarkoittaa lukua, jota ei ole vielä valittu.
 Haun ensimmäinen taso valitsee yhdistelmän
 ensimmäisen luvun kohtaan $0$.
 Tämän valintaan on neljä vaihtoehtoa ($1 \dots 4$),
@@ -111,22 +110,56 @@ joten kutsujen määrä on yhteensä
 \[
 1+m+m^2+\dots+m^n = \frac{m^{n+1}-1}{m-1} = O(m^n).
 \]
-Jokainen proseduurin kutsu vie aikaa $O(m)$,
-koska se joko tulostaa $m$ luvun yhdistelmän tai
-haarautuu rekursiivisesti $m$ osaan.
-Niinpä algoritmin kokonaisaikavaativuus on $O(m^{n+1})$.
+Koska haku haarautuu joka tasolla $m$ osaan,
+aikavaativuus kasvaa eksponentiaalisesti ja viimeisellä
+tasolla tehdään enemmän kutsuja kuin kaikilla muilla tasoilla yhteensä.
 
-\subsection{Osajoukkojen muodostus}
+\subsection{Osajoukot ja permutaatiot}
 
-\subsection{Permutaatioiden muodostus}
+Tarkastellaan sitten ongelmaa,
+jossa haluamme käydä läpi annetun joukon \emph{osajoukot}
+eli kaikki tavat valita jokin osa joukon alkioista.
+Esimerkiksi joukon $\{2,3,5,9\}$ osajoukkoja ovat
+$\{2,5\}$ ja $\{3,5,9\}$.
+Kun joukossa on $n$ alkiota, sillä on kaikkiaan $2^n$ osajoukkoa.
+
+Osoittautuu, että voimme käydä läpi osajoukot lähes samalla
+tavalla kuin aiemmassa ongelmassa.
+Voimme näet muodostaa kaikki $n$-kokoiset yhdistelmät,
+joissa jokainen luku on 0 tai 1.
+Jokainen tällainen yhdistelmä vastaa yhtä osajoukkoa,
+kun tulkintana on, että 1 valitsee alkion mukaan
+ja 0 jättää sen pois.
+Esimerkiksi joukon $\{2,3,5,9\}$ osajoukkoa $\{2,5\}$
+vastaa yhdistelmä $[1,0,1,0]$,
+koska luvut 2 ja 5 otetaan mukaan ja luvut 3 ja 9 jäävät pois.
+
+Toinen tavallinen ongelma on muodostaa annetun joukon
+\emph{permutaatiot} eli erilaiset järjestykset.
+Esimerkiksi joukon $\{1,2,3,4\}$ permutaatioita ovat
+$\{2,4,1,3\}$ ja $\{4,3,1,2\}$.
+Kun joukossa on $n$ alkiota, siitä voidaan muodostaa
+kaikkiaan $n!$ permutaatiota.
+
+Tässäkin tapauksessa voimme ratkaista ongelman yhdistelmien
+muodostamisen avulla.
+Kun haluamme käydä läpi joukon $\{1,2,\dots,n\}$ permutaatiot,
+muodostamme $n$-kokoisia yhdistelmiä, joissa jokainen luku
+on väliltä $1 \dots n$.
+Kuitenkin lisärajoituksena sama luku ei saa esiintyä monta kertaa,
+joten kun olemme valinneet tietyn luvun,
+emme voi enää valita sitä myöhemmin uudestaan.
+Esimerkiksi jos $n=4$ ja permutaation alku on $[2,4,-,-]$,
+voimme valita seuraavaan kohtaan vain luvun 1 tai 3.
+
 
 \section{Esimerkki: Kuningatarongelma}
 
-Ensimmäinen tehtävämme on
-laskea, monellako tavalla $n \times n$ -shakkilaudalle voidaan
-sijoittaa $n$ kuningatarta niin, etteivät mitkään kaksi kuningatarta
-uhkaa toisiaan. Kaksi kuningatarta voivat uhata toisiaan
-pysty-, vaaka- tai vinosuuntaisesti.
+Klassinen tehtävä on selvittää,
+monellako tavalla shakkilaudalle voidaan asettaa kahdeksan kuningatarta
+niin, etteivät ne uhkaa toisiaan.
+Käsittelemme seuraavaksi tämän tehtävän yleistystä,
+jossa haluamme asettaa $n$ kuningatarta $n \times n$ -laudalle.
 Esimerkiksi tapauksessa $n=4$ mahdollisia sijoitustapoja on 2,
 jotka on esitetty kuvassa \ref{fig:kuning}.
 
@@ -152,9 +185,23 @@ jotka on esitetty kuvassa \ref{fig:kuning}.
 \label{fig:kuning}
 \end{figure}
 
+\subsection{Haun toteutus}
+
+Voimme ratkaista tehtävän peruuttavalla haulla toteuttamalla algoritmin,
+joka käy laudan läpi ylhäältä alaspäin ja asettaa yhden kuningattaren
+jokaiselle riville.
+Kuva \ref{fig:hakupuu} esittää haun toimintaa tapauksessa $n=4$.
+Ensimmäisen rivin kuningatar voidaan asettaa mihin tahansa sarakkeeseen,
+mutta seuraavilla riveillä aiemmat valinnat rajoittavat hakua.
+Kuvassa näkyy toisen kuningattaren sijoittaminen,
+kun ensimmäinen kuningatar on sarakkeessa 2.
+Tällöin ainoa vaihtoehto on, että toinen kuningatar on sarakkeessa 4,
+koska kaikissa muissa tapauksissa kuningattaret uhkaisivat toisiaan.
+
+
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=.53]
+\begin{tikzpicture}[scale=.50]
   \begin{scope}
     \draw (0, 0) grid (4, 4);
 
@@ -198,63 +245,46 @@ jotka on esitetty kuvassa \ref{fig:kuning}.
     \node at (6,-13) {\ding{51}};    
   \end{scope}
 \end{tikzpicture}
-\caption{Hakupuun alkua kuningatarten sijoittamisessa.}
+\caption{Peruuttavan haun toiminta kuningatarongelmassa.}
 \label{fig:hakupuu}
 \end{figure}
 
-\index{hakupuu}
-Peruuttava haku käy läpi \emph{hakupuun} (\emph{search tree}),
-jonka solmut ovat ongelman muodosteilla olevia ratkaisuja.
-Puun juurena on tyhjä ratkaisu, jossa ei ole tehty vielä mitään valintoja.
-Joka vaiheessa haku haarautuu rekursiivisesti ja tutkii kaikki tavat,
-joilla nykyistä ratkaisua voi laajentaa.
-Tässä tehtävässä jokainen askel haussa lisää laudalle
-yhden kuningattaren.
 
-Kuvassa \ref{fig:hakupuu} on osa hakupuusta kuningatarongelman
-tapauksessa $n=4$.
-Ideana on käydä läpi shakkilautaa rivi kerrallaan ja sijoittaa aina
-yksi kuningatar kullekin riville.
-Ensimmäisen rivin kuningatar voidaan asettaa mihin tahansa sarakkeeseen.
-Seuraavilla riveillä aiemmat valinnat kuitenkin rajoittavat hakua.
-Kuvassa näkyy toisen kuningattaren sijoittaminen,
-kun ensimmäinen kuningatar on sarakkeessa 2.
-Tällöin ainoa vaihtoehto on, että toinen kuningatar on sarakkeessa 4,
-koska kaikissa muissa tapauksissa kuningattaret uhkaisivat toisiaan.
-
-Seuraava proseduuri \texttt{haku} antaa rungon peruuttavan haun
-algoritmille, joka etsii kuningatarongelman ratkaisut.
-Parametri $y$ kertoo, mille riville seuraava kuningatar tulee sijoittaa.
-Jos rivinä on $n+1$, kaikki kuningattaret on jo sijoitettu,
+Seuraava proseduuri \texttt{haku} esittää peruuttavan haun algoritmin,
+joka etsii kuningatarongelman ratkaisut.
+Oletamme, että laudan rivit ja sarakkeet on numeroitu $0,1,\dots,n-1$.
+Parametri $y$ kertoo, mille riville seuraava kuningatar tulee sijoittaa,
+ja haku lähtee käyntiin kutsulla \texttt{haku}$(0)$.
+Jos rivinä on $n$, kaikki kuningattaret on jo sijoitettu,
 joten yksi ratkaisu on löytynyt.
 Muuten suoritetaan silmukka, joka käy läpi mahdolliset sarakkeet
 muuttujan $x$ avulla.
 Jos kuningatar voidaan sijoittaa sarakkeeseen $x$
-(eli se ei uhkaa mitään aiemmin sijoitettua kuningatarta),
-merkitään taulukkoon \texttt{sarake},
+eli se ei uhkaa mitään aiemmin sijoitettua kuningatarta,
+merkitään taulukkoon \texttt{kohta},
 että kuningatar $y$ on sarakkeessa $x$,
 ja haku jatkuu eteenpäin rekursiivisesti.
 
 \begin{code}
 procedure haku(y)
-    if y == n+1
+    if y == n
         // ratkaisu löytynyt
     else
-        for x = 1 to n
+        for x = 0 to n-1
             if voi_sijoittaa(y,x)
-                sarake[y] = x
+                kohta[y] = x
                 haku(y+1)
 \end{code}
 
 Lisäksi täytyy toteuttaa funktio \texttt{voi\_sijoittaa},
 joka tutkii, voidaanko uusi kuningatar sijoittaa
 rivin $y$ sarakkeelle $x$.
-Tämä voidaan selvittää taulukon \texttt{sarake} avulla näin:
+Tämä voidaan selvittää taulukon \texttt{kohta} avulla näin:
 
 \begin{code}
 function voi_sijoittaa(y,x)
-    for i = 1 to y-1
-        if sarake[i] == x
+    for i = 0 to y-1
+        if kohta[i] == x
             return false
         if abs(i-y) == abs(kohta[i]-x)
             return false
@@ -278,46 +308,70 @@ Nyt meillä on valmis algoritmi, joiden avulla voimme etsiä
 kuningatarongelman ratkaisuja.
 Aina kun ratkaisu on valmis, taulukko \texttt{sarake} kertoo,
 missä sarakkeissa kuningattaret ovat.
-Esimerkiksi tapauksessa $n=4$ ratkaisut (kuva \ref{fig:kuning})
-vastaavat seuraavia taulukoita:
+Esimerkiksi tapauksen $n=4$ ratkaisut (kuva \ref{fig:kuning})
+vastaavat taulukoita $[1,3,0,2]$ ja $[2,0,3,1]$.
+Voimme vaikkapa selvittää algoritmin avulla,
+että tapauksessa $n=8$ eli tavallisella shakkilaudalla
+ratkaisuja on yhteensä 92.
 
-\begin{itemize}
-\item $[2,4,1,3]$
-\item $[3,1,4,2]$
-\end{itemize}
+\subsection{Haun tehostaminen}
 
-Taulukko \ref{tab:kuning} näyttää ratkaisujen määrät
-tapauksissa $n=1,2,\dots,10$.
-Tapauksissa $n=2$ ja $n=3$ ei ole mitään ratkaisuja,
-mutta kaikissa muissa tapauksissa ratkaisuja on olemassa.
-Tapauksessa $n=8$ eli tavallisella shakkilaudalla
-ratkaisujen määrä on 92.
+Peruuttavan haun algoritmit ovat usein hitaita,
+koska ne joutuvat käymään läpi suuren määrän osittaisia ratkaisuja.
+Voimme kuitenkin usein tehostaa hakua merkittävästi
+toteuttamalla se paremmin.
 
-\begin{table}
-\center
-\begin{tabular}{rr}
-ruudukon koko $n$ & ratkaisujen määrä \\
-\hline
-1 & 1 \\
-2 & 0 \\
-3 & 0 \\
-4 & 2 \\
-5 & 10 \\
-6 & 4 \\
-7 & 40 \\
-8 & 92 \\
-9 & 352 \\
-10 & 724 \\
-\end{tabular}
-\caption{Kuningatarongelman ratkaisujen määriä.}
-\label{tab:kuning}
-\end{table}
+Kuningatarongelmassa tapaus $n=8$ on vielä helppo ja
+saamme laskettua tapojen määrän salamannopeasti,
+mutta pian tämän jälkeen algoritmi alkaa hidastua tuntuvasti.
+Tarkastelemme seuraavaksi tapausta $n=16$,
+jossa sijoitustapojen määrä on 14772512.
+Tässä tapauksessa yllä kuvatun algoritmin
+Java-toteutus vie testikoneella aikaa 290 sekuntia.
 
-\section{Haun tehostaminen}
+Yksi usein toimiva tapa tehostaa peruuttavan haun algoritmia
+on ottaa huomioon \emph{symmetria}.
+Kuningatarongelmassa hyödyllinen havainto on,
+että jokaista ratkaisua vastaa toinen ratkaisu,
+joka saadaan peilaamalla se vaakasuuntaisesti.
+Niinpä voimme päättää, että asetamme ensimmäisen kuningattaren
+laudan vasempaan osaan ($n/2$ ensimmäistä saraketta)
+ja kerromme lopuksi vastauksen kahdella.
+Tämä optimointi on hyvin helppo toteuttaa ja se puolittaa
+laskenta-ajan: nyt algoritmi vie aikaa vain 145 sekuntia.
 
-\subsection{XXX}
+Voimme tehostaa vielä algoritmia lisää toteuttamalla
+uhkaamisen tarkastus paremmin.
+Seuraava toteutus käyttää kolmea aputaulukkoa
+\texttt{uhka1}, \texttt{uhka2} ja \texttt{uhka3}.
+Ensimmäinen taulukko kertoo, mitkä sarakkeet on varattu,
+ja kaksi muuta taulukkoa ilmoittavat, mitkä vinorivit on varattu.
+Vinorivejä kulkee kahteen suuntaan
+(ylävasemmalta alaoikealle ja alavasemmalta yläoikealle)
+ja ne on numeroitu $0,1,\dots,2n-2$.
+Näiden taulukoiden avulla voimme tarkastaa $O(1)$-ajassa,
+voimmeko sijoittaa kuningattaren tiettyyn paikkaan,
+eikä tarvitse käydä läpi aiempia kuningattaria silmukalla.
 
-\subsection{XXX}
+\begin{code}
+procedure haku(y)
+    if y == n
+        // ratkaisu on löytynyt
+    else
+        for i = 0 to n-1
+            if !uhka1[x] && !uhka2[x+y] && !uhka3[x-y+n-1]
+                uhka1[x] = uhka2[x+y] = uhka3[x-y+n-1] = true
+                haku(y+1)
+                uhka1[x] = uhka2[x+y] = uhka3[x-y+n-1] = false
+\end{code}
+
+Tämän optimoinnin jälkeen haku vie aikaa vain 62 sekuntia.
+Alkuperäinen toteutus vei aikaa 290 sekuntia,
+joten optimoinnin tulokseen voi olla tyytyväinen.
+Suuremmissa tapauksissa optimoinnista tuleva hyöty olisi
+luultavasti vielä suurempi.
+
+\section{Esimerkki: Pakkaaminen}
 
 \section{Pelin tekoäly}
 
