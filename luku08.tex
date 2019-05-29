@@ -44,7 +44,7 @@ koodin silmukoiden määrää, mikä ei ole hyvä asia.
 Peruuttavan haun avulla voimme kuitenkin toteuttaa ratkaisun
 rekursiivisesti niin, että sama koodi toimii kaikille $n$:n arvoille.
 
-\subsection{Haun toteutus}
+\subsection{Haun toteuttaminen}
 
 Seuraava rekursiivinen proseduuri \texttt{haku} muodostaa
 yhdistelmiä peruuttavan haun avulla.
@@ -185,7 +185,7 @@ jotka on esitetty kuvassa \ref{fig:kuning}.
 \label{fig:kuning}
 \end{figure}
 
-\subsection{Haun toteutus}
+\subsection{Haun toteuttaminen}
 
 Voimme ratkaista tehtävän peruuttavalla haulla toteuttamalla algoritmin,
 joka käy laudan läpi ylhäältä alaspäin ja asettaa yhden kuningattaren
@@ -268,7 +268,7 @@ ja haku jatkuu eteenpäin rekursiivisesti.
 \begin{code}
 procedure haku(y)
     if y == n
-        // ratkaisu löytynyt
+        laskuri++
     else
         for x = 0 to n-1
             if voi_sijoittaa(y,x)
@@ -329,6 +329,7 @@ jossa sijoitustapojen määrä on 14772512.
 Tässä tapauksessa yllä kuvatun algoritmin
 Java-toteutus vie testikoneella aikaa 290 sekuntia.
 
+\index{symmetria}
 Yksi usein toimiva tapa tehostaa peruuttavan haun algoritmia
 on ottaa huomioon \emph{symmetria}.
 Kuningatarongelmassa hyödyllinen havainto on,
@@ -340,8 +341,8 @@ ja kerromme lopuksi vastauksen kahdella.
 Tämä optimointi on hyvin helppo toteuttaa ja se puolittaa
 laskenta-ajan: nyt algoritmi vie aikaa vain 145 sekuntia.
 
-Voimme tehostaa vielä algoritmia lisää toteuttamalla
-uhkaamisen tarkastus paremmin.
+Voimme tehostaa algoritmia vielä lisää toteuttamalla
+uhkaamisen tarkastuksen paremmin.
 Seuraava toteutus käyttää kolmea aputaulukkoa
 \texttt{uhka1}, \texttt{uhka2} ja \texttt{uhka3}.
 Ensimmäinen taulukko kertoo, mitkä sarakkeet on varattu,
@@ -356,7 +357,7 @@ eikä tarvitse käydä läpi aiempia kuningattaria silmukalla.
 \begin{code}
 procedure haku(y)
     if y == n
-        // ratkaisu on löytynyt
+        laskuri++
     else
         for i = 0 to n-1
             if !uhka1[x] && !uhka2[x+y] && !uhka3[x-y+n-1]
@@ -367,320 +368,133 @@ procedure haku(y)
 
 Tämän optimoinnin jälkeen haku vie aikaa vain 62 sekuntia.
 Alkuperäinen toteutus vei aikaa 290 sekuntia,
-joten optimoinnin tulokseen voi olla tyytyväinen.
-Suuremmissa tapauksissa optimoinnista tuleva hyöty olisi
+joten optimointien tulokseen voi olla tyytyväinen.
+Suuremmissa tapauksissa optimoinneista tuleva hyöty olisi
 luultavasti vielä suurempi.
 
 \section{Esimerkki: Pakkaaminen}
+
+Annettuna on $n$ tavaraa, joilla jokaisella on tietty paino.
+Tehtävänä on jakaa tavarat laatikoihin niin,
+että jokaisen laatikon paino on enintään $x$ ja
+laatikoiden määrä on mahdollisimman pieni.
+Esimerkiksi jos $n=5$, painot ovat $[2,3,3,7,8]$ ja $x=9$,
+paras ratkaisu on muodostaa laatikot $[2,7]$, $[3,3]$ ja $[8]$,
+jolloin tarvitaan 3 laatikkoa.
+
+Parhaan jakotavan löytäminen on vaikea tehtävä,
+johon ei tunneta mitään tehokasta algoritmia.
+Voimme kuitenkin toteuttaa peruuttavan haun algoritmin,
+joka käy läpi kaikki mahdolliset ratkaisut.
+
+\subsection{Haun toteuttaminen}
+
+Tässä tehtävässä on monta luontevaa tapaa toteuttaa
+peruuttavan haun algoritmi.
+Seuraavassa toteutuksessa proseduuri \texttt{haku} saa kaksi parametria:
+$k$ kertoo, mikä tavara pakataan seuraavaksi,
+ja $c$ kertoo, montako laatikkoa on jo käytössä.
+Haku lähtee käyntiin kutsulla \texttt{haku}$(0,0)$.
+Taulukko \texttt{paino} kertoo jokaisen tavaran painon,
+ja taulukko \texttt{summa} sisältää puolestaan
+jokaisesta laatikosta siinä olevien tavaroiden painojen summan.
+Lisäksi muuttujassa $p$ on laatikoiden määrä pienimmässä ratkaisussa
+tähän mennessä.
+Tämän muuttujan arvona on alussa $\infty$,
+koska mitään ratkaisua ei ole vielä löytynyt.
+
+\begin{code}
+procedure haku(k,c)
+    if k == n
+        p = min(p,c)
+        return
+    for i = 0 to c-1
+        if summa[i]+paino[k] <= x
+            summa[i] += paino[k]
+            haku(k+1,c)
+            summa[i] -= paino[k]
+    summa[c] = paino[k]
+    haku(k+1,c+1)
+\end{code}
+
+Jos $k=n$, jokin ratkaisu on löytynyt ja $c$ sisältää
+laatikoiden määrän tässä ratkaisussa.
+Tässä vaiheessa muuttuja $p$ päivittyy,
+jos uusi ratkaisu on aiempaa pienempi.
+Jos ratkaisu ei ole valmis, haku käy läpi kaikki
+nykyiset laatikot ja koettaa jokaisen laatikon
+kohdalla pakata seuraavan tavaran sinne.
+Jos tavara mahtuu laatikkoon,
+se lisätään sinne ja haku jatkuu rekursiivisesti.
+Tämän jälkeen tavara poistetaan laatikosta.
+Lopuksi käsitellään vielä tapaus, jossa tavara laitetaan
+uuteen laatikkoon, jolloin $c$ kasvaa yhdellä.
+
+\subsection{Haun tehostaminen}
+
+Yllä kuvattu algoritmi on toimiva, mutta \emph{hyvin hidas},
+koska se käy läpi valtavan määrän ratkaisuja.
+Käytännössä monet ratkaisut ovat huonoja, koska niissä on
+paljon laatikoita, jotka jäävät tyhjilleen.
+Voimmekin tehostaa algoritmia huomattavasti keskeyttämällä
+ratkaisun muodostamisen, jos on selvää, ettei siitä voi
+tulla aiemmin löydettyä ratkaisua parempi.
+
+Koska muistissa on aina laatikoiden määrä parhaassa
+löydetyssä ratkaisussa ($p$),
+saamme tästä \emph{ylärajan} sille, montako laatikkoa tarvitaan.
+Toisaalta laatikoiden määrä nykyisessä ratkaisussa ($c$) on
+\emph{alaraja} sille, montako laatikkoa muodosteilla oleva
+ratkaisu tulee sisältämään.
+Jos alaraja on yhtä suuri tai suurempi kuin yläraja,
+emme voi saada aiempaa parempaa ratkaisua,
+joten ei kannata jatkaa ratkaisun muodostamista.
+Tämä onnistuu lisäämällä algoritmin alkuun seuraava tarkastus:
+
+\begin{code}
+procedure haku(k,c)
+    if c >= p
+        return
+    ...
+\end{code}
+
+Tämä on jo merkittävä tehostus, mutta voimme vielä parantaa
+alarajaa, koska voimme arvioida, montako laatikkoa
+lisää ainakin vielä tarvitaan. Tämä selviää kaavalla
+\[
+\frac{s_T-s_L}{x},
+\]
+missä $s_T$ on vielä lisäämättä olevien tavaroiden yhteispaino ja
+$s_L$ kertoo, miten paljon painoa nykyisiin laatikoihin
+voisi vielä laittaa lisää.
+Niinpä $s_T-s_L$ ilmaisee, miten paljon painoa meidän täytyy
+laittaa varmasti uusiin laatikoihin.
+Ihannetilanteessa jokaiseen laatikkoon tulee painoa $x$,
+joten saamme kaavasta alarajan sille, montako laatikkoa tarvitaan vielä.
+Voimme luoda kaavasta funktion \texttt{arvio},
+jonka voi yhdistää hakuun näin:
+
+\begin{code}
+procedure haku(k,c)
+    if c+arvio(k,c) >= p
+        return
+    ...
+\end{code}
+
+\index{branch and bound}
+Nyt meillä on aiempaa parempi alaraja tarvittavien laatikoiden määrälle,
+koska laskemme yhteen, montako laatikkoa on jo käytetty ja montako
+tarvitaan vielä lisää.
+
+\index{branch and bound}
+Tällaista peruuttavan haun toteutusta kutsutaan joskus nimellä
+\emph{branch and bound}.
+Tässä \emph{branch} tarkoittaa, että haku haarautuu,
+ja \emph{bound} viittaa siihen, että haku hyödyntää
+ylä- ja alarajoja.
 
 \section{Pelin tekoäly}
 
 \subsection{Minmax-algoritmi}
 
 \subsection{Alfa-beta-karsinta}
-
-
-% \subsection{Osajoukkojen läpikäynti}
-% 
-% \index{osajoukko}
-% 
-% Aloitamme ongelmasta, jossa haluamme käydä läpi
-% kaikki lukujen $1,2,\dots,n$ \emph{osajoukot}.
-% Esimerkiksi kun $n=3$, osajoukot ovat
-% $\emptyset$ (tyhjä joukko), $\{1\}$, $\{2\}$, $\{3\}$,
-% $\{1,2\}$, $\{1,3\}$, $\{2,3\}$ ja $\{1,2,3\}$.
-% Osajoukkoja on yhteensä $2^n$,
-% koska jokaisen luvun kohdalla on kaksi vaihtoehtoa:
-% se tulee tai ei tule mukaan osajoukkoon.
-% Esimerkiksi kun $n=3$, osajoukkoja on $2^3=8$.
-% 
-% Seuraava rekursiivinen proseduuri muodostaa lukujen
-% $1,2,\dots,n$ osajoukot.
-% Ideana on, että teemme kunkin luvun
-% kohdalla \emph{päätöksen}, tuleeko se mukaan osajoukkoon vai ei.
-% Toteutamme tämän niin,
-% että proseduuri kutsuu itseään molemmissa tapauksissa rekursiivisesti.
-% 
-% \begin{code}
-% procedure haku(k)
-%     if k == n+1
-%         // käsittele osajoukko
-%     else
-%         mukana[k] = true
-%         haku(k+1)
-%         mukana[k] = false
-%         haku(k+1)
-% \end{code}
-% 
-% Proseduurin \texttt{haku} parametri $k$ ilmaisee,
-% minkä luvun kohtalon päätämme seuraavaksi.
-% Kutsumme aluksi proseduuria parametrilla $k=1$.
-% Jos $k=n+1$, olemme saaneet osajoukon valmiiksi
-% ja voimme käsitellä sen haluamallamme tavalla.
-% Muuten haaraudumme kahteen osaan sen mukaan,
-% tuleeko luku $k$ mukaan osajoukkoon vai ei.
-% Molemmissa tapauksissa kutsumme proseduuria parametrilla $k+1$,
-% jolloin siirrymme käsittelemään seuraavan luvun.
-% 
-% \begin{figure}
-% \center
-% \begin{tikzpicture}[scale=0.5]
-% \small
-% \node at (0,0) {\texttt{haku(1)}};
-% \draw[thick,->] (2,0) -- (4,2);
-% \draw[thick,->] (2,0) -- (4,-2);
-% \node at (6.0,2) {\texttt{haku(2)}};
-% \node at (6.0,-2) {\texttt{haku(2)}};
-% \draw[thick,->] (8,2) -- (10,3);
-% \draw[thick,->] (8,2) -- (10,1);
-% \draw[thick,->] (8,-2) -- (10,-1);
-% \draw[thick,->] (8,-2) -- (10,-3);
-% \node at (12.0,3) {\texttt{haku(3)}};
-% \node at (12.0,1) {\texttt{haku(3)}};
-% \node at (12.0,-1) {\texttt{haku(3)}};
-% \node at (12.0,-3) {\texttt{haku(3)}};
-% \draw[thick,->] (14,3) -- (16,3.5);
-% \draw[thick,->] (14,3) -- (16,2.5);
-% \draw[thick,->] (14,1) -- (16,1.5);
-% \draw[thick,->] (14,1) -- (16,0.5);
-% \draw[thick,->] (14,-1) -- (16,-0.5);
-% \draw[thick,->] (14,-1) -- (16,-1.5);
-% \draw[thick,->] (14,-3) -- (16,-2.5);
-% \draw[thick,->] (14,-3) -- (16,-3.5);
-% \node at (18.0,3.5) {\texttt{haku(4)}};
-% \node at (18.0,2.5) {\texttt{haku(4)}};
-% \node at (18.0,1.5) {\texttt{haku(4)}};
-% \node at (18.0,0.5) {\texttt{haku(4)}};
-% \node at (18.0,-0.5) {\texttt{haku(4)}};
-% \node at (18.0,-1.5) {\texttt{haku(4)}};
-% \node at (18.0,-2.5) {\texttt{haku(4)}};
-% \node at (18.0,-3.5) {\texttt{haku(4)}};
-% \node at (22.0,3.5) {$\{1,2,3\}$};
-% \node at (22.0,2.5) {$\{1,2\}$};
-% \node at (22.0,1.5) {$\{1,3\}$};
-% \node at (22.0,0.5) {$\{1\}$};
-% \node at (22.0,-0.5) {$\{2,3\}$};
-% \node at (22.0,-1.5) {$\{2\}$};
-% \node at (22.0,-2.5) {$\{3\}$};
-% \node at (22.0,-3.5) {$\emptyset$};
-% \end{tikzpicture}
-% \caption{Osajoukkojen muodostaminen rekursiivisesti ($n=3$).}
-% \label{fig:osajou}
-% \end{figure}
-% 
-% Proseduuri merkitsee globaaliin taulukkoon \texttt{mukana},
-% mitkä luvut ovat mukana osajoukossa.
-% Voimme hyödyntää tämän taulukon sisältöä,
-% kun käsitte\-lemme osa\-joukon tapauksessa $k=n+1$.
-% Esimerkiksi voimme tulostaa osajoukossa olevat luvut seuraavasti:
-% 
-% \begin{code}
-% for i = 1 to n
-%     if mukana[i]
-%         print(i)
-% \end{code}
-% 
-% Kuva \ref{fig:osajou} näyttää,
-% miten osajoukot muodostuvat tapauksessa $n=3$.
-% Jokaisessa proseduurin kutsussa ylempi haara ottaa luvun mukaan osajoukkoon
-% ja alempi haara ei ota lukua mukaan osajoukkoon.
-% Kuvan oikeassa reunassa näkyy kussakin tapauksessa muodostettu osajoukko.
-% 
-% \subsection{Permutaatioiden läpikäynti}
-% 
-% \index{permutaatio}
-% 
-% Tarkastellaan sitten toista ongelmaa, jossa haluammekin
-% käydä läpi lukujen $1,2,\dots,n$ \emph{permutaatiot}
-% eli kaikki mahdolliset tavat asettaa luvut johonkin järjestykseen.
-% Esimerkiksi tapauksessa $n=3$ permutaatiot ovat
-% $(1,2,3)$, $(1,3,2)$, $(2,1,3)$, $(2,3,1)$, $(3,1,2)$ ja $(3,2,1)$.
-% Luvuista $1,2,\dots,n$ voi muodostaa kaikkiaan $n!$ permutaatiota.
-% Esimerkiksi tapauksessa $n=3$ permutaatioiden määrä on
-% $3!=6$.
-% 
-% Myös permutaatioiden läpikäynti onnistuu kätevästi rekursiolla.
-% Ideana on valita joka askeleella permutaation loppuun
-% jokin luku, joka ei vielä kuulu siihen.
-% Voimme toteuttaa haun näin:
-% 
-% \begin{code}
-% procedure haku(k)
-%     if k == n+1
-%         // käsittele permutaatio
-%     else
-%         for i = 1 to n
-%             if not mukana[i]
-%                 mukana[i] = true
-%                 permutaatio[k] = i
-%                 haku(k+1)
-%                 mukana[i] = false
-% \end{code}
-% 
-% Parametri $k$ tarkoittaa, mihin permutaation kohtaan
-% valitsemme seuraavaksi luvun.
-% Haku alkaa, kun kutsumme proseduuria parametrilla $k=1$.
-% Jos $k=n+1$, olemme saaneet permutaation valmiiksi
-% ja voimme käsitellä sen.
-% Muuten valitsemme permutaation kohtaan $k$ tulevan luvun
-% käymällä läpi silmukalla luvut $1 \dots n$.
-% Taulukko \texttt{mukana} kertoo, mitkä luvut
-% ovat jo mukana permutaatiossa
-% Jos luku $i$ ei ole vielä mukana, haaraudumme tapaukseen,
-% jossa valitsemme sen kohtaan $k$, ja jatkamme hakua kohtaan $k+1$.
-% 
-% Kun olemme saaneet permutaation valmiiksi,
-% voimme käsitellä sen esimerkiksi tulostamalla lukujen
-% järjestyksen näin:
-% 
-% \begin{code}
-% for i = 1 to n
-%     print(permutaatio[i])
-% \end{code}
-% 
-% \subsection{Peruuttava haku}
-% 
-% \index{peruuttava haku}
-% 
-% \emph{Peruuttava haku} (\emph{backtracking}) on yleinen rekursiivinen menetelmä,
-% jota käyttäen voimme muodostaa kaikki ratkaisut
-% annettuun ongelmaan.
-% Ideana on aloittaa tyhjästä ratkaisusta ja käydä
-% joka askeleella läpi rekursiivisesti kaikki mahdolliset tavat,
-% kuinka ratkaisua voi laajentaa.
-% 
-% Peruuttava haku on raa'an voiman algoritmi,
-% ja voimme käyttää sitä vain silloin,
-% kun ratkaisujen määrä on niin pieni,
-% että ehdimme käydä läpi kaikki ratkaisut.
-% Kuitenkin jos voimme käyttää peruuttavaa hakua,
-% se on mainio tekniikka,
-% koska voimme olla varmoja, että oikein toteutettu
-% peruuttava haku löytää kaikki ratkaisut.
-% 
-% \index{latinalainen neliö}
-% 
-% Tarkastellaan esimerkkinä tehtävää, jossa haluamme käydä läpi
-% kaikki kokoa $n \times n$ olevat \emph{latinalaiset neliöt}
-% eli ruudukot, joissa kullakin vaaka- ja pystyrivillä
-% esiintyy tarkalleen kerran jokainen luku $1,2,\dots,n$.
-% Kyseessä on siis yksinkertaistus tutusta sudoku-tehtävästä.
-% Esimerkiksi kuva \ref{fig:latnel} näyttää kaikki 12 latinalaista neliötä kokoa $3 \times 3$.
-% 
-% Toteutamme peruuttavan haun niin, että valitsemme joka askeleella
-% ruudukon kohtaan $(y,x)$ tulevan luvun.
-% Numeroimme ruudukon vaaka- ja pystyrivit kokonaisluvuin $1,2,\dots,n$.
-% Aloitamme haun ruudukon vasemmasta yläkul\-masta ja etenemme
-% rivi kerrallaan alaspäin.
-% Seuraava rekursiivinen algoritmi toteuttaa haun,
-% kun sitä kutsutaan parametreilla $(1,1)$:
-% 
-% \begin{code}
-% procedure haku(y,x)
-%     if y == n+1
-%         // käsittele ratkaisu
-%     else if x == n+1
-%         haku(y+1,1)
-%     else
-%         for i = 1 to n
-%             if not vaaka[y][i] and not pysty[x][i]
-%                 vaaka[y][i] = pysty[x][i] = true
-%                 nelio[y][x] = i
-%                 haku(y,x+1)
-%                 vaaka[y][i] = pysty[x][i] = false
-% \end{code}
-% 
-% Algoritmin alussa on kaksi erikoistapausta:
-% jos $y=n+1$, olemme saaneet muodostettua
-% yhden latinalaisen neliön.
-% Jos taas $x=n+1$, olemme saaneet jonkin vaakarivin
-% valmiiksi ja alamme muodostaa seuraavaa vaakariviä.
-% Muuten kyseessä on perustapaus, jossa haluamme
-% valita kohtaan $(y,x)$ tulevan luvun.
-% Käymme läpi kaikki mahdolliset tavat for-silmukalla,
-% jossa $i$ on valittava luku.
-% Koska jokainen luku saa esiintyä vain kerran kullakin
-% vaaka- ja pystyrivillä, käytämme kahta aputaulukkoa:
-% $\texttt{vaaka}[y][i]$ kertoo, onko vaakarivillä $y$
-% jo lukua $i$, ja vastaavasti $\texttt{pysty}[x][i]$ kertoo,
-% onko pystyrivillä $x$ jo lukua $i$.
-% Jos voimme sijoittaa luvun $i$ kohtaan $(y,x)$,
-% merkitsemme tämän taulukkoon $\texttt{nelio}[y][x]$
-% ja lisäksi päivitämme taulukoita $\texttt{vaaka}$ ja $\texttt{pysty}$.
-% Sitten jatkamme hakua rekursiivisesti seuraavaan
-% oikealla olevaan ruutuun.
-% 
-% \begin{figure}
-% \center
-% \begin{tikzpicture}[scale=0.5]
-% \newcommand\nelio[9]{
-% \draw (0,0) grid (3,3);
-% \foreach \x/\y/\v in {0/0/#1,1/0/#2,2/0/#3,0/1/#4,1/1/#5,2/1/#6,0/2/#7,1/2/#8,2/2/#9} \node at (0.5+\x,2.5-\y) {\v};
-% }
-% \begin{scope}
-% \nelio{1}{2}{3}{2}{3}{1}{3}{1}{2}
-% \end{scope}
-% \begin{scope}[xshift=4cm]
-% \nelio{1}{2}{3}{3}{1}{2}{2}{3}{1}
-% \end{scope}
-% \begin{scope}[xshift=8cm]
-% \nelio{1}{3}{2}{2}{1}{3}{3}{2}{1}
-% \end{scope}
-% \begin{scope}[xshift=12cm]
-% \nelio{1}{3}{2}{3}{2}{1}{2}{1}{3}
-% \end{scope}
-% \begin{scope}[xshift=16cm]
-% \nelio{2}{1}{3}{1}{3}{2}{3}{2}{1}
-% \end{scope}
-% \begin{scope}[xshift=20cm]
-% \nelio{2}{1}{3}{3}{2}{1}{1}{3}{2}
-% \end{scope}
-% \begin{scope}[yshift=-4cm]
-% \nelio{2}{3}{1}{1}{2}{3}{3}{1}{2}
-% \end{scope}
-% \begin{scope}[yshift=-4cm,xshift=4cm]
-% \nelio{2}{3}{1}{3}{1}{2}{1}{2}{3}
-% \end{scope}
-% \begin{scope}[yshift=-4cm,xshift=8cm]
-% \nelio{3}{1}{2}{1}{2}{3}{2}{3}{1}
-% \end{scope}
-% \begin{scope}[yshift=-4cm,xshift=12cm]
-% \nelio{3}{1}{2}{2}{3}{1}{1}{2}{3}
-% \end{scope}
-% \begin{scope}[yshift=-4cm,xshift=16cm]
-% \nelio{3}{2}{1}{1}{3}{2}{2}{1}{3}
-% \end{scope}
-% \begin{scope}[yshift=-4cm,xshift=20cm]
-% \nelio{3}{2}{1}{2}{1}{3}{1}{3}{2}
-% \end{scope}
-% \end{tikzpicture}
-% \caption{Kaikki 12 latinalaista neliötä kokoa $3 \times 3$.}
-% \label{fig:latnel}
-% \end{figure}
-% 
-% \begin{table}
-% \center
-% \begin{tabular}{rr}
-% ruudukon koko $n$ & neliöiden määrä \\
-% \hline
-% 1 & 1 \\
-% 2 & 2 \\
-% 3 & 12 \\
-% 4 & 576 \\
-% 5 & 161280 \\
-% 6 & 812851200 \\
-% \end{tabular}
-% \caption{Latinalaisten neliöiden määrät, kun $n=1,2,\dots,6$.}
-% \label{tab:latnel}
-% \end{table}
-% 
-% Kun olemme saaneet muodostettua latinalaisen neliön, voimme
-% tulostaa sen sisällön taulukon \texttt{nelio} perusteella
-% tai vain kasvattaa laskurin arvoa,
-% jolloin saamme lasketuksi, montako neliötä on olemassa kaikkiaan.
-% Taulukko \ref{tab:latnel} sisältää latinalaisten neliöiden
-% määrät tapauksissa $n=1,2,\dots,6$, jotka pystymme laskemaan
-% nopeasti tässä kuvatulla algoritmilla.
-% Suuremmilla $n$:n arvoilla pelkkä peruuttava haku
-% on kuitenkin liian hidas, koska ratkaisuja on valtava määrä
-% emmekä voi enää käydä niitä läpi yksitellen.
