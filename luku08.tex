@@ -189,12 +189,12 @@ procedure haku(k)
 
 \section{Esimerkki: Kuningatarongelma}
 
-Klassinen tehtävä on selvittää,
-monellako tavalla shakkilaudalle voidaan asettaa kahdeksan kuningatarta
-niin, etteivät ne uhkaa toisiaan.
-Käsittelemme seuraavaksi tämän tehtävän yleistystä,
-jossa haluamme asettaa $n$ kuningatarta $n \times n$ -laudalle.
-Esimerkiksi tapauksessa $n=4$ mahdollisia sijoitustapoja on 2,
+Seuraava tehtävämme on laskea, monellako tavalla
+$n \times n$ -shakkilaudalle voidaan asettaa $n$ kuningatarta
+niin, etteivät mitkään kaksi kuningatarta uhkaa toisiaan.
+Shakissa kuningattaret voivat uhata toisiaan
+vaaka-, pysty- tai vinosuuntaisesti.
+Esimerkiksi tapauksessa $n=4$ mahdollisia sijoitustapoja on kaksi,
 jotka on esitetty kuvassa \ref{fig:kuning}.
 
 
@@ -215,13 +215,13 @@ jotka on esitetty kuvassa \ref{fig:kuning}.
     \node at (6+1.5,0.5) {$\symqueen$};
   \end{scope}
 \end{tikzpicture}
-\caption{Mahdolliset tavat asettaa 4 kuningatarta $4 \times 4$ -shakkilaudalle.}
+\caption{Kuningatarongelman ratkaisut tapauksessa $n=4$.}
 \label{fig:kuning}
 \end{figure}
 
 \subsection{Haun toteuttaminen}
 
-Voimme ratkaista tehtävän peruuttavalla haulla toteuttamalla algoritmin,
+Voimme ratkaista tehtävän toteuttamalla algoritmin,
 joka käy laudan läpi ylhäältä alaspäin ja asettaa yhden kuningattaren
 jokaiselle riville.
 Kuva \ref{fig:hakupuu} esittää haun toimintaa tapauksessa $n=4$.
@@ -235,7 +235,7 @@ koska kaikissa muissa tapauksissa kuningattaret uhkaisivat toisiaan.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=.50]
+\begin{tikzpicture}[scale=.55]
   \begin{scope}
     \draw (0, 0) grid (4, 4);
 
@@ -285,19 +285,7 @@ koska kaikissa muissa tapauksissa kuningattaret uhkaisivat toisiaan.
 
 
 Seuraava proseduuri \texttt{haku} esittää peruuttavan haun algoritmin,
-joka etsii kuningatarongelman ratkaisut.
-Oletamme, että laudan rivit ja sarakkeet on numeroitu $0,1,\dots,n-1$.
-Parametri $y$ kertoo, mille riville seuraava kuningatar tulee sijoittaa,
-ja haku lähtee käyntiin kutsulla \texttt{haku}$(0)$.
-Jos rivinä on $n$, kaikki kuningattaret on jo sijoitettu,
-joten yksi ratkaisu on löytynyt.
-Muuten suoritetaan silmukka, joka käy läpi mahdolliset sarakkeet
-muuttujan $x$ avulla.
-Jos kuningatar voidaan sijoittaa sarakkeeseen $x$
-eli se ei uhkaa mitään aiemmin sijoitettua kuningatarta,
-merkitään taulukkoon \texttt{kohta},
-että kuningatar $y$ on sarakkeessa $x$,
-ja haku jatkuu eteenpäin rekursiivisesti.
+joka laskee kuningatarongelman ratkaisut:
 
 \begin{code}
 procedure haku(y)
@@ -309,6 +297,19 @@ procedure haku(y)
                 kohta[y] = x
                 haku(y+1)
 \end{code}
+
+Oletamme, että laudan rivit ja sarakkeet on numeroitu $0 \dots n-1$.
+Parametri $y$ kertoo, mille riville seuraava kuningatar tulee sijoittaa,
+ja haku lähtee käyntiin kutsulla \texttt{haku}$(0)$.
+Jos rivinä on $n$, kaikki kuningattaret on jo sijoitettu,
+joten yksi ratkaisu on löytynyt.
+Muuten suoritetaan silmukka, joka käy läpi mahdolliset sarakkeet
+muuttujan $x$ avulla.
+Jos kuningatar voidaan sijoittaa sarakkeeseen $x$
+eli se ei uhkaa mitään aiemmin sijoitettua kuningatarta,
+merkitään taulukkoon \texttt{kohta},
+että kuningatar $y$ on sarakkeessa $x$,
+ja haku jatkuu eteenpäin rekursiivisesti.
 
 Lisäksi täytyy toteuttaa funktio \texttt{voi\_sijoittaa},
 joka tutkii, voidaanko uusi kuningatar sijoittaa
@@ -333,78 +334,81 @@ ja funktio palauttaa \texttt{false}.
 Jos taas mikään aiempi kuningatar ei uhkaa uutta kuningatarta,
 funktio palauttaa \texttt{true}.
 Huomaa jälkimmäisessä ehdossa kätevä tapa tarkastaa,
-ovatko kuningattaret samalla vinorivillä funktion \texttt{abs}
-(itseisarvo) avulla.
+ovatko kuningattaret samalla vinorivillä itseisarvon
+(funktio \texttt{abs}) avulla.
 Kuningattaret ovat samalla vinorivillä tarkalleen silloin,
 kun niiden vaaka- ja pystysuuntaiset erot ovat samat.
 
-Nyt meillä on valmis algoritmi, joiden avulla voimme etsiä
-kuningatarongelman ratkaisuja.
-Aina kun ratkaisu on valmis, taulukko \texttt{sarake} kertoo,
-missä sarakkeissa kuningattaret ovat.
-Esimerkiksi tapauksen $n=4$ ratkaisut (kuva \ref{fig:kuning})
-vastaavat taulukoita $[1,3,0,2]$ ja $[2,0,3,1]$.
-Voimme vaikkapa selvittää algoritmin avulla,
-että tapauksessa $n=8$ eli tavallisella shakkilaudalla
-ratkaisuja on yhteensä 92.
+\begin{table}
+\center
+\begin{tabular}{rr}
+laudan koko $n$ & ratkaisujen määrä \\
+\hline
+1 & 1 \\
+2 & 0 \\
+3 & 0 \\
+4 & 2 \\
+5 & 10 \\
+6 & 4 \\
+7 & 40 \\
+8 & 92 \\
+9 & 352 \\
+10 & 724 \\
+\end{tabular}
+\caption{Kuningatarongelman ratkaisujen määriä.}
+\label{tab:kuning}
+\end{table}
+
+Nyt meillä on valmis algoritmi, jonka avulla voimme
+käydä läpi kuningatarongelman ratkaisuja.
+Taulukko \ref{tab:kuning} näyttää ratkaisujen määrät
+tapauksissa $n=1 \dots 10$.
+Esimerkiksi tavallisella $8 \times 8$ -shakkilaudalla
+on 92 tapaa asettaa 8 kuningatarta niin,
+etteivät ne uhkaa toisiaan.
 
 \subsection{Haun tehostaminen}
 
-Peruuttavan haun algoritmit ovat usein hitaita,
-koska ne joutuvat käymään läpi suuren määrän osittaisia ratkaisuja.
-Voimme kuitenkin usein tehostaa hakua merkittävästi
-toteuttamalla se paremmin.
-
-Kuningatarongelmassa tapaus $n=8$ on vielä helppo ja
-saamme laskettua tapojen määrän salamannopeasti,
-mutta pian tämän jälkeen algoritmi alkaa hidastua tuntuvasti.
-Tarkastelemme seuraavaksi tapausta $n=16$,
-jossa sijoitustapojen määrä on 14772512.
-Tässä tapauksessa yllä kuvatun algoritmin
-Java-toteutus vie testikoneella aikaa 290 sekuntia.
+Tässä kuvattu peruuttavan haun algoritmi toimii hyvin nopeasti
+tapauksissa $n=1 \dots 10$,
+mutta vähänkin suuremmilla $n$:n arvoilla
+algoritmi alkaa viedä paljon aikaa.
+Syynä tähän on, että kuningatarten sijoitustapojen
+määrä kasvaa eksponentiaalisesti.
+Esimerkiksi tapauksessa $n=15$ sijoitustapoja on
+noin 2 miljoonaa ja tapauksessa $n=20$ niitä on noin 39 miljardia.
 
 \index{symmetria}
-Yksi usein toimiva tapa tehostaa peruuttavan haun algoritmia
-on ottaa huomioon \emph{symmetria}.
-Kuningatarongelmassa hyödyllinen havainto on,
-että jokaista ratkaisua vastaa toinen ratkaisu,
-joka saadaan peilaamalla se vaakasuuntaisesti.
-Niinpä voimme päättää, että asetamme ensimmäisen kuningattaren
-laudan vasempaan osaan ($n/2$ ensimmäistä saraketta)
-ja kerromme lopuksi vastauksen kahdella.
-Tämä optimointi on hyvin helppo toteuttaa ja se puolittaa
-laskenta-ajan: nyt algoritmi vie aikaa vain 145 sekuntia.
+Voimme kuitenkin koettaa nopeuttaa algoritmia parantamalla
+sen toteutusta.
+Yksi helposti toteutettava tehostus on hyödyntää \emph{symmetriaa}.
+Jokaista kuningatarongelman ratkaisua vastaa toinen ratkaisu,
+joka saadaan peilaamalla ratkaisu vaakasuuntaisesti.
+Esimerkiksi kuvassa \ref{fig:kuning} ratkaisut voidaan muuttaa
+toisikseen peilaamalla.
+Tämän havainnon ansiosta voimme puolittaa algoritmin suoritusajan
+lisäämällä vaatimuksen, että ensimmäinen kuningatar asetetaan
+laudan vasempaan puoliskoon, ja kertomalla lopuksi vastauksen kahdella.
+Jos laudan koko on pariton, täytyy vielä käsitellä erikseen tapaus,
+jossa ensimmäinen kuningatar sijoitetaan keskisarakkeeseen.
 
-Voimme tehostaa algoritmia vielä lisää toteuttamalla
-uhkaamisen tarkastuksen paremmin.
-Seuraava toteutus käyttää kolmea aputaulukkoa
-\texttt{uhka1}, \texttt{uhka2} ja \texttt{uhka3}.
-Ensimmäinen taulukko kertoo, mitkä sarakkeet on varattu,
-ja kaksi muuta taulukkoa ilmoittavat, mitkä vinorivit on varattu.
-Vinorivejä kulkee kahteen suuntaan
-(ylävasemmalta alaoikealle ja alavasemmalta yläoikealle)
-ja ne on numeroitu $0,1,\dots,2n-2$.
-Näiden taulukoiden avulla voimme tarkastaa $O(1)$-ajassa,
-voimmeko sijoittaa kuningattaren tiettyyn paikkaan,
-eikä tarvitse käydä läpi aiempia kuningattaria silmukalla.
+Toinen mahdollinen tehostus olisi toteuttaa funktio
+\texttt{voi\_sijoittaa} paremmin.
+Tällä hetkellä se käy läpi kaikki aiemmin sijoitetut kuningattaret
+ja vie aikaa $O(n)$, mutta funktio on mahdollista toteuttaa myös
+ajassa $O(1)$ ottamalla käyttöön uusia aputaulukoita, joissa on tietoa,
+mitkä sarakkeet ja vinorivit ovat uhattuina.
+Tämä tehostus on vaikeampi toteuttaa kuin symmetristen lautojen karsinta.
 
-\begin{code}
-procedure haku(y)
-    if y == n
-        laskuri++
-    else
-        for i = 0 to n-1
-            if !uhka1[x] && !uhka2[x+y] && !uhka3[x-y+n-1]
-                uhka1[x] = uhka2[x+y] = uhka3[x-y+n-1] = true
-                haku(y+1)
-                uhka1[x] = uhka2[x+y] = uhka3[x-y+n-1] = false
-\end{code}
+Kuningatarongelma on kuitenkin pohjimmiltaan vaikea ongelma,
+eikä sen ratkaisuun tunneta mitään oleellisesti raakaa voimaa
+parempaa tapaa.
+Tällä hetkellä suurin tapaus, jonka ratkaisu tunnetaan, on $n=27$.
+Tämän tapauksen käsittely vei aikaa noin vuoden laskentaklusterilla,
+jossa oli suuri määrä rinnakkain laskevia
+suorittimia\footnote{27-Queens Puzzle: Massively Parellel Enumeration and Solution Counting.
+\url{https://github.com/preusser/q27}}.
 
-Tämän optimoinnin jälkeen haku vie aikaa vain 62 sekuntia.
-Alkuperäinen toteutus vei aikaa 290 sekuntia,
-joten optimointien tulokseen voi olla tyytyväinen.
-Suuremmissa tapauksissa optimoinneista tuleva hyöty olisi
-luultavasti vielä suurempi.
 
 \section{Esimerkki: Pakkaaminen}
 
