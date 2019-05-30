@@ -491,23 +491,22 @@ Seuraavaksi näemme, kuinka voimme tehostaa hakua tuntuvasti.
 
 \subsection{Haun tehostaminen}
 
-Testaamme algoritmia tapauksessa, jossa $n=20$ ja jokainen
+\index{branch and bound}
+
+Keskitymme seuraavaksi tapaukseen, jossa $n=20$ ja jokainen
 taulukossa \texttt{hinta} oleva arvo on satunnainen
 kokonaisluku välillä $1 \dots 100$.
-Tässä tapauksessa algoritmi kävisi läpi $20!$ eri ratkaisua,
+Tässä tapauksessa edellä kuvattu algoritmi kävisi läpi $20!$ eri ratkaisua,
 mikä kestäisi niin kauan, että emme voisi odottaa loppuun
 algoritmin suoritusta.
 Jotta voimme ratkaista tapauksen,
 meidän täytyy parantaa algoritmia niin,
 että se ei käy läpi kaikkia ratkaisuja
 mutta löytää kuitenkin parhaan ratkaisun.
-
-\index{branch and bound}
 Tässä avuksi tulee tekniikka, josta käytetään usein nimeä
 \emph{branch and bound}.
-Siinä ideana on käydä läpi ratkaisuja haarautuvasti,
-kuten yleensäkin peruuttavassa haussa,
-mutta tehostaa hakua karsimalla selkeästi huonoja ratkaisuja
+Siinä ideana on tehostaa peruuttavaa hakua
+vähentämällä tutkittavien ratkaisujen määrää
 sopivien ylä- ja alarajojen avulla.
 
 Keskeinen havainto on, että voimme rajoittaa hakua muuttujan
@@ -549,10 +548,10 @@ procedure haku(k,h)
     ...
 \end{code}
 
-Tässä funktion \texttt{arvio} tulee antaa jokin alaraja,
-paljonko maksaa ainakin palkata jäljellä olevat työntekijät $k \dots n-1$.
-Yksi helppo tapa saada alaraja on laskea yhteen jokaisen jäljellä olevan
-työntekijän \emph{halvin} hinta välittämättä työtehtävistä.
+Tässä funktion \texttt{arvio} tulee antaa jokin arvio,
+paljonko ainakin maksaa palkata jäljellä olevat työntekijät $k \dots n-1$.
+Yksi helppo tapa saada arvio on laskea yhteen jokaisen jäljellä olevan
+työntekijän \emph{halvin} hinta \emph{missä tahansa} työtehtävässä.
 Tämän tehostuksen jälkeen tapauksen $n=20$ käsittely vie
 testikoneella vain 7 sekuntia.
 Paremman alarajan ansiosta saimme siis algoritmin
@@ -564,6 +563,169 @@ haarautumista, voimme saada sitä tehostettua todella merkittävästi.
 
 \section{Pelin tekoäly}
 
-\subsection{Minmax-algoritmi}
+Peruuttavan haun avulla voi myös toteuttaa tekoälyn kahden pelaajan peliin,
+kuten ristinollaan tai shakkiin.
+Tällaisen tekoälyn täytyy pystyä päättämään,
+miten toimia annetussa pelin tilanteessa.
+Ideana on luoda peruuttava haku, joka käy läpi mahdollisia siirtoja,
+joita pelaajat voivat tehdä.
+
+\subsection{Minimax-algoritmi}
+
+\index{minimax-algoritmi}
+\emph{Minimax-algoritmi} on peruuttavaan hakuun perustuva algoritmi,
+joka valitsee tekoälyn siirron pelissä.
+Se käy läpi pelinkulkuja tiettyyn syvyyteen asti,
+arvioi pelitilanteet ja valitsee siirron,
+joka takaa mahdollisimman hyvältä vaikuttavan tuloksen.
+Algoritmin nimi tulee siitä, että se \emph{minimoi} vastustajan tulosta
+ja \emph{maksimoi} omaa tulosta.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\node[draw, circle] (1) at (0,0) {$5$};
+\node[draw, circle] (2) at (-4.5,-2) {$5$};
+\node[draw, circle] (3) at (4.5,-2) {$2$};
+\node[draw, circle] (4) at (-6.5,-4) {$5$};
+\node[draw, circle] (5) at (-2.5,-4) {$7$};
+\node[draw, circle] (6) at (2.5,-4) {$2$};
+\node[draw, circle] (7) at (6.5,-4) {$8$};
+\node[draw, circle] (8) at (-7.5,-6) {$3$};
+\node[draw, circle] (9) at (-5.5,-6) {$5$};
+\node[draw, circle] (10) at (-3.5,-6) {$7$};
+\node[draw, circle] (11) at (-1.5,-6) {$2$};
+\node[draw, circle] (12) at (1.5,-6) {$1$};
+\node[draw, circle] (13) at (3.5,-6) {$2$};
+\node[draw, circle] (14) at (5.5,-6) {$8$};
+\node[draw, circle] (15) at (7.5,-6) {$4$};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (2) -- (4);
+\path[draw,thick,->] (2) -- (5);
+\path[draw,thick,->] (3) -- (6);
+\path[draw,thick,->] (3) -- (7);
+\path[draw,thick,->] (4) -- (8);
+\path[draw,thick,->] (4) -- (9);
+\path[draw,thick,->] (5) -- (10);
+\path[draw,thick,->] (5) -- (11);
+\path[draw,thick,->] (6) -- (12);
+\path[draw,thick,->] (6) -- (13);
+\path[draw,thick,->] (7) -- (14);
+\path[draw,thick,->] (7) -- (15);
+\node at (0,1) {max};
+\node at (-4.5,-1) {min};
+\node at (4.5,-1) {min};
+\node at (-6.5,-3) {max};
+\node at (-2.5,-3) {max};
+\node at (2.5,-3) {max};
+\node at (6.5,-3) {max};
+\end{tikzpicture}
+\caption{Esimerkki minimax-algoritmin toiminnasta.}
+\label{fig:minmax}
+\end{figure}
+
+Kuvassa \ref{fig:minmax} on esimerkki algoritmin toiminnasta,
+kun hakusyvyytenä on kolme tasoa ja
+joka tilanteessa on kaksi mahdollista siirtoa.
+Puun juuressa oleva solmu vastaa nykyistä pelitilannetta,
+jossa tekoälyn täytyy päättää seuraava siirto,
+ja jokainen askel puussa alaspäin tarkoittaa yhtä siirtoa.
+Tässä tekoäly tutkii, mitä kaikkea voi tapahtua,
+kun se siirtää ensin itse, sitten vastustaja siirtää,
+ja sitten se siirtää uudestaan.
+Puun alimmalla tasolla on tekoälyn arvio jokaisesta
+kolmen siirron päässä olevasta pelitilanteesta,
+kuinka hyvä tilanne on sen itsensä kannalta.
+
+Tekoäly valitsee aina siirron,
+joka on mahdollisimman hyvä sen itsensä kannalta.
+Toisaalta tekoäly olettaa, että vastustaja valitsee siirron,
+joka on mahdollisimman huono tekoälyn kannalta.
+Niinpä joka toisella tasolla solmuissa on maksimi lasten arvoista
+ja joka toisella tasolla minimi.
+Tässä esimerkissä tekoäly tekee siirron,
+joka takaa, että kolmen siirron päästä pelitilanteen hyvyys on ainakin 5
+riippumatta vastustajan toimista.
+
+Tekoälyn pelitaito riippuu kahdesta asiasta:
+(1) montako tasoa alemmas se tutkii puuta ja
+(2) miten hyvin se osaa arvioida pohjalla olevia pelitilanteita.
+Mitä syvemmälle haku jatkuu, sitä paremmin tekoäly pelaa,
+koska se saa enemmän tietoa pelinkuluista,
+mutta sitä kauemmin vie, ennen kuin tekoäly tekee päätöksen.
+Pelitilanteen arviointi puolestaan vaatii tietoa pelattavasta pelistä.
+Esimerkiksi shakissa pelitilannetta voi arvioida tutkimalla,
+mitä nappuloita itsellä ja vastustajalla on jäljellä.
 
 \subsection{Alfa-beta-karsinta}
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.6]
+\node[draw, circle] (1) at (0,0) {$5$};
+\node[draw, circle] (2) at (-4.5,-2) {$5$};
+\node[draw, circle] (3) at (4.5,-2) {$?$};
+\node[draw, circle] (4) at (-6.5,-4) {$5$};
+\node[draw, circle] (5) at (-2.5,-4) {$?$};
+\node[draw, circle] (6) at (2.5,-4) {$2$};
+\node[draw, circle, dashed] (7) at (6.5,-4) {$?$};
+\node[draw, circle] (8) at (-7.5,-6) {$3$};
+\node[draw, circle] (9) at (-5.5,-6) {$5$};
+\node[draw, circle] (10) at (-3.5,-6) {$7$};
+\node[draw, circle, dashed] (11) at (-1.5,-6) {$?$};
+\node[draw, circle] (12) at (1.5,-6) {$1$};
+\node[draw, circle] (13) at (3.5,-6) {$2$};
+\node[draw, circle, dashed] (14) at (5.5,-6) {$?$};
+\node[draw, circle, dashed] (15) at (7.5,-6) {$?$};
+\path[draw,thick,->] (1) -- (2);
+\path[draw,thick,->] (1) -- (3);
+\path[draw,thick,->] (2) -- (4);
+\path[draw,thick,->] (2) -- (5);
+\path[draw,thick,->] (3) -- (6);
+\path[draw,thick,->,dashed] (3) -- (7);
+\path[draw,thick,->] (4) -- (8);
+\path[draw,thick,->] (4) -- (9);
+\path[draw,thick,->] (5) -- (10);
+\path[draw,thick,->,dashed] (5) -- (11);
+\path[draw,thick,->] (6) -- (12);
+\path[draw,thick,->] (6) -- (13);
+\path[draw,thick,->,dashed] (7) -- (14);
+\path[draw,thick,->,dashed] (7) -- (15);
+\node at (0,1) {max};
+\node at (-4.5,-1) {min};
+\node at (4.5,-1) {min};
+\node at (-6.5,-3) {max};
+\node at (-2.5,-3) {max};
+\node at (2.5,-3) {max};
+\node at (6.5,-3) {max};
+\end{tikzpicture}
+\caption{Alfa-beta-karsinnan vaikutus.}
+\label{fig:alfbet}
+\end{figure}
+
+Minimax-algoritmin toimintaa on mahdollista tehostaa
+alfa-beta-karsinnalla, joka jättää puun osia tutkimatta,
+jos on selvää, että ne eivät voi vaikuttaa tekoälyn valintaan.
+Tämä muistuttaa aiemmin peruuttavan haun yhteydessä
+hyödyntämäämme branch and bound -tekniikaa.
+
+Kuva \ref{fig:alfbet} näyttää, kuinka alfa-beta-karsinta
+onnistuu tehostamaan hakua esimerkkitilanteessamme.
+Katkoviivoilla esitetyt puun osat ovat sellaisia,
+joita ei ole tarpeen tutkia, koska ne eivät voisi vaikuttaa
+ylempänä puussa olevaan osittain laskettuun minimiin tai maksimiin.
+
+Kun tekoäly saapuu vasemmassa haarassa solmuun,
+jonka arvona on 7, sen ei enää tarvitse tutkia muita
+vasemman haaran solmuja. Tämä johtuu siitä, että tekoäly
+tietää jo tässä vaiheessa, että vasemman haaran minimi
+on enintään 5. Niinpä sen ei tarvitse laskea maksimia luvusta
+7 ja jostain toisesta luvusta, koska tämä ei voisi muuttaa minimiä.
+
+Kun sitten oikeassa haarassa tekoäly on laskenut
+toiseksi alimmalla tasolla olevaan solmuun
+maksimin 2, sen ei enää tarvitse tutkia muita oikean haaran solmuja.
+Tämä johtuu siitä, että juuren maksimi on ainakin 5 ja
+oikeassa haarassa valittaisiin minimi luvusta 2 ja jostain toisesta luvusta,
+mikä ei voisi kasvattaa juuressa olevaa maksimia.
