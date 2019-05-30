@@ -12,7 +12,7 @@ Tässä luvussa tutustumme ensin peruuttavan haun algoritmeihin,
 jotka käyvät läpi lukujen yhdistelmiä.
 Tämän jälkeen näemme, miten peruuttavaa hakua voi käyttää
 kahdessa vaikeammassa ongelmassa ja miten hakua voi optimoida.
-Lopuksi toteutamme pelin tekoälyn minmax-algoritmilla,
+Lopuksi toteutamme pelin tekoälyn minimax-algoritmilla,
 joka perustuu peruuttavaan hakuun.
 
 \section{Silmukoista rekursioon}
@@ -186,17 +186,25 @@ procedure haku(k)
                 mukana[i] = false
 \end{code}
 
+\section{Esimerkkejä}
 
-\section{Esimerkki: Kuningatarongelma}
+Käymme seuraavaksi läpi kaksi vaativampaa esimerkkiä
+peruuttavan haun soveltamisesta.
+Ratkaisemme ensin shakkiin liittyvän ongelman,
+ja tämän jälkeen etsimme parhaan tavan
+työntekijöiden valintaan.
+Molemmissa sovelluksissa näemme myös,
+miten peruuttavaa hakua voi tehostaa.
 
-Seuraava tehtävämme on laskea, monellako tavalla
+\subsection{Kuningatarongelma}
+
+Tehtävämme on laskea, monellako tavalla
 $n \times n$ -shakkilaudalle voidaan asettaa $n$ kuningatarta
 niin, etteivät mitkään kaksi kuningatarta uhkaa toisiaan.
 Shakissa kuningattaret voivat uhata toisiaan
 vaaka-, pysty- tai vinosuuntaisesti.
 Esimerkiksi tapauksessa $n=4$ mahdollisia sijoitustapoja on kaksi,
 jotka on esitetty kuvassa \ref{fig:kuning}.
-
 
 \begin{figure}
 \center
@@ -218,8 +226,6 @@ jotka on esitetty kuvassa \ref{fig:kuning}.
 \caption{Kuningatarongelman ratkaisut tapauksessa $n=4$.}
 \label{fig:kuning}
 \end{figure}
-
-\subsection{Haun toteuttaminen}
 
 Voimme ratkaista tehtävän toteuttamalla algoritmin,
 joka käy laudan läpi ylhäältä alaspäin ja asettaa yhden kuningattaren
@@ -363,25 +369,16 @@ Nyt meillä on valmis algoritmi, jonka avulla voimme
 käydä läpi kuningatarongelman ratkaisuja.
 Taulukko \ref{tab:kuning} näyttää ratkaisujen määrät
 tapauksissa $n=1 \dots 10$.
-Esimerkiksi tavallisella $8 \times 8$ -shakkilaudalla
-on 92 tapaa asettaa 8 kuningatarta niin,
-etteivät ne uhkaa toisiaan.
-
-\subsection{Haun tehostaminen}
-
-Tässä kuvattu peruuttavan haun algoritmi toimii hyvin nopeasti
-tapauksissa $n=1 \dots 10$,
-mutta vähänkin suuremmilla $n$:n arvoilla
-algoritmi alkaa viedä paljon aikaa.
+Algoritmimme selvittää nämä tapaukset salamannopeasti,
+mutta suuremmilla $n$:n arvoilla se alkaa viedä paljon aikaa.
 Syynä tähän on, että kuningatarten sijoitustapojen
 määrä kasvaa eksponentiaalisesti.
-Esimerkiksi tapauksessa $n=15$ sijoitustapoja on
-noin 2 miljoonaa ja tapauksessa $n=20$ niitä on noin 39 miljardia.
+Esimerkiksi tapauksessa $n=20$ ratkaisuja on jo yli 39 miljardia.
 
 \index{symmetria}
 Voimme kuitenkin koettaa nopeuttaa algoritmia parantamalla
 sen toteutusta.
-Yksi helposti toteutettava tehostus on hyödyntää \emph{symmetriaa}.
+Yksi helppo tehostus on hyödyntää \emph{symmetriaa}.
 Jokaista kuningatarongelman ratkaisua vastaa toinen ratkaisu,
 joka saadaan peilaamalla ratkaisu vaakasuuntaisesti.
 Esimerkiksi kuvassa \ref{fig:kuning} ratkaisut voidaan muuttaa
@@ -409,7 +406,7 @@ jossa oli suuri määrä rinnakkain laskevia
 suorittimia\footnote{27-Queens Puzzle: Massively Parellel Enumeration and Solution Counting.
 \url{https://github.com/preusser/q27}}.
 
-\section{Esimerkki: Työtehtävät}
+\subsection{Työtehtävät}
 
 Tarkastellaan tilannetta, jossa on $n$ työtehtävää ja
 $n$ työntekijää.
@@ -420,7 +417,7 @@ Tehtä\-vänä on etsiä ratkaisu, jossa kokonaishinta on pienin mahdollinen.
 
 \begin{figure}
 \center
-\begin{tikzpicture}[scale=0.8]
+\begin{tikzpicture}[scale=0.75]
 \fill[color=lightgray] (0,1) rectangle (1,2);
 \fill[color=lightgray] (1,0) rectangle (2,1);
 \fill[color=lightgray] (2,2) rectangle (3,3);
@@ -448,8 +445,6 @@ että B suorittaa ensimmäisen työtehtävän,
 C suorittaa toisen työtehtävän ja
 A suorittaa kolmannen työtehtävän.
 Tämän ratkaisun kustannus on $1+2+5=8$.
-
-\subsection{Haun toteuttaminen}
 
 Oletamme, että työtehtävät ja työntekijät on numeroitu
 $0 \dots n-1$ ja voimme lukea taulukosta \texttt{hinta}$[a][b]$,
@@ -485,20 +480,22 @@ procedure haku(k,h)
 Tämä on toimiva peruuttavan haun algoritmi,
 ja haun päätteeksi muuttujassa $p$ on
 parhaan ratkaisun yhteishinta.
-Haku on kuitenkin hidas, koska se käy aina läpi
+Algoritmi on kuitenkin hidas, koska se käy aina läpi
 kaikki $n!$ mahdollista ratkaisua.
-Seuraavaksi näemme, kuinka voimme tehostaa hakua tuntuvasti.
-
-\subsection{Haun tehostaminen}
+Koska haluamme vain löytää parhaan ratkaisun emmekä
+käydä läpi kaikkia ratkaisuja,
+pystymme tehostamaan algoritmia lisäämään siihen ehdon,
+joka lopettaa ratkaisun muodostamisen,
+jos siitä ei voi tulla aiempaa parempi.
 
 \index{branch and bound}
-
 Keskitymme seuraavaksi tapaukseen, jossa $n=20$ ja jokainen
 taulukossa \texttt{hinta} oleva arvo on satunnainen
 kokonaisluku välillä $1 \dots 100$.
-Tässä tapauksessa edellä kuvattu algoritmi kävisi läpi $20!$ eri ratkaisua,
-mikä kestäisi niin kauan, että emme voisi odottaa loppuun
-algoritmin suoritusta.
+Tässä tapauksessa edellä kuvattu algoritmi kävisi läpi 
+\[20! = 2432902008176640000
+\]
+eri ratkaisua, mikä veisi aikaa \emph{satoja vuosia}.
 Jotta voimme ratkaista tapauksen,
 meidän täytyy parantaa algoritmia niin,
 että se ei käy läpi kaikkia ratkaisuja
@@ -550,7 +547,7 @@ procedure haku(k,h)
 
 Tässä funktion \texttt{arvio} tulee antaa jokin arvio,
 paljonko ainakin maksaa palkata jäljellä olevat työntekijät $k \dots n-1$.
-Yksi helppo tapa saada arvio on laskea yhteen jokaisen jäljellä olevan
+Yksi kätevä tapa saada arvio on laskea yhteen jokaisen jäljellä olevan
 työntekijän \emph{halvin} hinta \emph{missä tahansa} työtehtävässä.
 Tämän tehostuksen jälkeen tapauksen $n=20$ käsittely vie
 testikoneella vain 7 sekuntia.
@@ -558,8 +555,10 @@ Paremman alarajan ansiosta saimme siis algoritmin
 noin 20 kertaa nopeammaksi verrattuna edelliseen versioon.
 
 Tämä on usein esiintyvä ilmiö peruuttavan haun algoritmeissa:
-jos onnistumme tavalla tai toisella rajoittamaan algoritmin
-haarautumista, voimme saada sitä tehostettua todella merkittävästi.
+jos onnistumme rajoittamaan algoritmin
+haarautumista, se voi tehostua merkittävästi.
+Tässä tapauksessa pystyimme muuttamaan satojen vuosien laskenta-ajan
+sekunneiksi lisäämällä algoritmiin yhden ehtolauseen.
 
 \section{Pelin tekoäly}
 
@@ -658,7 +657,7 @@ Pelitilanteen arviointi puolestaan vaatii tietoa pelattavasta pelistä.
 Esimerkiksi shakissa pelitilannetta voi arvioida tutkimalla,
 mitä nappuloita itsellä ja vastustajalla on jäljellä.
 
-\subsection{Alfa-beta-karsinta}
+\subsection{Alfa-beeta-karsinta}
 
 \begin{figure}
 \center
@@ -700,17 +699,18 @@ mitä nappuloita itsellä ja vastustajalla on jäljellä.
 \node at (2.5,-3) {max};
 \node at (6.5,-3) {max};
 \end{tikzpicture}
-\caption{Alfa-beta-karsinnan vaikutus.}
+\caption{Alfa-beeta-karsinnan vaikutus.}
 \label{fig:alfbet}
 \end{figure}
 
+\index{alfa-beeta-karsinta}
 Minimax-algoritmin toimintaa on mahdollista tehostaa
-alfa-beta-karsinnalla, joka jättää puun osia tutkimatta,
+alfa-beeta-karsinnalla, joka jättää puun osia tutkimatta,
 jos on selvää, että ne eivät voi vaikuttaa tekoälyn valintaan.
 Tämä muistuttaa aiemmin peruuttavan haun yhteydessä
 hyödyntämäämme branch and bound -tekniikaa.
 
-Kuva \ref{fig:alfbet} näyttää, kuinka alfa-beta-karsinta
+Kuva \ref{fig:alfbet} näyttää, kuinka alfa-beeta-karsinta
 onnistuu tehostamaan hakua esimerkkitilanteessamme.
 Katkoviivoilla esitetyt puun osat ovat sellaisia,
 joita ei ole tarpeen tutkia, koska ne eivät voisi vaikuttaa
