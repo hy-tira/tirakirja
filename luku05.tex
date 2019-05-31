@@ -138,7 +138,8 @@ jonka toiminta on lähempänä vasenta tilannetta.
 
 Jos hajautettavat alkiot ovat kokonaislukuja,
 suoraviivainen hajautusfunktio on $f(x)=x \bmod N$,
-mikä tarkoittaa, että otamme jakojäännöksen hajautustaulun koolla $N$.
+missä "mod" on modulo eli jakojäännös,
+joka muuttaa luvun välille $0 \dots N-1$.
 Tämä on hyvin toimiva hajautusfunktio,
 kunhan aineistossa esiintyy tasaisesti eri jakojäännöksiä.
 Entä jos alkiot ovat jotain muuta tyyppiä kuin kokonaislukuja?
@@ -150,17 +151,17 @@ Tarkastellaan esimerkkinä tilannetta, jossa haluamme hajauttaa merkkijonoja
 eli mei\-dän täytyy löytää keino muuttaa merkkijono kokonaisluvuksi.
 Oletamme, että merkkijonossa on $k$ merkkiä,
 joiden merkkikoodit ovat $c_0,c_1,\dots,c_{k-1}$.
-Esimerkiksi jos merkkijono on \texttt{apina},
+Esimerkiksi jos merkkijono on \texttt{testi},
 merkkikoodit\footnote{Käytämme tässä merkkien ASCII-koodeja.
-Esimerkiksi Javassa char-merkin \texttt{c} koodin saa
+Esimerkiksi Javassa \texttt{char}-merkin \texttt{c} koodin saa
 selville kirjoittamalla \texttt{(int)c}, eli esimerkiksi
-\texttt{(int)'a'} on 97.} ovat $c_0=97$, $c_1=112$, $c_2=105$,
-$c_3=110$ ja $c_4=97$.
+\texttt{(int)'t'} on 116.} ovat $c_0=116$, $c_1=101$, $c_2=115$,
+$c_3=116$ ja $c_4=105$.
 Yksi tapa muuttaa merkkijono kokonaisluvuksi
 on laskea merkkikoodien summa
 \[ c_0 + c_1 + \dots + c_{k-1},\]
-jolloin merkkijonoa \texttt{apina} vastaa kokonaisluku
-\[97+112+105+110+97=521.\]
+jolloin merkkijonoa \texttt{testi} vastaa kokonaisluku
+\[116+101+115+116+105=553.\]
 
 \index{polynominen hajautus}
 
@@ -171,12 +172,23 @@ Pystymme parantamaan hajautusarvon laskentaa lisäämällä
 summaan \emph{kertoimet} käyttäen kaavaa
 \[ A^{k-1} c_0 + A^{k-2} c_1 + \dots + A^0 c_{k-1},\]
 missä $A$ on vakio.
-Esimerkiksi jos $A=7$, merkkijonoa \texttt{apina} vastaa kokonaisluku
-\[7^4 \cdot 97+7^3 \cdot 112+7^2 \cdot 105+7^1 \cdot 110+7^0 \cdot 97=277325.\]
+Esimerkiksi jos $A=7$, merkkijonoa \texttt{testi} vastaa kokonaisluku
+\[7^4 \cdot 116+7^3 \cdot 101+7^2 \cdot 115+7^1 \cdot 116+7^0 \cdot 105=319711.\]
 Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus}
 (\emph{polynomial hashing}),
 on käytän\-nössä hyvä merkkijonon hajautustapa,
 joka on käytössä esimerkiksi Javan standardikirjastossa.
+Kätevä tapa laskea polynominen hajautusarvo modulo $N$ koodissa on seuraava:
+
+\begin{code}
+h = 0
+for i = 0 to k-1
+    h = (h*A+c[i])%N;
+\end{code}
+
+Tämän koodin etuna on, että se laskee jakojäännöksen joka
+merkin lisää\-misen jälkeen, minkä ansiosta tavallinen kokonaislukutyyppi
+(esim. Javassa \texttt{int} tai \texttt{long}) riittää hajautusarvon laskemiseen.
 
 \subsection{Hajautuksen tehokkuus}
 
