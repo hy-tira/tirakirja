@@ -469,11 +469,13 @@ solmun ja kiinnittää sen etäisyyden.
 \node[draw, circle] (2) at (2.5,2.5) {$2$};
 \node[draw, circle] (3) at (2.5,-0.5) {$3$};
 \node[draw, circle] (4) at (5,1) {$4$};
+\node[draw, circle] (5) at (8,1) {$5$};
 
 \path[draw,thick,->] (1) -- node[font=\small,label=above:5] {} (2);
 \path[draw,thick,->] (1) -- node[font=\small,label=below:9] {} (3);
-\path[draw,thick,->] (2) -- node[font=\small,label=above:3] {} (4);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:2] {} (4);
 \path[draw,thick,->] (3) -- node[font=\small,label=below:$-4$] {} (4);
+\path[draw,thick,->] (4) -- node[font=\small,label=above:1] {} (5);
 \end{tikzpicture}
 \end{center}
 \caption{Dijkstran algoritmi ei toimi oikein negatiivisen kaaren takia.}
@@ -503,9 +505,9 @@ Entä mitä tapahtuu, jos verkossa kuitenkin on negatiivinen kaari?
 Tällöin Dijkstran algoritmi ei toimi välttämättä oikein.
 Kuva \ref{fig:dijneg} näyttää esimerkin tällaisesta tilanteesta.
 Algoritmi seuraa ahneesti ylempää polkua ja toteaa,
-että pienin etäisyys solmusta 1 solmuun 4 on 8.
+että pienin etäisyys solmusta 1 solmuun 5 on 8.
 Kuitenkin parempi tapa olisi kulkea alempaa polkua,
-jolloin polun pituus on vain 5.
+jolloin polun pituus on vain 6.
 
 \subsection{Esimerkki: Reittiopas}
 
