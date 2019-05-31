@@ -29,8 +29,8 @@ suuren virtauksen eli \emph{maksimivirtauksen} (\emph{maximum flow})
 lähtö\-solmusta kohdesolmuun niin, että
 jokaiseen välisolmuun tuleva virtaus on
 yhtä suuri kuin solmusta lähtevä virtaus.
-Virtausta rajoittaa, että kullakin verkon kaarella on
-\emph{kapasiteetti}, jota virtauksen
+Kullakin verkon kaarella on
+\emph{kapasiteetti} (\emph{capacity}), jota virtauksen
 määrä kaarta pitkin ei saa ylittää.
 
 \begin{figure}
@@ -113,16 +113,16 @@ Käänteisten kaarten avulla pystymme tarvittaessa \emph{peruuttamaan}
 virtausta algoritmin aikana.
 Kuva \ref{fig:flouus} näyttää, kuinka esitämme esimerkkiverkkomme algoritmissa.
 
-Algoritmin jokaisessa vaiheessa muodostamme polun
-lähtösolmusta kohdesolmuun.
-Polku voi olla mikä tahansa, kunhan jokaisen kaaren paino
-polulla on positiivinen.
+Algoritmi muodostaa joka vaiheessa \emph{täydennyspolun}
+(\emph{augmenting path}),
+joka on mikä tahansa polku lähtösolmusta kohdesolmuun,
+jossa jokaisen kaaren paino on positiivinen.
 Polun muodostamisen jälkeen virtaus lähtösolmusta kohdesolmuun
 kasvaa $p$:llä, missä $p$ on pienin kaaren paino polulla.
 Lisäksi jokaisen polulla olevan kaaren paino vähenee $p$:llä
 ja jokaisen niille käänteisen kaaren paino kasvaa $p$:llä.
-Etsimme tällä tavalla uusia polkuja, kunnes mitään sallittua
-polkua ei voi enää muodostaa.
+Etsimme tällä tavalla uusia polkuja, kunnes mitään
+täydennyspolkua ei voi enää muodostaa.
 
 Kuva \ref{fig:floesi} näyttää, kuinka Ford–Fulkersonin algoritmi muodostaa
 maksimivirtauksen esimerkkiverkossamme.
@@ -137,8 +137,8 @@ joka kasvattaa virtausta $3$:lla.
 Huomaa, että tämä polku peruuttaa
 kaarta $2 \rightarrow 3$ menevää virtausta,
 koska se kulkee käänteisen kaaren $3 \rightarrow 2$ kautta.
-Tämän jälkeen algoritmi ei enää pysty muodostamaan mitään polkua
-solmusta $1$ solmuun $5$, joten maksimivirtaus on $4+3=7$.
+Tämän jälkeen algoritmi ei enää pysty muodostamaan mitään
+täydennyspolkua, joten maksimivirtaus on $4+3=7$.
 
 \begin{figure}
 \center
@@ -243,7 +243,7 @@ joten kaarta pitkin kulkevan virtauksen määrä on $5-2=3$.
 \index{minimileikkaus}
 
 Ford–Fulkersonin algoritmin toimintaidea on sinänsä järkevä,
-koska polut lähtösolmusta kohdesolmuun kasvattavat virtausta,
+koska täyden\-nyspolut lähtösolmusta kohdesolmuun kasvattavat virtausta,
 mutta ei ole silti todellakaan päältä päin selvää,
 miksi algoritmi löytää varmasti \emph{suurimman} mahdollisen virtauksen.
 Jotta voimme ymmärtää paremmin algoritmin toimintaa,
@@ -348,11 +348,11 @@ joten Ford–Fulkersonin algoritmi toimii oikein.
 
 \subsection{Polkujen valitseminen}
 
-Voimme muodostaa polkuja Ford–Fulkersonin algoritmin aikana miten tahansa,
+Voimme muodostaa täydennyspolkuja Ford–Fulkersonin algoritmin aikana miten tahansa,
 mutta polkujen valintatapa vaikuttaa algoritmin tehokkuuteen.
 Riippumatta polkujen valintatavasta on selvää,
 että jokainen polku kasvattaa virtausta ainakin \emph{yhdellä} yksiköllä.
-Niinpä tiedämme, että joudumme etsimään enintään $f$ polkua,
+Niinpä tiedämme, että joudumme etsimään enintään $f$ täydennyspolkua,
 kun verkon maksimivirtaus on $f$.
 Jos muodostamme polut syvyyshaulla,
 jokaisen polun muodostaminen vie aikaa $O(m)$,
@@ -391,13 +391,13 @@ ennen kuin olemme saaneet selville verkon maksimivirtauksen.
 \index{Edmonds–Karpin algoritmi}
 
 Voimme kuitenkin estää tämän ilmiön määrittelemällä tarkemmin,
-miten valitsemme polkuja algoritmin aikana.
+miten muodostamme täydennyspolkuja algoritmin aikana.
 \emph{Edmonds–Karpin algoritmi} on Ford–Fulkersonin algoritmin versio,
 jossa muodostamme polut \emph{leveyshaulla}.
 Tämä tarkoittaa, että valitsemme aina
 polun, jossa on mahdollisimman vähän kaaria.
 Leveyshakua käyttäen muodostamme kuvan \ref{fig:polhuo} verkossa
-vain kaksi polkua $1 \rightarrow 2 \rightarrow 4$ ja
+vain kaksi täydennyspolkua $1 \rightarrow 2 \rightarrow 4$ ja
 $1 \rightarrow 3 \rightarrow 4$, jotka antavat suoraan maksimivirtauksen.
 
 Kun käytämme Edmonds–Karpin algoritmia,
