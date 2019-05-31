@@ -400,19 +400,44 @@ Leveyshakua käyttäen muodostamme kuvan \ref{fig:polhuo} verkossa
 vain kaksi täydennyspolkua $1 \rightarrow 2 \rightarrow 4$ ja
 $1 \rightarrow 3 \rightarrow 4$, jotka antavat suoraan maksimivirtauksen.
 
-Kun käytämme Edmonds–Karpin algoritmia,
-meidän täytyy muodostaa aina vain $O(nm)$ polkua,
-joten algoritmi vie aikaa $O(nm^2)$.
-Saamme tämän rajan tarkastelemalla kullakin polulla
-jotakin kaarta, jonka kapasiteetti on käytetty kokonaan polulla.
-Jotta voimme käyttää kyseistä kaarta uudestaan jollain tulevalla polulla,
-meidän täytyy sitä ennen peruuttaa virtausta
-kulkemalla kaarta käänteiseen suuntaan,
-mikä kasvattaa etäisyyttä lähtösolmusta kaareen.
-Koska valitsemme polut leveyshaun avulla,
-kukin $m$ kaaresta voi tämän vuoksi olla vain $O(n)$ 
-kertaa kaarena, jonka kapasiteetti käytetään kokonaan,
-ja saamme polkujen määrälle ylärajan $O(nm)$.
+Osoittautuu, että kun käytämme Edmonds–Karpin algoritmia,
+meidän täytyy muodostaa aina vain $O(nm)$ täydennyspolkua,
+joten algoritmi vie aikaa $O(nm^2)$
+riippumatta virtauksen suuruudesta.
+Voimme perustella tämän aikavaativuuden kahden havainnon avulla:
+
+\emph{Havainto 1}: Kun $x$ on mikä tahansa verkon solmu,
+etäisyys lyhintä polkua pitkin lähtösolmusta solmuun $x$
+ei voi koskaan pienentyä täydennyspolun muodostamisen jälkeen.
+Voimme perustella tämän tekemällä vastaoletuksen,
+että täydennyspolku on juuri pienentänyt etäisyyttä solmuun $b$
+ja lyhin polku lähtösolmusta solmuun $b$ päättyy kaareen $a \rightarrow b$,
+missä etäisyys solmuun $a$ ei ole pienentynyt.
+Tarkastellaan nyt tilannetta ennen kyseisen täydennyspolun muodostamista.
+Ensinnäkään verkossa ei voinnut tuolloin olla positiivista kaarta $a \rightarrow b$,
+koska muuten myös etäisyys solmuun $a$ olisi pienentynyt.
+Toisaalta verkossa ei myöskään voinut olla positiivista kaarta $b \rightarrow a$,
+koska tällöin täydennyspolku olisi kulkenut tätä kaarta pitkin
+ja $a$:n etäisyys olisi ollut suurempi kuin $b$:n etäisyys.
+Niinpä ei ole mahdollista, että solmun $b$ etäisyys olisi pienentynyt.
+
+\emph{Havainto 2}: Jokaiseen täydennyspolkuun liittyy jokin kaari $a \rightarrow b$,
+jonka kapasiteetti käytetään kokonaan,
+ja jokainen kaari voi esiintyä enintään $n/2$ kertaa
+tässä roolissa.
+Syynä on, että kun kaaren $a \rightarrow b$ kapasiteetti käytetään kokonaan,
+algoritmin täytyy muodostaa täydennyspolku,
+joka kulkee vastakkaiseen suuntaan kaarta $b \rightarrow a$,
+ennen kuin kaaren $a \rightarrow b$ kapasiteettia voi käyttää uudestaan.
+Koska etäisyys lähtösolmusta solmuun ei voi pienentyä,
+etäisyys lähtösolmusta kaaren alkusolmuun $a$ kasvaa
+ainakin kahdella aina, kun täydennyspolku kulkee toiseen
+suuntaan kaarta $b \rightarrow a$.
+
+Näiden havaintojen perusteella Edmonds–Karpin algoritmi
+muodostaa enintään $nm/2$ täydennyspolkua, koska voidaan valita
+enintään $m$ tavalla, minkä kaaren kapasiteetti käytetään kokonaan, ja
+enintään $n/2$ tavalla, mikä on kaaren alkusolmun etäisyys.
 
 \section{Maksimivirtauksen sovelluksia}
 
