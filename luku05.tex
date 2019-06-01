@@ -140,12 +140,11 @@ Jos hajautettavat alkiot ovat kokonaislukuja,
 suoraviivainen hajautusfunktio on $f(x)=x \bmod N$,
 missä "mod" on modulo eli jakojäännös,
 joka muuttaa luvun välille $0 \dots N-1$.
-Tämä on hyvin toimiva hajautusfunktio,
-kunhan aineistossa esiintyy tasaisesti eri jakojäännöksiä.
+Tämä on helposti toteutettava ja yleensä hyvin toimiva hajautusfunktio.
 Entä jos alkiot ovat jotain muuta tyyppiä kuin kokonaislukuja?
 Tällöin meidän täytyy päättää ensin jokin järkevä tapa,
 kuinka muutamme alkion kokonaisluvuksi,
-minkä jälkeen otamme jakojäännöksen $N$:llä.
+minkä jälkeen voimme jälleen ottaa jakojäännöksen $N$:llä.
 
 Tarkastellaan esimerkkinä tilannetta, jossa haluamme hajauttaa merkkijonoja
 eli mei\-dän täytyy löytää keino muuttaa merkkijono kokonaisluvuksi.
@@ -165,7 +164,7 @@ jolloin merkkijonoa \texttt{testi} vastaa kokonaisluku
 
 \index{polynominen hajautus}
 
-Tämä on sinänsä järkevä tapa, mutta siinä on yksi ongelma:
+Tämä on sinänsä järkevä tapa laskea hajautusarvo, mutta siinä on yksi ongelma:
 kaksi merkkijonoa saavat aina saman hajautusarvon,
 jos niissä on samat merkit eri järjestyksessä.
 Pystymme parantamaan hajautusarvon laskentaa lisäämällä
@@ -178,7 +177,7 @@ Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus}
 (\emph{polynomial hashing}),
 on käytän\-nössä hyvä merkkijonon hajautustapa,
 joka on käytössä esimerkiksi Javan standardikirjastossa.
-Kätevä tapa laskea polynominen hajautusarvo modulo $N$ koodissa on seuraava:
+Voimme laskea polynomisen hajautusarvon modulo $N$ seuraavalla koodilla:
 
 \begin{code}
 h = 0
@@ -198,37 +197,57 @@ Mutta kuinka suuri $m$ on? Tämä riippuu siitä,
 mikä on alkioiden määrä $n$, hajautustaulun koko $N$
 sekä hajautusfunktio $f$.
 
+\index{törmäys}
 Jos kaikki sujuu hyvin ja hajautusfunktio jakaa alkioita
 tasaisesti hajautustaulun eri puolille,
 jokaisessa listassa on noin $n/N$ alkiota.
 Niinpä jos valitsemme hajautustaulun koon niin,
 että $N$ on samaa luokkaa kuin $n$,
 operaatiot toimivat tehokkaasti ajassa $O(1)$.
-Kuitenkin on mahdollista että hajautus epäonnistuu
+Kuitenkin on mahdollista, että hajautuksessa esiintyy
+paljon \emph{törmäyksiä} (\emph{collision}),
+mikä tarkoittaa, että kahdella alkiolla on sama hajautusarvo.
+Tällöin hajautus epäonnistuu
 ja alkiot jakautuvat hajautustauluun epätasaisesti.
 Pahimmassa tapauksessa kaikki alkiot saavat saman
 hajautusarvon ja ne kaikki tallennetaan samaan listaan,
 jolloin operaatiot vievät aikaa $O(n)$.
 
-Voimme helposti vaikuttaa hajautustaulun kokoon $N$,
-mutta hajautusfunktion suunnittelu on epämääräisempi ala.
-Miten voimme tietää, että valitsemamme hajautusfunktio
-toimii hyvin?
-Itse asiassa emme voi olla koskaan varmoja tästä.
+Hajautuksessa vaikeutena on, ettemme tiedä etukäteen,
+mitä alkioita hajautustauluun tallennetaan.
+Tarkastellaan tilannetta,
+jossa hajautettavat alkiot ovat kokonaislukuja
+ja käytössä on hajautusfunktio $f(x) = x \bmod N$.
+Tämä on hyvä hajautusfunktio olettaen,
+että eri jakojäännöksiä esiintyy tasaisesti aineistossa.
+Tämä oletus ei kuitenkaan välttämättä päde:
+esimerkiksi voi olla, että jostain syystä
+jokainen hajautettava alkio on parillinen.
+Nyt jos myös $N$ on parillinen, jokainen hajautusarvo
+on parillinen ja vain puolet hajautustaulun kohdista on käytössä.
+Parempi tapa onkin valita $N$ niin, että se on \emph{alkuluku}.
+Tällöin on vähemmän todennäköistä,
+että aineistossa mahdollisesti olevat säännöllisyydet
+aiheuttaisivat törmäyksiä.
+
+Emme voi kuitenkaan koskaan olla etukäteen varmoja,
+että hajautus toimii hyvin.
 Vaikka meillä olisi erittäin hyvä hajautusfunktio,
 \emph{ilkeä vastustaja} voi kuitenkin antaa
 meille joukon alkioita, jotka kaikki saavat saman hajautusarvon.
 Tämä riski on aina hajautuksessa, koska mahdollisten
 hajautusarvojen määrä on paljon pienempi kuin mahdollisten alkioiden määrä.
 Tämän vuoksi emme voi mitenkään suunnitella hajautusfunktiota niin,
-että se jakaisi alkiot \emph{varmasti} tasaisesti hajautustauluun.
+että se jakaisi alkiot \emph{varmasti} tasaisesti hajautustauluun,
+jos meillä ei ole etukäteen tietoa siitä,
+mitä alkioita hajautustauluun tullaan tallentamaan.
 
 Kaikeksi onneksi hajautus toimii yleensä aina \emph{käytännössä}
 hyvin ja voimme ajatella, että hajautustaulun operaatiot ovat
 $O(1)$-aikaisia, kunhan hajautustaulun koko on riittävän suuri ja
 hajautusfunktio on toteutettu järke\-västi.
 Vaikka on mahdollista, että hajautus epäonnistuu,
-tämän riski on niin pieni, että meidän ei tarvitse murehtia
+tämän riski on niin pieni, ettei meidän tarvitse murehtia
 siitä käytännössä.
 
 \subsection{Hajautustaulu hakemistona}
