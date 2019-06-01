@@ -261,12 +261,49 @@ kohdassa ja listan sisältö voi tarvittaessa jatkua taulukon lopusta alkuun.
 \label{fig:lismol}
 \end{figure}
 
+Kuva \ref{fig:lismol} näyttää esimerkin listan $[3,7,2,5]$
+uudesta tallennustavasta.
+Merkki $\rightarrow$ osoittaa kohdan, josta lista alkaa,
+ja merkki $\leftarrow$ osoittaa kohdan, johon lista päättyy.
+Kun haluamme lisätä alkion listan alkuun,
+siirrymme vasemmalle kohdasta $\rightarrow$,
+ja kun haluamme lisätä alkion listan loppuun,
+siirrymme oikealle kohdasta $\leftarrow$.
+Kun haluamme poistaa alkioita listasta,
+menettelemme käänteisesti.
+
+Jos kohdat $\leftarrow$ ja $\rightarrow$ ovat vierekkäin
+tässä järjestyksessä, tämä voi tarkoittaa kahta asiaa:
+joko lista on tyhjä tai sitten kaikki taulukon kohdat ovat käytössä.
+Kuva \ref{fig:lismol2} näyttää esimerkin näistä tilanteista.
+Kun pidämme muistissa alkioiden määrää,
+voimme päätellä siitä, kumpi tilanne on kyseessä.
+Jos taulukko on täynnä ja haluamme lisätä uuden alkion,
+meidän täytyy varata uusi suurempi taulukko, johon listan sisältö siirretään.
+Voimme menetellä samalla tavalla kuin aiemmin ja
+esimerkiksi kaksinkertaistaa taulukon koon joka vaiheessa,
+jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.7]
 \begin{scope}
 \draw (0,0) grid (8,1);
+\node at (-1,0.5) {(a)};
+\node at (0.5,0.5) {$-$};
+\node at (1.5,0.5) {$-$};
+\node at (2.5,0.5) {$-$};
+\node at (3.5,0.5) {$-$};
+\node at (4.5,0.5) {$-$};
+\node at (5.5,0.5) {$-$};
+\node at (6.5,0.5) {$-$};
+\node at (7.5,0.5) {$-$};
+\node at (3.5,-0.5) {$\leftarrow$};
+\node at (4.5,-0.5) {$\rightarrow$};
+\end{scope}
+\begin{scope}[yshift=-2.5cm]
+\draw (0,0) grid (8,1);
+\node at (-1,0.5) {(b)};
 \node at (0.5,0.5) {$2$};
 \node at (1.5,0.5) {$5$};
 \node at (2.5,0.5) {$4$};
@@ -279,31 +316,11 @@ kohdassa ja listan sisältö voi tarvittaessa jatkua taulukon lopusta alkuun.
 \node at (4.5,-0.5) {$\rightarrow$};
 \end{scope}
 \end{tikzpicture}
-\caption{Lista täyttää koko taulukon, emmekä voi lisätä uutta alkiota.
-Ratkaisuna on varata listalle uusi suurempi taulukko.}
+\caption{Kaksi samantapaista tilannetta:
+(a) Listassa ei ole yhtään alkiota.
+(b) Listan alkiot täyttävät koko taulukon.}
 \label{fig:lismol2}
 \end{figure}
-
-Kuva \ref{fig:lismol} näyttää esimerkin listan $[3,7,2,5]$
-uudesta tallennustavasta.
-Merkki $\rightarrow$ osoittaa kohdan, josta lista alkaa,
-ja merkki $\leftarrow$ osoittaa kohdan, johon lista päättyy.
-Kun haluamme lisätä alkion listan alkuun,
-siirrymme vasemmalle kohdasta $\rightarrow$,
-ja kun haluamme lisätä alkion listan loppuun,
-siirrymme oikealle kohdasta $\leftarrow$.
-Kun haluamme poistaa alkioita listasta,
-menettelemme käänteisesti.
-
-Jos kohdat $\rightarrow$ ja $\leftarrow$ ovat vierekkäin,
-taulukko on täynnä, emmekä voi enää lisätä uutta alkiota
-listan alkuun tai loppuun.
-Kuva \ref{fig:lismol2} näyttää esimerkin tällaisesta tilanteesta.
-Tällöin meidän täytyy varata uusi suurempi taulukko,
-johon listan sisältö siirretään.
-Voimme menetellä samalla tavalla kuin aiemmin ja
-esimerkiksi kaksinkertaistaa taulukon koon joka vaiheessa,
-jolloin operaatiot vievät keskimäärin aikaa $O(1)$.
 
 \section{Linkitetty lista}
 
