@@ -455,7 +455,7 @@ pitää kirjaa, montako kertaa mikäkin alkio esiintyy taulukossa:
 laskuri = []
 suurin = 0
 for i = 0 to n-1
-    laskuri[taulu[i]]++
+    laskuri[taulu[i]] += 1
     if laskuri[taulu[i]] > suurin
         suurin = laskuri[taulu[i]]
         yleisin = taulu[i]

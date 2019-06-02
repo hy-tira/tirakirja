@@ -38,7 +38,7 @@ $n$ lukua sisältävässä taulukossa.
 laskuri = 0
 for i = 0 to n-1
     if luvut[i] == x
-        laskuri++
+        laskuri += 1
 \end{code}
 
 Voimme arvioida algoritmin tehokkuutta tutkimalla
@@ -216,7 +216,7 @@ Esimerkiksi seuraavan algoritmin aikavaativuus on $O(\log n)$:
 \begin{code}
 laskuri = 0
 while n >= 1
-    laskuri++
+    laskuri += 1
     n /= 2
 \end{code}
 
@@ -407,7 +407,7 @@ laskuri = 0
 for i = 0 to n-1
     for j = i+1 to n-1
         if merkit[i] == 0 and merkit[j] == 1
-            laskuri++
+            laskuri += 1
 print(laskuri)
 \end{code}
 
@@ -440,7 +440,7 @@ laskuri = 0
 nollat = 0
 for i = 0 to n-1
     if merkit[i] == 0
-        nollat++
+        nollat += 1
     else
         laskuri += nollat
 print(laskuri)

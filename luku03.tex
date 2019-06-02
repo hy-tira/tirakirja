@@ -136,7 +136,7 @@ for i = 1 to n-1
     j = i-1
     while j >= 0 and taulu[j] > taulu[j+1]
         swap(taulu[j],taulu[j+1])
-        j = j-1
+        j -= 1
 \end{code}
 
 Koodi käy läpi taulukon kohdat $1 \dots n-1$
@@ -342,10 +342,10 @@ procedure lomita(a1, b1, a2, b2)
     for i = a to b
         if a2 > b2 or (a1 <= b1 and taulu[a1] < taulu[a2])
             apu[i] = taulu[a1]
-            a1 = a1+1
+            a1 += 1
         else
             apu[i] = taulu[a2]
-            a2 = a2+1
+            a2 += 1
     for i = a to b
         taulu[i] = apu[i]
 \end{code}
@@ -752,12 +752,12 @@ lopullisen järjestetyn taulukon.
 
 \begin{code}
 for i = 0 to n-1
-    laskuri[taulu[i]]++
+    laskuri[taulu[i]] += 1
 i = 0
 for x = 0 to k
     for j = 1 to laskuri[x]
         taulu[i] = x
-        i++
+        i += 1
 \end{code}
 
 Algoritmin molemmat vaiheet vievät aikaa $O(n)$,
@@ -921,7 +921,7 @@ sort(taulu)
 laskuri = 1
 for i = 1 to n-1
     if taulu[i-1] != taulu[i]
-        laskuri++
+        laskuri += 1
 print(laskuri)
 \end{code}
 
@@ -947,7 +947,7 @@ yleisin = taulu[0]
 for i = 1 to n-1
     if taulu[i-1] != taulu[i]
         maara = 0
-    maara++
+    maara += 1
     if maara > suurin
         suurin = maara
         yleisin = taulu[i]
