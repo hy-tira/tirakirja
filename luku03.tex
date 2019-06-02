@@ -20,15 +20,11 @@ yleistä järjestämisalgoritmia, joka toimisi nopeammin
 kuin $O(n \log n)$.
 
 Voimme käyttää järjestämistä monella tavalla
-algoritmien suunnittelussa.
-Usein voimme helpottaa ongelman ratkaisemista
+algoritmien suunnittelussa,
+koska voimme usein helpottaa ongelman ratkaisemista
 järjestämällä ensin aineiston.
-Esimerkiksi jos haluamme tutkia,
-mikä alkio esiintyy useimmiten taulukossa,
-voimme järjestää ensin taulukon,
-jolloin yhtä suuret alkiot päätyvät vierekkäin.
-Tämän jälkeen meidän riittää käydä taulukko läpi
-ja etsiä siitä pisin samaa alkiota toistava osuus.
+Luvun lopussa näemme esimerkkejä ongelmista,
+jotka saamme ratkaistua tehokkaasti järjestämisen avulla.
 
 \section{Järjestäminen ajassa $O(n^2)$}
 
@@ -42,8 +38,6 @@ suunnittelemiselle.
 
 \subsection{Lisäysjärjestäminen}
 
-\index{invariantti}
-
 \emph{Lisäysjärjestäminen} (\emph{insertion sort}) käy läpi taulukon
 vasemmalta oikealle.
 Kun algoritmi tulee tiettyyn taulukon kohtaan,
@@ -53,14 +47,6 @@ alkuosassa niin, että taulukon alkuosa
 on tämän jälkeen järjestyksessä.
 Niinpä kun algoritmi pääsee taulukon loppuun,
 koko taulukko on järjestyksessä.
-Toisin sanoen algoritmissa on voimassa
-seuraava \emph{invariantti}:
-kun algoritmi on käsitellyt taulukon kohdan $i$,
-taulukon alkuosa kohtaan $i$ asti sisältää
-samat alkiot kuin ennenkin mutta ne ovat järjestyksessä.
-Invariantti on väittämä, joka pätee jokaisessa
-algoritmin vaiheessa ja voi auttaa perustelemaan,
-miksi algoritmi toimii oikein.
 
 \begin{figure}
 \center
@@ -150,7 +136,7 @@ for i = 1 to n-1
     j = i-1
     while j >= 0 and taulu[j] > taulu[j+1]
         swap(taulu[j],taulu[j+1])
-        j--
+        j = j-1
 \end{code}
 
 Koodi käy läpi taulukon kohdat $1 \dots n-1$
@@ -192,7 +178,7 @@ kun siinä ei ole yhtään inversiota.
 Kun järjestämisalgoritmi järjestää taulukon,
 se \emph{poistaa} siitä inversioita.
 Tarkemmin sanoen aina kun
-algoritmi vaihtaa kaksi alkiota keskenään,
+algoritmi vaihtaa kaksi vierekkäistä alkiota keskenään,
 se poistaa taulukosta yhden inversion.
 Niinpä lisäysjärjestämisen työmäärä on yhtä suuri
 kuin järjestettävän taulukon inversioiden määrä.
@@ -211,7 +197,7 @@ Niinpä inversioiden määrän \emph{odotusarvo} on
 eli aikaa kuluu neliöllinen määrä myös keskimääräisessä
 tapauksessa.
 
-Syy lisäysjärjestämisen hitauteen on siis,
+Syy lisäysjärjestämisen hitauteen on,
 että se ei poista taulukosta inversioita riittävän tehokkaasti.
 Jos haluamme kehittää paremman järjestämis\-algoritmin,
 meidän täytyy suunnitella se niin, että se voi poistaa
@@ -343,12 +329,12 @@ välin $a \dots b$ (osataulukon kohdasta
 $a$ kohtaan $b$), eli kun haluamme järjestää koko taulukon,
 kutsumme proseduuria parametreilla $a=0$ ja $b=n-1$.
 Proseduuri tarkastaa ensin, onko osataulukossa vain yksi alkio,
-ja jos on, se päättyy heti.
+ja jos näin on, proseduuri päättyy heti.
 Muuten se laskee muuttujaan $k$ järjestettävän välin keskikohdan
 ja järjestää vasemman ja oikean puoliskon rekursiivisesti.
 Lopuksi se kutsuu proseduuria \texttt{lomita},
 joka yhdistää järjestetyt puoliskot.
-Tämän proseduurin voi toteuttaa näin:
+Seuraava koodi näyttää, kuinka voimme toteuttaa tämän proseduurin:
 
 \begin{code}
 procedure lomita(a1, b1, a2, b2)
@@ -356,10 +342,10 @@ procedure lomita(a1, b1, a2, b2)
     for i = a to b
         if a2 > b2 or (a1 <= b1 and taulu[a1] < taulu[a2])
             apu[i] = taulu[a1]
-            a1++
+            a1 = a1+1
         else
             apu[i] = taulu[a2]
-            a2++
+            a2 = a2+1
     for i = a to b
         taulu[i] = apu[i]
 \end{code}
@@ -390,7 +376,7 @@ osataulukoita, jotka ovat valmiiksi järjestyksessä.
 Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
 alkaa koota järjestettyjä osataulukkoja pienimmästä suurimpaan.
 
-Nyt voimme määrittää, kuinka tehokas lomitusjärjestäminen on.
+Entä kuinka tehokas lomitusjärjestäminen on?
 Koska jokainen proseduurin \texttt{jarjesta} kutsu
 puolittaa taulukon koon, rekursiosta muodostuu
 $O(\log n)$ tasoa  (kuva \ref{fig:lomjar}).
@@ -607,6 +593,39 @@ vaan vaatii paljon huolellisuutta.
 
 \subsection{Algoritmien vertailua}
 
+\begin{table}
+\center
+\begin{tabular}{llll}
+algoritmi & tehokkuus & lisätila & vakaa \\
+\hline
+lisäysjärjestäminen & $O(n^2)$ & $O(1)$ & kyllä \\
+lomitusjärjestäminen & $O(n \log n)$ & $O(n)$ & kyllä \\
+pikajärjestäminen (hyvä tapaus) & $O(n \log n)$ & $O(\log n)$ & ei \\
+pikajärjestäminen (huono tapaus) & $O(n^2)$ & $O(n)$ & ei \\
+\end{tabular}
+\caption{Järjestämisalgoritmien vertailua.}
+\label{tab:jaralg}
+\end{table}
+
+\index{vakaus}
+
+Taulukossa \ref{tab:jaralg} on yhteenveto tähän mennessä
+käsittelemistämme järjestämis\-algoritmeista.
+Algoritmin lisätila tarkoittaa sen tilavaativuutta,
+eli paljonko tilaa algoritmi tarvitsee järjestettävän taulukon lisäksi.
+Lisäysjärjestäminen käyttää vain yksittäisiä muuttujia,
+joten sen lisätila on $O(1)$.
+Lomitusjärjes\-tämisessä lomittaminen käyttää aputaulukkoa,
+mistä aiheutuu lisätila $O(n)$.
+Pikajärjestämisessä puolestaan rekursiivinen kutsupino
+vie tilaa muistissa riippuen rekursion syvyydestä.
+Algoritmi on \emph{vakaa}, jos se säilyttää yhtä suuret alkiot
+alkuperäisessä järjestyksessä.
+Lisäysjärjestäminen ja lomitusjärjes\-täminen ovat vakaita,
+koska ne eivät vaihda koskaan yhtä suurten alkioiden järjestystä,
+mutta pikajärjestäminen saattaa tehdä näin jakoalkion valinnan jälkeen.
+Algoritmin vakaudesta voi olla hyötyä joissakin sovelluksissa.
+
 Meillä on nyt siis kaksi rekursiivista järjestämisalgoritmia:
 lomitusjärjestä\-minen toimii \emph{aina} ajassa $O(n \log n)$,
 kun taas pikajärjestäminen toimii \emph{ehkä} ajassa $O(n \log n)$,
@@ -811,7 +830,12 @@ toissijaisesti y-koordinaatin mukaan.
 
 \begin{code}
 public class Piste implements Comparable<Piste> {
-    public int x, y;
+    private int x, y;
+    
+    public Piste(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     public int compareTo(Piste p) {
         if (this.x != p.x) {
@@ -823,6 +847,14 @@ public class Piste implements Comparable<Piste> {
 }
 \end{code}
 
+Tämän jälkeen voimme järjestää taulukollisen pisteitä näin:
+
+\begin{code}
+Piste[] pisteet = new Piste[n];
+// ...
+Arrays.sort(pisteet);
+\end{code}
+
 Metodin \texttt{compareTo} avulla voimme myös konkreettisesti
 tarkastella, mitä Java tekee järjestäessään taulukon.
 Seuraava luokka sisältää vain yhden luvun,
@@ -831,7 +863,11 @@ mutta ilmoittaa meille aina, kun Java kutsuu
 
 \begin{code}
 public class Luku implements Comparable<Luku> {
-    public int luku;
+    private int luku;
+    
+    public Luku(int luku) {
+        this.luku = luku;
+    }
 
     public int compareTo(Luku x) {
         System.out.println("vertailu: " + luku + " " + x.luku);
