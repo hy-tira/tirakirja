@@ -630,6 +630,21 @@ for i = 0 to n-2
 puuttuva = summa
 \end{code}
 
+Huomaa, että muuttujien ja taulukoiden lisäksi myös \emph{rekursio}
+voi viedä tilaa, koska rekursiivisen aliohjelman kutsuihin liittyvät
+tiedot ovat muistissa rekursiopinossa.
+Esimerkiksi seuraavan proseduurin tilavaativuus on $O(n)$,
+koska muistissa on korkeimmillaan $n$ kerrosta rekursiivisia kutsuja.
+
+\begin{code}
+procedure f(n)
+    if n == 1
+        return
+    f(n-1)
+\end{code}
+
+
+
 Käytännössä tilavaativuus on yleensä sivuroolissa algoritmeissa,
 koska jos algoritmi vie vain vähän aikaa, se ei \emph{ehdi} käyttää kovin paljon muistia.
 Erityisesti tilavaativuus ei voi olla suurempi kuin aikavaativuus.
