@@ -158,7 +158,7 @@ Rekursiivisessa algoritmissa laskemme,
 montako rekursiivista kutsua teh\-dään ja kauanko
 yksittäinen kutsu vie aikaa.
 Tarkastellaan esimerkkinä seuraavaa
-aliohjelmaa, jota kutsutaan parametrilla $n$:
+proseduuria, jota kutsutaan parametrilla $n$:
 
 \begin{code}
 procedure f(n)
@@ -167,11 +167,11 @@ procedure f(n)
     f(n-1)
 \end{code}
 
-Aliohjelmaa kutsutaan yhteensä $n$ kertaa ja jokainen kutsu vie aikaa $O(1)$.
-Saamme selville aliohjelman aikavaativuuden kertomalla nämä arvot keskenään,
-joten aliohjelma vie aikaa $O(n)$.
+Proseduuria kutsutaan yhteensä $n$ kertaa ja jokainen kutsu vie aikaa $O(1)$.
+Saamme selville proseduuri aikavaativuuden kertomalla nämä arvot keskenään,
+joten proseduuri vie aikaa $O(n)$.
 
-Tarkastellaan sitten seuraavaa aliohjelmaa:
+Tarkastellaan sitten seuraavaa proseduuria:
 
 \begin{code}
 procedure g(n)
@@ -181,8 +181,8 @@ procedure g(n)
     g(n-1)
 \end{code}
 
-Tässä tapauksessa jokainen aliohjelman kutsu tuottaa kaksi uutta kutsua,
-joten aliohjelmaa kutsutaan kaikkiaan
+Tässä tapauksessa jokainen proseduurin kutsu tuottaa kaksi uutta kutsua,
+joten proseduuria kutsutaan kaikkiaan
 \[1+2+4+\dots+2^{n-1}=2^n-1\]
 kertaa. Jokainen kutsu vie aikaa $O(1)$,
 joten aikavaativuus on $O(2^n)$.
@@ -357,7 +357,7 @@ suuri & $O(1)$ tai $O(\log n)$ \\
 
 Yksi kiinnostava näkökulma algoritmin tehokkuuteen on,
 miten suuren syötteen algoritmi voi käsitellä \emph{nopeasti}
-(alle sekunnissa).
+(sekunnin murto-osassa).
 Tämä on hyvä vaatimus, kun haluamme käyttää algoritmia
 jossakin käytännön sovelluksessa.
 Taulukossa \ref{tab:algteh} on joitakin hyödyllisiä arvioita,
@@ -566,7 +566,7 @@ $\Theta(1)$ askelta.
 
 Huomaa, että $O$-merkinnän antama yläraja voi olla
 \emph{mikä tahansa} yläraja, ei välttämättä tarkka yläraja.
-On siis oikein sanoa esimerkiksi, että äskeinen
+On siis oikein sanoa esimerkiksi, että
 algoritmi vie aikaa $O(n^2)$, vaikka on olemassa parempi yläraja $O(n)$.
 Miksi sitten käytämme $O$-merkintää, vaikka voisimme usein myös ilmaista tarkan
 ajankäytön $\Theta$-merkinnällä?
