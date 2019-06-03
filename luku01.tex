@@ -97,8 +97,8 @@ Tutustumme myös samalla tarkemmin kirjassa käytettyyn pseudokoodiin.
 
 \index{muuttuja}
 \emph{Muuttuja} (\emph{variable}) sisältää yksittäisen algoritmin
-käsittelemän tiedon, kuten lukuarvon, totuusarvon (\texttt{true}/\texttt{false}) tai merkkijonon.
-Esimerkiksi seuraava Java-koodi määrittelee kolme \texttt{int}-muuttujaa:
+käsittelemän tiedon, kuten luvun, merkin tai totuusarvon.
+Esimerkiksi seuraava Java-koodi määrit\-telee kolme \texttt{int}-muuttujaa:
 
 \begin{code}
 int a = 5;
@@ -115,11 +115,11 @@ b = 7
 c = a+b
 \end{code}
 
-\subsubsection{Ehtolause}
+\subsubsection{Ehto}
 
-\index{ehtolause}
-\emph{Ehtolause} (\emph{conditional statement}) saa ohjelman
-toiminnan riippumaan esimerkiksi muuttujista.
+\index{ehto}
+\emph{Ehdon} (\emph{condition}) avulla ohjelman
+toiminnan saa riippumaan esimerkiksi muuttujien arvoista.
 Seuraava Java-koodi ilmoittaa, onko muuttujan $x$ arvo parillinen vai pariton:
 
 \begin{code}
@@ -211,6 +211,10 @@ luvut[0] = 4
 luvut[3] = 2
 \end{code}
 
+\index{merkkijono}
+Taulukon erikoistapaus on \emph{merkkijono} (\emph{string}),
+jolloin taulukon jokainen alkio on merkki.
+
 Taulukko on mainio tietorakenne, mutta siinä on kaksi heikkoutta:
 (1) taulukon kokoa ei voi muuttaa määrittelyn jälkeen ja
 (2) tietyn alkion etsiminen suuresta taulukosta on hidasta.
@@ -229,10 +233,10 @@ taulukon avulla.
 \index{proseduuri}
 \index{funktio}
 
-\emph{Aliohjelma} (\emph{subprogram}) on ohjelman osa, jota voi kutsua parametreilla.
+\emph{Aliohjelma} (\emph{subprogram}) on ohjelman nimetty osa,
+jota voi kutsua parametreilla.
 Aliohjelmalle on monia eri nimiä kielestä riippuen,
 ja Javassa käytetään nimeä \emph{metodi} (\emph{method}).
-
 Tässä kirjassa käytäntönä on,
 että \emph{proseduuri} (\emph{procedure}) on aliohjelma,
 joka ei palauta mitään (Javassa \texttt{void}),
