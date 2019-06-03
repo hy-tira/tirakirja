@@ -177,7 +177,7 @@ kun siinä ei ole yhtään inversiota.
 
 Kun järjestämisalgoritmi järjestää taulukon,
 se \emph{poistaa} siitä inversioita.
-Tarkemmin sanoen aina kun
+Erityisesti aina kun
 algoritmi vaihtaa kaksi vierekkäistä alkiota keskenään,
 se poistaa taulukosta yhden inversion.
 Niinpä lisäysjärjestämisen työmäärä on yhtä suuri
@@ -444,8 +444,7 @@ function jako(a,b):
     return k
 \end{code}
 
-Tässä jakoalkio on aina välin ensimmäinen alkio,
-joka on kohdassa $a$.
+Tässä jakoalkio on aina kohdassa $a$ oleva välin ensimmäinen alkio.
 Funktio käy läpi välin alkiot ja siirtää
 jakoalkiota pienempiä alkioita taulukon alkuosaan.
 Muuttuja $k$ määrittää kohdan,
@@ -681,7 +680,7 @@ Tämä on ominaisuus, jota yleensä ottaen toivomme
 järjestämisalgoritmilta, joten vertailuihin perustuminen
 on luonteva rajoitus.
 Kaikki tähän mennessä käsittelemämme järjestämisalgoritmit
-ovat olleet vertailuihin perustuvia
+ovat olleet vertailuihin perustuvia.
 
 \subsection{Alarajatodistus}
 
