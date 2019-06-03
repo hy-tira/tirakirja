@@ -138,8 +138,7 @@ jonka toiminta on lähempänä vasenta tilannetta.
 
 Jos hajautettavat alkiot ovat kokonaislukuja,
 suoraviivainen hajautusfunktio on $f(x)=x \bmod N$,
-missä "mod" on modulo eli jakojäännös,
-joka muuttaa luvun välille $0 \dots N-1$.
+joka muuttaa luvun välille $0 \dots N-1$ jakojäännöksen avulla.
 Tämä on helposti toteutettava ja yleensä hyvin toimiva hajautusfunktio.
 Entä jos alkiot ovat jotain muuta tyyppiä kuin kokonaislukuja?
 Tällöin meidän täytyy päättää ensin jokin järkevä tapa,
@@ -177,7 +176,7 @@ Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus}
 (\emph{polynomial hashing}),
 on käytän\-nössä hyvä merkkijonon hajautustapa,
 joka on käytössä esimerkiksi Javan standardikirjastossa.
-Voimme laskea polynomisen hajautusarvon modulo $N$ seuraavalla koodilla:
+Voimme laskea polynomisen hajautusarvon jakojäännöksen seuraavalla koodilla:
 
 \begin{code}
 h = 0
@@ -337,7 +336,7 @@ if (joukko.contains(x)) {
 \end{code}
 
 Huomaa, että jokainen alkio voi esiintyä vain kerran joukossa.
-Esimerkiksi vaikka seuraava koodi lisää luvun 5 kolmesti
+Esimerkiksi vaikka seuraava koodi koettaa lisätä luvun 5 kolmesti
 joukkoon, se menee sinne vain ensimmäisellä kerralla ja
 muut lisäykset jätetään huomiotta.
 
