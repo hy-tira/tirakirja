@@ -143,17 +143,16 @@ Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
 
 Miksi aikaa kuluu keskimäärin vain $O(1)$?
-Tarkastellaan tilannetta, jossa listaan lisätään alkioita
-ja taulukkoa kasvatetaan viimeisen kerran,
-kun listassa on $n$ alkiota.
-Haluamme arvioida, montako alkiota kopioidaan
+Tarkastellaan tilannetta, jossa listaan on lisätty $n$ alkiota
+ja taulukon kokoa kasvatettiin viimeksi alkion $k \le n$
+lisäyksen yhteydessä.
+Haluamme laskea, montako alkiota kopioitiin
 taulukosta toiseen prosessin aikana.
-Koska taulukon koko kaksinkertaistuu joka vaiheessa,
-kopioinnista tuleva lisäkustannus on
-$n+n/2+n/4+n/8+\dots = O(n)$,
+Koska jokainen taulukon kasvatus kaksinkertaisti sen koon,
+kopioitujen alkioiden määrä on
+$k+k/2+k/4+\dots \le 2k = O(n)$,
 eli keskimääräinen kustannus alkiota kohden on $O(1)$.
-Taulukon kasvattamisen vaikutus kokonaisuuteen
-on siis pieni.
+Taulukon kasvattamisen vaikutus kokonaisuuteen on siis pieni.
 
 \begin{figure}
 \center
@@ -560,7 +559,7 @@ Kummassakin toteutuksessa on yksi operaatio,
 joka ei ole tehokas.
 Taulukkolistassa pääsemme tehokkaasti mihin tahansa listan
 kohtaan, mutta on hidasta muokata listaa keskeltä.
-Linkitetyssä listassa voimme muokata listaa mistä tahansa,
+Linkitetyssä listassa voimme helposti muokata listaa mistä tahansa,
 mutta keskelle pääseminen on hidasta.
 
 Huomaa, että keskelle pääsemisen hitaus rajoittaa melko paljon
@@ -831,7 +830,7 @@ lisäämme alkion 5 iteraattorin kohdalle eli listan
 toisen ja kolmannen alkion väliin.
 
 \begin{code}
-ListIterator<Integer> x = lista.listIterator(0);
+ListIterator<Integer> x = lista.listIterator();
 x.next();
 x.next();
 x.add(5);
@@ -884,7 +883,7 @@ Tämän jälkeen lisäämme alkion listalle iteraattorin osoittamaan kohtaan.
 
 \begin{code}
 for (int i = 0; i < n; i++) {
-    ListIterator<Integer> x = lista.listIterator(0);
+    ListIterator<Integer> x = lista.listIterator();
     while (x.hasNext()) {
         if (x.next() > taulu[i]) {
             x.previous();
