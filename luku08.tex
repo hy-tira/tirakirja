@@ -2,16 +2,17 @@
 
 \index{backtracking}
 \emph{Peruuttava haku} (\emph{backtracking}) on menetelmä,
-jossa on ideana käydä läpi kaikki mahdolliset tavat 
-ratkaista annettu tehtävä.
-Peruuttava haku on luontevaa toteuttaa rekursion avulla,
-jolloin jokainen rekursion haara vastaa yhtä tapaa
-viedä ratkaisua eteenpäin.
+jonka avulla voimme käydä järjestelmällisesti kaikki yhdistelmät,
+jotka voidaan muodostaa annetuista aineksista.
+Peruuttava haku on raa'an voiman algoritmi,
+jonka toteutus on yleensä suoraviivainen,
+ja menetelmä on käyttökelpoinen silloin,
+kun yhdistelmien määrä on niin pieni, että ehdimme käydä kaikki läpi.
 
 Tässä luvussa tutustumme ensin peruuttavan haun algoritmeihin,
 jotka käyvät läpi lukujen yhdistelmiä.
 Tämän jälkeen näemme, miten peruuttavaa hakua voi käyttää
-kahdessa vaikeammassa ongelmassa ja miten hakua voi optimoida.
+kahdessa vaikeammassa ongelmassa ja miten hakua voi tehostaa.
 Lopuksi toteutamme pelin tekoälyn minimax-algoritmilla,
 joka perustuu peruuttavaan hakuun.
 
@@ -192,7 +193,7 @@ Käymme seuraavaksi läpi kaksi vaativampaa esimerkkiä
 peruuttavan haun soveltamisesta.
 Ratkaisemme ensin shakkiin liittyvän ongelman,
 ja tämän jälkeen etsimme parhaan tavan
-työntekijöiden valintaan.
+työtehtävien jakamiseen.
 Molemmissa sovelluksissa näemme myös,
 miten peruuttavaa hakua voi tehostaa.
 
@@ -319,7 +320,7 @@ ja haku jatkuu eteenpäin rekursiivisesti.
 
 Lisäksi täytyy toteuttaa funktio \texttt{voi\_sijoittaa},
 joka tutkii, voidaanko uusi kuningatar sijoittaa
-rivin $y$ sarakkeelle $x$.
+rivin $y$ sarakkeeseen $x$.
 Tämä voidaan selvittää taulukon \texttt{kohta} avulla näin:
 
 \begin{code}
@@ -340,7 +341,7 @@ ja funktio palauttaa \texttt{false}.
 Jos taas mikään aiempi kuningatar ei uhkaa uutta kuningatarta,
 funktio palauttaa \texttt{true}.
 Huomaa jälkimmäisessä ehdossa kätevä tapa tarkastaa,
-ovatko kuningattaret samalla vinorivillä itseisarvon
+ovatko kuningattaret samalla vinorivillä itseis\-arvon
 (funktio \texttt{abs}) avulla.
 Kuningattaret ovat samalla vinorivillä tarkalleen silloin,
 kun niiden vaaka- ja pystysuuntaiset erot ovat samat.
@@ -370,16 +371,17 @@ käydä läpi kuningatarongelman ratkaisuja.
 Taulukko \ref{tab:kuning} näyttää ratkaisujen määrät
 tapauksissa $n=1 \dots 10$.
 Algoritmimme selvittää nämä tapaukset salamannopeasti,
-mutta suuremmilla $n$:n arvoilla se alkaa viedä paljon aikaa.
+mutta suuremmilla $n$:n arvoilla algoritmi alkaa viedä paljon aikaa.
 Syynä tähän on, että kuningatarten sijoitustapojen
-määrä kasvaa eksponentiaalisesti.
-Esimerkiksi tapauksessa $n=20$ ratkaisuja on jo yli 39 miljardia.
+määrä kasvaa \emph{eksponentiaalisesti}
+eli räjähdysmäisen nopeasti.
+Esimerkiksi tapauksessa $n=20$ erilaisia ratkaisuja on jo yli 39 miljardia.
 
 \index{symmetria}
 Voimme kuitenkin koettaa nopeuttaa algoritmia parantamalla
 sen toteutusta.
 Yksi helppo tehostus on hyödyntää \emph{symmetriaa}.
-Jokaista kuningatarongelman ratkaisua vastaa toinen ratkaisu,
+Jokaista kuningatar\-ongelman ratkaisua vastaa toinen ratkaisu,
 joka saadaan peilaamalla ratkaisu vaakasuuntaisesti.
 Esimerkiksi kuvassa \ref{fig:kuning} ratkaisut voidaan muuttaa
 toisikseen peilaamalla.
@@ -395,7 +397,7 @@ Tällä hetkellä se käy läpi kaikki aiemmin sijoitetut kuningattaret
 ja vie aikaa $O(n)$, mutta funktio on mahdollista toteuttaa myös
 ajassa $O(1)$ ottamalla käyttöön uusia aputaulukoita, joissa on tietoa,
 mitkä sarakkeet ja vinorivit ovat uhattuina.
-Tämä tehostus on vaikeampi toteuttaa kuin symmetristen ratkaisujen karsinta.
+Tämä tehostus on kuitenkin vaikeampi toteuttaa kuin symmetristen ratkaisujen karsinta.
 
 Kuningatarongelma on kuitenkin pohjimmiltaan vaikea ongelma,
 eikä sen ratkaisuun tunneta mitään oleellisesti raakaa voimaa
@@ -406,14 +408,14 @@ jossa oli suuri määrä rinnakkain laskevia
 suorittimia\footnote{27-Queens Puzzle: Massively Parellel Enumeration and Solution Counting.
 \url{https://github.com/preusser/q27}}.
 
-\subsection{Työtehtävät}
+\subsection{Työtehtävien jakaminen}
 
-Tarkastellaan tilannetta, jossa on $n$ työtehtävää ja
-$n$ työntekijää.
-Jokainen työntekijä suorittaa tarkalleen yhden työtehtävän,
-ja jokaisesta työtehtävästä tiedetään,
-paljonko sen suorittaminen maksaa kullakin työntekijällä.
-Tehtä\-vänä on etsiä ratkaisu, jossa kokonaishinta on pienin mahdollinen.
+Tarkastellaan tilannetta, jossa on $n$ työtehtävää ja $n$ työntekijää.
+Tehtävät tulee jakaa työntekijöille niin,
+että jokainen työntekijä suorittaa tarkalleen yhden työtehtävän.
+Jokaisesta työtehtävästä tiedetään,
+paljonko sen suorittaminen maksaa kullakin työntekijällä,
+ja tavoitteena on etsiä ratkaisu, jossa kokonaishinta on pienin mahdollinen.
 
 \begin{figure}
 \center
@@ -462,8 +464,8 @@ Taulukko \texttt{mukana} pitää kirjaa,
 mitkä työntekijät on jo valittu,
 ja muuttujassa $p$ on yhteishinta
 parhaassa tähän mennessä löytyneessä ratkaisussa.
-Aluksi muuttujan $p$ arvona on $\infty$,
-koska mitään ratkaisua ei ole olemassa.
+Ennen hakua muuttujan $p$ arvona on $\infty$,
+koska mi\-tään ratkaisua ei ole vielä olemassa.
 
 \begin{code}
 procedure haku(k,h)
@@ -489,7 +491,7 @@ joka lopettaa ratkaisun muodostamisen,
 jos siitä ei voi tulla aiempaa parempi.
 
 \index{branch and bound}
-Keskitymme seuraavaksi tapaukseen, jossa $n=20$ ja jokainen
+Testaamme seuraavaksi algoritmia tapauksella, jossa $n=20$ ja jokainen
 taulukossa \texttt{hinta} oleva arvo on satunnainen
 kokonaisluku välillä $1 \dots 100$.
 Tässä tapauksessa edellä kuvattu algoritmi kävisi läpi 
@@ -546,19 +548,15 @@ procedure haku(k,h)
 \end{code}
 
 Tässä funktion \texttt{arvio} tulee antaa jokin arvio,
-paljonko ainakin maksaa palkata jäljellä olevat työntekijät $k \dots n-1$.
-Yksi kätevä tapa saada arvio on laskea yhteen jokaisen jäljellä olevan
-työntekijän \emph{halvin} hinta \emph{missä tahansa} työtehtävässä.
+paljonko ainakin maksaa suorittaa jäljellä olevat työtehtävät $k \dots n-1$.
+Yksi kätevä tapa saada arvio on käydä läpi jäljellä olevat
+työtehtävät ja valita jokaisen tekijäksi \emph{halvin} työntekijä välittämättä
+siitä, onko kyseinen työntekijä mahdollisesti valittu aiemmin.
+Tämä antaa alarajan sille, paljonko kustannuksia on ainakin vielä tiedossa.
 Tämän tehostuksen jälkeen tapauksen $n=20$ käsittely vie
 testikoneella vain 7 sekuntia.
 Paremman alarajan ansiosta saimme siis algoritmin
-noin 20 kertaa nopeammaksi verrattuna edelliseen versioon.
-
-Tämä on usein esiintyvä ilmiö peruuttavan haun algoritmeissa:
-jos onnistumme rajoittamaan algoritmin
-haarautumista, se voi tehostua merkittävästi.
-Tässä tapauksessa pystyimme muuttamaan satojen vuosien laskenta-ajan
-sekunneiksi lisäämällä algoritmiin yhden ehtolauseen.
+vielä noin 20 kertaa nopeammaksi verrattuna edelliseen versioon.
 
 \section{Pelin tekoäly}
 
@@ -566,7 +564,8 @@ Peruuttavan haun avulla voi myös toteuttaa tekoälyn kahden pelaajan peliin,
 kuten ristinollaan tai shakkiin.
 Tällaisen tekoälyn täytyy pystyä päättämään,
 miten toimia annetussa pelin tilanteessa.
-Ideana on luoda peruuttava haku, joka käy läpi mahdollisia siirtoja,
+Ideana on luoda haku, joka käy läpi
+järjestelmällisesti mahdollisia siirtoja,
 joita pelaajat voivat tehdä.
 
 \subsection{Minimax-algoritmi}
@@ -633,9 +632,10 @@ ja jokainen askel puussa alaspäin tarkoittaa yhtä siirtoa.
 Tässä tekoäly tutkii, mitä kaikkea voi tapahtua,
 kun se siirtää ensin itse, sitten vastustaja siirtää,
 ja sitten se siirtää uudestaan.
-Puun alimmalla tasolla on tekoälyn arvio jokaisesta
-kolmen siirron päässä olevasta pelitilanteesta,
-kuinka hyvä tilanne on sen itsensä kannalta.
+Puun alimmalla tasolla on jokaisen
+kolmen siirron päässä olevan pelitilanteen \emph{hyvyys}
+eli tekoälyn arvio,
+kuinka hyvä kyseinen tilanne on sen itsensä kannalta.
 
 Tekoäly valitsee aina siirron,
 joka on mahdollisimman hyvä sen itsensä kannalta.
