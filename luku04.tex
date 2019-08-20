@@ -143,15 +143,15 @@ Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
 
 Miksi aikaa kuluu keskimäärin vain $O(1)$?
-Tarkastellaan tilannetta, jossa listaan on lisätty $n$ alkiota
-ja taulukon kokoa kasvatettiin viimeksi alkion $k \le n$
-lisäyksen yhteydessä.
-Haluamme laskea, montako alkiota kopioitiin
-taulukosta toiseen prosessin aikana.
-Koska jokainen taulukon kasvatus kaksinkertaisti sen koon,
-kopioitujen alkioiden määrä on
-$k+k/2+k/4+\dots \le 2k = O(n)$,
-eli keskimääräinen kustannus alkiota kohden on $O(1)$.
+Tarkastellaan tilannetta, jossa listassa on $n$ alkiota
+ja taulukko on tullut täyteen,
+joten alkiot täytyy kopioida uuteen taulukkoon.
+Tiedämme, että alkioita kopioitiin viimeksi silloin,
+kun listassa oli $n/2$ alkiota,
+joten listaan on lisätty välissä $n/2$ alkiota tehokkaasti.
+Niinpä $n$ alkion kopioimisen kustannus voidaan jakaa
+$n/2$ aiemmin lisätylle alkiolle, ja jokaiseen alkioon
+kohdistuva lisäkustannus on vakio.
 Taulukon kasvattamisen vaikutus kokonaisuuteen on siis pieni.
 
 \begin{figure}

@@ -177,8 +177,8 @@ kun siinä ei ole yhtään inversiota.
 
 Kun järjestämisalgoritmi järjestää taulukon,
 se \emph{poistaa} siitä inversioita.
-Erityisesti aina kun
-algoritmi vaihtaa kaksi vierekkäistä alkiota keskenään,
+Esimerkiksi aina kun
+lisäysjärjestäminen vaihtaa vierekkäiset alkiot keskenään,
 se poistaa taulukosta yhden inversion.
 Niinpä lisäysjärjestämisen työmäärä on yhtä suuri
 kuin järjestettävän taulukon inversioiden määrä.
@@ -618,12 +618,12 @@ Lomitusjärjes\-tämisessä lomittaminen käyttää aputaulukkoa,
 mistä aiheutuu lisätila $O(n)$.
 Pikajärjestämisessä puolestaan rekursiivinen kutsupino
 vie tilaa muistissa riippuen rekursion syvyydestä.
-Algoritmi on \emph{vakaa}, jos se säilyttää yhtä suuret alkiot
+Algoritmi on \emph{vakaa} (\emph{stable}), jos se säilyttää yhtä suuret alkiot
 alkuperäisessä järjestyksessä.
 Lisäysjärjestäminen ja lomitusjärjes\-täminen ovat vakaita,
 koska ne eivät vaihda koskaan yhtä suurten alkioiden järjestystä,
 mutta pikajärjestäminen saattaa tehdä näin jakoalkion valinnan jälkeen.
-Algoritmin vakaudesta voi olla hyötyä joissakin sovelluksissa.
+Algoritmin vakaudesta voi olla hyötyä sovelluksissa.
 
 Meillä on nyt siis kaksi rekursiivista järjestämisalgoritmia:
 lomitusjärjestä\-minen toimii \emph{aina} ajassa $O(n \log n)$,
