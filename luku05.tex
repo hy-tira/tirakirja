@@ -380,7 +380,7 @@ tallennettu arvoa:
 if (sanakirja.containsKey(sana)) {
     System.out.println(sanakirja.get(sana));
 } else {
-    System.out.println("Sana puuttuu sanakirjasta!");
+    System.out.println("sana puuttuu sanakirjasta");
 }
 \end{code}
 
@@ -408,7 +408,8 @@ meidän täytyy toteuttaa luokkaan kaksi metodia:
 sekä \texttt{equals},
 joka ilmaisee, ovatko kaksi oliota samat.
 Metodi \texttt{hashCode} riittää toteuttaa niin,
-että se palauttaa jonkin kokonaisluvun.
+että se palauttaa jonkin kokonaisluvun,
+ja Java huolehtii jakojäännöksestä.
 Metodi \texttt{equals} on tarpeen,
 jotta Java pystyy varmistamaan, ovatko saman hajautusarvon
 antavat oliot todella samat.

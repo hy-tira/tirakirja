@@ -235,8 +235,8 @@ Kuva \ref{fig:hakupuu} esittää haun toimintaa tapauksessa $n=4$.
 Ensimmäisen rivin kuningatar voidaan asettaa mihin tahansa sarakkeeseen,
 mutta seuraavilla riveillä aiemmat valinnat rajoittavat hakua.
 Kuvassa näkyy toisen kuningattaren sijoittaminen,
-kun ensimmäinen kuningatar on sarakkeessa 2.
-Tällöin ainoa vaihtoehto on, että toinen kuningatar on sarakkeessa 4,
+kun ensimmäinen kuningatar on toisessa sarakkeessa.
+Tällöin ainoa vaihtoehto on, että toinen kuningatar on viimeisessä sarakkeessa,
 koska kaikissa muissa tapauksissa kuningattaret uhkaisivat toisiaan.
 
 
@@ -280,10 +280,10 @@ koska kaikissa muissa tapauksissa kuningattaret uhkaisivat toisiaan.
     \draw (-1,-6) -- (1,-8);
     \draw (-1,-6) -- (6,-8);
     
-    \node at (-9,-13) {\ding{55}};
-    \node at (-4,-13) {\ding{55}};
-    \node at (1,-13) {\ding{55}};
-    \node at (6,-13) {\ding{51}};    
+    \node at (-9,-13) {ei kelpaa};
+    \node at (-4,-13) {ei kelpaa};
+    \node at (1,-13) {ei kelpaa};
+    \node at (6,-13) {kelpaa};    
   \end{scope}
 \end{tikzpicture}
 \caption{Peruuttavan haun toiminta kuningatarongelmassa.}
@@ -341,7 +341,7 @@ ja funktio palauttaa \texttt{false}.
 Jos taas mikään aiempi kuningatar ei uhkaa uutta kuningatarta,
 funktio palauttaa \texttt{true}.
 Huomaa jälkimmäisessä ehdossa kätevä tapa tarkastaa,
-ovatko kuningattaret samalla vinorivillä itseis\-arvon
+ovatko kuningattaret samalla vinorivillä, itseis\-arvon
 (funktio \texttt{abs}) avulla.
 Kuningattaret ovat samalla vinorivillä tarkalleen silloin,
 kun niiden vaaka- ja pystysuuntaiset erot ovat samat.
@@ -529,8 +529,8 @@ procedure haku(k,h)
 Tämän ansiosta ratkaisun muodostaminen päättyy heti,
 jos sen hinta on yhtä suuri tai suurempi kuin parhaan
 tiedossa olevan ratkaisun hinta.
-Tämän tehostuksen avulla saamme ratkaistua tapauksen $n=20$
-testikoneella 152 sekunnissa.
+Tämän tehostuksen avulla saamme ratkaistua
+muodostamamme tapauksen testikoneella 152 sekunnissa.
 Tämä on hieno saavutus, koska alkuperäinen algoritmi
 ei kyennyt ratkaisemaan tapausta lainkaan.
 
@@ -576,8 +576,8 @@ joka valitsee tekoälyn siirron pelissä.
 Se käy läpi pelinkulkuja tiettyyn syvyyteen asti,
 arvioi pelitilanteet ja valitsee siirron,
 joka takaa mahdollisimman hyvältä vaikuttavan tuloksen.
-Algoritmin nimi tulee siitä, että se \emph{minimoi} vastustajan tulosta
-ja \emph{maksimoi} omaa tulosta.
+Algoritmin nimi tulee siitä, että se vuorotellen
+\emph{minimoi} ja \emph{maksimoi} tulosta puun kerroksissa.
 
 \begin{figure}
 \center
