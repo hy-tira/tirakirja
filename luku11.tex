@@ -25,11 +25,11 @@ tarvitsemme kehittyneempiä menetelmiä.
 
 Lyhimpien polkujen etsimiseen painotetussa verkossa
 on monia algoritmeja, joilla on erilaisia ominaisuuksia.
-Tässä luvussa käymme läpi ensin Bellman–Fordin algoritmin ja
+Tässä luvussa käymme läpi ensin Bellmanin ja Fordin algoritmin ja
 Dijkstran algoritmin,
 jotka etsivät lyhimmät polut annetusta lähtösolmusta
 kaikkiin verkon solmuihin.
-Tämän jälkeen tutustumme Floyd–Warshallin algoritmiin,
+Tämän jälkeen tutustumme Floydin ja Warshallin algoritmiin,
 joka etsii samanaikaisesti lyhimmät polut kaikkien
 verkon solmujen välillä.
 
@@ -81,11 +81,11 @@ $1 \rightarrow 3 \rightarrow 5$, jonka pituus on $2+7=9$.
 Käytämme tätä verkkoa esimerkkinä, kun tutustumme
 seuraavaksi kahteen algoritmiin lyhimpien polkujen etsimiseen.
 
-\subsection{Bellman–Fordin algoritmi}
+\subsection{Bellmanin ja Fordin algoritmi}
 
-\index{Bellman–Fordin algoritmi}
+\index{Bellmanin ja Fordin algoritmi}
 
-\emph{Bellman–Fordin algoritmi} etsii lyhimmät polut
+\emph{Bellmanin ja Fordin algoritmi} etsii lyhimmät polut
 annetusta lähtösolmusta kaikkiin verkon solmuihin.
 Algoritmi muodostaa taulukon, joka kertoo jokaiselle
 verkon solmulle sen etäisyyden lähtösolmusta.
@@ -93,7 +93,7 @@ Algoritmi toimii missä tahansa verkossa,
 kunhan verkossa ei ole negatiivista sykliä eli sykliä,
 jonka painojen summa on negatiivinen.
 
-Bellman–Fordin algoritmi pitää yllä \emph{arvioita}
+Bellmanin ja Fordin algoritmi pitää yllä \emph{arvioita}
 solmujen etäisyyksistä niin,
 että aluksi etäisyys lähtösolmuun on 0 ja etäisyys
 kaikkiin muihin solmuihin on ääretön.
@@ -164,11 +164,11 @@ todellisia lyhimpien polkujen pituuksia.
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Esimerkki Bellman–Fordin algoritmin toiminnasta.}
+\caption{Esimerkki Bellmanin ja Fordin algoritmin toiminnasta.}
 \label{fig:belfor}
 \end{figure}
 
-Kuva \ref{fig:belfor} näyttää esimerkin Bellman–Fordin algoritmin toiminnasta,
+Kuva \ref{fig:belfor} näyttää esimerkin Bellmanin ja Fordin algoritmin toiminnasta,
 kun lähtösolmuna on solmu $1$.
 Jokaisen solmun vieressä on ilmoitettu sen etäisyysarvio:
 aluksi etäisyys solmuun 1 on 0 ja etäisyys kaikkiin muihin solmuihin on ääretön.
@@ -183,7 +183,7 @@ Jatkamme samalla tavalla, kunnes emme voi enää parantaa
 mitään etäisyyttä ja kaikki etäisyydet
 vastaavat lyhimpien polkujen pituuksia.
 
-Bellman–Fordin algoritmi on mukavaa toteuttaa
+Bellmanin ja Fordin algoritmi on mukavaa toteuttaa
 käyttäen verkon kaarilistaesitystä,
 jossa jokaisesta kaaresta on tallennettu alku- ja loppusolmu sekä paino.
 Toteutamme algoritmin niin,
@@ -217,7 +217,7 @@ ja algoritmi päättyy, kun mikään etäisyys ei muuttunut.
 
 \subsubsection{Algoritmin analyysi}
 
-Olemme nyt kuvailleet ja toteuttaneet Bellman–Fordin
+Olemme nyt kuvailleet ja toteuttaneet Bellmanin ja Fordin
 algoritmin, mutta miten voimme olla varmoja,
 että se löytää lyhimmät polut, ja miten nopeasti se toimii?
 Jotta voimme vastata näihin kysymyksiin,
@@ -287,12 +287,12 @@ jonka avulla voimme lyhentää polkuja loputtomasti.}
 Mitä tapahtuu sitten, jos verkossa on negatiivinen sykli?
 Esimerkiksi kuvan \ref{fig:belsyk} verkossa on negatiivinen sykli
 $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$, jonka paino on $-2$.
-Tässä tilanteessa Bellman–Fordin algoritmi jatkuu ikuisesti,
+Tässä tilanteessa Bellmanin ja Fordin algoritmi jatkuu ikuisesti,
 koska voimme lyhentää loputtomasti syklin kautta kulkevia polkuja.
 Oikeastaan ongelma on siinä, että lyhin polku ei ole mielekäs käsite,
 jos polun osana on negatiivinen sykli.
 Voimme kuitenkin havaita verkossa olevan negatiivisen syklin
-Bellman–Fordin algoritmin avulla:
+Bellmanin ja Fordin algoritmin avulla:
 jos jotain etäisyyttä voi parantaa vielä $n-1$ kierroksen jälkeen,
 verkossa on negatiivinen sykli.
 
@@ -300,10 +300,10 @@ verkossa on negatiivinen sykli.
 
 \index{Dijkstran algoritmi}
 
-\emph{Dijkstran algoritmi} on Bellman–Fordin algoritmin tehostettu versio,
+\emph{Dijkstran algoritmi} on Bellmanin ja Fordin algoritmin tehostettu versio,
 jonka toiminta perustuu oletukseen, että verkossa ei ole
 negatiivisen painoisia kaaria.
-Bellman–Fordin algoritmin tapaan Dijkstran algoritmi pitää
+Bellmanin ja Fordin algoritmin tapaan Dijkstran algoritmi pitää
 yllä arvioita etäisyyksistä lähtösolmusta muihin solmuihin.
 Erona on kuitenkin tapa, miten Dijkstran algoritmi parantaa etäisyyksiä.
 
@@ -623,18 +623,18 @@ joihin ehdimme myöhemmin kuin kohdepaikkaan.
 Tarkastellaan seuraavaksi ongelmaa, jossa
 haluamme etsiä lyhimmät polut verkon
 \emph{kaikista} solmuista \emph{kaikkiin} solmuihin.
-Yksi tapa ratkaista tehtävä olisi suorittaa Bellman–Fordin
+Yksi tapa ratkaista tehtävä olisi suorittaa Bellmanin ja Fordin
 tai Dijkstran algoritmi jokaisesta verkon solmusta alkaen.
 Voimme kuitenkin ratkaista tehtävän suoremmin
 etsimällä kaikki polut \emph{samanaikaisesti}
-Floyd–Warshallin algoritmilla.
+Floydin ja Warshallin algoritmilla.
 
-\subsection{Floyd–Warshallin algoritmi}
+\subsection{Floydin ja Warshallin algoritmi}
 
-\index{Floyd–Warshallin algoritmi}
+\index{Floydin ja Warshallin algoritmi}
 \index{etäisyysmatriisi}
 
-\emph{Floyd–Warshallin algoritmi} muodostaa $n \times n$ -kokoisen
+\emph{Floydin ja Warshallin algoritmi} muodostaa $n \times n$ -kokoisen
 \emph{etäisyysmatriisin} (\emph{distance matrix}),
 jossa rivin $a$ sarakkeessa $b$ on lyhimmän polun pituus
 solmusta $a$ solmuun $b$.
@@ -712,11 +712,11 @@ kaikki lyhimmät polut.
 \end{scope}
 \end{tikzpicture}
 \end{center}
-\caption{Esimerkki Floyd–Warshallin algoritmin toiminnasta.}
+\caption{Esimerkki Floydin ja Warshallin algoritmin toiminnasta.}
 \label{fig:flowar}
 \end{figure}
 
-Kuva \ref{fig:flowar} näyttää esimerkin Floyd–Warshallin algoritmin toiminnasta.
+Kuva \ref{fig:flowar} näyttää esimerkin Floydin ja Warshallin algoritmin toiminnasta.
 Kierroksella 1 etsimme polkuja, joissa solmu 1 on välisolmuna.
 Tällaisia polkuja ei ole, koska solmuun 1 ei pääse mistään solmusta,
 joten matriisi ei muutu.
@@ -727,7 +727,7 @@ jolloin saamme etäisyyden 5.
 Jatkamme vastaavasti, kunnes kierroksen 4 jälkeen olemme
 saaneet selville kaikki etäisyydet ja etäisyysmatriisi on lopullinen.
 
-Floyd–Warshallin algoritmin mukavana puolena on,
+Floydin ja Warshallin algoritmin mukavana puolena on,
 että se on hyvin helppoa toteuttaa.
 Meidän riittää luoda kolme sisäkkäistä for-silmukkaa,
 jotka toteuttavat matriisin päivitykset.
@@ -749,7 +749,7 @@ koska se muodostuu kolmesta sisäkkäisestä for-silmukasta.
 
 \subsubsection{Algoritmin analyysi}
 
-Miksi Floyd–Warshallin algoritmi toimii?
+Miksi Floydin ja Warshallin algoritmi toimii?
 Voimme ymmärtää algoritmia tarkastelemalla
 sen toimintaa ''käänteisesti'' rekursiivisesti.
 Kun verkossa on lyhin polku solmusta $a$ solmuun $b$,
@@ -768,7 +768,7 @@ että kummallakin polulla jokaisen välisolmun
 tunnus on pienempi kuin $x$.
 Voimme käsitellä nämä osatehtävät rekursiivisesti.
 
-Floyd–Warshallin algoritmi muodostaa joka vaiheessa
+Floydin ja Warshallin algoritmi muodostaa joka vaiheessa
 polkuja, joissa voi olla välisolmuina solmuja $1,2,\dots,i$.
 Kun haluamme muodostaa lyhimmän polun solmusta $a$ solmuun $b$,
 meillä on kaksi vaihtoehtoa:
@@ -799,7 +799,7 @@ useimmiten voi olla negatiivisia.
 Esimerkiksi selvästikään tien pituus tai lennon hinta
 ei voi olla negatiivinen.
 Jos kuitenkin verkossa voi olla negatiivisia kaaria,
-voimme turvautua Bellman–Fordin algoritmiin.
+voimme turvautua Bellmanin ja Fordin algoritmiin.
 
 \begin{table}
 \center
@@ -807,9 +807,9 @@ voimme turvautua Bellman–Fordin algoritmiin.
 algoritmi & aikavaativuus & erityistä \\
 \hline
 leveyshaku & $O(n+m)$ & ei salli painoja kaarissa \\
-Bellman–Fordin algoritmi & $O(nm)$ & \\
+Bellmanin ja Fordin algoritmi & $O(nm)$ & \\
 Dijkstran algoritmi & $O(n+m \log n)$ & ei salli negatiivisia kaaria \\
-Floyd–Warshallin algoritmi & $O(n^3)$ & etsii kaikki polut \\
+Floydin ja Warshallin algoritmi & $O(n^3)$ & etsii kaikki polut \\
 \end{tabular}
 \caption{Algoritmit lyhimpien polkujen etsimiseen.}
 \label{tab:reiver}
@@ -818,12 +818,12 @@ Floyd–Warshallin algoritmi & $O(n^3)$ & etsii kaikki polut \\
 \index{harva verkko}
 \index{tiheä verkko}
 
-Miten sitten Floyd–Warshallin algoritmi vertautuu muihin algoritmeihin?
+Miten sitten Floydin ja Warshallin algoritmi vertautuu muihin algoritmeihin?
 Tämä riippuu siitä, onko verkko \emph{harva} (\emph{sparse}) vai
 \emph{tiheä} (\emph{dense}).
 Harvassa verkossa on vähän kaaria ja $m \approx n$,
 kun taas tiheässä verkossa on paljon kaaria ja $m \approx n^2$.
-Floyd–Warshallin algoritmi on parhaimmillaan silloin,
+Floydin ja Warshallin algoritmi on parhaimmillaan silloin,
 kun verkko on tiheä, koska sen aikavaativuus ei riipu
 kaarten määrästä.
 Esimerkiksi jos etsimme kaikki lyhimmät polut
@@ -831,9 +831,9 @@ suorittamalla $n$ kertaa Dijkstran algoritmin,
 harvassa verkossa aikaa kuluu $O(n^2 \log n)$,
 mutta tiheässä verkossa aikaa kuluu $O(n^3 \log n)$.
 Siis harvassa verkossa aikavaativuus on parempi
-kuin Floyd–Warshallin algoritmissa,
+kuin Floydin ja Warshallin algoritmissa,
 mutta tiheässä verkossa se on huonompi.
-Toisaalta Floyd–Warshallin algoritmin vakiokertoimet
+Toisaalta Floydin ja Warshallin algoritmin vakiokertoimet
 ovat hyvin pienet sen yksinkertaisen rakenteen ansiosta,
 minkä ansiosta algoritmi voi toimia käytännössä
 yllättävänkin nopeasti.
