@@ -672,12 +672,12 @@ procedure haku(solmu)
         haku(naapuri)
 \end{code}
 
-Haku käynnistyy, kun kutsumme aliohjelmaa
+Haku käynnistyy, kun kutsumme proseduuria
 \texttt{haku} parametrina haun lähtö\-solmu.
-Jokaisessa kutsussa aliohjelma tarkistaa ensin,
+Jokaisessa kutsussa proseduuri tarkistaa ensin,
 olemmeko jo käy\-neet parametrina annetussa solmussa,
 ja päättyy heti tässä tilanteessa.
-Muuten aliohjelma merkitsee, että olemme nyt käyneet solmussa
+Muuten proseduuri merkitsee, että olemme nyt käyneet solmussa
 ja etenee rekursiivisesti kaikkiin sen naapureihin.
 Haku vie aikaa $O(n+m)$, koska käsitte\-lemme jokaisen
 solmun ja kaaren enintään kerran.
