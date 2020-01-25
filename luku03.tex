@@ -340,7 +340,7 @@ Seuraava koodi näyttää, kuinka voimme toteuttaa tämän proseduurin:
 procedure lomita(a1, b1, a2, b2)
     a = a1, b = b2
     for i = a to b
-        if a2 > b2 or (a1 <= b1 and taulu[a1] < taulu[a2])
+        if a2 > b2 or (a1 <= b1 and taulu[a1] <= taulu[a2])
             apu[i] = taulu[a1]
             a1 += 1
         else
