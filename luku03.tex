@@ -766,7 +766,7 @@ koska sitä voi käyttää vain silloin,
 kun taulukon kaikki alkiot ovat sopivan pieniä kokonaislukuja.
 
 
-\section{Järjestäminen Javassa}
+\section{Järjestäminen ohjelmoinnissa}
 
 Vaikka on hyödyllistä tuntea järjestämisen teoriaa,
 käytännössä ei ole hyvä idea toteuttaa itse
@@ -777,21 +777,18 @@ että se on varmasti hyvin toteutettu ja tehokas.
 Lisäksi meiltä säästyy aikaa, kun emme joudu
 toteuttamaan algoritmia itse.
 
-Javan standardikirjasto sisältää metodin \texttt{Arrays.sort},
-joka järjestää sille annetun taulukon.
-Esimerkiksi seuraava koodi järjestää kokonaislukuja
-sisältävän taulukon:
+\subsection{Java}
+
+Javan standardikirjaston metodi \texttt{Arrays.sort}
+järjestää sille annetun taulukon seuraavaan tapaan:
 
 \begin{code}
 int[] taulu = {4,2,5,8,2,1,5,6};
 Arrays.sort(taulu);
+// tulos: [1,2,2,4,5,5,6,8]
 \end{code}
 
-Kiinnostava kysymys on, mitä algoritmia Java käyttää
-taulukon järjes\-tämiseen.
-Asian voi tarkastaa Javan standardikirjaston
-dokumentaatiosta.
-Yllättävää kyllä, Javan käyttämä algoritmi riippuu siitä,
+Metodin sisäinen toiminta riippuu siitä,
 minkä \emph{tyyppistä} tietoa taulukossa on.
 Jos taulukon alkiot ovat alkeistyyppisiä
 (esimerkiksi \texttt{int}), Java käyttää 
@@ -799,7 +796,7 @@ pikajärjestämisen muunnelmaa,
 jossa on kaksi jakoalkiota.
 Jos taas alkiot ovat oliotyyppisiä
 (esimerkiksi \texttt{String}),
-algoritmina on optimoitu lomitusjärjestäminen.
+algoritmina on Timsort, joka on optimoitu lomitusjärjestäminen.
 
 Kun \texttt{Arrays.sort} järjestää olioita sisältävän taulukon,
 se kutsuu metodia \texttt{compareTo} aina, kun se haluaa selvittää
@@ -821,6 +818,7 @@ joissa on esimerkiksi merkkijonoja.
 Jos haluamme, että Java pystyy järjestämään omia olioitamme,
 meidän täytyy toteuttaa itse luokkaan metodi \texttt{compareTo} ja
 merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
+
 Esimerkiksi seuraava koodi toteuttaa luokan \texttt{Piste},
 johon voidaan tallentaa pisteen x- ja y-koordinaatit.
 Luokassa on metodi \texttt{compareTo}, joka määrittelee,
@@ -849,42 +847,60 @@ public class Piste implements Comparable<Piste> {
 Tämän jälkeen voimme järjestää taulukollisen pisteitä näin:
 
 \begin{code}
-Piste[] pisteet = new Piste[n];
-// ...
+Piste[] pisteet = {new Piste(1,3),
+                     new Piste(2,3),
+                     new Piste(1,2)};
 Arrays.sort(pisteet);
+// tulos: [(1,2),(1,3),(2,3)]
 \end{code}
 
-Metodin \texttt{compareTo} avulla voimme myös konkreettisesti
-tarkastella, mitä Java tekee järjestäessään taulukon.
-Seuraava luokka sisältää vain yhden luvun,
-mutta ilmoittaa meille aina, kun Java kutsuu
-\texttt{compareTo}-metodia:
+\subsection{Python}
+
+Pythonissa listan metodi \texttt{sort} järjestää sen sisällön:
 
 \begin{code}
-public class Luku implements Comparable<Luku> {
-    private int luku;
-    
-    public Luku(int luku) {
-        this.luku = luku;
-    }
-
-    public int compareTo(Luku x) {
-        System.out.println("vertailu: " + luku + " " + x.luku);
-        return this.luku-x.luku;
-    }
-}
+lista = [4,2,5,8,2,1,5,6]
+lista.sort()
+# tulos: [1,2,2,4,5,5,6,8]
 \end{code}
 
-Esimerkiksi kun järjestettävänä taulukkona on $[4,1,3,2]$,
-saamme tietää, että Java tekee seuraavat vertailut:
+Toinen tapa on käyttää funktiota \texttt{sorted},
+joka palauttaa järjestetyn kopion parametrina annetusta listasta:
 
 \begin{code}
-vertailu: 1 4
-vertailu: 3 1
-vertailu: 3 4
-vertailu: 3 1
-vertailu: 2 3
-vertailu: 2 1
+kopio = sorted(lista)
+\end{code}
+
+Python käyttää järjestämiseen Timsort-algoritmia,
+joka on optimoitu lomitusjärjestäminen.
+Sama algoritmi on käytössä Javassa silloin,
+kun taulukossa on olioita, ja algoritmi on kulkeutunut
+Javaan Pythonista.
+
+Järjestäminen toimii automaattisesti myös silloin,
+kun listan alkiot muodostuvat useammasta osasta:
+
+\begin{code}
+lista = [(1,3),(2,3),(1,2)]
+lista.sort()
+# tulos: [(1,2),(1,3),(2,3)]
+\end{code}
+
+Oletuksena alkiot järjestetään pienimmästä suurimpaan,
+mutta voimme muuttaa suunnan parametrilla \texttt{reverse}:
+
+\begin{code}
+lista.sort(reverse=True)
+\end{code}
+
+Lisäksi voimme antaa parametrilla \texttt{key} funktion,
+joka muuntaa alkion avaimeksi, jonka mukaan järjestäminen tapahtuu.
+Esimerkiksi seuraava koodi järjestää luvut niiden \emph{itseisarvon} mukaan:
+
+\begin{code}
+lista = [4,-2,-7,5,1]
+lista.sort(key=abs)
+# tulos: [1,-2,4,5,-7]
 \end{code}
 
 \section{Järjestämisen sovelluksia}
