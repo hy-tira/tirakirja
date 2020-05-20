@@ -381,77 +381,38 @@ läpi listan alkiot alusta loppuun,
 kun taas kahteen suuntaan linkitetyssä listassa
 voimme kulkea sekä alusta loppuun että lopusta alkuun.
 
-Kaksisuuntainen linkitys on käytännössä järkevä tapa toteuttaa
-linkitetty lista, ja oletamme jatkossa, että listamme on
-kahteen suuntaan linkitetty ja meillä on tiedossa viittaukset
-listan alkuun ja loppuun.
-
-\subsection{Linkitetyt rakenteet}
-
-Jokaisessa ohjelmointikielessä on omat keinonsa
-linkitetyn rakenteen toteuttamiseen.
-Javassa voimme toteuttaa linkitetyn rakenteen niin,
-että jokainen solmu on oma olionsa.
-Esimerkiksi voimme toteuttaa seuraavan luokan \texttt{Solmu},
-jonka oliot toimivat linkitetyn listan solmuina:
+Monissa kielissä tavallinen tapa toteuttaa linkitetty rakenne
+on luoda luokka, jonka oliot vastaavat rakenteen solmuja.
+Esimerkiksi voisimme rakentaa yhteen suuntaan
+linkitetyn listan $[1,2,3]$ tähän tapaan:
 
 \begin{code}
-public class Solmu {
-    public int arvo;
-    public Solmu seuraava;
-    public Solmu edellinen;
-
-    public Solmu(int arvo, Solmu seuraava, Solmu edellinen) {
-        this.arvo = arvo;
-        this.seuraava = seuraava;
-        this.edellinen = edellinen;
-    }
-}
+a.arvo = 1
+a.seuraava = b
+b.arvo = 2
+b.seuraava = c
+c.arvo = 3
+c.seuraava = null
 \end{code}
 
-Kenttä \texttt{arvo} kertoo solmun arvon,
-kenttä \texttt{seuraava} osoittaa seuraavaan solmuun
-ja kenttä \texttt{edellinen} osoittaa edelliseen solmuun.
-Jos seuraavaa tai edellistä solmua ei ole,
-viittauksen tilalla on arvo \texttt{null}.
-Esimerkiksi seuraava koodi luo solmun,
-jonka arvona on 5 ja joka ei viittaa mihinkään:
+Tässä toteutuksessa jokaisessa solmuoliossa on kaksi kenttää:
+\texttt{arvo} on solmussa oleva arvo ja
+\texttt{seuraava} viittaa listan seuraavaan solmuun.
+Listan loppumisen ilmaisee viimeisessä solmussa oleva arvo \texttt{null}.
+Voisimme käydä läpi listan solmut näin:
 
 \begin{code}
-Solmu s = new Solmu(5, null, null);
-\end{code}
-
-Seuraava koodi puolestaan näyttää, kuinka voimme luoda
-tämän luokan avulla linkitetyn listan $[3,7,2,5]$:
-
-\begin{code}
-Solmu s1, s2, s3, s4;
-s1 = new Solmu(3, s2, null);
-s2 = new Solmu(7, s3, s1);
-s3 = new Solmu(2, s4, s2);
-s4 = new Solmu(5, null, s3);
-\end{code}
-
-Tämän jälkeen voisimme käydä listan läpi näin alusta loppuun:
-
-\begin{code}
-Solmu s = s1;
-while (s != null) {
-    System.out.println(s.arvo);
-    s = s.seuraava;
-}
-\end{code}
-
-Koodin tulostus on seuraava:
-
-\begin{code}
-3
-7
-2
-5
+s = a
+while s != null
+    print(s.arvo)
+    s = s.seuraava
 \end{code}
 
 \subsection{Listan operaatiot}
+
+Käytännössä järkevä tapa toteuttaa linkitetty lista on tehdä
+listasta kaksisuuntainen, jolloin tiedämme jokaisessa solmussa
+seuraavan ja edellisen solmun ja voimme kulkea listaa molempiin suuntiin.
 
 Linkitetyn listan etuna on,
 että voimme lisätä ja poistaa
@@ -713,120 +674,101 @@ poistamme sen pinosta, ja muuten toteamme, että lauseke on virheellinen.
 Jos lausekkeen läpikäynnin aikana ei esiinny virheitä
 ja pino on lopuksi tyhjä, lauseke on oikein muodostettu.
 
-\section{Javan toteutukset}
+\section{Ohjelmointikielten toteutukset}
 
-Javan standardikirjastossa on monia listojen toteutuksia,
-jotka pohjautuvat taulukkolistaan tai linkitettyyn listaan.
-Seuraavaksi tutustumme rakenteisiin, joista on usein
-hyötyä algoritmien toteutuksessa.
+\subsection{Java}
 
-\subsection{\texttt{ArrayList}-rakenne}
-
-\texttt{ArrayList} on taulukkolista,
-joka sallii tehokkaat lisäykset ja poistot listan lopussa.
-Esimerkiksi seuraava koodi luo listan, lisää siihen alkiot
-1, 2 ja 3 ja tulostaa listan sisällön.
+Javan \texttt{ArrayList} on taulukkolista,
+jota voi käsitellä tehokkaasti listan lopusta.
+Metodi \texttt{add} lisää alkion listan loppuun:
 
 \begin{code}
 ArrayList<Integer> lista = new ArrayList<>();
 lista.add(1);
 lista.add(2);
 lista.add(3);
-System.out.println(lista); // [1, 2, 3]
+// tulos: [1,2,3]
 \end{code}
 
-Metodi \texttt{add} lisää oletuksena alkion listan loppuun
-ja toimii siinä tapauksessa keskimäärin ajassa $O(1)$.
+Metodi \texttt{remove} on tehokas,
+jos poistokohta on listan lopussa.
+Esimerkiksi seuraava koodi poistaa listan
+viimeisen alkion:
+
+\begin{code}
+lista.remove(lista.size()-1);
+\end{code}
 
 Koska lista on tallennettu taulukkona,
-pääsemme myös tehokkaasti käsiksi sen alkioihin
-kohdan perusteella.
-Metodi \texttt{get} hakee tietyssä kohdassa olevan arvon,
-ja metodi \texttt{set} muuttaa arvoa.
-Esimerkiksi seuraava koodi tulostaa ensin
-listan kohdassa 1 olevan alkion ja muuttaa sitten
-sen arvoksi 5.
+pääsemme myös tehokkaasti käsiksi missä tahansa kohdassa
+olevaan alkioon metodeilla \texttt{get} ja \texttt{set}:
 
 \begin{code}
-System.out.println(lista.get(1)); // 2
-lista.set(1,5);
-System.out.println(lista.get(1)); // 5
+// hae alkio kohdasta 3
+int x = lista.get(3);
+// muuta kohdan 5 alkioksi 8
+lista.set(5,8);
 \end{code}
 
-Luokassa \texttt{Collections} on hyödyllisiä metodeita,
-joiden avulla voimme muuttaa \texttt{ArrayList}-rakenteen
-alkioiden järjestystä.
-Seuraava esimerkkikoodi järjestää ensin listan,
-muuttaa sitten sen järjestyksen käänteiseksi
-ja sekoittaa lopuksi järjestyksen.
-
-\begin{code}
-Collections.sort(lista);
-Collections.reverse(lista);
-Collections.shuffle(lista);
-\end{code}
-
-\subsection{\texttt{ArrayDeque}-rakenne}
-
-\texttt{ArrayDeque}-rakenne on taulukkolista,
+\texttt{ArrayDeque} on taulukkolista,
 joka sallii tehokkaat lisäykset ja poistot
 sekä listan alussa että lopussa.
-Alkioita voi lisätä
-metodeilla \texttt{addFirst} ja \texttt{addLast}
-ja poistaa
-metodeilla \texttt{removeFirst} ja \texttt{removeLast}:
-
-\begin{code}
-ArrayDeque<Integer> lista = new ArrayDeque<>();
-lista.addLast(1);
-lista.addFirst(2);
-lista.addLast(3);
-System.out.println(lista); // [2, 1, 3]
-lista.removeFirst();
-System.out.println(lista); // [1, 3]
-\end{code}
-
-Lisäksi voimme hakea listan ensimmäisen ja viimeisen
-alkion metodeilla \texttt{getFirst} ja \texttt{getLast}:
+Metodit \texttt{addFirst} ja \texttt{addLast}
+lisäävät alkioita,
+ja metodit \texttt{removeFirst} ja \texttt{removeLast}
+poistavat alkioita.
 
 \begin{code}
 ArrayDeque<Integer> lista = new ArrayDeque<>();
 lista.addLast(1);
 lista.addLast(2);
 lista.addLast(3);
-System.out.println(lista.getFirst()); // 1
-System.out.println(lista.getLast()); // 3
+lista.removeFirst();
+lista.addFirst(4);
+// tulos: [4,2,3]
 \end{code}
 
-Kaikki nämä metodit toimivat keskimäärin ajassa $O(1)$.
-Rajoituksena on kuitenkin, että emme pääse käsiksi
-listan keskellä oleviin alkioihin, vaan voimme käsitellä
-vain listan alkua ja loppua.
+Lisäksi voimme hakea listan ensimmäisen ja viimeisen alkion
+metodeilla \texttt{getFirst} ja \texttt{getLast}:
 
-\subsection{\texttt{LinkedList}-rakenne}
+\begin{code}
+int eka = lista.getFirst();
+int vika = lista.getLast();
+\end{code}
 
-\texttt{LinkedList}-rakenne toteuttaa kaksisuuntaisen
-linkitetyn listan, jossa voimme helposti lisätä ja poistaa
-alkioita listan alussa ja lopussa.
-Seuraava koodi esittelee asiaa:
+Rajoituksena on kuitenkin, että yleisiä metodeita
+\texttt{get} ja \texttt{set} ei ole tarjolla
+emmekä pääse tehokkaasti käsiksi listan keskellä
+oleviin alkioihin.
+
+\texttt{LinkedList} on kaksisuuntainen linkitetty lista,
+jota voimme käsitellä samaan tapaan kuin \texttt{ArrayDeque}-listaa:
 
 \begin{code}
 LinkedList<Integer> lista = new LinkedList<>();
 lista.addLast(1);
-lista.addFirst(2);
+lista.addLast(2);
 lista.addLast(3);
-System.out.println(lista); // [2, 1, 3]
 lista.removeFirst();
-System.out.println(lista); // [1, 3]
+lista.addFirst(4);
+// tulos: [4,2,3]
 \end{code}
+
+\texttt{LinkedList} tarjoaa myös metodit
+\texttt{get} ja \texttt{set}, joiden avulla
+pääsemme käsiksi tietyssä kohdassa listalla olevaan alkioon.
+Nämä metodit vievät kuitenkin aikaa $O(n)$,
+koska joudumme kulkemaan ensin oikeaan kohtaan listan
+alusta tai lopusta.
 
 \index{iteraattori}
 
-Jos haluamme tehdä lisäyksiä ja poistoja muualla listassa,
-meidän täytyy ottaa käyttöön \emph{iteraattori}, joka osoittaa haluttuun kohtaan.
-Seuraava koodi luo iteraattorin, joka osoittaa ensin listan alkuun.
-Sitten siirrämme iteraattoria kaksi askelta eteenpäin ja
-lisäämme alkion 5 iteraattorin kohdalle eli listan
+Voimme käsitellä kaikkia äskeisiä listoja myös iteraattorilla,
+joka osoittaa tiettyyn listan kohtaan.
+Esimerkiksi seuraava koodi luo iteraattorin,
+joka osoittaa listan alkuun,
+siirtää iteraattoria kaksi askelta eteenpäin ja
+lisää alkion iteraattorin kohdalle eli listan
 toisen ja kolmannen alkion väliin.
 
 \begin{code}
@@ -836,20 +778,75 @@ x.next();
 x.add(5);
 \end{code}
 
-\texttt{LinkedList} tarjoaa myös metodit
-\texttt{get} ja \texttt{set}, joiden avulla
-pääsemme käsiksi tietyssä kohdassa listalla olevaan alkioon.
-Nämä metodit vievät kuitenkin aikaa $O(n)$,
-koska joudumme kulkemaan ensin oikeaan kohtaan listan
-alusta tai lopusta.
-Tämän vuoksi \texttt{LinkedList} ei ole hyvä valinta,
-jos haluamme käsitellä alkioita kohdan perusteella.
+Iteraattorin avulla voimme muokata tehokkaasti
+linkitettyä listaa siitä kohdasta,
+jossa iteraattori on tällä hetkellä.
+
+\subsection{Python}
+
+Pythonin tavallinen lista on taulukkolista,
+jota voi käsitellä tehokkaasti listan lopusta.
+Metodi \texttt{append} lisää alkion listan loppuun:
+
+\begin{code}
+lista = []
+lista.append(1)
+lista.append(2)
+lista.append(3)
+# tulos: [1,2,3]
+\end{code}
+
+Metodi \texttt{pop} puolestaan poistaa listan viimeisen alkion:
+
+\begin{code}
+lista.pop()
+\end{code}
+
+Pääsemme käsiksi listan alkioihin tehokkaasti \texttt{[]}-syntaksin avulla:
+
+\begin{code}
+x = lista[3]
+lista[5] = 8
+\end{code}
+
+Pythonissa on myös lista \texttt{deque},
+joka on toteutettu linkitettynä listana.
+Lisäykset ja poistot ovat tehokkaita sekä listan
+alussa että lopussa.
+Saamme tietorakenteen käyttöön näin:
+
+\begin{code}
+from collections import deque
+\end{code}
+
+Tavallisen listan tavoin \texttt{deque} tarjoaa
+metodit \texttt{append} ja \texttt{pop},
+mutta lisäksi siinä on metodit \texttt{appendleft}
+ja \texttt{popleft}, joiden avulla voi lisätä ja poistaa
+alkioita listan alussa:
+
+\begin{code}
+lista = deque()
+lista.append(1)
+lista.append(2)
+lista.append(3)
+lista.popleft()
+lista.appendleft(4)
+# tulos: [4,2,3]
+\end{code}
+
+Listan alkuun ja loppuun pääsee käsiksi näin:
+
+\begin{code}
+eka = lista[0]
+vika = lista[-1]
+\end{code}
+
+Myös listan keskellä olevia alkioita voi käsitellä \texttt{[]}-syntaksilla,
+mutta tämä vie aikaa $O(n)$, koska kyseessä on linkitetty lista.
 
 \section{Tehokkuusvertailu}
 
-Tärkeä kysymys on, miten tehokkaita taulukkolista ja
-linkitetty lista ovat \emph{käytännössä} ja kumpaa meidän
-kannattaa käyttää, jos voimme valita.
 Seuraavaksi vertailemme Javan taulukkolistan
 (\texttt{ArrayList}) ja linkitetyn listan (\texttt{LinkedList})
 käytännön tehokkuutta.
