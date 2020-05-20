@@ -845,88 +845,15 @@ vika = lista[-1]
 Myös listan keskellä olevia alkioita voi käsitellä \texttt{[]}-syntaksilla,
 mutta tämä vie aikaa $O(n)$, koska kyseessä on linkitetty lista.
 
-\section{Tehokkuusvertailu}
+\section{Miten valita lista?}
 
-Seuraavaksi vertailemme Javan taulukkolistan
-(\texttt{ArrayList}) ja linkitetyn listan (\texttt{LinkedList})
-käytännön tehokkuutta.
-
-Testissä luomme ensin taulukon, joka sisältää luvut $1,2,\dots,n$
-satunnaisessa järjestyksessä, sekä tyhjän listan.
-Tämän jälkeen käymme taulukon läpi vasemmalta oikealle
-ja lisäämme kunkin luvun listalle
-sen oikealle paikalle niin, että lista säilyy järjestettynä.
-Esimerkiksi jos listalla on ennestään alkiot $[2,3,6]$ ja seuraava
-taulukon alkio on $4$, listasta tulee $[2,3,4,6]$.
-Teemme saman testin taulukkolistalle ja linkitetylle listalle.
-
-Taulukkolistan tapauksessa käymme listaa läpi alusta
-muuttujalla $k$, kunnes tulemme kohtaan, johon uusi alkio kuuluu.
-Tämän jälkeen lisäämme alkion kohtaan $k$ kutsumalla metodia \texttt{add}.
-
-\begin{code}
-for (int i = 0; i < n; i++) {
-    int k = 0;
-    while (k < lista.size() && lista.get(k) < taulu[i]) {
-        k++;
-    }
-    lista.add(k,taulu[i]);
-}
-\end{code}
-
-Linkitetyn listan tapauksessa luomme iteraattorin,
-jonka avulla etsimme uuden alkion kohdan listan alusta lähtien.
-Tämän jälkeen lisäämme alkion listalle iteraattorin osoittamaan kohtaan.
-
-\begin{code}
-for (int i = 0; i < n; i++) {
-    ListIterator<Integer> x = lista.listIterator();
-    while (x.hasNext()) {
-        if (x.next() > taulu[i]) {
-            x.previous();
-            break;
-        }
-    }
-    x.add(taulu[i]);
-}
-\end{code}
-
-Taulukkolistassa sekä oikean kohdan etsiminen että alkion lisääminen
-vievät aikaa $O(n)$, kun taas linkitetyssä listassa
-oikean kohdan etsiminen vie aikaa $O(n)$, mutta alkion lisääminen
-vie aikaa vain $O(1)$.
-Mutta kuinka nopeasti koodit toimivat käytännössä?
-
-\begin{table}
-\center
-\begin{tabular}{rrr}
-parametri $n$ & \texttt{ArrayList} & \texttt{LinkedList} \\
-\hline
-$10000$ & 0.13 s & 0.38 s \\
-$20000$ & 0.48 s & 1.20 s \\
-$30000$ & 0.99 s & 2.70 s \\
-$40000$ & 1.72 s & 5.15 s \\
-$50000$ & 3.14 s & 8.99 s \\
-\end{tabular}
-\caption{Listarakenteiden tehokkuusvertailu.}
-\label{tab:listes}
-\end{table}
-
-Taulukko \ref{tab:listes} näyttää testin tulokset.
-Osoittautuu, että taulukkolista on selvästi
-\emph{nopeampi} kuin linkitetty lista.
-Näin käy siitä huolimatta, että taulukkolistassa
-alkion lisääminen vie aikaa $O(n)$, mutta linkitetyssä
-listassa aikaa kuluu $O(1)$.
-Kysymys kuuluukin:
-
-\subsubsection{Milloin kannattaa käyttää linkitettyä listaa?}
-
-Tietorakenteiden maailmassa jokaiselle tietorakenteelle
-on yleensä omat tietyt käyttötarkoituksensa,
-joissa se erottuu edukseen muista tietorakenteista.
-Linkitetty lista muodostaa kuitenkin poikkeuksen tähän sääntöön:
-\emph{sitä ei kannata käyttää yleensä koskaan}.
+Monissa algoritmeissa voimme käyttää toteutukseen joko
+taulukkolistaa tai linkitettyä listaa ja saada aikaan
+aikavaativuuden kannalta yhtä tehokkaan algoritmin.
+Esimerkiksi jos algoritmi lisää listan loppuun alkioita,
+sekä taulukkolistassa että linkitetyssä listassa
+lisäämisen aikavaativuus on $O(1)$.
+Mutta kumpi lista on parempi valinta käytännössä?
 
 \begin{figure}
 \center
@@ -950,20 +877,22 @@ Linkitetty lista muodostaa kuitenkin poikkeuksen tähän sääntöön:
 \label{fig:taulin}
 \end{figure}
 
-Syynä tähän on, että nykyaikaiset tietokoneet
+Useimmissa tapauksissa parempi valinta on taulukkolista,
+koska nykyaikaiset tietokoneet
 \emph{suosivat} taulukkolistan käyttämistä linkitetyn listan sijaan.
 Kuvassa \ref{fig:taulin} näkyy, miten taulukkolista ja linkitetty lista
 asettuvat tietokoneen muistissa.
 Taulukkolistan alkiot ovat peräkkäin, kun taas linkitetyn
 listan alkiot voivat olla eri puolilla muistia sekalaisessa
 järjestyksessä.
-Nykyaikaisen prosessorin välimuistit ja komentojen ennustus
+Nykyaikaisen prosessorin välimuistit ja seuraavaksi suoritettavien
+komentojen ennustus
 on toteutettu niin, että ne ovat parhaimmillaan silloin,
 kun tieto on tallennettu muistissa peräkkäin -- eli juuri kuten
 taulukkolistassa.
 Tämä näkyy käytännössä siinä, että taulukkolistan käsittely on selvästi
 tehokkaampaa kuin linkitetyn listan käsittely.
 
-Vaikka linkitetty lista ei ole käytännössä hyvä tietorakenne,
+Vaikka linkitetty lista ei ole usein käytännössä hyvä tietorakenne,
 linkitetyn rakenteen idea on hyödyllinen
 ja tarvitsemme sitä myöhemmin monimutkaisemmissa tietorakenteissa.
