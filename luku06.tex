@@ -15,9 +15,8 @@ Aloitamme luvun tutustumalla binääripuiden teoriaan,
 minkä jälkeen perehdymme binäärihakupuun toimintaan.
 Käsittelemme binäärihakupuun tehokkaasta toteutuksesta
 esimerkkinä AVL-puun.
-Sitten käymme läpi Javan tietorakenteet
-\texttt{TreeSet} ja \texttt{TreeMap}, jotka
-perustuvat binäärihakupuuhun,
+Sitten käymme läpi binääri\-hakupuun toteutuksia
+ohjelmointikielissä,
 ja lopuksi vertailemme joukkorakenteita ja järjestämistä.
 
 \section{Taustaa binääripuista}
@@ -889,52 +888,45 @@ ja teemme enintään kaksi kiertoa.
 Poistamisen jälkeen taas kuljemme puuta ylöspäin $O(\log n)$ askelta
 ja teemme enintään $O(\log n)$ kiertoa.
 
-\section{Javan toteutukset}
+\section{Ohjelmointikielten toteutukset}
+
+\subsection{Java}
 
 Javan tietorakenteet \texttt{TreeSet} ja \texttt{TreeMap}
-pohjautuvat punamustaan puuhun,
-joka on AVL-puun tapainen mutta monimutkaisempi
-binäärihakupuu.
-Ne muistuttavat rakenteita \texttt{HashSet} ja \texttt{HashMap},
-mutta erona on, että pystymme lisäksi etsimään
-alkioita niiden järjestyksen perusteella.
-Rakenteiden operaatiot toimivat ajassa $O(\log n)$.
+toteuttavat tasapainoisen binääri\-hakupuun.
+Ne perustuvat punamustaan puuhun, joka on AVL-puun tapainen
+puurakenne mutta monimutkaisempi.
+Nämä rakenteet tarjoavat samat metodit kuin
+\texttt{HashSet} ja \texttt{HashMap},
+mutta lisäksi tehokkaita metodeita,
+jotka liittyvät alkioiden järjestykseen puussa.
 
-\subsection{\texttt{TreeSet}-rakenne}
-
-Seuraava koodi luo \texttt{TreeSet}-rakenteen,
-joka pitää yllä lukujen joukkoa.
-Koodi lisää joukkoon alkioita ja tulostaa sitten sen sisällön.
-Huomaa, että tulostuksessa joukon alkiot näkyvät
-järjestyksessä pienimmästä suurimpaan, koska
-binäärihakupuu pitää niitä järjestyksessä.
+Seuraava koodi luo \texttt{TreeSet}-rakenteen
+ja lisää siihen lukuja:
 
 \begin{code}
-TreeSet<Integer> joukko = new TreeSet<>();
-joukko.add(4);
-joukko.add(1);
-joukko.add(8);
-joukko.add(7);
-System.out.println(joukko); // [1, 4, 7, 8]
+TreeSet<Integer> luvut= new TreeSet<>();
+luvut.add(4);
+luvut.add(1);
+luvut.add(8);
+luvut.add(7);
 \end{code}
 
 Koska joukko on järjestyksessä, pystymme etsimään tehokkaasti
 pienim\-män ja suurimman alkion metodeilla \texttt{first} ja \texttt{last}:
 
 \begin{code}
-System.out.println(joukko.first()); // 1
-System.out.println(joukko.last()); // 8
+int pienin = joukko.first(); // 1
+int suurin = joukko.last(); // 8
 \end{code}
 
-Pystymme myös etsimään seuraavan tiettyä alkiota
+Pystymme myös etsimään tehokkaasti seuraavan tiettyä alkiota
 suuremman tai pienemmän alkion metodeilla \texttt{higher} ja \texttt{lower}:
 
 \begin{code}
-System.out.println(joukko.higher(5)); // 7
-System.out.println(joukko.lower(5)); // 4
+int suurempi = joukko.higher(5); // 7
+int pienempi = joukko.lower(5); // 4
 \end{code}
-
-\subsection{\texttt{TreeMap}-rakenne}
 
 Seuraava koodi luo sanakirjan \texttt{TreeMap}-rakenteen avulla:
 
@@ -948,23 +940,21 @@ sanakirja.put("cembalo","harpsichord");
 Tämä sanakirja muodostuu avain-arvo-pareista,
 joissa avaimet ovat suomen kielen sanoja
 ja arvot ovat englannin kielen sanoja.
-Sanakirjan sisältö on järjestetty avaimien perusteella.
+Sanakirjan sisältö on järjestetty avainten perusteella.
 Esimerkiksi voimme selvittää, mikä on aakkosjärjestyksessä
 ensimmäinen ja viimeinen avain:
 
 \begin{code}
-System.out.println(sanakirja.firstKey()); // apina
-System.out.println(sanakirja.lastKey()); // cembalo
+String eka = sanakirja.firstKey(); // apina
+String vika = sanakirja.lastKey(); // cembalo
 \end{code}
 
 Samoin voimme selvittää lähinnä tiettyä avainta olevat avaimet:
 
 \begin{code}
-System.out.println(sanakirja.higherKey("biisoni")); // cembalo
-System.out.println(sanakirja.lowerKey("biisoni")); // banaani
+String seuraava = sanakirja.higherKey("biisoni"); // cembalo
+String edellinen = sanakirja.lowerKey("biisoni"); // banaani
 \end{code}
-
-\subsection{Omat luokat}
 
 Jos haluamme käyttää omia olioitamme \texttt{TreeSet}- ja
 \texttt{TreeMap}-rakenteissa, meidän tulee toteuttaa
@@ -982,6 +972,36 @@ Syynä on, että \texttt{TreeSet} toteuttaa rajapinnan \texttt{Set},
 joka edellyttää, että luokassa on oikein toimiva metodi \texttt{equals},
 vaikka siitä ei sinänsä olekaan hyötyä tässä tapauksessa.
 
+\subsection{Python}
+
+Pythonin standardikirjastossa \emph{ei} ole 
+tasapainoisen binäärihakupuun toteutusta.
+Tämä on kielen suunnittelussa tehty päätös,
+joka liittyy siihen, että kieleen ei haluta
+useita tapoja saman asian tekemiseen.
+Koska Pythonin standardikirjastossa on hajautustaulua
+käyttäviä tietorakenteita, binäärihaku\-puulle ei nähdä tarvetta.
+
+Miten selviämme Pythonissa ilman binäärihakupuuta?
+Mahdollisia ratkaisuja ovat:
+
+\begin{itemize}
+\item Useissa tilanteissa hajautustaulu riittää:
+binäärihakupuuta tarvitaan vain, jos haluamme etsiä
+alkioita järjestyksen perusteella.
+\item Vaikka järjestykselle on tarvetta, voimme käyttää
+usein binäärihaku\-puun sijasta listan järjestämistä tai
+seuraavassa luvussa käsiteltävää binäärikekoa, jonka toteutus
+on Pythonin standardikirjastossa.
+\item Voimme tarvittaessa käyttää myös jotain standardikirjaston
+ulkopuolista binäärihakupuun toteutusta.
+\end{itemize}
+
+Itse asiassa yleisempi suuntaus suosituissa ohjelmointikielissä vaikuttaa olevan,
+että standardikirjastossa on tarjolla hajautustaulu mutta ei
+binääri\-hakupuuta. Näin on myös JavaScript-kielessä,
+jossa tietorakenteet \texttt{Map} ja \texttt{Set} käyttävät hajautustaulua.
+
 \section{Tehokkuusvertailu}
 
 Monissa ongelmissa meillä on kaksi mahdollista lähestymistapaa:
@@ -993,7 +1013,7 @@ käytännön tehokkuuteen.
 Tarkastelemme seuraavaksi ongelmaa, jossa meille on annettu
 $n$ lukua sisältävä taulukko, ja haluamme selvittää,
 montako eri lukua taulukossa on.
-Ratkaisemme ongelman kolmella eri tavalla ja tutkimme sitten
+Ratkaisemme ongelman Javalla kolmella eri tavalla ja tutkimme sitten
 ratkaisujen tehokkuutta.
 
 \subsubsection{Ratkaisu 1: \texttt{TreeSet}}
@@ -1070,11 +1090,11 @@ operaatio ja se tehdään vain kerran.
 Binäärihakupuussa jokainen lisäys muuttaa puun rakennetta,
 mikä aiheuttaa suuret vakiokertoimet.
 
-Vaikka joukot ovat käteviä, niitä ei siis kannata
-käyttää turhaan.
+Vaikka hajautustaulu ja binäärihakupuu ovat käteviä,
+niitä ei siis kannata käyttää turhaan.
 Jos haluamme ratkaista ongelman todella tehokkaasti,
 kannattaa miettiä, voisimmeko käyttää tavalla tai toisella
-järjestämistä joukkojen sijaan.
+järjestämistä näiden tietorakenteiden sijaan.
 
 \begin{table}
 \center
