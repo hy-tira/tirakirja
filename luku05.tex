@@ -7,67 +7,87 @@ joka pitää yllä alkioiden joukkoa.
 Voimme tarkastaa,
 kuuluuko tietty alkio joukkoon,
 sekä lisätä ja poistaa alkioita.
-Kuten matematiikassa, jokainen alkio
-voi esiintyä enintään kerran joukossa.
 Hajautustaulussa kaikki yllä mainitut
 operaatiot toimivat tehokkaasti, mikä tekee siitä
 kätevän työkalun algoritmien toteuttamisessa.
 
-Tutustumme tässä luvussa ensin hajautustaulun
-toimintaan ja sen tehokkuuteen
-vaikuttaviin seikkoihin.
-Tämän jälkeen käsittelemme Javan tietorakenteet
-\texttt{HashSet} ja \texttt{HashMap},
-jotka perustuvat hajautustauluun.
-Lopuksi käymme läpi esimerkkejä tilanteista,
-joissa voimme käyttää hajautustaulua
-algoritmien suunnittelussa.
+\index{hajautusfunktio}
+\index{hajautusarvo}
 
-\section{Hajautustaulun toiminta}
+Hajautustaulun perustana on taulukko,
+johon tallennetaan joukon alkiot,
+sekä \emph{hajautusfunktio} (\emph{hash function}) $f(x)$,
+joka antaa \emph{hajautusarvon} (\emph{hash value})
+mille tahansa joukon alkiolle $x$.
+Hajautusarvo on kokonaisluku väliltä $0,1,\dots,N-1$,
+missä $N$ on hajautustaulun koko.
+Hajautusfunktio määrää, mihin hajautustaulun kohtaan
+mikäkin alkio tallennetaan.
+
+\section{Hajautustaulun toteutus}
+
+Hajautustaulun ideana on, että taulukon koko $N$ on selvästi pienempi
+kuin erilaisten mahdollisesti joukossa olevien alkioiden määrä.
+Tällöin taulukko ei vie liikaa tilaa muistissa,
+mutta toisaalta usealla alkiolla voi olla sama hajautusarvo,
+mikä täytyy ottaa huomioon hajautustaulun toteutuksessa.
+
+Tarkastellaan esimerkkinä hajautusfunktiota $f(x)=x^2 \bmod N$,
+missä $x$ on kokonaisluku.
+Tämä hajautusfunktio laskee luvun $x$ neliön ja ottaa
+sitten jakojäännöksen luvulla $N$.
+Esimerkiksi kun $N=10$, voimme laskea näin alkioiden
+4, 7, 11 ja 13 paikat hajautustaulussa:
+
+\begin{itemize}
+\item $f(4)=4^2 \bmod 10 = 16 \bmod 10 = 6$
+\item $f(7)=7^2 \bmod 10 = 49 \bmod 10 = 9$
+\item $f(11)=11^2 \bmod 10 = 121 \bmod 10 = 1$
+\item $f(13)=13^2 \bmod 10 = 169 \bmod 10 = 9$
+\end{itemize}
+
+\index{törmäys}
+
+Tässä tapauksessa $f(7)=f(13)=9$ eli alkioilla $7$ ja $13$ on
+sama hajautusarvo $9$.
+Kyseessä on \emph{törmäys} (\emph{collision}):
+molemmat alkiot tulisi tallentaa samaan kohtaan hajautustaulussa.
+Mitä teemme?
+
+\subsection{Hajautus listoilla}
 
 \begin{figure}
 \center
 \begin{tikzpicture}[scale=0.5]
 \draw (0,0) grid (10,1);
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
-\draw[->,thick] (2.5,0) -- (2.5,-1);
-\draw[->,thick] (5.5,0) -- (5.5,-1);
-\draw[->,thick] (7.5,0) -- (7.5,-1);
-\draw[->,thick] (2.5,-2) -- (2.5,-3);
-\node at (2.5,-1.5) {$12$};
-\node at (5.5,-1.5) {$15$};
-\node at (7.5,-1.5) {$7$};
-\node at (2.5,-3.5) {$32$};
+\draw[->,thick] (1.5,0) -- (1.5,-1);
+\draw[->,thick] (6.5,0) -- (6.5,-1);
+\draw[->,thick] (9.5,0) -- (9.5,-1);
+\draw[->,thick] (9.5,-2) -- (9.5,-3);
+\node at (1.5,-1.5) {$11$};
+\node at (6.5,-1.5) {$4$};
+\node at (9.5,-1.5) {$7$};
+\node at (9.5,-3.5) {$13$};
 \end{tikzpicture}
-\caption{Hajautustaulu, joka vastaa joukkoa $\{7,12,15,32\}$.
-Hajautusfunktiona on $f(x)=x \bmod 10$.}
+\caption{Listoja käyttävä hajautustaulu, joka vastaa joukkoa $\{4,7,11,13\}$.
+Hajautusfunktiona on $f(x)=x^2 \bmod N$.}
 \label{fig:hajtau}
 \end{figure}
 
-\index{hajautusfunktio}
-\index{hajautusarvo}
-
-Toteutamme hajautustaulun taulukkona,
-jonka jokaisessa kohdassa on lista joukkoon kuuluvia alkioita.
-Jotta voimme käyttää hajautustaulua,
-tarvitsemme \emph{hajautusfunktion} (\emph{hash function}) $f$,
-joka antaa \emph{hajautusarvon} (\emph{hash value})
-$f(x)$ mille tahansa joukon alkiolle $x$.
-Hajautusarvo on kokonaisluku väliltä
-$0,1,\dots,N-1$, missä $N$ on hajautustaulun koko.
-Tallennamme hajautustaulun kohdassa $k$ olevaan listaan
-kaikki ne joukon alkiot, joiden hajautusarvo on $k$.
+Tavallinen tapa toteuttaa hajautustaulu on
+tallentaa jokaiseen taulukon kohtaan \emph{lista}
+alkioista, joilla on kyseinen hajautusarvo.
+Tällöin mahdolliset alkioiden törmäykset eivät haittaa,
+koska ne kaikki mahtuvat listaan.
 
 Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu,
-jonka kokona on $N=10$.
-Olemme tallentaneet hajautustauluun joukon $\{7,12,15,32\}$
-käyttäen hajautusfunktiota $f(x)=x \bmod 10$.
-Tämä tarkoittaa, että alkion $x$ hajautusarvo on sen jakojäännös $10$:llä
-eli luvun viimeinen numero.
-Esimerkiksi alkiot $12$ ja $32$ ovat kohdassa $2$,
-koska niissä viimeinen numero on $2$,
-ja alkiot $15$ ja $7$ ovat vastaavasti kohdissa $5$ ja $7$.
-Kaikki muut hajautustaulun listat ovat tällä hetkellä tyhjiä.
+johon on tallennettu joukko $\{4,7,11,13\}$
+käyttäen hajautusfunktiota $f(x)=x^2 \bmod N$.
+Alkio 11 on kohdan 1 listassa,
+alkio 4 on kohdan 6 listassa ja
+alkiot 7 ja 13 ovat kohdan 9 listassa.
+Muissa kohdissa olevat listat ovat vielä tyhjiä.
 
 Kun haluamme tarkastaa, onko joukossa alkiota $x$,
 laskemme ensin sen hajautusarvon $f(x)$.
@@ -77,21 +97,6 @@ onko jokin niistä alkio $x$.
 Vastaavasti kun haluamme lisätä alkion $x$ joukkoon
 tai poistaa alkion $x$ joukosta,
 teemme muutoksen kohdassa $f(x)$ olevaan listaan.
-Jokaisen operaation aikavaativuus on $O(m)$,
-missä $m$ on listan alkioiden määrä.
-Hajautustaulu toimii siis tehokkaasti, jos jokainen
-siinä oleva lista on lyhyt.
-
-\subsection{Hajautusfunktio}
-
-Hajautusfunktio $f(x)$ määrittää, mihin kohtaan hajautustaulua
-alkio $x$ sijoitetaan.
-Sen täytyy antaa jokaiselle mahdolliselle alkiolle
-hajautusarvo eli kokonaisluku väliltä $0,1,\dots,N-1$,
-missä $N$ on hajautustaulun koko.
-Muilta osin meillä on periaatteessa vapaat kädet
-hajautusfunktion suunnitteluun.
-Mutta millainen olisi hyvä hajautusfunktio?
 
 \begin{figure}
 \center
@@ -123,18 +128,130 @@ huonoin mahdollinen.}
 \label{fig:hajjak}
 \end{figure}
 
-Haluamme, että hajautusfunktio jakaa alkioita \emph{tasaisesti}
-hajautustaulun eri puolille.
-Jos onnistumme tässä, kaikki listat ovat lyhyitä ja
-hajautustaulun operaatiot ovat tehokkaita.
-Kuva \ref{fig:hajjak} näyttää kaksi hajautustaulua, jotka vastaavat
-joukkoa $\{a,b,c\}$ kahdella eri hajautusfunktiolla.
-Vasemmassa taulussa hajautus on onnistunut täydellisesti
-ja jokainen alkio on omassa listassaan.
-Oikeassa taulussa taas kaikki alkiot ovat joutuneet samaan
-listaan eikä hajautuksesta ole mitään hyötyä.
-Tavoitteemme on saada aikaan hajautusfunktio,
-jonka toiminta on lähempänä vasenta tilannetta.
+Tällaisessa hajautustaulussa
+jokaisen operaation aikavaativuus on $O(m)$,
+missä $m$ on listan alkioiden määrä.
+Hajautustaulu toimii siis tehokkaasti, jos jokainen
+siinä oleva lista on lyhyt.
+Tämä toteutuu, jos käytetty hajautusfunktio sijoittaa
+alkioita tasaisesti hajautustaulun eri puolille.
+Kuvassa \ref{fig:hajjak} on kaksi ääriesimerkkiä
+hajautuksen onnistumisesta:
+vasemmalla jokainen alkio on eri kohdassa,
+mikä on paras mahdollinen tilanne,
+kun taas oikealla kaikki alkiot ovat samassa kohdassa,
+mikä on huonoin mahdollinen tilanne.
+
+\subsection{Avoin hajautus}
+
+Toinen tapa toteuttaa hajautustaulu on \emph{avoin hajautus},
+jossa alkiot tallennetaan suoraan hajautustauluun listojen sijasta.
+Kuitenkin jos alkio kuuluisi paikkaan, jossa on jo valmiina
+jokin toinen alkio, sille valitaan toinen paikka jonkin säännön perusteella.
+
+Tarkastellaan aluksi yksinkertaista sääntöä,
+jossa alkio koetetaan sijoittaa taulukon \emph{seuraavaan}
+kohtaan, jos sen paikalla on jo jokin alkio.
+Tätä jatketaan, kunnes taulukosta löytyy vapaa paikka alkiolle.
+Toisin sanoen kun alkion $x$ hajautusarvo on $f(x)$,
+sitä koetetaan sijoittaa järjestyksessä kohtiin 
+$f(x)$, $f(x)+1$, $f(x)+2$, jne., kunnes vapaa paikka löytyy.
+Kohdan $N-1$ jälkeen etsintä jatkuu kohdasta $0$.
+
+Kuvassa \ref{fig:hajavo} näkyy joukon $\{4,7,11,13\}$
+sijoittuminen hajautustauluun
+käyttäen hajautusfunktiota $f(x)=x^2 \bmod N$ ja yllä kuvattua
+avoimen hajautuksen sääntöä.
+Oletuksena on, että alkio 7 lisätään ennen alkiota 13.
+Koska alkio 13 kuuluisi kohtaan 9, jossa on jo alkio 7,
+se meneekin seuraavaan kohtaan 0.
+Kuvassa \ref{fig:hajav2} mukaan lisätään vielä alkio 3,
+jolla on myös hajautusarvo 9.
+Koska kohdissa 9, 0 ja 1 on jo alkio, sen kohdaksi tulee 2.
+Alkio voi sijoittua siis kauaskin hajautusarvon määräämästä kohdasta,
+jos hajautustaulussa on täyttä.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw (0,-1) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\node at (1.5,-0.5) {$11$};
+\node at (6.5,-0.5) {$4$};
+\node at (9.5,-0.5) {$7$};
+\node at (0.5,-0.5) {$13$};
+\end{tikzpicture}
+\caption{Avointa hajautusta käyttävä hajautustaulu, joka vastaa joukkoa $\{4,7,11,13\}$.
+Hajautusfunktiona on $f(x)=x^2 \bmod N$.}
+\label{fig:hajavo}
+\end{figure}
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw (0,-1) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\node at (1.5,-0.5) {$11$};
+\node at (6.5,-0.5) {$4$};
+\node at (9.5,-0.5) {$7$};
+\node at (0.5,-0.5) {$13$};
+\node at (2.5,-0.5) {$3$};
+\end{tikzpicture}
+\caption{Hajautustauluun lisätään vielä alkio 3, jonka hajautusarvo on 9.
+Sille löytyy paikka vasta kohdasta 2.}
+\label{fig:hajav2}
+\end{figure}
+
+Kun haluamme löytää alkion $x$ hajautustaulusta avointa hajautusta käyt\-täen,
+aloitamme kohdasta $f(x)$ ja tutkimme sitten kohtia säännön mukaisesti,
+kunnes joko löydämme alkion tai tulemme tyhjään kohtaan, jolloin voimme päätellä,
+että hajautustaulussa ei ole alkiota.
+Esimerkiksi kun haluamme löytää kuvan \ref{fig:hajav2} hajautustaulusta
+alkion 3, aloitamme kohdasta $f(3)=9$ ja kuljemme eteenpäin kohtaan 2 asti.
+
+Alkion poistaminen aiheuttaa hieman ongelmia avoimessa hajautuksessa,
+koska jos vain merkitsemme alkion kohdan tyhjäksi, tämä voi häiritä tulevia hakuja.
+Esimerkiksi jos poistaisimme kuvan \ref{fig:hajav2} hajautustaulusta alkion 11
+merkitsemällä kohdan 1 tyhjäksi, emme enää löytäisi alkiota 3,
+koska haku pysähtyisi tyhjään kohtaan 1.
+Kuitenkin voimme kiertää ongelman käyttämällä jotain erikoismerkkiä
+poistetulle alkiolle. Kuvassa \ref{fig:hajav3} poistetun alkion merkkinä on X,
+joka tarkoittaa, että kyseinen kohta on tyhjä mutta siinä on ollut alkio.
+Niinpä alkion 3 haku ei pääty tähän kohtaan,
+vaikka siihen voi myös sijoittaa uuden alkion myöhemmin.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw (0,-1) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\node at (1.5,-0.5) {X};
+\node at (6.5,-0.5) {$4$};
+\node at (9.5,-0.5) {$7$};
+\node at (0.5,-0.5) {$13$};
+\node at (2.5,-0.5) {$3$};
+\end{tikzpicture}
+\caption{Hajautustaulusta on poistettu alkio 11, jonka tilalla on merkki X.
+Tämän ansiosta alkion 3 haku ei pysähdy kohtaan 1.}
+\label{fig:hajav3}
+\end{figure}
+
+Avoimen hajautuksen tehokkuus riippuu sekä käytetystä hajautusfunktiosta
+että säännöstä, joka etsii alkiolle uuden paikan.
+Käytännössä tässä esitetty sääntö, joka valitsee aina seuraavan paikan,
+ei ole hyvä, koska sen seurauksena alkioita kasautuu helposti taulukon
+peräkkäisiin kohtiin.
+
+\subsection{Hajautusfunktion valinta}
+
+Hajautusfunktio $f(x)$ määrittää, mihin kohtaan hajautustaulua
+alkio $x$ sijoitetaan.
+Sen täytyy antaa jokaiselle mahdolliselle alkiolle
+hajautusarvo eli kokonaisluku väliltä $0,1,\dots,N-1$,
+missä $N$ on hajautustaulun koko.
+Muilta osin meillä on periaatteessa vapaat kädet
+hajautusfunktion suunnitteluun.
+Mutta miten meidän kannattaa valita hajautusfunktio?
 
 Jos hajautettavat alkiot ovat kokonaislukuja,
 suoraviivainen hajautusfunktio on $f(x)=x \bmod N$,
@@ -174,21 +291,9 @@ Esimerkiksi jos $A=7$, merkkijonoa \texttt{testi} vastaa kokonaisluku
 \[7^4 \cdot 116+7^3 \cdot 101+7^2 \cdot 115+7^1 \cdot 116+7^0 \cdot 105=319711.\]
 Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus}
 (\emph{polynomial hashing}),
-on käytän\-nössä hyvä merkkijonon hajautustapa,
-joka on käytössä esimerkiksi Javan standardikirjastossa.
-Voimme laskea polynomisen hajautusarvon jakojäännöksen seuraavalla koodilla:
+on yksi käytännössä toimiva merkkijonon hajautustapa.
 
-\begin{code}
-h = 0
-for i = 0 to k-1
-    h = (h*A+c[i])%N;
-\end{code}
-
-Tämän koodin etuna on, että se laskee jakojäännöksen joka
-merkin lisää\-misen jälkeen, minkä ansiosta tavallinen kokonaislukutyyppi
-(esim. Javassa \texttt{int} tai \texttt{long}) riittää hajautusarvon laskemiseen.
-
-\subsection{Hajautuksen tehokkuus}
+\subsection{Miten hyvin hajautus toimii?}
 
 Hajautustaulun operaatiot vievät aikaa $O(m)$,
 jossa $m$ on hajautustaulussa olevan listan pituus.
