@@ -36,7 +36,7 @@ ja algoritmin tulee tuottaa \emph{tuloste} (\emph{output}),
 joka on vastaus sille annettuun syötteeseen.
 
 Tarkastellaan esimerkkinä ongelmaa,
-jossa syötteenä on $n$ kokonaislukua sisältävä taulukko ja
+jossa syötteenä on $n$ kokonaislukua sisältävä lista ja
 tehtävänä on laskea lukujen summa.
 Esimerkiksi jos syöte on $[2,4,1,8]$,
 haluttu tuloste on 15, koska $2+4+1+8=15$.
@@ -47,11 +47,10 @@ summan muuttujaan.
 Algoritmin toiminnan esittämiseen on useita mahdollisuuksia.
 Yksi tapa on selostaa sanallisesti, kuinka algoritmi toimii,
 kuten teimme äsken.
-Toinen tapa taas on antaa koodi, joka toteuttaa algoritmin.
-Tällöin meidän täytyy valita jokin ohjelmointikieli,
-jonka avulla esitämme algoritmin.
-Esimerkiksi seuraava Java-koodi kuvaa algoritmin,
-joka laskee lukujen summan:
+Toinen tapa taas on antaa jollain ohjelmointikielellä
+kirjoitettu koodi, joka toteuttaa algoritmin.
+Esimerkiksi voimme toteuttaa lukujen summan laskevan
+algoritmin näin Java- ja Python-kielillä:
 
 \begin{code}
 int summa = 0;
@@ -59,6 +58,13 @@ for (int i = 0; i < n; i++) {
     summa += luvut[i];
 }
 System.out.println(summa);
+\end{code}
+
+\begin{code}
+summa = 0
+for i in range(n):
+    summa += luvut[i]
+print(summa)
 \end{code}
 
 \index{pseudokoodi}
@@ -78,12 +84,12 @@ for i = 0 to n-1
 print(summa)
 \end{code}
 
-Tässä kirjassa esitämme algoritmeja sekä Java-koodina että pseudokoodina
-tilanteesta riippuen.
-Käytämme Java-koodia silloin, kun haluamme kiinnittää huomiota siihen,
-miten jokin asia toteutetaan tarkalleen Javassa.
-Pseudokoodia käytämme taas silloin, kun haluamme kuvata algoritmin yleisen
-idean eikä käytetyllä kielellä ole merkitystä.
+Tässä kirjassa esitämme algoritmeja pseudokoodin avulla,
+koska kurssi käsittelee yleistä ohjelmoinnin teoriaa,
+joka ei liity tiettyyn ohjelmointikieleen.
+Tämän lisäksi tutustumme siihen, miten tietyt algoritmit
+ja tietorakenteet on toteutettu Javan ja Pythonin
+standardikirjastossa.
 
 \section{Ohjelmoinnin peruspalikat}
 
@@ -96,18 +102,10 @@ Tutustumme myös samalla tarkemmin kirjassa käytettyyn pseudokoodiin.
 \subsubsection{Muuttuja}
 
 \index{muuttuja}
-\emph{Muuttuja} (\emph{variable}) sisältää yksittäisen algoritmin
-käsittelemän tiedon, kuten luvun, merkin tai totuusarvon.
-Esimerkiksi seuraava Java-koodi määrit\-telee kolme \texttt{int}-muuttujaa:
-
-\begin{code}
-int a = 5;
-int b = 7;
-int c = a+b;
-\end{code}
-
-Pseudokoodissa käytämme muuttujia samaan tapaan,
-mutta emme merkitse niiden tyyppiä erikseen:
+\emph{Muuttuja} (\emph{variable}) sisältää algoritmin
+käsittelemää tietoa.
+Pseudokoodissa käytäntönä on, että voimme käyttää muuttujia
+suoraan ilman erillistä määrittelyä:
 
 \begin{code}
 a = 5
@@ -119,18 +117,8 @@ c = a+b
 
 \index{ehtolause}
 \emph{Ehtolause} (\emph{conditional statement}) saa ohjelman
-toiminnan riippumaan esimerkiksi muuttujien arvoista.
-Seuraava Java-koodi ilmoittaa, onko muuttujan $x$ arvo parillinen vai pariton:
-
-\begin{code}
-if (x%2 == 0) {
-    System.out.println("parillinen");
-} else {
-    System.out.println("pariton");
-}
-\end{code}
-
-Vastaava pseudokoodi on seuraavanlainen:
+toiminnan haarautumaan.
+Käytämme pseudokoodissa seuraavaa syntaksia:
 
 \begin{code}
 if x%2 == 0
@@ -143,38 +131,24 @@ else
 
 \index{silmukka}
 \emph{Silmukka} (\emph{loop}) toistaa sen sisällä olevaa koodia.
-Tavalliset silmukat ovat for-silmukka,
-jonka avulla voi käydä läpi tietyn lukuvälin,
-sekä while-silmukka,
-joka jatkuu niin kauan kuin haluttu ehto on voimassa.
-
-Esimerkiksi seuraava Java-koodi tulostaa luvut $1,2,\dots,100$:
-
-\begin{code}
-for (int i = 1; i <= 100; i++) {
-    System.out.println(i);
-}
-\end{code}
-
-Tässä on vastaava pseudokoodi:
+Merkitsemme pseudokoodissa seuraavasti for-silmukan,
+joka käy läpi luvut väliltä 1--100:
 
 \begin{code}
 for i = 1 to 100
     print(i)
 \end{code}
 
-Seuraava Java-koodi puolestaan tulostaa positiivisia lukuja luvusta $x$ alkaen
-ja puolittaa luvun joka askeleella.
+Seuraava for-silmukka käy puolestaan läpi listassa olevat alkiot:
 
 \begin{code}
-while (x >= 1) {
-    System.out.println(x);
-    x /= 2;
-}
+for x in lista
+    print(x)
 \end{code}
 
-Esimerkiksi jos $x=50$, koodi tulostaa luvut 50, 25, 12, 6, 3 ja 1.
-Vastaava pseudokoodi on seuraavanlainen:
+Toinen silmukkatyyppi on while-silmukka, joka toistaa koodia niin kauan
+kuin silmukan alussa annettu ehto on voimassa.
+Esimerkiksi seuraava silmukka jatkuu niin kauan kuin $x$:n arvo on ainakin 1:
 
 \begin{code}
 while x >= 1
@@ -185,75 +159,44 @@ while x >= 1
 \subsubsection{Taulukko}
 
 \index{taulukko}
-\index{tietorakenne}
 \index{indeksi}
 
-\emph{Taulukko} (\emph{array}) on ohjelmoinnin tavallisin \emph{tietorakenne}
-(\emph{data structure})
-eli tapa säilyttää kokoelmaa tietoa ohjelmassa.
-Taulukossa on $n$ alkiota, joiden kohdat (eli indeksit) ovat $0,1,\dots,n-1$.
-
-Esimerkiksi seuraava Java-koodi luo taulukon,
-jossa on 5 kokonaislukua. Aluksi jokainen luku on 0,
-ja sitten koodi muuttaa kohtia 0 ja 3.
-
-\begin{code}
-int[] luvut = new int[5];
-luvut[0] = 4;
-luvut[3] = 2;
-\end{code}
-
-Pseudokoodissa taulukkoa käytetään muuten samalla tavalla,
-mutta usein taulukkoa ei määritellä erikseen:
+Ohjelmoinnin perustana oleva tietorakenne on \emph{taulukko} (\emph{array}),
+joka sisältää kokoelman peräkkäin olevia alkioita.
+Voimme viitata taulukon alkioihin \texttt{[]}-syntaksilla:
 
 \begin{code}
 luvut[0] = 4
 luvut[3] = 2
 \end{code}
 
-\index{merkkijono}
-Taulukon erikoistapaus on \emph{merkkijono} (\emph{string}),
-jolloin taulukon jokainen alkio on merkki.
+Noudatamme kirjassa yleistä käytäntöä, jossa taulukon alkiot on indeksoitu
+$0,1,\dots,n-1$, kun taulukossa on $n$ alkiota.
 
-Taulukko on mainio tietorakenne, mutta siinä on kaksi heikkoutta:
-(1) taulukon kokoa ei voi muuttaa määrittelyn jälkeen ja
-(2) tietyn alkion etsiminen suuresta taulukosta on hidasta.
-Kurssin aikana tutustumme muihin tietorakenteisiin,
-jotka ratkaisevat nämä ongelmat.
+Taulukon ominaisuuksia ovat, että siinä on kiinteä määrä alkioita ja
+pääsemme tehokkaasti käsiksi mihin tahansa alkioon indeksin perusteella.
+Taulukko vastaa tiedon tallennustapaa tietokoneen muistissa,
+ja voimme toteuttaa taulukon avulla minkä tahansa muun tietorakenteen.
 
-Taulukko on tärkeä tietorakenne myös sen vuoksi,
-että tietokoneen muisti on kuin suuri taulukko.
-Niinpä minkä tahansa muun tietorakenteen voi toteuttaa
-taulukon avulla.
+\index{lista}
 
-\subsubsection{Aliohjelma}
+Taulukko on perustietorakenne esimerkiksi Javassa,
+mutta monissa nykyään suosituissa kielissä (kuten Pythonissa)
+taulukon sijasta perustietorakenne on \emph{lista},
+joka muistuttaa taulukkoa mutta sen koko voi muuttua.
+Yleensä lista on kuitenkin toteutettu sisäisesti taulukon avulla,
+ja luvussa 4 näemme, miten tämä tapahtuu käytännössä.
+
+\subsubsection{Aliohjelmat}
 
 \index{aliohjelma}
-\index{metodi}
 \index{proseduuri}
 \index{funktio}
 
-\emph{Aliohjelma} (\emph{subprogram}) on ohjelman nimetty osa,
-jota voi kutsua parametreilla.
-Aliohjelmalle on monia eri nimiä kielestä riippuen,
-ja Javassa käytetään nimeä \emph{metodi} (\emph{method}).
-Tässä kirjassa käytäntönä on,
-että \emph{proseduuri} (\emph{procedure}) on aliohjelma,
-joka ei palauta mitään (Javassa \texttt{void}),
-ja \emph{funktio} (\emph{function}) on aliohjelma,
-jolla on palautusarvo.
-
-Esimerkiksi seuraava Java-metodi tulostaa luvut $1,2,\dots,n$:
-
-\begin{code}
-void tulosta(int n) {
-    for (int i = 1; i <= n; i++) {
-        System.out.println(i);
-    }
-}
-\end{code}
-
-Tätä vastaa pseudokoodina seuraava proseduuri:
+Käytämme kirjassa termiä \emph{proseduuri} (\emph{procedure})
+aliohjelmasta, jolla ei ole palautusarvoa,
+ja termiä \emph{funktio} (\emph{function}) aliohjelmasta, jolla on palautusarvo.
+Esimerkiksi seuraava proseduuri tulostaa lukuja:
 
 \begin{code}
 procedure tulosta(n)
@@ -261,19 +204,7 @@ procedure tulosta(n)
         print(i)
 \end{code}
 
-Seuraava Java-metodi puolestaan laskee summan $1+2+\dots+n$:
-
-\begin{code}
-int summa(int n) {
-    int s = 0;
-    for (int i = 1; i <= n; i++) {
-        s += i;
-    }
-    return s;
-}
-\end{code}
-
-Tätä vastaa pseudokoodina seuraava funktio:
+Seuraava funktio puolestaan laskee lukujen summan:
 
 \begin{code}
 function summa(n)
@@ -282,6 +213,11 @@ function summa(n)
         s += i
     return s
 \end{code}
+
+Aliohjelmiin liittyvä termistö vaihtelee ohjelmointikielen mukaan:
+esimerkiksi Javassa käytetään molemmissa tapauksissa termiä
+\emph{metodi} ja Pythonissa käytetään termiä \emph{funktio} tai
+\emph{metodi} tilanteesta riippuen.
 
 \subsubsection{Rekursio}
 
