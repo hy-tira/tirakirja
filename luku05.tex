@@ -3,58 +3,56 @@
 \index{hajautustaulu}
 
 \emph{Hajautustaulu} (\emph{hash table}) on tietorakenne,
-joka pitää yllä alkioiden joukkoa.
-Voimme tarkastaa,
-kuuluuko tietty alkio joukkoon,
-sekä lisätä ja poistaa alkioita.
-Hajautustaulussa kaikki yllä mainitut
-operaatiot toimivat tehokkaasti, mikä tekee siitä
-kätevän työkalun algoritmien toteuttamisessa.
+joka tarjoaa seuraavat tehokkaat operaatiot:
+
+\begin{itemize}
+\item lisää alkio joukkoon
+\item tarkasta, onko alkio joukossa
+\item poista alkio joukosta
+\end{itemize}
+
+Tässä luvussa tutustumme ensin hajautustaulun toteuttamiseen.
+Tämän jälkeen näemme, miten voimme käyttää hajautustaulua
+algoritmien suunnittelussa.
+
+
+\section{Hajautustaulun toteutus}
 
 \index{hajautusfunktio}
 \index{hajautusarvo}
 
-Hajautustaulun perustana on taulukko,
-johon tallennetaan joukon alkiot,
-sekä \emph{hajautusfunktio} (\emph{hash function}) $f(x)$,
+Hajautustaulun perustana on \emph{hajautusfunktio}
+(\emph{hash function}) $f(x)$,
 joka antaa \emph{hajautusarvon} (\emph{hash value})
 mille tahansa joukon alkiolle $x$.
 Hajautusarvo on kokonaisluku väliltä $0,1,\dots,N-1$,
 missä $N$ on hajautustaulun koko.
-Hajautusfunktio määrää, mihin hajautustaulun kohtaan
-mikäkin alkio tallennetaan.
+Hajautusarvo määrää, mihin hajautustaulun kohtaan
+alkio tallennetaan.
 
-\section{Hajautustaulun toteutus}
-
-Hajautustaulun ideana on, että taulukon koko $N$ on selvästi pienempi
-kuin erilaisten mahdollisesti joukossa olevien alkioiden määrä.
-Tällöin taulukko ei vie liikaa tilaa muistissa,
-mutta toisaalta usealla alkiolla voi olla sama hajautusarvo,
-mikä täytyy ottaa huomioon hajautustaulun toteutuksessa.
-
-Tarkastellaan esimerkkinä hajautusfunktiota $f(x)=x^2 \bmod N$,
+Tarkastellaan esimerkkinä hajautusfunktiota $f(x)=x \bmod N$,
 missä $x$ on kokonaisluku.
-Tämä hajautusfunktio laskee luvun $x$ neliön ja ottaa
-sitten jakojäännöksen luvulla $N$.
-Esimerkiksi kun $N=10$, voimme laskea näin alkioiden
-4, 7, 11 ja 13 paikat hajautustaulussa:
-
-\begin{itemize}
-\item $f(4)=4^2 \bmod 10 = 16 \bmod 10 = 6$
-\item $f(7)=7^2 \bmod 10 = 49 \bmod 10 = 9$
-\item $f(11)=11^2 \bmod 10 = 121 \bmod 10 = 1$
-\item $f(13)=13^2 \bmod 10 = 169 \bmod 10 = 9$
-\end{itemize}
+Tämä hajautusfunktio antaa hajautusarvoksi luvun $x$
+jakojäännöksen $N$:llä.
+Esimerkiksi jos $N=10$ ja tallennamme hajautustauluun luvun 14,
+saamme sen hajautusarvoksi $f(14)=4$.
+Tämä tarkoittaa, että luvun paikka hajautustaulussa on kohdassa 4.
+Vastaavasti $f(21)=1$, eli luvun 21 paikka hajautustaulussa on
+kohdassa 1.
 
 \index{törmäys}
 
-Tässä tapauksessa $f(7)=f(13)=9$ eli alkioilla $7$ ja $13$ on
-sama hajautusarvo $9$.
-Kyseessä on \emph{törmäys} (\emph{collision}):
-molemmat alkiot tulisi tallentaa samaan kohtaan hajautustaulussa.
-Mitä teemme?
+Yleensä hajautustaulun koko $N$ on selvästi pienempi kuin
+mahdollisten alkioiden määrä ja
+hajautuksessa voi tapahtua \emph{törmäys} (\emph{collision})
+eli kahdelle alkiolle tulee sama hajautusarvo.
+Esimerkiksi $f(14)=f(24)=4$ eli luvut 14 ja 24 kuuluvat
+samaan paikkaan hajautustaulussa.
+Tämän vuoksi hajautustaulun toteutuksessa täytyy päättää,
+miten tör\-mäykset käsitellään.
+Kaksi tavallista tapaa tähän ovat ketjuhajautus sekä avoin hajautus.
 
-\subsection{Hajautus listoilla}
+\subsection{Ketjuhajautus}
 
 \begin{figure}
 \center
@@ -63,30 +61,33 @@ Mitä teemme?
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
 \draw[->,thick] (1.5,0) -- (1.5,-1);
 \draw[->,thick] (6.5,0) -- (6.5,-1);
-\draw[->,thick] (9.5,0) -- (9.5,-1);
-\draw[->,thick] (9.5,-2) -- (9.5,-3);
-\node at (1.5,-1.5) {$11$};
-\node at (6.5,-1.5) {$4$};
-\node at (9.5,-1.5) {$7$};
-\node at (9.5,-3.5) {$13$};
+\draw[->,thick] (4.5,0) -- (4.5,-1);
+\draw[->,thick] (4.5,-2) -- (4.5,-3);
+\node at (1.5,-1.5) {$21$};
+\node at (6.5,-1.5) {$6$};
+\node at (4.5,-1.5) {$14$};
+\node at (4.5,-3.5) {$24$};
 \end{tikzpicture}
-\caption{Listoja käyttävä hajautustaulu, joka vastaa joukkoa $\{4,7,11,13\}$.
-Hajautusfunktiona on $f(x)=x^2 \bmod N$.}
+\caption{Ketjuhajautusta käyttävä hajautustaulu, joka vastaa joukkoa $\{6,14,21,24\}$.
+Hajautusfunktiona on $f(x)=x \bmod N$.}
 \label{fig:hajtau}
 \end{figure}
 
-Tavallinen tapa toteuttaa hajautustaulu on
-tallentaa jokaiseen taulukon kohtaan \emph{lista}
-alkioista, joilla on kyseinen hajautusarvo.
-Tällöin mahdolliset alkioiden törmäykset eivät haittaa,
-koska ne kaikki mahtuvat listaan.
+\index{ketjuhajautus}
 
-Kuvassa \ref{fig:hajtau} on esimerkkinä hajautustaulu,
-johon on tallennettu joukko $\{4,7,11,13\}$
-käyttäen hajautusfunktiota $f(x)=x^2 \bmod N$.
-Alkio 11 on kohdan 1 listassa,
-alkio 4 on kohdan 6 listassa ja
-alkiot 7 ja 13 ovat kohdan 9 listassa.
+\emph{Ketjuhajautus} (\emph{chaining})
+on hajautustaulun toteutustapa, jossa jokainen hajautustaulun kohta
+sisältää listan joukossa olevista alkioista,
+joilla on kyseinen hajautusarvo.
+Tällöin mahdolliset alkioiden törmäykset eivät haittaa,
+koska listoissa voi olla mikä tahansa määrä alkioita.
+
+Kuvassa \ref{fig:hajtau} on esimerkkinä
+ketjuhajautusta käyttävä hajautustaulu,
+johon on tallennettu joukko $\{6,14,21,24\}$
+käyttäen hajautusfunktiota $f(x)=x \bmod N$.
+Kohdassa 1 on alkio 21, kohdassa 4 on alkiot 14 ja 24
+ja kohdassa 6 on alkio 6.
 Muissa kohdissa olevat listat ovat vielä tyhjiä.
 
 Kun haluamme tarkastaa, onko joukossa alkiota $x$,
@@ -106,68 +107,80 @@ teemme muutoksen kohdassa $f(x)$ olevaan listaan.
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
 \draw[->,thick] (1.5,0) -- (1.5,-1);
 \draw[->,thick] (4.5,0) -- (4.5,-1);
+\draw[->,thick] (5.5,0) -- (5.5,-1);
 \draw[->,thick] (8.5,0) -- (8.5,-1);
-\node at (1.5,-1.5) {$a$};
-\node at (4.5,-1.5) {$b$};
-\node at (8.5,-1.5) {$c$};
+\node at (1.5,-1.5) {$14$};
+\node at (4.5,-1.5) {$21$};
+\node at (5.5,-1.5) {$6$};
+\node at (8.5,-1.5) {$24$};
 \end{scope}
 \begin{scope}[xshift=12cm]
 \draw (0,0) grid (10,1);
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
 \draw[->,thick] (3.5,0) -- (3.5,-1);
-\draw[->,thick] (3.5,-4) -- (3.5,-5);
 \draw[->,thick] (3.5,-2) -- (3.5,-3);
-\node at (3.5,-1.5) {$a$};
-\node at (3.5,-3.5) {$b$};
-\node at (3.5,-5.5) {$c$};
+\draw[->,thick] (3.5,-4) -- (3.5,-5);
+\draw[->,thick] (3.5,-6) -- (3.5,-7);
+\node at (3.5,-1.5) {$21$};
+\node at (3.5,-3.5) {$14$};
+\node at (3.5,-5.5) {$24$};
+\node at (3.5,-7.5) {$6$};
 \end{scope}
 \end{tikzpicture}
-\caption{Kaksi hajautustaulua joukolle $\{a,b,c\}$.
+\caption{Kaksi hajautustaulua joukolle $\{6,14,21,24\}$.
 Vasen tilanne on paras mahdollinen, oikea tilanne taas
 huonoin mahdollinen.}
 \label{fig:hajjak}
 \end{figure}
 
-Tällaisessa hajautustaulussa
-jokaisen operaation aikavaativuus on $O(m)$,
+Ketjuhajautuksessa
+hajautustaulun operaatioiden aikavaativuus on $O(m)$,
 missä $m$ on listan alkioiden määrä.
-Hajautustaulu toimii siis tehokkaasti, jos jokainen
-siinä oleva lista on lyhyt.
+Hajautustaulu toimii siis tehokkaasti, jos
+siinä olevat listat ovat lyhyitä.
 Tämä toteutuu, jos käytetty hajautusfunktio sijoittaa
 alkioita tasaisesti hajautustaulun eri puolille.
 Kuvassa \ref{fig:hajjak} on kaksi ääriesimerkkiä
-hajautuksen onnistumisesta:
-vasemmalla jokainen alkio on eri kohdassa,
-mikä on paras mahdollinen tilanne,
-kun taas oikealla kaikki alkiot ovat samassa kohdassa,
+hajautuksen onnistumisesta erilaisilla hajautusfunktioilla.
+Vasemmassa hajautustaulussa jokainen alkio on eri listassa,
+mikä on paras mahdollinen tilanne.
+Oikeassa hajautustaulussa kaikki alkiot ovat puolestaan samassa listassa,
 mikä on huonoin mahdollinen tilanne.
 
 \subsection{Avoin hajautus}
 
-Toinen tapa toteuttaa hajautustaulu on \emph{avoin hajautus},
+\index{avoin hajautus}
+
+Toinen tapa toteuttaa hajautustaulu on \emph{avoin hajautus}
+(\emph{open addressing}),
 jossa alkiot tallennetaan suoraan hajautustauluun listojen sijasta.
 Kuitenkin jos alkio kuuluisi paikkaan, jossa on jo valmiina
 jokin toinen alkio, sille valitaan toinen paikka jonkin säännön perusteella.
 
-Tarkastellaan aluksi yksinkertaista sääntöä,
-jossa alkio koetetaan sijoittaa taulukon \emph{seuraavaan}
-kohtaan, jos sen paikalla on jo jokin alkio.
-Tätä jatketaan, kunnes taulukosta löytyy vapaa paikka alkiolle.
-Toisin sanoen kun alkion $x$ hajautusarvo on $f(x)$,
-sitä koetetaan sijoittaa järjestyksessä kohtiin 
-$f(x)$, $f(x)+1$, $f(x)+2$, jne., kunnes vapaa paikka löytyy.
-Kohdan $N-1$ jälkeen etsintä jatkuu kohdasta $0$.
+\index{kokeilufunktio}
+\index{lineaarinen kokeilu}
 
-Kuvassa \ref{fig:hajavo} näkyy joukon $\{4,7,11,13\}$
+Avoimessa hajautuksessa alkion paikkaa hajautustaulussa etsitään
+\emph{kokeilufunktiolla} (\emph{probe function})
+$h(x,i)$, jossa $x$ on alkio ja $i$ ilmaisee, montako kertaa
+sille on yritetty etsiä paikkaa.
+Tarkastelemme seuraavaksi yksinkertaista kokeilufunktiota
+\[ h(x,i) = (f(x)+i) \bmod N,\]
+mikä tarkoittaa, että alkiolle etsitään paikkaa sen
+hajautusarvon $f(x)$ antamasta kohdasta lähtien kulkemalla taulukossa oikealle,
+kunnes vapaa paikka löytyy.
+Tämän menetelmän nimi on \emph{lineaarinen kokeilu}
+(\emph{linear probing}).
+
+Kuvassa \ref{fig:hajavo} näkyy joukon $\{6,14,21,24\}$
 sijoittuminen hajautustauluun
-käyttäen hajautusfunktiota $f(x)=x^2 \bmod N$ ja yllä kuvattua
-avoimen hajautuksen sääntöä.
-Oletuksena on, että alkio 7 lisätään ennen alkiota 13.
-Koska alkio 13 kuuluisi kohtaan 9, jossa on jo alkio 7,
-se meneekin seuraavaan kohtaan 0.
-Kuvassa \ref{fig:hajav2} mukaan lisätään vielä alkio 3,
-jolla on myös hajautusarvo 9.
-Koska kohdissa 9, 0 ja 1 on jo alkio, sen kohdaksi tulee 2.
+käyttäen hajautusfunktiota $f(x)=x \bmod N$ ja lineaarista kokeilua.
+Tässä alkio 14 on lisätty ennen alkiota 24,
+minkä vuoksi alkio 14 on sen hajautusarvon mukaisessa kohdassa 4
+mutta alkio 24 on kohdassa 5, koska kohta 4 oli jo varattu.
+Kuvassa \ref{fig:hajav2} mukaan lisätään vielä alkio 44,
+jolla on myös hajautusarvo 4.
+Koska kohdissa 4, 5 ja 6 on jo alkio, alkion 44 kohdaksi tulee 7.
 Alkio voi sijoittua siis kauaskin hajautusarvon määräämästä kohdasta,
 jos hajautustaulussa on täyttä.
 
@@ -176,13 +189,13 @@ jos hajautustaulussa on täyttä.
 \begin{tikzpicture}[scale=0.5]
 \draw (0,-1) grid (10,1);
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
-\node at (1.5,-0.5) {$11$};
-\node at (6.5,-0.5) {$4$};
-\node at (9.5,-0.5) {$7$};
-\node at (0.5,-0.5) {$13$};
+\node at (1.5,-0.5) {$21$};
+\node at (6.5,-0.5) {$6$};
+\node at (4.5,-0.5) {$14$};
+\node at (5.5,-0.5) {$24$};
 \end{tikzpicture}
-\caption{Avointa hajautusta käyttävä hajautustaulu, joka vastaa joukkoa $\{4,7,11,13\}$.
-Hajautusfunktiona on $f(x)=x^2 \bmod N$.}
+\caption{Avointa hajautusta käyttävä hajautustaulu, joka vastaa joukkoa $\{6,14,21,24\}$.
+Hajautusfunktiona on $f(x)=x \bmod N$.}
 \label{fig:hajavo}
 \end{figure}
 
@@ -191,33 +204,33 @@ Hajautusfunktiona on $f(x)=x^2 \bmod N$.}
 \begin{tikzpicture}[scale=0.5]
 \draw (0,-1) grid (10,1);
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
-\node at (1.5,-0.5) {$11$};
-\node at (6.5,-0.5) {$4$};
-\node at (9.5,-0.5) {$7$};
-\node at (0.5,-0.5) {$13$};
-\node at (2.5,-0.5) {$3$};
+\node at (1.5,-0.5) {$21$};
+\node at (6.5,-0.5) {$6$};
+\node at (4.5,-0.5) {$14$};
+\node at (5.5,-0.5) {$24$};
+\node at (7.5,-0.5) {$44$};
 \end{tikzpicture}
-\caption{Hajautustauluun lisätään vielä alkio 3, jonka hajautusarvo on 9.
-Sille löytyy paikka vasta kohdasta 2.}
+\caption{Hajautustauluun lisätään vielä alkio 44, jonka hajautusarvo on 4.
+Sille löytyy paikka vasta kohdasta 7.}
 \label{fig:hajav2}
 \end{figure}
 
 Kun haluamme löytää alkion $x$ hajautustaulusta avointa hajautusta käyt\-täen,
-aloitamme kohdasta $f(x)$ ja tutkimme sitten kohtia säännön mukaisesti,
+aloitamme kohdasta $f(x)$ ja tutkimme sitten kohtia kokeilufunktion mukaisesti,
 kunnes joko löydämme alkion tai tulemme tyhjään kohtaan, jolloin voimme päätellä,
 että hajautustaulussa ei ole alkiota.
 Esimerkiksi kun haluamme löytää kuvan \ref{fig:hajav2} hajautustaulusta
-alkion 3, aloitamme kohdasta $f(3)=9$ ja kuljemme eteenpäin kohtaan 2 asti.
+alkion 44, aloitamme kohdasta $f(44)=4$ ja kuljemme eteenpäin kohtaan 2 asti.
 
 Alkion poistaminen aiheuttaa hieman ongelmia avoimessa hajautuksessa,
 koska jos vain merkitsemme alkion kohdan tyhjäksi, tämä voi häiritä tulevia hakuja.
-Esimerkiksi jos poistaisimme kuvan \ref{fig:hajav2} hajautustaulusta alkion 11
-merkitsemällä kohdan 1 tyhjäksi, emme enää löytäisi alkiota 3,
-koska haku pysähtyisi tyhjään kohtaan 1.
+Esimerkiksi jos poistaisimme kuvan \ref{fig:hajav2} hajautustaulusta alkion 6
+merkitsemällä kohdan 6 tyhjäksi, emme enää löytäisi alkiota 44,
+koska haku pysähtyisi tyhjään kohtaan 6.
 Kuitenkin voimme kiertää ongelman käyttämällä jotain erikoismerkkiä
 poistetulle alkiolle. Kuvassa \ref{fig:hajav3} poistetun alkion merkkinä on X,
 joka tarkoittaa, että kyseinen kohta on tyhjä mutta siinä on ollut alkio.
-Niinpä alkion 3 haku ei pääty tähän kohtaan,
+Niinpä alkion 44 haku ei pääty tähän kohtaan,
 vaikka siihen voi myös sijoittaa uuden alkion myöhemmin.
 
 \begin{figure}
@@ -225,22 +238,27 @@ vaikka siihen voi myös sijoittaa uuden alkion myöhemmin.
 \begin{tikzpicture}[scale=0.5]
 \draw (0,-1) grid (10,1);
 \foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
-\node at (1.5,-0.5) {X};
-\node at (6.5,-0.5) {$4$};
-\node at (9.5,-0.5) {$7$};
-\node at (0.5,-0.5) {$13$};
-\node at (2.5,-0.5) {$3$};
+\node at (1.5,-0.5) {$21$};
+\node at (6.5,-0.5) {X};
+\node at (4.5,-0.5) {$14$};
+\node at (5.5,-0.5) {$24$};
+\node at (7.5,-0.5) {$44$};
 \end{tikzpicture}
-\caption{Hajautustaulusta on poistettu alkio 11, jonka tilalla on merkki X.
-Tämän ansiosta alkion 3 haku ei pysähdy kohtaan 1.}
+\caption{Hajautustaulusta on poistettu alkio 6, jonka tilalla on merkki X.
+Tämän ansiosta alkion 44 haku ei pysähdy kohtaan 6.}
 \label{fig:hajav3}
 \end{figure}
 
 Avoimen hajautuksen tehokkuus riippuu sekä käytetystä hajautusfunktiosta
-että säännöstä, joka etsii alkiolle uuden paikan.
-Käytännössä tässä esitetty sääntö, joka valitsee aina seuraavan paikan,
-ei ole hyvä, koska sen seurauksena alkioita kasautuu helposti taulukon
-peräkkäisiin kohtiin.
+ja kokeilufunktiosta.
+Hajaustustaulun operaatiot vievät aikaa $O(m)$,
+missä $m$ on kokeiltavien paikkojen määrä,
+kun haluamme löytää paikan uudelle alkiolle
+tai etsiä alkion taulusta.
+Käytännössä lineaarisessa kokeilussa voi tulla ongelmaksi,
+että alkiot kasautuvat tiettyihin hajautustaulun osiin.
+Kehittyneemmissä kokeilufunktioissa alkion paikan etsimisessä
+tehdään vaihtelevan kokoisia hyppyjä hajautustaulussa.
 
 \subsection{Hajautusfunktion valinta}
 
@@ -254,16 +272,16 @@ hajautusfunktion suunnitteluun.
 Mutta miten meidän kannattaa valita hajautusfunktio?
 
 Jos hajautettavat alkiot ovat kokonaislukuja,
-suoraviivainen hajautusfunktio on $f(x)=x \bmod N$,
+suoraviivainen hajautusfunktio on esimerkissä käyttämämme $f(x)=x \bmod N$,
 joka muuttaa luvun välille $0 \dots N-1$ jakojäännöksen avulla.
 Tämä on helposti toteutettava ja yleensä hyvin toimiva hajautusfunktio.
 Entä jos alkiot ovat jotain muuta tyyppiä kuin kokonaislukuja?
-Tällöin meidän täytyy päättää ensin jokin järkevä tapa,
-kuinka muutamme alkion kokonaisluvuksi,
+Tällöin voimme ensin keksiä jonkin järkevän keinon
+muuttaa alkion kokonaisluvuksi,
 minkä jälkeen voimme jälleen ottaa jakojäännöksen $N$:llä.
 
 Tarkastellaan esimerkkinä tilannetta, jossa haluamme hajauttaa merkkijonoja
-eli mei\-dän täytyy löytää keino muuttaa merkkijono kokonaisluvuksi.
+eli mei\-dän täytyy löytää tapa muuttaa merkkijono kokonaisluvuksi.
 Oletamme, että merkkijonossa on $k$ merkkiä,
 joiden merkkikoodit ovat $c_0,c_1,\dots,c_{k-1}$.
 Esimerkiksi jos merkkijono on \texttt{testi},
@@ -289,33 +307,31 @@ summaan \emph{kertoimet} käyttäen kaavaa
 missä $A$ on vakio.
 Esimerkiksi jos $A=7$, merkkijonoa \texttt{testi} vastaa kokonaisluku
 \[7^4 \cdot 116+7^3 \cdot 101+7^2 \cdot 115+7^1 \cdot 116+7^0 \cdot 105=319711.\]
-Tämä menetelmä, jota kutsutaan nimellä \emph{polynominen hajautus}
+Tämän menetelmän nimi on \emph{polynominen hajautus}
 (\emph{polynomial hashing}),
-on yksi käytännössä toimiva merkkijonon hajautustapa.
+ja se on yksi käytännössä toimiva merkkijonon hajautustapa.
 
 \subsection{Miten hyvin hajautus toimii?}
 
 Hajautustaulun operaatiot vievät aikaa $O(m)$,
-jossa $m$ on hajautustaulussa olevan listan pituus.
-Mutta kuinka suuri $m$ on? Tämä riippuu siitä,
-mikä on alkioiden määrä $n$, hajautustaulun koko $N$
-sekä hajautusfunktio $f$.
+jossa $m$ on ketjuhajautuksessa listan pituus
+ja avoimessa hajautuksessa kokeilujonon pituus.
+Mutta kuinka suuri $m$ on? Tähän vaikuttaa
+alkioiden määrä $n$, hajautustaulun koko $N$,
+hajautusfunktio $f$ sekä avoimessa hajautuksessa
+kokeilufunktio $h$.
 
-\index{törmäys}
-Jos kaikki sujuu hyvin ja hajautusfunktio jakaa alkioita
-tasaisesti hajautustaulun eri puolille,
-jokaisessa listassa on noin $n/N$ alkiota.
+Jos kaikki sujuu hyvin, hajautusfunktio jakaa alkioita
+tasaisesti hajautustaulun eri puolille
+ja listojen tai kokeilujonojen pituus on luokkaa $n/N$.
 Niinpä jos valitsemme hajautustaulun koon niin,
 että $N$ on samaa luokkaa kuin $n$,
 operaatiot toimivat tehokkaasti ajassa $O(1)$.
-Kuitenkin on mahdollista, että hajautuksessa esiintyy
-paljon \emph{törmäyksiä} (\emph{collision}),
-mikä tarkoittaa, että kahdella alkiolla on sama hajautusarvo.
-Tällöin hajautus epäonnistuu
+Kuitenkin on myös mahdollista, että hajautus epäonnistuu
 ja alkiot jakautuvat hajautustauluun epätasaisesti.
 Pahimmassa tapauksessa kaikki alkiot saavat saman
-hajautusarvon ja ne kaikki tallennetaan samaan listaan,
-jolloin operaatiot vievät aikaa $O(n)$.
+hajautusarvon ja ne kaikki tallennetaan samaan listaan
+tai kokeilujonoon, jolloin operaatiot vievät aikaa $O(n)$.
 
 Hajautuksessa vaikeutena on, ettemme tiedä etukäteen,
 mitä alkioita hajautustauluun tallennetaan.
@@ -329,168 +345,72 @@ esimerkiksi voi olla, että jostain syystä
 jokainen hajautettava alkio on parillinen.
 Nyt jos myös $N$ on parillinen, jokainen hajautusarvo
 on parillinen ja vain puolet hajautustaulun kohdista on käytössä.
-Parempi tapa onkin valita $N$ niin, että se on \emph{alkuluku}.
+Parempi tapa voi olla valita $N$ niin, että se on \emph{alkuluku}.
 Tällöin on vähemmän todennäköistä,
 että aineistossa mahdollisesti olevat säännöllisyydet
 aiheuttaisivat törmäyksiä.
 
 Emme voi kuitenkaan koskaan olla etukäteen varmoja,
 että hajautus toimii hyvin.
-Vaikka meillä olisi erittäin hyvä hajautusfunktio,
+Vaikka hajautus olisi toteutettu hyvin,
 \emph{ilkeä vastustaja} voi kuitenkin antaa
 meille joukon alkioita, jotka kaikki saavat saman hajautusarvon.
 Tämä riski on aina hajautuksessa, koska mahdollisten
 hajautusarvojen määrä on paljon pienempi kuin mahdollisten alkioiden määrä.
-Tämän vuoksi emme voi mitenkään suunnitella hajautusfunktiota niin,
-että se jakaisi alkiot \emph{varmasti} tasaisesti hajautustauluun,
+Tämän vuoksi emme voi mitenkään suunnitella hajautusta niin,
+että alkiot jakaantuvat \emph{varmasti} tasaisesti hajautustauluun,
 jos meillä ei ole etukäteen tietoa siitä,
 mitä alkioita hajautustauluun tullaan tallentamaan.
 
 Kaikeksi onneksi hajautus toimii yleensä aina \emph{käytännössä}
 hyvin ja voimme ajatella, että hajautustaulun operaatiot ovat
 $O(1)$-aikaisia, kunhan hajautustaulun koko on riittävän suuri ja
-hajautusfunktio on toteutettu järke\-västi.
+hajautus on toteutettu järke\-västi.
 Vaikka on mahdollista, että hajautus epäonnistuu,
 tämän riski on niin pieni, ettei meidän tarvitse murehtia
 siitä käytännössä.
 
-\subsection{Hajautustaulu hakemistona}
+\section{Ohjelmointikielten toteutukset}
 
-\index{hakemisto}
+Tavallisia hajautustaulun avulla toteutettavia tietorakenteita
+ovat \emph{hakemisto} ja \emph{joukko}.
+Hakemisto muodostuu avain-arvo-pareista,
+ja sen voi nähdä taulukon yleistyksenä.
+Joukko sisältää kokoelman alkioita, joita voi hakea,
+lisätä ja poistaa tehokkaasti.
+Itse asiassa hakemiston voi toteuttaa joukkona, jossa alkiot ovat 
+avain-arvo-pareja.
 
-Voimme tallentaa hajautustauluun myös
-avain-arvo-pareja, joissa avaimen hajautusarvo määrittää,
-mihin hajautustaulun listaan pari sijoitetaan.
-Saamme näin aikaan tietorakenteen \emph{hakemisto} (\emph{dictionary}),
-jota voi ajatella taulukon yleistyksenä.
-Taulukossa avaimet ovat kokonaisluvut $0,1,\dots,n-1$,
-mutta hakemistossa ne voivat olla mitä tahansa arvoja.
+\subsection{Java}
 
-Kuvassa \ref{fig:hajhak} on esimerkkinä hajautustauluun
-tallennettu hakemisto, joka vastaa seuraavaa ''taulukkoa'':
+Javan tietorakenne \texttt{HashMap} on hakemisto,
+johon voi tallentaa avain-arvo-pareja.
+Esimerkiksi seuraava koodi luo hakemiston,
+jossa avaimet ovat merkkijonoja ja arvot ovat kokonaislukuja:
 
 \begin{code}
-taulu["abc"] = 5
-taulu["xyz"] = 1
-taulu["aaa"] = 8
+HashMap<String,Integer> hakemisto = new HashMap<>();
+hakemisto.put("apina",1);
+hakemisto.put("banaani",2);
+hakemisto.put("cembalo",3);
+System.out.println(hakemisto.get("apina")); // 1
 \end{code}
 
-Tässä tapauksessa hakemiston avaimet ovat merkkijonoja
-ja arvot ovat kokonaislukuja.
-Hajautustaulun ansiosta voimme käsitellä hakemistoa
-taulukon tavoin niin, että operaatiot vievät aikaa $O(1)$.
-
-\begin{figure}
-\center
-\begin{tikzpicture}[scale=0.5]
-\draw (0,0) grid (10,1);
-\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
-\draw[->,thick] (2.5,0) -- (2.5,-1);
-\draw[->,thick] (6.5,0) -- (6.5,-1);
-\draw[->,thick] (2.5,-2) -- (2.5,-3);
-\node at (2.5,-3.5) {$(\texttt{aaa},8)$};
-\node at (2.5,-1.5) {$(\texttt{xyz},1)$};
-\node at (6.5,-1.5) {$(\texttt{abc},5)$};
-\end{tikzpicture}
-\caption{Hakemiston tallentaminen hajautustauluun.}
-\label{fig:hajhak}
-\end{figure}
-
-Voimme myös toteuttaa hakemiston, jonka avaimet ovat kokonaislukuja.
-Tällaisessa tietorakenteessa on järkeä, jos avaimet ovat niin suuria,
-että emme voi käyttää sen sijasta tavallista taulukkoa.
-Kuitenkin jos avaimet ovat pieniä kokonaislukuja,
-taulukko on paljon parempi valinta, koska sen vakiokertoimet
-ovat huomattavasti hajautustaulua pienemmät.
-
-\section{Javan toteutukset}
-
-Javassa on kaksi hajautustaulua käyttävää tietorakennetta:
-\texttt{HashSet} pitää yllä alkioiden joukkoa
-ja \texttt{HashMap} toteuttaa
-hakemiston, jossa on avain-arvo-pareja.
-Kummankin rakenteen operaatiot toimivat ajassa $O(1)$.
-
-\subsection{\texttt{HashSet}-rakenne}
-
-\texttt{HashSet} on alkioiden joukko,
-johon voi lisätä alkion metodilla \texttt{add}
-ja josta voi poistaa alkion metodilla \texttt{remove}.
-Esimerkiksi seuraava koodi luo joukon, jossa voi olla
-kokonaislukuja, ja lisää siihen luvut 3, 5 ja 8.
-Tämän jälkeen koodi poistaa luvun 5 joukosta.
+Rakenne \texttt{HashSet} puolestaan toteuttaa joukon,
+jonka operaatiot ovat tehokkaita.
+Seuraava koodi luo joukon, jossa on kokonaislukuja:
 
 \begin{code}
 HashSet<Integer> joukko = new HashSet<>();
 joukko.add(3);
 joukko.add(5);
 joukko.add(8);
-System.out.println(joukko); // [3, 5, 8]
+System.out.println(joukko.contains(5)); // true
 joukko.remove(5);
-System.out.println(joukko); // [3, 8]
+System.out.println(joukko.contains(5)); // false
 \end{code}
 
-Metodi \texttt{contains} kertoo, esiintyykö tietty alkio $x$ joukossa:
-
-\begin{code}
-if (joukko.contains(x)) {
-    System.out.println("alkio on joukossa");
-} else {
-    System.out.println("alkiota ei ole joukossa");
-}
-\end{code}
-
-Huomaa, että jokainen alkio voi esiintyä vain kerran joukossa.
-Esimerkiksi vaikka seuraava koodi koettaa lisätä luvun 5 kolmesti
-joukkoon, se menee sinne vain ensimmäisellä kerralla ja
-muut lisäykset jätetään huomiotta.
-
-\begin{code}
-HashSet<Integer> joukko = new HashSet<>();
-joukko.add(5);
-joukko.add(5);
-joukko.add(5);
-System.out.println(joukko); // [5]
-\end{code}
-
-\subsection{\texttt{HashMap}-rakenne}
-
-\texttt{HashMap} luo hakemiston,
-jossa on avain-arvo-pareja.
-Hakemiston määrit\-telyssä tulee antaa
-avaimen ja arvon tyyppi.
-Metodi \texttt{put} lisää uuden avain-arvo-parin,
-ja metodi \texttt{get} hakee arvon avaimen perusteella.
-
-Esimerkiksi seuraava koodi luo sanakirjan, jossa sekä
-avaimet että arvot ovat merkkijonoja.
-Syötämme sanakirjaan merkkijonopareja, jotka kertovat
-sanan käännöksen suomesta englanniksi.
-
-\begin{code}
-HashMap<String,String> sanakirja = new HashMap<>();
-
-sanakirja.put("apina","monkey");
-sanakirja.put("banaani","banana");
-sanakirja.put("cembalo","harpsichord");
-
-System.out.println(sanakirja.get("banaani")); // banana
-\end{code}
-
-Hyödyllinen on myös metodi \texttt{containsKey},
-jonka avulla voi tarkastaa, onko tietylle avaimelle
-tallennettu arvoa:
-
-\begin{code}
-if (sanakirja.containsKey(sana)) {
-    System.out.println(sanakirja.get(sana));
-} else {
-    System.out.println("sana puuttuu sanakirjasta");
-}
-\end{code}
-
-\subsection{Omat luokat}
-
+Java käyttää hajautuksessa ketjuhajautusta.
 Javan luokissa on metodi \texttt{hashCode},
 jonka avulla olio kertoo pyydettäessä hajautusarvonsa.
 Voimme esimerkiksi selvittää merkkijonon \texttt{apina}
@@ -507,19 +427,51 @@ polynomista hajautusta vakiolla $A=31$,
 joten voimme laskea Javan hajautusarvon myös itse kaavalla
 \[31^4 \cdot 97+31^3 \cdot 112+31^2 \cdot 105+31^1 \cdot 110+31^0 \cdot 97=93022541.\]
 
-Jos haluamme käyttää omia olioitamme hajautustauluissa,
-meidän täytyy toteuttaa luokkaan kaksi metodia:
-\texttt{hashCode}, joka antaa olion hajautusarvon,
-sekä \texttt{equals},
-joka ilmaisee, ovatko kaksi oliota samat.
-Metodi \texttt{hashCode} riittää toteuttaa niin,
-että se palauttaa jonkin kokonaisluvun,
-ja Java huolehtii jakojäännöksestä.
-Metodi \texttt{equals} on tarpeen,
-jotta Java pystyy varmistamaan, ovatko saman hajautusarvon
-antavat oliot todella samat.
+\subsection{Python}
 
-\section{Hajautustaulun käyttäminen}
+Pythonin \texttt{dict}-rakenne on hajautusta käyttävä hakemisto.
+Seuraava koodi luo hakemiston ja lisää sinne kolme
+avain-arvo-paria:
+
+\begin{code}
+hakemisto = {}
+hakemisto["apina"] = 1
+hakemisto["banaani"] = 2
+hakemisto["cembalo"] = 3
+print(hakemisto["apina"]) # 1
+\end{code}
+
+Toinen hajautusta käyttävä tietorakenne on \texttt{set},
+joka toteuttaa joukon:
+
+\begin{code}
+joukko = set()
+joukko.add(3)
+joukko.add(5)
+joukko.add(8)
+print(5 in joukko) # True
+joukko.remove(5)
+print(5 in joukko) # False
+\end{code}
+
+Pythonissa hajautus on toteutettu avoimella hajautuksella,
+ja funktio \texttt{hash} antaa olion hajautusarvon.
+Toisin kuin Javassa, merkkijonojen hajautusarvon laskemiseen
+ei ole tiettyä kaavaa vaan hajautusarvot \emph{vaihtelevat}
+ohjelman eri suorituskerroilla:
+
+\begin{code}
+$ python3
+>>> hash("apina")
+-1298439828276653283
+>>> quit()
+$ python3
+>>> hash("apina")
+-7554896445065069622
+>>> quit()
+\end{code}
+
+\section{Hajautustaulu algoritmeissa}
 
 Hajautustaulun ansiosta voimme käyttää algoritmeissamme
 joukkoja ja hakemistoja, joiden operaatiot toimivat tehokkaasti.
