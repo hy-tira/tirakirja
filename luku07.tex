@@ -1,6 +1,7 @@
 \chapter{Keko}
 
 \index{keko}
+\index{prioriteettijono}
 
 \emph{Keko} (\emph{heap}) on tietorakenne, jonka operaatiot ovat
 alkion lisääminen sekä
@@ -15,8 +16,8 @@ joka on tavallisimmin käytetty kekorakenne.
 Binäärikeko toteutetaan binääripuuna,
 ja se mahdollistaa alkion etsimisen ajassa $O(1)$ sekä
 alkioiden lisäykset ja poistot ajassa $O(\log n)$.
-Javassa voimme käyttää tietorakennetta \texttt{PriorityQueue},
-joka perustuu binäärikekoon.
+Joissakin ohjelmointikielissä binäärikekoon perustuvasta
+tietorakenteesta käytetään nimeä \emph{prioriteettijono} (\emph{priority queue}).
 
 \section{Binäärikeko}
 
@@ -386,125 +387,6 @@ Alkion poistaminen keosta vie aikaa $O(\log n)$,
 koska keossa on $O(\log n)$ tasoa ja kuljemme polkua
 alaspäin keon huipulta pohjaa kohden.
 
-\section{Prioriteettijono}
-
-\index{prioriteettijono}
-
-Monissa ohjelmointikielissä kekoa vastaava tietorakenne
-tunnetaan nimellä \emph{prioriteettijono} (\emph{priority queue}).
-Näin on myös Javassa, jonka standardikirjastoon 
-kuuluu tietorakenne \texttt{PriorityQueue}.
-Se on binäärikekoon perustuva tietorakenne,
-joka toteuttaa oletuksena minimikeon.
-
-Seuraava koodi esittelee Javan prioriteettijonon käyttämistä.
-Metodi \texttt{add} lisää alkion jonoon,
-metodi \texttt{peek} hakee pienimmän alkion
-ja metodi \texttt{poll} hakee ja poistaa pienimmän alkion.
-
-\begin{code}
-PriorityQueue<Integer> jono = new PriorityQueue<>();
-jono.add(5);
-jono.add(3);
-jono.add(8);
-jono.add(7);
-System.out.println(jono.peek()); // 3
-System.out.println(jono.poll()); // 3
-System.out.println(jono.poll()); // 5
-\end{code}
-
-Jos haluamme luoda prioriteettijonon, joka onkin
-maksimikeko, voimme tehdä sen seuraavaan tapaan:
-
-\begin{code}
-PriorityQueue<Integer> jono =
-    new PriorityQueue<>(10,Collections.reverseOrder());
-\end{code}
-
-Tässä tilanteessa meidän täytyy antaa konstruktorille kaksi tietoa:
-keolle alussa muistista varattava tila (tässä 10)
-sekä alkioiden järjestämistapa (tässä käänteinen järjestys).
-Huomaa, että Java varaa keolle tarvittaessa myöhemmin uuden suuremman muistialueen,
-joten tämä määrittely ei tarkoita, että keossa voisi olla enintään 10 alkiota.
-
-Jos haluamme tallentaa \texttt{PriorityQueue}-rakenteeseen omia olioitamme,
-meidän tulee toteuttaa luokkaan metodi \texttt{compareTo} ja
-merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
-
-\section{Tehokkuusvertailu}
-
-Mitä hyötyä keosta oikeastaan on?
-Meillähän on olemassa jo binäärihakupuu,
-jonka avulla voimme toteuttaa kaikki keon operaatiot
-ja \emph{enemmänkin}.
-Keossa voimme hakea ja poistaa vain pienimmän tai suurimman alkion,
-mutta binäärihakupuussa voimme käsitellä myös muita alkioita.
-
-Keon etuna on, että siinä on tehokkaan taulukkototeutuksen
-ansiosta pienemmät \emph{vakiokertoimet} kuin binäärihakupuussa.
-Jos meille riittää, että voimme hakea ja poistaa
-vain pienimmän tai suurimman alkion, voi siis olla hyvä
-ratkaisu käyttää kekoa binäärihakupuun sijasta.
-Mutta kuinka suuria erot ovat käytännössä?
-
-Tästä antaa kuvaa seuraava testi,
-jossa vertailemme keskenään Javan tietorakenteita
-\texttt{PriorityQueue} ja \texttt{TreeSet}.
-Testissä meillä on taulukko,
-jossa on satunnaisessa järjestyksessä luvut $1,2,\dots,n$.
-Lisäämme ensin taulukon $n/2$ ensimmäistä lukua joukkoon.
-Tämän jälkeen käymme läpi loput $n/2$ lukua,
-ja jokaisen luvun kohdalla lisäämme sen joukkoon ja
-poistamme joukon pienimmän luvun.
-Laskemme lisäksi samalla summaa poistetuista luvuista.
-Käytämme testissä seuraavia koodeja:
-
-\begin{code}
-PriorityQueue<Integer> jono = new PriorityQueue<>();
-for (int i = 0; i < n/2; i++) {
-    jono.add(luvut[i]);
-}
-long summa = 0;
-for (int i = n/2; i < n; i++) {
-    jono.add(luvut[i]);
-    summa += jono.poll();
-}
-System.out.println(summa);
-\end{code}
-
-\begin{code}
-TreeSet<Integer> joukko = new TreeSet<>();
-for (int i = 0; i < n/2; i++) {
-    joukko.add(luvut[i]);
-}
-long summa = 0;
-for (int i = n/2; i < n; i++) {
-    joukko.add(luvut[i]);
-    summa += jono.pollFirst();
-}
-System.out.println(summa);
-\end{code}
-
-Taulukko \ref{tab:kekver} näyttää testin tulokset.
-Tämän testin perusteella näyttää siltä,
-että keon käyttämisestä on todellista hyötyä,
-koska \texttt{PriorityQueue} toimii 2–3
-kertaa nopeammin kuin \texttt{TreeSet}.
-
-\begin{table}
-\center
-\begin{tabular}{rrrr}
-taulukon koko $n$ & \texttt{PriorityQueue} & \texttt{TreeSet} \\
-\hline
-$10^6$ & 0.29 s & 0.78 s \\
-$2 \cdot 10^6$ & 0.71 s & 1.50 s \\
-$4 \cdot 10^6$ & 1.56 s & 3.72 s \\
-$8 \cdot 10^6$ & 3.68 s & 9.43 s \\
-\end{tabular}
-\caption{Algoritmien suoritusaikojen vertailu.}
-\label{tab:kekver}
-\end{table}
-
 \section{Lisää keosta}
 
 Koska keko on tallennettu taulukkona,
@@ -805,3 +687,118 @@ jos haluamme selvittää vain taulukon $k$ pienintä tai suurinta
 alkiota, tämä onnistuu ajassa $O(n+k \log n)$,
 koska meidän riittää poistaa keosta $k$ kertaa
 pienin tai suurin alkio ajassa $O(\log n)$.
+
+\section{Ohjelmointikielten toteutukset}
+
+\subsection{Java}
+
+Javan tietorakenne \texttt{PriorityQueue}
+toteuttaa binäärikeon, joka on oletuksena minimikeko.
+Metodi \texttt{add} lisää alkion jonoon,
+metodi \texttt{peek} hakee pienimmän alkion
+ja metodi \texttt{poll} hakee ja poistaa pienimmän alkion.
+Seuraava koodi esittelee tietorakenteen käyttämistä:
+
+\begin{code}
+PriorityQueue<Integer> jono = new PriorityQueue<>();
+jono.add(5);
+jono.add(3);
+jono.add(8);
+jono.add(7);
+System.out.println(jono.peek()); // 3
+System.out.println(jono.poll()); // 3
+System.out.println(jono.poll()); // 5
+\end{code}
+
+Jos haluamme luoda prioriteettijonon, joka onkin
+maksimikeko, voimme tehdä tämän seuraavasti:
+
+\begin{code}
+PriorityQueue<Integer> jono =
+    new PriorityQueue<>(Collections.reverseOrder());
+\end{code}
+
+Jos haluamme tallentaa \texttt{PriorityQueue}-rakenteeseen omia olioitamme,
+meidän tulee toteuttaa luokkaan metodi \texttt{compareTo} ja
+merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
+
+\subsection{Python}
+
+Pythonin standardikirjaston moduulissa \texttt{heapq} on funktioita,
+joiden avulla listaa voi käsitellä binäärikekona.
+Toteutuksessa keko on minimikeko ja 0-indeksoitu
+(eli keon pienin alkio on aina kohdassa 0).
+Seuraava koodi näyttää, miten voimme käsitellä kekoa:
+
+\begin{code}
+from heapq import heappush, heappop
+
+jono = []
+heappush(jono,5)
+heappush(jono,3)
+heappush(jono,8)
+heappush(jono,7)
+print(jono[0]) # 3
+heappop(jono)
+print(jono[0]) # 5
+\end{code}
+
+Lisäksi saatavilla on funktio \texttt{heapify},
+joka muuttaa olemassa olevan listan minimikeoksi
+lineaarisessa ajassa:
+
+\begin{code}
+from heapq import heapify, heappop
+
+jono = [5,3,8,7]
+heapify(jono)
+print(jono[0]) # 3
+heappop(jono)
+print(jono[0]) # 5
+\end{code}
+
+\section{Tehokkuusvertailu}
+
+Mitä hyötyä keosta oikeastaan on?
+Meillähän on olemassa jo binäärihakupuu,
+jonka avulla voimme toteuttaa kaikki keon operaatiot
+ja \emph{enemmänkin}.
+Keossa voimme hakea ja poistaa vain pienimmän tai suurimman alkion,
+mutta binäärihakupuussa voimme käsitellä myös muita alkioita.
+
+Keon etuna on, että siinä on tehokkaan taulukkototeutuksen
+ansiosta pienemmät \emph{vakiokertoimet} kuin binäärihakupuussa.
+Jos meille riittää, että voimme hakea ja poistaa
+vain pienimmän tai suurimman alkion, voi siis olla hyvä
+ratkaisu käyttää kekoa binäärihakupuun sijasta.
+Mutta kuinka suuria erot ovat käytännössä?
+
+Tästä antaa kuvaa seuraava testi,
+jossa vertailemme keskenään Javan tietorakenteita
+\texttt{PriorityQueue} ja \texttt{TreeSet}.
+Testissä meillä on taulukko,
+jossa on satunnaisessa järjestyksessä luvut $1,2,\dots,n$.
+Lisäämme ensin taulukon $n/2$ ensimmäistä lukua joukkoon.
+Tämän jälkeen käymme läpi loput $n/2$ lukua,
+ja jokaisen luvun kohdalla lisäämme sen joukkoon ja
+poistamme joukon pienimmän luvun.
+
+Taulukko \ref{tab:kekver} näyttää testin tulokset.
+Tämän testin perusteella näyttää siltä,
+että keon käyttämisestä on todellista hyötyä,
+koska \texttt{PriorityQueue} toimii 2–3
+kertaa nopeammin kuin \texttt{TreeSet}.
+
+\begin{table}
+\center
+\begin{tabular}{rrrr}
+taulukon koko $n$ & \texttt{PriorityQueue} & \texttt{TreeSet} \\
+\hline
+$10^6$ & 0.29 s & 0.78 s \\
+$2 \cdot 10^6$ & 0.71 s & 1.50 s \\
+$4 \cdot 10^6$ & 1.56 s & 3.72 s \\
+$8 \cdot 10^6$ & 3.68 s & 9.43 s \\
+\end{tabular}
+\caption{Algoritmien suoritusaikojen vertailu.}
+\label{tab:kekver}
+\end{table}
