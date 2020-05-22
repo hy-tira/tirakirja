@@ -378,44 +378,28 @@ Tavallisin tapa esittää verkko on luoda kullekin solmulle
 \emph{vieruslista} (\emph{adjacency list}), joka kertoo, mihin solmuihin voimme
 siirtyä solmusta kaaria pitkin.
 Kuvassa \ref{fig:vervil} on verkko
-ja sitä vastaava vieruslistaesitys.
-Jos haluamme tallentaa verkon vieruslistoina Javassa,
-voimme luoda taulukon
+ja sitä vastaava vieruslistaesitys,
+jonka voimme luoda ohjelmoinnissa tähän tapaan:
 
 \begin{code}
-ArrayList<Integer>[] verkko = new ArrayList[n+1];
-\end{code}
-
-ja alustaa vieruslistat näin:
-
-\begin{code}
-for (int i = 1; i <= n; i++) {
-    verkko[i] = new ArrayList<>();
-}
-\end{code}
-
-Tämän jälkeen lisäämme kaaret listoille näin:
-
-\begin{code}
-verkko[1].add(2);
-verkko[1].add(3);
-verkko[1].add(4);
-verkko[2].add(4);
-verkko[2].add(5);
-verkko[3].add(4);
-verkko[4].add(5);
+verkko[1].add(2)
+verkko[1].add(3)
+verkko[1].add(4)
+verkko[2].add(4)
+verkko[2].add(5)
+verkko[3].add(4)
+verkko[4].add(5)
 \end{code}
 
 Vieruslistaesitys on monessa tilanteessa hyvä tapa tallentaa verkko,
 koska haluamme usein selvittää,
 mihin solmuihin pääsemme siirtymään tietystä solmusta kaaria pitkin.
 Esimerkiksi seuraava koodi käy läpi solmut,
-joihin voimme siirtyä solmusta $x$ kaarella:
+joihin voimme siirtyä solmusta $a$ kaarella:
 
 \begin{code}
-for (Integer s : verkko[x]) {
-    // käsittele solmu s
-}
+for b in verkko[a]:
+    // käsittele solmu b
 \end{code}
 
 Jos verkko on suuntaamaton, eli voimme kulkea kaaria molempiin suuntiin,
@@ -431,36 +415,23 @@ kaaresta sekä kohdesolmun että painon.
 Toinen tapa tallentaa verkko on luoda \emph{kaarilista}
 (\emph{edge list}),
 joka sisältää kaikki verkon kaaret.
-Javassa voimme luoda listan
+Voisimme luoda esimerkkiverkkoa vastaavan kaarilistan
+tähän tapaan:
 
 \begin{code}
-ArrayList<Kaari> kaaret = new ArrayList<>();
+kaaret.add((1,2))
+kaaret.add((1,3))
+kaaret.add((1,4))
+kaaret.add((2,4))
+kaaret.add((2,5))
+kaaret.add((3,4))
+kaaret.add((4,5))
 \end{code}
 
-jossa on seuraavanlaisia kaaria:
-
-\begin{code}
-public class Kaari {
-    public int alku, loppu;
-
-    public Kaari(int alku, int loppu) {
-        this.alku = alku;
-        this.loppu = loppu;
-    }
-}
-\end{code}
-
-Seuraava koodi luo esimerkkiverkkoamme vastaavan kaarilistan:
-
-\begin{code}
-kaaret.add(new Kaari(1,2));
-kaaret.add(new Kaari(1,3));
-kaaret.add(new Kaari(1,4));
-kaaret.add(new Kaari(2,4));
-kaaret.add(new Kaari(2,5));
-kaaret.add(new Kaari(3,4));
-kaaret.add(new Kaari(4,5));
-\end{code}
+Tässä jokainen listan alkio on pari, mikä olisi luonteva
+tapa tallentaa kaaret esimerkiksi Pythonissa.
+Javassa voisimme tallentaa listalle olioita,
+joiden kenttinä on kaaren alku- ja loppusolmu.
 
 Kaarilista on hyvä esitystapa algoritmeissa,
 joissa haluamme pystyä käy\-mään helposti läpi
@@ -507,7 +478,7 @@ selvittää tietystä solmusta lähteviä kaaria.
 
 \index{vierusmatriisi}
 
-\emph{Vierusmatriisi} (\emph{adjacency matrix}) on kaksiulotteinen taulukko,
+\emph{Vierusmatriisi} (\emph{adjacency matrix}) on kaksiulotteinen rakenne,
 joka kertoo jokaisesta verkon kaaresta,
 esiintyykö se verkossa.
 Matriisin rivin $a$ sarakkeessa $b$ oleva arvo
@@ -517,22 +488,18 @@ verkon vierusmatriisiesityksestä.
 Tässä tapauksessa matriisin jokainen arvo on
 0 (ei kaarta) tai 1 (kaari).
 
-Javassa voimme määritellä vierusmatriisin seuraavasti:
+Ohjelmoinnissa voimme tallentaa vierusmatriisin kaksiulotteisena
+taulukkona tai listana. Tässä on esimerkkiverkkoa vastaava
+vierusmatriisi:
 
 \begin{code}
-int[][] verkko = new int[n+1][n+1];
-\end{code}
-
-Tämän jälkeen muodostamme matriisiin näin:
-
-\begin{code}
-verkko[1][2] = 1;
-verkko[1][3] = 1;
-verkko[1][4] = 1;
-verkko[2][4] = 1;
-verkko[2][5] = 1;
-verkko[3][4] = 1;
-verkko[4][5] = 1;
+verkko[1][2] = 1
+verkko[1][3] = 1
+verkko[1][4] = 1
+verkko[2][4] = 1
+verkko[2][5] = 1
+verkko[3][4] = 1
+verkko[4][5] = 1
 \end{code}
 
 Jos verkko on painotettu, voimme vastaavasti merkitä
