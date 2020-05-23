@@ -16,8 +16,8 @@ joka on tavallisimmin käytetty kekorakenne.
 Binäärikeko toteutetaan binääripuuna,
 ja se mahdollistaa alkion etsimisen ajassa $O(1)$ sekä
 alkioiden lisäykset ja poistot ajassa $O(\log n)$.
-Joissakin ohjelmointikielissä binäärikekoon perustuvasta
-tietorakenteesta käytetään nimeä \emph{prioriteettijono} (\emph{priority queue}).
+Pystymme toteuttamaan binäärikeon tehokkaasti taulukkona,
+koska sen toiminnot ovat yleistä binääripuuta rajatumpia.
 
 \section{Binäärikeko}
 
@@ -88,7 +88,7 @@ joka sisältää keon solmujen arvot jär\-jestyksessä
 ylhäältä alaspäin ja vasemmalta oikealle.
 Tämä tehokas tallennustapa on mahdollinen,
 koska keon kaikki tasot ovat täynnä solmuja.
-Tallennamme keon taulukkoon kohdasta $1$ alkaen,
+Tallennamme keon taulukkoon indeksistä $1$ alkaen,
 koska tämä helpottaa keon operaatioiden toteuttamista.
 
 Esimerkiksi tallennamme kuvan \ref{fig:minkek}
@@ -692,12 +692,14 @@ pienin tai suurin alkio ajassa $O(\log n)$.
 
 \subsection{Java}
 
+\index{prioriteettijono}
+
+Javassa ja joissakin muissa kielissä kekorakenne tunnetaan
+nimellä \emph{prioriteettijono} (\emph{priority queue}).
 Javan tietorakenne \texttt{PriorityQueue}
 toteuttaa binäärikeon, joka on oletuksena minimikeko.
-Metodi \texttt{add} lisää alkion jonoon,
-metodi \texttt{peek} hakee pienimmän alkion
-ja metodi \texttt{poll} hakee ja poistaa pienimmän alkion.
-Seuraava koodi esittelee tietorakenteen käyttämistä:
+Metodi \texttt{peek} hakee pienimmän alkion, ja
+metodi \texttt{poll} hakee ja poistaa pienimmän alkion.
 
 \begin{code}
 PriorityQueue<Integer> jono = new PriorityQueue<>();
@@ -718,16 +720,12 @@ PriorityQueue<Integer> jono =
     new PriorityQueue<>(Collections.reverseOrder());
 \end{code}
 
-Jos haluamme tallentaa \texttt{PriorityQueue}-rakenteeseen omia olioitamme,
-meidän tulee toteuttaa luokkaan metodi \texttt{compareTo} ja
-merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
-
 \subsection{Python}
 
 Pythonin standardikirjaston moduulissa \texttt{heapq} on funktioita,
 joiden avulla listaa voi käsitellä binäärikekona.
-Toteutuksessa keko on minimikeko ja 0-indeksoitu
-(eli keon pienin alkio on aina kohdassa 0).
+Toteutuksessa keko on minimikeko ja keon sisältö on
+tallennettu listaan kohdasta 0 alkaen.
 Seuraava koodi näyttää, miten voimme käsitellä kekoa:
 
 \begin{code}

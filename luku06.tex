@@ -14,10 +14,10 @@ mikä ei ole mahdollista hajautustaulussa.
 Aloitamme luvun tutustumalla binääripuiden teoriaan,
 minkä jälkeen perehdymme binäärihakupuun toimintaan.
 Käsittelemme binäärihakupuun tehokkaasta toteutuksesta
-esimerkkinä AVL-puun.
-Sitten käymme läpi binääri\-hakupuun toteutuksia
-ohjelmointikielissä,
-ja lopuksi vertailemme joukkorakenteita ja järjestämistä.
+esimerkkinä AVL-puun,
+joka on yksinkertainen tasapainoinen binäärihakupuu.
+Tasapainotuksen ansiosta saamme toteutettua binäärihakupuun niin,
+että sen operaatiot ovat tehokkaita.
 
 \section{Taustaa binääripuista}
 
@@ -956,22 +956,6 @@ String seuraava = sanakirja.higherKey("biisoni"); // cembalo
 String edellinen = sanakirja.lowerKey("biisoni"); // banaani
 \end{code}
 
-Jos haluamme käyttää omia olioitamme \texttt{TreeSet}- ja
-\texttt{TreeMap}-rakenteissa, meidän tulee toteuttaa
-luokkaan kaksi metodia:
-\texttt{equals} ilmaisee, ovatko kaksi oliota samat,
-ja \texttt{compareTo} kertoo kahden olion suuruusjärjestyksen.
-Jälkimmäisen metodin ansiosta luokka toteuttaa rajapinnan
-\texttt{Comparable}.
-
-Miksi oikeastaan metodi \texttt{equals} on tarpeen?
-Metodi \texttt{compareTo} palauttaa arvon 0 tarkalleen silloin,
-kun alkiot ovat yhtä suuret, joten myös sen avulla voi
-tarkastaa asian.
-Syynä on, että \texttt{TreeSet} toteuttaa rajapinnan \texttt{Set},
-joka edellyttää, että luokassa on oikein toimiva metodi \texttt{equals},
-vaikka siitä ei sinänsä olekaan hyötyä tässä tapauksessa.
-
 \subsection{Python}
 
 Pythonin standardikirjastossa \emph{ei} ole 
@@ -979,8 +963,9 @@ tasapainoisen binäärihakupuun toteutusta.
 Tämä on kielen suunnittelussa tehty päätös,
 joka liittyy siihen, että kieleen ei haluta
 useita tapoja saman asian tekemiseen.
-Koska Pythonin standardikirjastossa on hajautustaulua
-käyttäviä tietorakenteita, binäärihaku\-puulle ei nähdä tarvetta.
+Koska Pythonissa on hajautustaulua
+käyttävät tietorakenteet \texttt{set} ja \texttt{dict},
+binäärihakupuulle ei nähdä tarvetta.
 
 Miten selviämme Pythonissa ilman binäärihakupuuta?
 Mahdollisia ratkaisuja ovat:
@@ -997,10 +982,12 @@ on Pythonin standardikirjastossa.
 ulkopuolista binäärihakupuun toteutusta.
 \end{itemize}
 
-Itse asiassa yleisempi suuntaus suosituissa ohjelmointikielissä vaikuttaa olevan,
+Itse asiassa yleinen suuntaus suosituissa ohjelmointikielissä vaikuttaa olevan,
 että standardikirjastossa on tarjolla hajautustaulu mutta ei
 binääri\-hakupuuta. Näin on myös JavaScript-kielessä,
 jossa tietorakenteet \texttt{Map} ja \texttt{Set} käyttävät hajautustaulua.
+Näyttää siltä, että käytännössä ei ole usein tarvetta säilyttää
+joukon alkioita järjestyksessä.
 
 \section{Tehokkuusvertailu}
 
@@ -1025,14 +1012,6 @@ joukon koko ilmaisee meille, montako eri lukua taulukossa on.
 Tämä ratkaisu vie aikaa $O(n \log n)$, koska jokainen
 \texttt{add}-operaatio vie aikaa $O(\log n)$.
 
-\begin{code}
-TreeSet<Integer> joukko = new TreeSet<>();
-for (int i = 0; i < taulu.length; i++) {
-    joukko.add(taulu[i]);
-}
-System.out.println(joukko.size());
-\end{code}
-
 \subsubsection{Ratkaisu 2: \texttt{HashSet}}
 
 Emme tarvitse \texttt{TreeSet}-rakenteen
@@ -1041,14 +1020,6 @@ käyttämällä sen sijaan \texttt{HashSet}-rakennetta.
 Koodi säilyy muuten täysin samanlaisena.
 Tämä ratkaisu vie aikaa $O(n)$ hajautuksen ansiosta.
 
-\begin{code}
-HashSet<Integer> joukko = new HashSet<>();
-for (int i = 0; i < taulu.length; i++) {
-    joukko.add(taulu[i]);
-}
-System.out.println(joukko.size());
-\end{code}
-
 \subsubsection{Ratkaisu 3: järjestäminen}
 
 Kolmas tapa ratkaista tehtävä on käyttää järjestämistä:
@@ -1056,16 +1027,6 @@ kopioimme ensin luvut uuteen taulukkoon, järjestämme tämän taulukon ja
 tutkimme sitten, monessako kohdassa järjestetyssä taulukossa luku vaihtuu.
 Tämä ratkaisu vie aikaa $O(n \log n)$, koska taulukon järjestäminen
 vie aikaa $O(n \log n)$.
-
-\begin{code}
-int[] kopio = taulu.clone();
-Arrays.sort(kopio);
-int laskuri = 1;
-for (int i = 1; i < kopio.length; i++) {
-    if (kopio[i-1] != kopio[i]) laskuri++;
-}
-System.out.println(laskuri);
-\end{code}
 
 \subsubsection{Vertailun tulokset}
 
