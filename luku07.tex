@@ -88,19 +88,18 @@ joka sisältää keon solmujen arvot jär\-jestyksessä
 ylhäältä alaspäin ja vasemmalta oikealle.
 Tämä tehokas tallennustapa on mahdollinen,
 koska keon kaikki tasot ovat täynnä solmuja.
-Tallennamme keon taulukkoon indeksistä $1$ alkaen,
-koska tämä helpottaa keon operaatioiden toteuttamista.
+Tavallinen tapa on tallentaa keko taulukkoon niin,
+että indeksointi alkaa 1:stä.
+Esimerkiksi kuvan \ref{fig:minkek} keko vastaa seuraavaa taulukkoa:
+\vspace{5px}
 
-Esimerkiksi tallennamme kuvan \ref{fig:minkek}
-keon taulukkona seuraavasti:
+\begin{tikzpicture}[scale=0.6]
+\draw (0,0) grid (10,1);
+\foreach \x in {1,...,10} \node at (-0.5+\x,1.5) {\small \x};
+\foreach \x/\v in {1/1,2/3,3/5,4/4,5/5,6/8,7/9,8/7,9/8,10/5} \node at (-0.5+\x,0.5) {\v};
+\end{tikzpicture}
 
-\begin{code}
-keko = [0,1,3,5,4,5,8,9,7,8,5]
-\end{code}
-
-Huomaa, että taulukon ensimmäinen alkio on $0$,
-koska emme käytä kohtaa $0$ keon tallentamiseen.
-
+\vspace{5px}
 Taulukkototeutuksen etuna on, että voimme laskea
 helposti, missä kohdissa keon alkiot ovat taulukossa.
 Ensinnäkin keon juuri eli pienin tai suurin alkio
@@ -724,8 +723,10 @@ PriorityQueue<Integer> jono =
 
 Pythonin standardikirjaston moduulissa \texttt{heapq} on funktioita,
 joiden avulla listaa voi käsitellä binäärikekona.
-Toteutuksessa keko on minimikeko ja keon sisältö on
-tallennettu listaan kohdasta 0 alkaen.
+Toteutuksessa keko on minimikeko ja tavallisesta käytännöstä
+poiketen keon kohdat on 0-indeksoitu eli keon pienin alkio on aina
+listan kohdassa 0.
+
 Seuraava koodi näyttää, miten voimme käsitellä kekoa:
 
 \begin{code}
