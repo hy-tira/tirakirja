@@ -144,9 +144,10 @@ ja siirtää aina kohdassa $i$ olevan alkion
 oikeaan paikkaan.
 Tämä tapahtuu sisäsilmukalla,
 jonka jokainen askel vaihtaa keskenään alkion
-ja sen vasemmalla puolella olevan alkion.
-Tässä komento \texttt{swap} ilmaisee,
-että alkiot vaihdetaan keskenään.
+ja sen vasemmalla puolella olevan alkion
+niin kauan, kuin vasen alkio on suurempi.
+Huomaa pseudokoodin komento \texttt{swap}, joka ilmaisee,
+että kaksi alkiota vaihdetaan keskenään.
 
 Lisäysjärjestämisen tehokkuus riippuu siitä,
 mikä on järjestettävän taulukon sisältö.
@@ -767,14 +768,14 @@ kun taulukon kaikki alkiot ovat sopivan pieniä kokonaislukuja.
 
 \section{Ohjelmointikielten toteutukset}
 
-% Vaikka on hyödyllistä tuntea järjestämisen teoriaa,
-% käytännössä ei ole hyvä idea toteuttaa itse
-% järjestämisalgoritmia, koska nykypäivän ohjelmointikielissä
-% on valmiit työkalut järjestämiseen.
-% Valmiin algoritmin käyttämisessä on etuna,
-% että se on varmasti hyvin toteutettu ja tehokas.
-% Lisäksi meiltä säästyy aikaa, kun emme joudu
-% toteuttamaan algoritmia itse.
+Vaikka on hyödyllistä tuntea järjestämisen teoriaa,
+käytännössä ei ole hyvä idea toteuttaa itse
+järjestämisalgoritmia, koska nykypäivän ohjelmointikielissä
+on valmiit työkalut järjestämiseen.
+Valmiin algoritmin käyttämisessä on etuna,
+että se on varmasti hyvin toteutettu ja tehokas.
+Lisäksi ohjelmoijan aikaa säästyy,
+kun algoritmia ei joudu toteuttamaan itse.
 
 \subsection{Java}
 
@@ -855,7 +856,7 @@ Arrays.sort(pisteet);
 
 \subsection{Python}
 
-Pythonissa listan metodi \texttt{sort} järjestää sen sisällön:
+Pythonissa metodi \texttt{sort} järjestää listan sisällön:
 
 \begin{code}
 lista = [4,2,5,8,2,1,5,6]
