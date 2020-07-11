@@ -50,7 +50,7 @@ määrä kaarta pitkin ei saa ylittää.
 \path[draw,thick,->] (4) -- node[font=\small,label=right:$3/5$] {} (5);
 \end{tikzpicture}
 \end{center}
-\caption{Maksimivirtaus solmusta $1$ solmuun $5$ on $7$.}
+\caption{Maksimivirtaus solmusta $1$ solmuun $5$.}
 \label{fig:makvir}
 \end{figure}
 
@@ -117,7 +117,7 @@ Algoritmi muodostaa joka vaiheessa \emph{täydennyspolun}
 (\emph{augmenting path}),
 joka on mikä tahansa polku lähtösolmusta kohdesolmuun,
 jossa jokaisen kaaren paino on positiivinen.
-Polun muodostamisen jälkeen virtaus lähtösolmusta kohdesolmuun
+Polun muodostamisen jälkeen virtauksen suuruus lähtösolmusta kohdesolmuun
 kasvaa $p$:llä, missä $p$ on pienin kaaren paino polulla.
 Lisäksi jokaisen polulla olevan kaaren paino vähenee $p$:llä
 ja jokaisen niille käänteisen kaaren paino kasvaa $p$:llä.
@@ -133,12 +133,12 @@ polulla olevien kaarten paino vähenee $4$:llä
 ja käänteisten kaarten paino kasvaa $4$:llä.
 Tämän jälkeen algoritmi muodostaa polun
 $1 \rightarrow 3 \rightarrow 2 \rightarrow 4 \rightarrow 5$,
-joka kasvattaa virtausta $3$:lla.
+jolloin virtaus kasvaa $3$:lla.
 Huomaa, että tämä polku peruuttaa
 kaarta $2 \rightarrow 3$ menevää virtausta,
 koska se kulkee käänteisen kaaren $3 \rightarrow 2$ kautta.
 Tämän jälkeen algoritmi ei enää pysty muodostamaan mitään
-täydennyspolkua, joten maksimivirtaus on $4+3=7$.
+täydennyspolkua, joten verkon maksimivirtauksen suuruus on $4+3=7$.
 
 \begin{figure}
 \center
@@ -243,7 +243,7 @@ joten kaarta pitkin kulkevan virtauksen määrä on $5-2=3$.
 \index{minimileikkaus}
 
 Fordin ja Fulkersonin algoritmin toimintaidea on sinänsä järkevä,
-koska täyden\-nyspolut lähtösolmusta kohdesolmuun kasvattavat virtausta,
+koska täy\-dennyspolut lähtösolmusta kohdesolmuun kasvattavat virtausta,
 mutta ei ole silti todellakaan päältä päin selvää,
 miksi algoritmi löytää varmasti \emph{suurimman} mahdollisen virtauksen.
 Jotta voimme ymmärtää paremmin algoritmin toimintaa,
@@ -286,20 +286,21 @@ ja jonka paino on $3+4=7$.
 \label{fig:minlei}
 \end{figure}
 
-Osoittautuu, että verkon maksimivirtaus on aina yhtä suuri kuin
-minimileikkaus, ja tämä yhteys auttaa perustelemaan,
+Osoittautuu, että verkon maksimivirtauksen suuruus
+on aina sama kuin minimileikkauksen paino,
+ja tämä yhteys auttaa perustelemaan,
 miksi Fordin ja Fulkersonin algoritmi toimii.
-Ensinnäkin voimme havaita, että \emph{mikä tahansa}
-verkon leikkaus on yhtä suuri tai suurempi
-kuin maksimivirtaus.
+Ensinnäkin voimme havaita, että \emph{minkä tahansa}
+verkon leikkauksen paino on vähintään yhtä suuri kuin
+maksimivirtauksen määrä.
 Tämä johtuu siitä, että virtauksen täytyy ylittää
-jokin leikkaukseen kuuluva kaari, jotta se pääsee
+leikkaukseen kuuluva kaaria, jotta se pääsee
 lähtösolmusta kohdesolmuun.
 Esimerkiksi kuvassa \ref{fig:minlei} virtaus voi
 päästä solmusta $1$ solmuun $5$
 joko kulkemalla kaarta $2 \rightarrow 4$ tai kaarta $3 \rightarrow 5$.
-Niinpä virtaus ei voi olla suurempi kuin näiden kaarten
-painojen summa.
+Niinpä virtauksen suuruus ei voi ylittää näiden kaarten
+painojen summaa.
 
 \begin{figure}
 \center
@@ -329,7 +330,8 @@ painojen summa.
 \end{figure}
 
 Toisaalta Fordin ja Fulkersonin algoritmi muodostaa sivutuotteenaan
-myös verkon leikkauksen, joka on yhtä suuri kuin maksimivirtaus.
+verkon leikkauksen, jonka paino on sama kuin verkossa olevan
+virtauksen suuruus.
 Löydämme leikkauksen etsimällä ensin kaikki solmut,
 joihin pääsemme lähtösolmusta positiivisia kaaria pitkin
 algoritmin lopputilanteessa.
@@ -341,8 +343,8 @@ ja joiden kapasiteetti on käytetty kokonaan,
 saamme aikaan verkon leikkauksen.
 Esimerkissämme nämä kaaret ovat $2 \rightarrow 4$ ja $3 \rightarrow 5$.
 
-Koska olemme löytäneet virtauksen, joka on yhtä suuri kuin leikkaus,
-ja toisaalta virtaus ei voi olla mitään leikkausta suurempi,
+Koska olemme löytäneet virtauksen, jonka suuruus on sama kuin leikkauksen paino,
+ja toisaalta virtauksen suuruus ei voi ylittää minkään leikkauksen painoa,
 olemme siis löytäneet maksimivirtauksen ja minimileikkauksen,
 joten Fordin ja Fulkersonin algoritmi toimii oikein.
 
@@ -353,7 +355,7 @@ mutta polkujen valintatapa vaikuttaa algoritmin tehokkuuteen.
 Riippumatta polkujen valintatavasta on selvää,
 että jokainen polku kasvattaa virtausta ainakin \emph{yhdellä} yksiköllä.
 Niinpä tiedämme, että joudumme etsimään enintään $f$ täydennyspolkua,
-kun verkon maksimivirtaus on $f$.
+kun verkon maksimivirtauksen suuruus on $f$.
 Jos muodostamme polut syvyyshaulla,
 jokaisen polun muodostaminen vie aikaa $O(m)$,
 joten saamme algoritmin ajankäytölle ylärajan $O(fm)$.
@@ -366,11 +368,11 @@ joten saamme algoritmin ajankäytölle ylärajan $O(fm)$.
 \node[draw, circle] (2) at (2,0) {$2$};
 \node[draw, circle] (3) at (2,-2) {$3$};
 \node[draw, circle] (4) at (4,-1) {$4$};
-\path[draw,thick,->] (1) -- node[font=\small,label=above:$10^9$] {} (2);
-\path[draw,thick,->] (1) -- node[font=\small,label=below:$10^9$] {} (3);
+\path[draw,thick,->] (1) -- node[font=\small,label=above:$Z$] {} (2);
+\path[draw,thick,->] (1) -- node[font=\small,label=below:$Z$] {} (3);
 \path[draw,thick,->] (2) -- node[font=\small,label=right:$1$] {} (3);
-\path[draw,thick,->] (2) -- node[font=\small,label=above:$10^9$] {} (4);
-\path[draw,thick,->] (3) -- node[font=\small,label=below:$10^9$] {} (4);
+\path[draw,thick,->] (2) -- node[font=\small,label=above:$Z$] {} (4);
+\path[draw,thick,->] (3) -- node[font=\small,label=below:$Z$] {} (4);
 \end{tikzpicture}
 \end{center}
 \caption{Verkko, joka voi aiheuttaa ongelmia algoritmille.}
@@ -380,12 +382,13 @@ joten saamme algoritmin ajankäytölle ylärajan $O(fm)$.
 Voiko todella käydä niin, että jokainen polku parantaa
 virtausta vain yhdellä?
 Tämä on mahdollista, ja kuva \ref{fig:polhuo} tarjoaa esimerkin asiasta.
+Tässä $Z$ on jokin suuri vakio, joka on kaaren kapasiteetti.
 Jos muodostamme polut syvyyshaulla ja valitsemme haussa aina solmun,
 jonka tunnus on pienin,
 muodostamme vuorotellen polkuja $1 \rightarrow 2 \rightarrow 3 \rightarrow 4$
 ja $1 \rightarrow 3 \rightarrow 2 \rightarrow 4$ niin, että
 lisäämme ja peruutamme edestakaisin kaarta $2 \rightarrow 3$ kulkevaa virtausta.
-Tämän vuoksi joudumme muodostamaan $2 \cdot 10^9$ polkua,
+Tämän vuoksi joudumme muodostamaan $2Z$ polkua,
 ennen kuin olemme saaneet selville verkon maksimivirtauksen.
 
 \index{Edmondsin ja Karpin algoritmi}
@@ -529,15 +532,13 @@ erillisten polkujen määrä.
 Kuva \ref{fig:erivir} näyttää maksimivirtauksen
 esimerkkiverkossamme.
 
-Miksi maksimivirtaus ja erillisten polkujen määrä ovat yhtä suuret?
+Miksi maksimivirtauksen suuruus on sama kuin erillisten polkujen määrä?
 Ensinnäkin erilliset polut muodostavat yhdessä virtauksen,
-joten maksimivirtaus ei voi olla pienempi kuin erillisten polkujen määrä.
+joten maksimivirtauksen suuruus ei voi alittaa erillisten polkujen määrää.
 Toisaalta jos verkossa on virtaus, jonka suuruus on $k$,
 voimme muodostaa $k$ erillistä polkua
 valitsemalla kaaria ahneesti lähtösolmusta alkaen,
-joten maksimivirtaus ei voi olla suurempi kuin erillisten polkujen määrä.
-Ainoa mahdollisuus on, että maksimivirtaus ja erillisten polkujen määrä
-ovat yhtä suuret.
+joten maksimivirtauksen suuruus ei voi myöskään ylittää erillisten polkujen määrää.
 
 \subsection{Maksimiparitus}
 
@@ -628,7 +629,9 @@ että ne kulkevat vasemmasta ryhmästä oikeaan ryhmään.
 Kuva \ref{fig:parver} näyttää tuloksena olevan verkon
 esimerkissämme.
 Maksimivirtaus tässä verkossa vastaa alkuperäisen verkon
-maksimiparitusta.
+maksimiparitusta, kun
+valitsemme paritukseen kaikki kaaret,
+joiden kautta kulkee virtausta.
 
 \subsection{Pienin polkupeite}
 
