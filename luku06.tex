@@ -144,11 +144,11 @@ Esimerkiksi seuraava funktio laskee, montako solmua
 sille annetussa puussa on:
 
 \begin{code}
-function laskeSolmut(solmu)
+function laske_solmut(solmu)
     if solmu == null
         return 0
-    return 1 + laskeSolmut(solmu.vasen) +
-                laskeSolmut(solmu.oikea)
+    return 1 + laske_solmut(solmu.vasen) +
+                laske_solmut(solmu.oikea)
 \end{code}
 
 Funktiolle annetaan parametrina solmu,
@@ -961,11 +961,11 @@ String edellinen = sanakirja.lowerKey("biisoni"); // banaani
 Pythonin standardikirjastossa \emph{ei} ole 
 tasapainoisen binäärihakupuun toteutusta.
 Tämä on kielen suunnittelussa tehty päätös,
-joka liittyy siihen, että kieleen ei haluta
-useita tapoja saman asian tekemiseen.
+joka liittyy ihanteeseen, että kielessä on yksi selkeä
+tapa toteuttaa tietty asia.
 Koska Pythonissa on hajautustaulua
 käyttävät tietorakenteet \texttt{set} ja \texttt{dict},
-binäärihakupuulle ei nähdä tarvetta.
+binäärihakupuulle ei ole nähty tarvetta.
 
 Miten selviämme Pythonissa ilman binäärihakupuuta?
 Mahdollisia ratkaisuja ovat:
@@ -974,7 +974,7 @@ Mahdollisia ratkaisuja ovat:
 \item Useissa tilanteissa hajautustaulu riittää:
 binäärihakupuuta tarvitaan vain, jos haluamme etsiä
 alkioita järjestyksen perusteella.
-\item Vaikka järjestykselle on tarvetta, voimme käyttää
+\item Vaikka järjestykselle olisi tarvetta, voimme käyttää
 usein binäärihaku\-puun sijasta listan järjestämistä tai
 seuraavassa luvussa käsiteltävää binäärikekoa, jonka toteutus
 on Pythonin standardikirjastossa.
@@ -985,9 +985,17 @@ ulkopuolista binäärihakupuun toteutusta.
 Itse asiassa yleinen suuntaus suosituissa ohjelmointikielissä vaikuttaa olevan,
 että standardikirjastossa on tarjolla hajautustaulu mutta ei
 binääri\-hakupuuta. Näin on myös JavaScript-kielessä,
-jossa tietorakenteet \texttt{Map} ja \texttt{Set} käyttävät hajautustaulua.
-Näyttää siltä, että käytännössä ei ole usein tarvetta säilyttää
+jossa tietorakenteet \texttt{Set} ja \texttt{Map} käyttävät hajautustaulua.
+Vaikuttaa siltä, että käytännön ohjelmoinnissa ei ole usein tarvetta säilyttää
 joukon alkioita järjestyksessä.
+
+Miksi sitten kahdesta vaihtoehtoisesta tietorakenteesta
+(hajautustaulu ja binäärihakupuu) on valittu hajautustaulu,
+jossa on vähemmän ominaisuuksia?
+Syynä on, että hajautustaulun toteutus on paljon yksinkertaisempi,
+minkä seurauksena se toimii yleensä tehokkaammin.
+Ero näkyy myös aikavaativuuksissa: hajautustaulun operaatiot vievät
+keskimäärin aikaa $O(1)$, kun taas binäärihakupuussa aikaa kuluu $O(\log n)$.
 
 \section{Tehokkuusvertailu}
 
@@ -1048,8 +1056,11 @@ järjestämisrat\-kaisun aikavaativuus on $O(n \log n)$, mutta
 järjestämisratkaisu on kymmenen kertaa nopeampi?
 Tämä johtuu siitä, että taulukon järjestäminen on hyvin kevyt
 operaatio ja se tehdään vain kerran.
-Binäärihakupuussa jokainen lisäys muuttaa puun rakennetta,
-mikä aiheuttaa suuret vakiokertoimet.
+Kun sitten käytetään \texttt{TreeSet}-rakennetta,
+sen taustalla joudutaan ylläpitämään tasapainoista binääri\-hakupuuta.
+Tällöin alkioiden lisäykset ovat raskaita operaatioita,
+koska jokaiselle uudelle alkiolle täytyy etsiä paikka puusta ja mahdollisesti
+korjata lisäyksen jälkeen puun rakennetta kiertojen avulla.
 
 Vaikka hajautustaulu ja binäärihakupuu ovat käteviä,
 niitä ei siis kannata käyttää turhaan.
