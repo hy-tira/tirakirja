@@ -421,21 +421,8 @@ ovat paljon hajautustaulua pienemmät.
 
 \subsection{Java}
 
-Javan tietorakenne \texttt{HashMap} on hajautukseen
-perustuva hakemisto, joka sisäl\-tää avain-arvo-pareja.
-Esimerkiksi seuraava koodi luo hakemiston,
-jossa avaimet ovat merkkijonoja ja arvot ovat kokonaislukuja:
-
-\begin{code}
-HashMap<String,Integer> hakemisto = new HashMap<>();
-hakemisto.put("apina",1);
-hakemisto.put("banaani",2);
-hakemisto.put("cembalo",3);
-System.out.println(hakemisto.get("apina")); // 1
-\end{code}
-
-Tietorakenne \texttt{HashSet} on puolestaan
-hajautusta käyttävä joukko, jonka operaatiot ovat tehokkaita.
+Javan tietorakenne \texttt{HashSet} on
+hajautusta käyttävä joukko.
 Esimerkiksi seuraava koodi luo joukon, johon tallennetaan
 kokonaislukuja:
 
@@ -447,6 +434,19 @@ joukko.add(8);
 System.out.println(joukko.contains(5)); // true
 joukko.remove(5);
 System.out.println(joukko.contains(5)); // false
+\end{code}
+
+Tietorakenne \texttt{HashMap} on hajautukseen
+perustuva hakemisto, joka sisäl\-tää avain-arvo-pareja.
+Esimerkiksi seuraava koodi luo hakemiston,
+jossa avaimet ovat merkkijonoja ja arvot ovat kokonaislukuja:
+
+\begin{code}
+HashMap<String,Integer> hakemisto = new HashMap<>();
+hakemisto.put("apina",1);
+hakemisto.put("banaani",2);
+hakemisto.put("cembalo",3);
+System.out.println(hakemisto.get("apina")); // 1
 \end{code}
 
 Java käyttää hajautuksessa ketjuhajautusta ja olettaa,
@@ -472,18 +472,7 @@ joten voimme laskea Javan hajautusarvon myös itse seuraavasti:
 
 \subsection{Python}
 
-Pythonin tietorakenne \texttt{dict} on hajautukseen perustuva hakemisto.
-Voimme käyttää hakemistoa vaikkapa näin:
-
-\begin{code}
-hakemisto = {}
-hakemisto["apina"] = 1
-hakemisto["banaani"] = 2
-hakemisto["cembalo"] = 3
-print(hakemisto["apina"]) # 1
-\end{code}
-
-Tietorakenne \texttt{set} on puolestaan hajautusta käyttävä joukko.
+Pythonin tietorakenne \texttt{set} on hajautusta käyttävä joukko.
 Seuraava koodi luo joukon ja lisää sinne kokonaislukuja:
 
 \begin{code}
@@ -494,6 +483,18 @@ joukko.add(8)
 print(5 in joukko) # True
 joukko.remove(5)
 print(5 in joukko) # False
+\end{code}
+
+Tietorakenne \texttt{dict} (merkitään lyhyesti \texttt{\string{\string}})
+on puolestaan hajautukseen perustuva hakemisto.
+Voimme käyttää hakemistoa vaikkapa näin:
+
+\begin{code}
+hakemisto = {}
+hakemisto["apina"] = 1
+hakemisto["banaani"] = 2
+hakemisto["cembalo"] = 3
+print(hakemisto["apina"]) # 1
 \end{code}
 
 Pythonissa hajautus on toteutettu avoimella hajautuksella,
