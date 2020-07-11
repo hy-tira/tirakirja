@@ -381,7 +381,7 @@ läpi listan alkiot alusta loppuun,
 kun taas kahteen suuntaan linkitetyssä listassa
 voimme kulkea sekä alusta loppuun että lopusta alkuun.
 
-Monissa kielissä tavallinen tapa toteuttaa linkitetty rakenne
+Tavallinen tapa toteuttaa linkitetty rakenne ohjelmointikielissä
 on luoda luokka, jonka oliot vastaavat rakenteen solmuja.
 Esimerkiksi voisimme rakentaa yhteen suuntaan
 linkitetyn listan $[1,2,3]$ tähän tapaan:
@@ -679,8 +679,9 @@ ja pino on lopuksi tyhjä, lauseke on oikein muodostettu.
 \subsection{Java}
 
 Javan \texttt{ArrayList} on taulukkolista,
-jota voi käsitellä tehokkaasti listan lopusta.
-Metodi \texttt{add} lisää alkion listan loppuun:
+jossa alkion lisääminen ja poistaminen on tehokasta,
+kun se tapahtuu listan lopussa.
+Metodi \texttt{add} lisää tehokkaasti alkion listan loppuun:
 
 \begin{code}
 ArrayList<Integer> lista = new ArrayList<>();
@@ -690,10 +691,10 @@ lista.add(3);
 // tulos: [1,2,3]
 \end{code}
 
-Metodi \texttt{remove} on tehokas,
-jos poistokohta on listan lopussa.
-Esimerkiksi seuraava koodi poistaa listan
-viimeisen alkion:
+Metodi \texttt{remove} poistaa alkion
+annetusta listan kohdasta.
+Metodi toimii tehokkaasti, kun poistokohta on listan lopussa.
+Esimerkiksi seuraava koodi poistaa listan viimeisen alkion:
 
 \begin{code}
 lista.remove(lista.size()-1);
@@ -738,7 +739,7 @@ int vika = lista.getLast();
 
 Rajoituksena on kuitenkin, että yleisiä metodeita
 \texttt{get} ja \texttt{set} ei ole tarjolla
-emmekä pääse tehokkaasti käsiksi listan keskellä
+eli emme pääse tehokkaasti käsiksi listan keskellä
 oleviin alkioihin.
 
 \texttt{LinkedList} on kaksisuuntainen linkitetty lista,
@@ -756,7 +757,7 @@ lista.addFirst(4);
 
 \texttt{LinkedList} tarjoaa myös metodit
 \texttt{get} ja \texttt{set}, joiden avulla
-pääsemme käsiksi tietyssä kohdassa listalla olevaan alkioon.
+pääsee käsiksi tietyssä kohdassa listalla olevaan alkioon.
 Nämä metodit vievät kuitenkin aikaa $O(n)$,
 koska joudumme kulkemaan ensin oikeaan kohtaan listan
 alusta tai lopusta.
