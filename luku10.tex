@@ -377,9 +377,9 @@ Seuraavaksi käymme läpi kolme tavallista esitystapaa.
 Tavallisin tapa esittää verkko on luoda kullekin solmulle
 \emph{vieruslista} (\emph{adjacency list}), joka kertoo, mihin solmuihin voimme
 siirtyä solmusta kaaria pitkin.
-Kuvassa \ref{fig:vervil} on verkko
-ja sitä vastaava vieruslistaesitys,
-jonka voimme luoda ohjelmoinnissa tähän tapaan:
+Kuvassa \ref{fig:vervil} on esimerkkinä verkko
+ja sitä vastaava vieruslistaesitys.
+Voimme luoda vieruslistat näin ohjelmoinnissa:
 
 \begin{code}
 verkko[1].add(2)
@@ -398,7 +398,7 @@ Esimerkiksi seuraava koodi käy läpi solmut,
 joihin voimme siirtyä solmusta $a$ kaarella:
 
 \begin{code}
-for b in verkko[a]:
+for b in verkko[a]
     // käsittele solmu b
 \end{code}
 
