@@ -104,6 +104,8 @@ saanut valmiiksi maksimivirtauksen.
 \label{fig:flouus}
 \end{figure}
 
+\index{jäännösverkko}
+
 Jotta voimme käyttää algoritmia, esitämme verkon
 erityisessä muodossa, jossa jokaista alkuperäisen verkon
 kaarta vastaa \emph{kaksi} kaarta:
@@ -111,7 +113,12 @@ alkuperäinen kaari, jonka painona on kaaren kapasiteetti,
 sekä sille kään\-teinen kaari, jonka painona on $0$.
 Käänteisten kaarten avulla pystymme tarvittaessa \emph{peruuttamaan}
 virtausta algoritmin aikana.
-Kuva \ref{fig:flouus} näyttää, kuinka esitämme esimerkkiverkkomme algoritmissa.
+Kuva \ref{fig:flouus} näyttää, kuinka esitämme esimerkkiverkkomme
+algoritmissa\footnote{Kirjallisuudessa tällaisesta verkosta käytetään usein
+termiä \emph{jäännösverkko} (\emph{residual graph}), kuitenkin sillä erotuksella,
+että mukana ovat kulloinkin vain kaaret, joiden paino on positiivinen.
+Kuitenkin käytännössä algoritmin toteutus on mukavampi,
+kun verkon rakenne on aina sama ja mukana ovat myös 0-painoiset kaaret.}.
 
 Algoritmi muodostaa joka vaiheessa \emph{täydennyspolun}
 (\emph{augmenting path}),
