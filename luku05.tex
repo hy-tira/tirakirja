@@ -6,8 +6,8 @@
 joka tarjoaa tehokkaat operaatiot alkion lisäämiseen,
 hakemiseen ja poistamiseen.
 Voimme toteuttaa hajautustaulun avulla \emph{joukon},
-jossa on kokoelma alkioita, sekä sen laajennoksena
-\emph{hakemiston}, jossa alkiot ovat avain-arvo-pareja.
+jossa on kokoelma alkioita, sekä \emph{hakemiston},
+joka sisältää avain-arvo-pareja.
 
 Yksi tapa ajatella hajautusta on, että yleistämme taulukon ideaa:
 taulukossa indeksit ovat aina 0, 1, 2, jne., mutta hajautustaulussa
@@ -34,11 +34,13 @@ Tarkastellaan esimerkkinä hajautusfunktiota $f(x)=x \bmod N$,
 missä $x$ on kokonaisluku.
 Tämä hajautusfunktio antaa hajautusarvoksi luvun $x$
 jakojäännöksen $N$:llä.
-Esimerkiksi jos $N=10$ ja tallennamme hajautustauluun luvun 14,
+Esimerkiksi kun $N=10$ ja tallennamme hajautustauluun luvun 14,
 saamme sen hajautusarvoksi $f(14)=4$.
 Tämä tarkoittaa, että luvun paikka hajautustaulussa on kohdassa 4.
 Vastaavasti $f(21)=1$, eli luvun 21 paikka hajautustaulussa on
 kohdassa 1.
+Kun $N=10$, luvun hajautusarvo on tässä tapauksessa siis
+luvun viimeinen numero.
 
 \index{törmäys}
 
@@ -216,7 +218,7 @@ Sille löytyy paikka vasta kohdasta 7.}
 \end{figure}
 
 Kun haluamme löytää alkion $x$ hajautustaulusta avointa hajautusta käyt\-täen,
-aloitamme kohdasta $f(x)$ ja tutkimme sitten kohtia kokeilufunktion mukaisesti,
+tutkimme hajautustaulun kohtia kokeilufunktion mukaisesti,
 kunnes joko löydämme alkion tai tulemme tyhjään kohtaan, jolloin voimme päätellä,
 että hajautustaulussa ei ole alkiota.
 Esimerkiksi kun haluamme löytää kuvan \ref{fig:hajav2} hajautustaulusta
@@ -249,7 +251,7 @@ Tämän ansiosta alkion 44 haku ei pysähdy kohtaan 6.}
 \label{fig:hajav3}
 \end{figure}
 
-Avoimen hajautuksen tehokkuus riippuu sekä käytetystä hajautusfunktiosta
+Avoimen hajautuksen tehokkuus riippuu käytetystä hajautusfunktiosta
 ja kokeilufunktiosta.
 Hajaustustaulun operaatiot vievät aikaa $O(m)$,
 missä $m$ on kokeiltavien paikkojen määrä,
@@ -280,14 +282,14 @@ Tällöin voimme ensin keksiä jonkin järkevän keinon
 muuttaa alkion kokonaisluvuksi,
 minkä jälkeen voimme jälleen ottaa jakojäännöksen $N$:llä.
 
-Tarkastellaan esimerkkinä tilannetta, jossa haluamme hajauttaa merkkijonoja
+Tarkastellaan tilannetta, jossa haluamme hajauttaa merkkijonoja
 eli mei\-dän täytyy löytää tapa muuttaa merkkijono kokonaisluvuksi.
 Oletamme, että merkkijonossa on $k$ merkkiä,
 joiden merkkikoodit ovat $c_0,c_1,\dots,c_{k-1}$.
 Esimerkiksi jos merkkijono on \texttt{testi},
 merkkikoodit\footnote{Käytämme tässä merkkien ASCII-koodeja.
-Esimerkiksi Javassa merkin \texttt{c} koodin saa
-selville kirjoittamalla \texttt{(int)c}
+Javassa merkin \texttt{c} koodin saa
+selville kirjoittamalla \texttt{(int)c},
 ja Pythonissa voi käyttää funktiota \texttt{ord(c)}.} ovat $c_0=116$, $c_1=101$, $c_2=115$,
 $c_3=116$ ja $c_4=105$.
 Yksi tapa muuttaa merkkijono kokonaisluvuksi
@@ -314,7 +316,7 @@ ja se on yksi käytännössä toimiva merkkijonon hajautustapa.
 \subsection{Miten hyvin hajautus toimii?}
 
 Hajautustaulun operaatiot vievät aikaa $O(m)$,
-jossa $m$ on ketjuhajautuksessa listan pituus
+missä $m$ on ketjuhajautuksessa listan pituus
 ja avoimessa hajautuksessa kokeilujonon pituus.
 Mutta kuinka suuri $m$ on? Tähän vaikuttavat
 alkioiden määrä $n$, hajautustaulun koko $N$,
@@ -360,15 +362,80 @@ hyvin ja voimme ajatella, että hajautustaulun operaatiot ovat
 $O(1)$-aikaisia, kunhan hajautustaulun koko on riittävän suuri ja
 hajautus on toteutettu järke\-västi.
 Vaikka on mahdollista, että hajautus epäonnistuu,
-tämän riski on niin pieni, ettei meidän tarvitse murehtia
+tämän riski on pieni eikä meidän tarvitse yleensä murehtia
 siitä käytännössä.
+
+\subsection{Hajautustaulu hakemistona}
+
+\index{hakemisto}
+
+Tähän mennessä olemme tallentaneet hajautustauluun
+alkioiden joukon,
+mutta voimme tallentaa myös avain-arvo-pareja,
+joissa avaimen hajautusarvo määrittää,
+mihin hajautustaulun kohtaan pari sijoitetaan.
+Saamme näin aikaan \emph{hakemiston},
+jota voi ajatella taulukon yleistyksenä.
+Taulukossa avaimet ovat kokonaisluvut 0, 1, 2, jne.,
+mutta hakemistossa ne voivat olla mitä tahansa arvoja
+kuten merkkijonoja.
+
+Kuvassa \ref{fig:hajhak} on esimerkkinä hajautustauluun
+tallennettu hakemisto, joka vastaa seuraavaa ''taulukkoa'':
+
+\begin{code}
+taulu["abc"] = 5
+taulu["xyz"] = 1
+taulu["aaa"] = 8
+\end{code}
+
+Tässä tapauksessa hakemiston avaimet ovat merkkijonoja
+ja arvot ovat kokonaislukuja.
+Hajautustaulun ansiosta voimme käsitellä hakemistoa
+taulukon tavoin niin, että operaatiot vievät aikaa $O(1)$.
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=0.5]
+\draw (0,0) grid (10,1);
+\foreach \x in {0,1,...,9} \node at (0.5+\x,0.5) {\x};
+\draw[->,thick] (2.5,0) -- (2.5,-1);
+\draw[->,thick] (6.5,0) -- (6.5,-1);
+\draw[->,thick] (2.5,-2) -- (2.5,-3);
+\node at (2.5,-3.5) {$(\texttt{aaa},8)$};
+\node at (2.5,-1.5) {$(\texttt{xyz},1)$};
+\node at (6.5,-1.5) {$(\texttt{abc},5)$};
+\end{tikzpicture}
+\caption{Hakemiston tallentaminen hajautustauluun.}
+\label{fig:hajhak}
+\end{figure}
+
+Voimme myös toteuttaa hakemiston, jonka avaimet ovat kokonaislukuja.
+Tällaisessa tietorakenteessa on järkeä, jos avaimet ovat niin suuria,
+että emme voi käyttää hajautustaulun sijasta tavallista taulukkoa.
+Kuitenkin jos avaimet ovat pieniä kokonaislukuja,
+taulukko on parempi valinta, koska sen vakiokertoimet
+ovat paljon hajautustaulua pienemmät.
 
 \section{Ohjelmointikielten toteutukset}
 
 \subsection{Java}
 
-Javan tietorakenne \texttt{HashSet} on hajautustaulua käyttävä
-joukko, jonka operaatiot ovat tehokkaita.
+Javan tietorakenne \texttt{HashMap} on hajautukseen
+perustuva hakemisto, joka sisäl\-tää avain-arvo-pareja.
+Esimerkiksi seuraava koodi luo hakemiston,
+jossa avaimet ovat merkkijonoja ja arvot ovat kokonaislukuja:
+
+\begin{code}
+HashMap<String,Integer> hakemisto = new HashMap<>();
+hakemisto.put("apina",1);
+hakemisto.put("banaani",2);
+hakemisto.put("cembalo",3);
+System.out.println(hakemisto.get("apina")); // 1
+\end{code}
+
+Tietorakenne \texttt{HashSet} on puolestaan
+hajautusta käyttävä joukko, jonka operaatiot ovat tehokkaita.
 Esimerkiksi seuraava koodi luo joukon, johon tallennetaan
 kokonaislukuja:
 
@@ -380,19 +447,6 @@ joukko.add(8);
 System.out.println(joukko.contains(5)); // true
 joukko.remove(5);
 System.out.println(joukko.contains(5)); // false
-\end{code}
-
-Tietorakenne \texttt{HashMap} on puolestaan hakemisto,
-joka sisältää avain-arvo-pareja.
-Esimerkiksi seuraava koodi luo hakemiston,
-jossa avaimet ovat merkkijonoja ja arvot ovat kokonaislukuja:
-
-\begin{code}
-HashMap<String,Integer> hakemisto = new HashMap<>();
-hakemisto.put("apina",1);
-hakemisto.put("banaani",2);
-hakemisto.put("cembalo",3);
-System.out.println(hakemisto.get("apina")); // 1
 \end{code}
 
 Java käyttää hajautuksessa ketjuhajautusta ja olettaa,
@@ -418,7 +472,18 @@ joten voimme laskea Javan hajautusarvon myös itse seuraavasti:
 
 \subsection{Python}
 
-Pythonin tietorakenne \texttt{set} on hajautusta käyttävä joukko.
+Pythonin tietorakenne \texttt{dict} on hajautukseen perustuva hakemisto.
+Voimme käyttää hakemistoa vaikkapa näin:
+
+\begin{code}
+hakemisto = {}
+hakemisto["apina"] = 1
+hakemisto["banaani"] = 2
+hakemisto["cembalo"] = 3
+print(hakemisto["apina"]) # 1
+\end{code}
+
+Tietorakenne \texttt{set} on puolestaan hajautusta käyttävä joukko.
 Seuraava koodi luo joukon ja lisää sinne kokonaislukuja:
 
 \begin{code}
@@ -429,17 +494,6 @@ joukko.add(8)
 print(5 in joukko) # True
 joukko.remove(5)
 print(5 in joukko) # False
-\end{code}
-
-Tietorakenne \texttt{dict} on puolestaan hajautusta käyttävä hakemisto.
-Voimme käyttää hakemistoa vaikkapa näin:
-
-\begin{code}
-hakemisto = {}
-hakemisto["apina"] = 1
-hakemisto["banaani"] = 2
-hakemisto["cembalo"] = 3
-print(hakemisto["apina"]) # 1
 \end{code}
 
 Pythonissa hajautus on toteutettu avoimella hajautuksella,
@@ -461,6 +515,10 @@ Niinpä jos käyn\-nistämme Python-tulkin uudestaan, saamme eri tuloksen:
 >>> hash("apina")
 -5370222958536247804
 \end{code}
+
+Tämän satunnaisuuden etuna on, että mahdollinen ilkeä vastustaja
+ei voi etsiä kiinteää joukkoa merkkijonoja, jotka tuottavat saman hajautusarvon
+Pythonissa, koska hajautustapa muuttuu joka suorituskerralla.
 
 \section{Hajautustaulu algoritmeissa}
 
@@ -529,10 +587,10 @@ Hajautustaulu osoittaa todelliset kyntensä silloin,
 kun haluamme pitää yllä aidosti \emph{dynaamista}
 tietorakennetta eli haluamme vuorotellen muuttaa
 tietorakennetta ja hakea sieltä tietoa.
-Tällöin emme voi enää toteuttaa algoritmia,
+Tällöin emme voisi enää toteuttaa algoritmia,
 joka järjestää koko aineiston kerran alussa.
-Esimerkki tällaisesta tehtävästä on,
-että käytössämme on funktio \texttt{haeLuku},
+Esimerkki tällaisesta tilanteesta on,
+että käytössämme on funktio \texttt{hae\_luku},
 joka antaa lukuja yksi kerrallaan.
 Jokaisen luvun jälkeen meidän tulee ilmoittaa,
 montako eri lukua olemme saaneet tähän mennessä,
@@ -543,7 +601,7 @@ hajautustaulun avulla:
 \begin{code}
 alkiot = []
 for i = 1 to n
-    luku = haeLuku()
+    luku = hae_luku()
     alkiot.add(luku)
     print(alkiot.size())
 \end{code}
