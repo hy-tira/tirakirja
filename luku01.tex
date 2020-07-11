@@ -84,12 +84,14 @@ for i = 0 to n-1
 print(summa)
 \end{code}
 
-Tässä kirjassa esitämme algoritmeja pseudokoodin avulla,
+Pseudokoodin merkintätapoja on monenlaisia, ja
+käytämme tässä kirjassa melko paljon Python-kieltä muistuttavaa pseudokoodia.
+Esitämme algoritmeja pseudokoodin avulla,
 koska kurssi käsittelee yleistä ohjelmoinnin teoriaa,
 joka ei liity tiettyyn ohjelmointikieleen.
 Tämän lisäksi tutustumme siihen, miten tietyt algoritmit
 ja tietorakenteet on toteutettu Javan ja Pythonin
-standardikirjastossa.
+standardikirjastoissa.
 
 \section{Ohjelmoinnin peruspalikat}
 
@@ -97,7 +99,6 @@ Kiehtova seikka ohjelmoinnissa on, että monimutkaisetkin algoritmit
 syntyvät yksinkertaisista aineksista.
 Käymme seuraavaksi läpi ohjelmoinnin peruspalikat,
 jotka muodostavat pohjan algoritmien suunnittelulle.
-Tutustumme myös samalla tarkemmin kirjassa käytettyyn pseudokoodiin.
 
 \subsubsection{Muuttuja}
 
@@ -180,10 +181,12 @@ ja voimme toteuttaa taulukon avulla minkä tahansa muun tietorakenteen.
 
 \index{lista}
 
-Taulukko on perustietorakenne esimerkiksi Javassa,
-mutta monissa nykyään suosituissa kielissä (kuten Pythonissa)
-taulukon sijasta perustietorakenne on \emph{lista},
-jota voi käyttää taulukon tavoin mutta jonka koko voi muuttua.
+Taulukolla on ollut vahva asema perinteisissä ohjelmointikielissä,
+mutta tilanne on muuttumassa.
+Taulukko on Javan perustietorakenne, mutta Pythonissa
+taulukon sijasta perustietorakenne onkin \emph{lista}.
+Lista toimii muuten samaan tapaan kuin taulukko,
+mutta sen koko voi muuttua.
 Yleensä lista on kuitenkin toteutettu sisäisesti taulukon avulla,
 ja luvussa 4 näemme, miten tämä tapahtuu käytännössä.
 
