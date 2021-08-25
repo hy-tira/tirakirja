@@ -1,13 +1,13 @@
 \chapter{Tehokkuus}
 
-Algoritmien suunnittelussa tavoitteemme on saada aikaan
+Algoritmien suunnittelussa tavoitteena on saada aikaan
 algoritmeja, jotka toimivat \emph{tehokkaasti}.
-Haluamme luoda algoritmeja, joiden avulla voimme
-käsitellä myös suuria aineistoja ilman, että joudumme
-odottamaan kauan aikaa.
+Haluamme luoda algoritmeja, joiden avulla voidaan
+käsitellä myös suuria aineistoja ilman,
+että algoritmin suoritus kestää kauan.
 Ajattelemmekin, että algoritmi on \emph{hyvä},
-jos se kykenee antamaan meille nopean vastauksen myös silloin,
-kun annamme sille paljon tietoa.
+jos se antaa nopeasti vastauksen myös silloin,
+kun tiedon määrä on suuri.
 
 Tässä luvussa tutustumme työkaluihin, joiden avulla
 voimme arvioida algoritmien tehokkuutta.
@@ -55,14 +55,14 @@ askelta.
 \index{$O$-merkintä}
 
 Näin tarkka analyysi ei ole kuitenkaan yleensä tarpeen,
-vaan meille riittää määrittää karkea \emph{yläraja} ajankäytölle.
-Sanomme, että algoritmi toimii ajassa $O(f(n))$ eli sen
+vaan riittää määrit\-tää karkea \emph{yläraja} ajankäytölle.
+Algoritmi toimii ajassa $O(f(n))$ eli sen
 \emph{aikavaativuus} (\emph{time complexity}) on $O(f(n))$, jos se suorittaa
 enintään $c f(n)$ askelta aina silloin kun $n \ge n_0$,
 missä $c$ ja $n_0$ ovat vakioita.
-Esimerkiksi yllä oleva algoritmi toimii ajassa $O(n)$,
-koska se suorittaa selkeästi enintään $4n$ askelta
-kaikilla $n$:n arvoilla.
+Esimerkiksi äskeinen algoritmi toimii ajassa $O(n)$,
+koska se suorittaa enintään $4n$ askelta
+kaikilla $n$:n arvoilla eli voidaan valita $c=4$ ja $n_0=1$.
 
 \subsection{Laskusääntöjä}
 
@@ -142,7 +142,7 @@ for i = 1 to n
 
 \subsubsection{Monta muuttujaa}
 
-Joskus aikavaativuus riippuu useammasta tekijästä,
+Joskus aikavaativuus riippuu useammasta asiasta,
 jolloin kaavassa on monta muuttujaa.
 Esimerkiksi seuraavan koodin aikavaativuus on $O(nm)$:
 
@@ -321,23 +321,22 @@ että algoritmi käy läpi syötteen alkioiden permutaatiot.
 \subsection{Tehokkuuden arviointi}
 
 Mitä hyötyä on määrittää algoritmin aikavaativuus?
-Hyötynä on, että aikavaativuus antaa meille arvion siitä,
+Hyötynä on, että aikavaativuus antaa arvion siitä,
 kuinka \emph{hyvä} algoritmi on eli miten suuria syötteitä
 sillä voi käsitellä tehokkaasti.
-Kun meille kertyy kokemusta algoritmien suunnittelusta,
-meille alkaa muodostua selkeä kuva,
-mitä eri aikavaativuudet tarkoittavat käytännössä.
+Aikavaativuuden avulla algoritmin tehokkuudesta pystyy saamaan
+hyvän käsityksen ennen algoritmin toteuttamista ja testaamista käytännössä.
 
-Aikavaativuutta voi ajatella samalla tavalla kuin vaikkapa
+Aikavaativuutta voi ajatella samalla tavalla kuin
 hotellin tähti\-luokitusta: se kertoo tiiviissä muodossa,
-mistä asiassa on kysymys, eikä mei\-dän tarvitse ottaa selvää yksityiskohdista.
-Jos meille tarjotaan majoitusta neljän tähden hotellissa,
-saamme heti jonkin käsityksen huoneen tasosta
-tähtiluokituksen ansiosta,
-vaikka emme saisi tarkkaa listausta huoneen varustelusta.
-Vastaavasti jos kuulemme, että jonkin algoritmin aikavaativuus on $O(n \log n)$,
-voimme heti arvioida karkeasti, miten suuria syötteitä voimme käsitellä,
-vaikka emme tuntisi tarkemmin algoritmin toimintaa.
+mistä asiassa on kysymys, eikä tarvitse ottaa selvää yksityiskohdista.
+Jos majoitus on neljän tähden hotellissa,
+tämä antaa heti jonkin käsityksen huoneen tasosta,
+vaikka tiedossa ei olisi tarkkaa listausta huoneen varustelusta.
+Vastaavasti jos jonkin algoritmin aikavaativuus on $O(n \log n)$,
+tämän perusteella voi heti arvioida karkeasti,
+miten suuria syötteitä algoritmi pystyy käsittelemään,
+vaikka algoritmin kaikki yksityiskohdat eivät olisi tiedossa.
 
 \begin{table}
 \center
@@ -427,7 +426,7 @@ Jos olemme merkin 0 kohdalla, pareja ei ole yhtään,
 mutta jos merkkinä on 1, voimme valita \emph{minkä tahansa}
 vasemmalla puolella olevan merkin 0 pariin.
 
-Tämän havainnon ansiosta meidän riittää käydä läpi
+Tämän havainnon ansiosta riittää käydä läpi
 merkkijono kerran vasemmalta oikealle ja pitää kirjaa,
 montako merkkiä 0 olemme nähneet.
 Sitten jokaisen merkin 1 kohdalla kasvatamme
@@ -581,14 +580,14 @@ on sinänsä paikkansa pitävä väite, että autolla pystyy ajamaan 100 km/h.
 Meidän ei kuitenkaan kannata antaa tällaista vähättelevää tietoa,
 vaan kertoa, että autolla pystyy ajamaan 250 km/h.
 
-\subsection{Tilavaativuus}
-
-\index{tilavaativuus}
-
 Merkintöjä $O$, $\Omega$ ja $\Theta$ voi käyttää
 kaikenlaisissa yhteyksissä, ei vain algoritmin ajankäytön arvioinnissa.
 Esimerkiksi voimme sanoa, että algoritmi suorittaa silmukkaa $O(\log n)$ kierrosta
-tai että taulukossa on $O(n^2)$ lukua.
+tai että listassa on $O(n)$ lukua.
+
+\subsection{Tilavaativuus}
+
+\index{tilavaativuus}
 
 Aikavaativuuden lisäksi kiinnostava tieto algoritmista voi olla sen
 \emph{tilavaativuus} (\emph{space complexity}). Tämä kuvaa sitä, miten paljon algoritmi
@@ -647,7 +646,7 @@ procedure f(n)
 Käytännössä tilavaativuus on yleensä sivuroolissa algoritmeissa,
 koska jos algoritmi vie vain vähän aikaa, se ei \emph{ehdi} käyttää kovin paljon muistia.
 Erityisesti tilavaativuus ei voi olla suurempi kuin aikavaativuus.
-Niinpä meidän riittää tavallisesti keskittyä suunnittelemaan algoritmeja,
+Niinpä riittää tavallisesti keskittyä suunnittelemaan algoritmeja,
 jotka toimivat nopeasti, ja vertailla algoritmien aikavaativuuksia.
 
 \subsection{Rajojen todistaminen}

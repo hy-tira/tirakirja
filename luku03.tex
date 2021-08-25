@@ -5,11 +5,11 @@
 \emph{Järjestäminen} (\emph{sorting}) on keskeinen algoritmiikan ongelma,
 jossa tehtävänä on jär\-jestää $n$ alkiota sisältävä
 taulukko suuruusjärjestykseen.
-Esimerkiksi jos meil\-lä on taulukko $[5,2,4,2,6,1]$ ja
-järjestämme sen alkiot pienimmästä suurimpaan,
+Esimerkiksi jos taulukko on $[5,2,4,2,6,1]$ ja
+sen alkiot järjestetään pienimmästä suurimpaan,
 tuloksena on taulukko $[1,2,2,4,5,6]$.
 
-Tavoitteemme on toteuttaa järjestäminen
+Tavoitteena on toteuttaa järjestäminen
 \emph{tehokkaasti}.
 On helppoa järjes\-tää taulukko ajassa $O(n^2)$,
 mutta tämä on liian hidasta suurella taulukolla.
@@ -201,7 +201,7 @@ tapauksessa.
 Syy lisäysjärjestämisen hitauteen on,
 että se ei poista taulukosta inversioita riittävän tehokkaasti.
 Jos haluamme kehittää paremman järjestämis\-algoritmin,
-meidän täytyy suunnitella se niin, että se voi poistaa
+se täytyy suunnitella niin, että se voi poistaa
 useita inversioita \emph{yhtä aikaa}.
 Käytännössä algoritmin täytyy pystyä siirtämään
 väärässä paikassa oleva alkio tehokkaasti taulukon
@@ -211,11 +211,10 @@ toiselle puolelle.
 
 Seuraavaksi tutustumme kahteen tehokkaaseen
 järjestämisalgoritmiin, jotka perustuvat rekursioon.
-Molemmissa algoritmeissa on ideana,
-että kun haluamme järjestää taulukon,
-jaamme sen kahteen pienempään osaan
-ja järjestämme ne rekursiivisesti.
-Tämän jälkeen yhdistämme järjestetyt osataulukot
+Molemmissa algoritmeissa on ideana
+järjestää taulukko jakamalla se kahteen pienempään
+osataulukkoon ja järjestämällä ne rekursiivisesti.
+Tämän jälkeen järjestetyt osataulukot yhdistetään
 kokonaiseksi järjestetyksi taulukoksi.
 
 \subsection{Lomitusjärjestäminen}
@@ -303,11 +302,11 @@ kokonaiseksi järjestetyksi taulukoksi.
 
 \emph{Lomitusjärjestäminen} (\emph{merge sort}) on rekursiivinen järjestämisalgoritmi,
 joka perustuu taulukon puolituksiin.
-Kun saamme järjestettäväksi $n$-kokoisen taulukon,
-jaamme sen keskeltä kahdeksi osataulukoksi,
+Kun järjestettävänä on $n$-alkioinen taulukko,
+se jaetaan keskeltä kahdeksi osataulukoksi,
 joissa molemmissa on noin $n/2$ alkiota.
-Tämän jälkeen järjestämme osataulukot erikseen rekursiivisesti
-ja \emph{lomitamme} sitten järjestetyt osataulukot niin,
+Tämän jälkeen osataulukot järjestetään erikseen rekursiivisesti
+ja järjestetyt osataulukot \emph{lomitetaan} niin,
 että niistä muodostuu kokonainen järjestetty taulukko.
 Rekursio päättyy tapaukseen $n=1$, jolloin
 taulukko on valmiiksi järjestyksessä eikä
@@ -377,7 +376,7 @@ osataulukoita, jotka ovat valmiiksi järjestyksessä.
 Tällöin rekursiivinen jakautuminen päättyy ja algoritmi
 alkaa koota järjestettyjä osataulukkoja pienimmästä suurimpaan.
 
-Entä kuinka tehokas lomitusjärjestäminen on?
+Kuinka tehokas lomitusjärjestäminen on?
 Koska jokainen proseduurin \texttt{jarjesta} kutsu
 puolittaa taulukon koon, rekursiosta muodostuu
 $O(\log n)$ tasoa  (kuva \ref{fig:lomjar}).
@@ -610,7 +609,7 @@ pikajärjestäminen (huono tapaus) & $O(n^2)$ & $O(n)$ & ei \\
 \index{vakaus}
 
 Taulukossa \ref{tab:jaralg} on yhteenveto tähän mennessä
-käsittelemistämme järjestämis\-algoritmeista.
+käsitellyistä järjestämis\-algoritmeista.
 Algoritmin lisätila tarkoittaa sen tilavaativuutta,
 eli paljonko tilaa algoritmi tarvitsee järjestettävän taulukon lisäksi.
 Lisäysjärjestäminen käyttää vain yksittäisiä muuttujia,
@@ -653,7 +652,7 @@ jos jakoalkion valinta ja alkioiden siirtäminen on toteutettu huolellisesti.
 Jos taulukko on pieni, $O(n^2)$-aikainen lisäysjärjestäminen
 toimii käytän\-nössä nopeammin kuin rekursiiviset algoritmit,
 koska sen vakiokertoimet ovat hyvin pienet.
-Yksi mahdollisuus onkin toteuttaa \emph{hybridialgoritmi},
+Yksi mahdollisuus onkin toteuttaa \emph{hybridialgoritmi} (\emph{hybrid algorithm}),
 jossa suuret taulukot järjes\-tetään rekursiivisesti
 ja pienet taulukot järjes\-tetään lisäysjärjestämisellä.
 Tällöin eri algoritmien hyvät puolet pääsevät osaksi
@@ -686,10 +685,10 @@ ovat olleet vertailuihin perustuvia.
 \subsection{Alarajatodistus}
 
 Voimme ajatella vertailuihin perustuvaa järjestämistä
-\emph{prosessina}, jossa jokainen vertailu antaa meille tietoa
-taulukosta ja auttaa meitä viemään taulukkoa lähemmäs järjestystä.
-Oletamme seuraavaksi, että taulukko muodostuu alkioista
-$1,2,\dots,n$, jolloin meillä on $n!$ vaihtoehtoa, mikä
+\emph{prosessina}, jossa jokainen vertailu antaa tietoa
+taulukosta ja auttaa viemään taulukkoa lähemmäs järjestystä.
+Oletamme, että taulukon alkiot ovat
+$1,2,\dots,n$, jolloin on $n!$ vaihtoehtoa, mikä
 on taulukon alkuperäinen järjestys.
 Jotta järjestämisalgoritmi voisi toimia oikein,
 sen täytyy käsitellä jokainen järjestys eri tavalla.
@@ -905,7 +904,7 @@ lista.sort(key=abs)
 
 \section{Järjestämisen sovelluksia}
 
-Järjestämisen merkitys algoritmiikassa on siinä,
+Järjestämisen merkitys algoritmiikassa on,
 että voimme ratkaista monia ongelmia tehokkaasti, 
 kunhan aineisto on järjestyksessä.
 Niinpä yleinen tapa luoda tehokas algoritmi on järjestää

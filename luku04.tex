@@ -2,16 +2,15 @@
 
 \index{lista}
 
-\emph{Lista} (\emph{list}) on taulukkoa muistuttava tietorakenne,
-joka sisältää joukon alkioita,
-jotka ovat peräkkäin tietyssä järjestyksessä.
+\emph{Lista} (\emph{list}) on taulukkoa muistuttava muuttuvan kokoinen tietorakenne,
+joka muodostuu peräkkäin olevista alkioista.
 Esimerkiksi $[3,7,2,5]$ on lista, joka sisältää neljä alkiota.
 Haluamme toteuttaa listan niin,
 että pääsemme käsiksi listalla olevaan alkioon
 sen kohdan perusteella
 ja lisäksi pystymme lisäämään ja poistamaan alkioita.
 
-Tässä luvussa tutustumme kahteen lähestymistapaan listan luomiseen.
+Tässä luvussa tutustumme kahteen lähestymistapaan listan toteuttamiseen.
 Ensin toteutamme taulukkolistan,
 jossa listan alkiot tallennetaan taulukkoon.
 Tämän jälkeen toteutamme linkitetyn listan,
@@ -24,11 +23,11 @@ hyvät ja huonot puolensa.
 \index{taulukkolista}
 
 \emph{Taulukkolista} (\emph{array list}) on lista, joka on tallennettu taulukkona.
-Koska taulukon alkiot sijaitsevat aina peräkkäin muistissa,
+Koska taulukon alkiot ovat peräkkäin muistissa,
 pääsemme käsiksi mihin tahansa listan alkioon ajassa $O(1)$.
 Haasteena toteutuksessa on kuitenkin,
-että taulukon koko on \emph{kiinteä} ja jos haluamme
-muuttaa listan kokoa, meidän täytyy varata uusi taulukko
+että taulukon koko on \emph{kiinteä} ja
+listan koon muuttamiseksi täytyy varata uusi taulukko
 ja kopioida sinne vanhan taulukon sisältö.
 
 \subsection{Muutokset lopussa}
@@ -40,7 +39,7 @@ että tietty määrä alkioita taulukon alussa on listan käytössä
 ja loput tyhjät kohdat on varattu tuleville alkioille.
 Tämän ansiosta pystymme lisäämään uuden alkion listalle
 ajassa $O(1)$, jos taulukossa on tilaa,
-koska meidän riittää vain ottaa käyttöön seuraava
+koska riittää ottaa käyttöön seuraava
 vapaana oleva kohta taulukosta.
 
 Kuva \ref{fig:listau} näyttää esimerkin,
@@ -121,10 +120,10 @@ ja kopioida vanhan taulukon sisältö sinne.}
 
 Mitä tapahtuu sitten, kun jossain vaiheessa koko taulukko
 on täynnä eikä uusi listalle lisättävä alkio mahdu enää taulukkoon?
-Tällöin meidän täytyy ensin varata uusi suurempi taulukko ja
-kopioida kaikki vanhan taulukon alkiot siihen.
-Vasta tämän jälkeen voimme lisätä uuden alkion listalle.
-Tämä vie aikaa $O(n)$, koska kopioimme kaikki listan alkiot
+Tällöin täytyy ensin varata uusi suurempi taulukko ja
+kopioida kaikki vanhan taulukon alkiot siihen,
+minkä jälkeen uusi alkio voidaan lisätä listalle.
+Tämä vie aikaa $O(n)$, koska kaikki listan alkiot täytyy kopioida
 uuteen paikkaan muistissa.
 Esimerkiksi kuvassa \ref{fig:lisuus} uusi alkio 4 ei mahdu taulukkoon,
 joten joudumme varaamaan uuden taulukon ja kopioimaan alkiot.
@@ -132,12 +131,12 @@ joten joudumme varaamaan uuden taulukon ja kopioimaan alkiot.
 Olemme saaneet siis aikaan listan, jossa lisääminen
 vie aikaa \emph{joko} $O(1)$ tai $O(n)$ riippuen siitä,
 mahtuuko alkio nykyiseen taulukkoon vai täytyykö
-meidän varata uusi taulukko.
+varata uusi taulukko.
 Jotta lista olisi käyttökelpoinen, hidas $O(n)$-operaatio
 ei saisi esiintyä liian usein.
-Osoittautuu, että saavutamme tämän tavoitteen,
+Osoittautuu, että tämä tavoite toteutuu,
 kunhan varaamme uuden taulukon aina reilusti aiempaa suuremmaksi.
-Tavanomainen ratkaisu on \emph{kaksinkertaistaa} taulukon koko aina,
+Tyypillinen ratkaisu on \emph{kaksinkertaistaa} taulukon koko aina,
 kun varaamme uuden taulukon.
 Kun toimimme näin, jokaisen alkion lisääminen listalle vie
 \emph{keskimäärin} vain $O(1)$ aikaa.
@@ -194,7 +193,7 @@ Tällä tavalla myös poistamiset vievät keskimäärin aikaa $O(1)$.
 
 Miksi emme voisi varata heti aluksi niin suurta taulukkoa,
 että lopullinen lista mahtuisi siihen varmasti?
-Tässä olisi huonona puolena, että listamme tuhlaisi paljon muistia.
+Tässä olisi huonona puolena, että listan toteutus tuhlaisi muistia.
 Algoritmissa saattaa olla samaan aikaan käytössä monia listoja,
 ja haluamme, että listalle varattu taulukko on samaa kokoluokkaa
 kuin listan todellinen sisältö.
@@ -374,7 +373,7 @@ listassa jokaisesta solmusta on viittaus sekä seuraavaan että edelliseen solmu
 
 Kuva \ref{fig:linlis} näyttää esimerkkinä listan $[3,7,2,5]$
 yhteen ja kahteen suuntaan linkitettynä.
-Molemmissa listoissa tiedossamme on viittaukset listan
+Molemmissa listoissa tiedossa on viittaukset listan
 alkuun ja loppuun.
 Yhteen suuntaan linkitetyssä listassa voimme käydä
 läpi listan alkiot alusta loppuun,
@@ -486,13 +485,13 @@ Lopuksi poistamme listasta alkion 2, jolloin yhdistämme
 alkiot 4 ja 5 suoraan toisiinsa.
 
 Pääsemme listan ensimmäiseen ja viimeiseen solmuun tehokkaasti,
-koska meillä on muistissa viittaukset niihin.
+koska muistissa on viittaukset niihin.
 Sen sijaan jos haluamme päästä johonkin muuhun listan kohtaan,
-meidän täytyy aloittaa listan alusta tai lopusta ja kulkea askel
+matka täytyy aloittaa listan alusta tai lopusta ja kulkea askel
 kerrallaan viittauksia seuraten.
 Niinpä listan keskellä olevaan kohtaan pääseminen vie aikaa $O(n)$.
 Joudumme liikkumaan solmuihin linkkejä pitkin, koska solmut voivat
-olla eri puolilla muistia eikä meillä ole keinoa tietää suoraan,
+olla eri puolilla muistia eikä ole keinoa tietää suoraan,
 mihin mikäkin solmu on tallennettu.
 
 \subsection{Listojen vertailua}
@@ -509,8 +508,7 @@ lisäys/poisto listan alussa & $O(1)$ & $O(1)$ \\
 lisäys/poisto listan lopussa & $O(1)$ & $O(1)$ \\ 
 lisäys/poisto listan keskellä &  $O(n)$ & $O(1)$ \\
 \end{tabular}
-\caption{Taulukkolistan ja linkitetyn listan operaatioiden
-aikavaativuuksia.}
+\caption{Taulukkolistan ja linkitetyn listan aikavaativuuksia.}
 \label{tab:taulin}
 \end{table}
 
@@ -527,9 +525,9 @@ Huomaa, että keskelle pääsemisen hitaus rajoittaa melko paljon
 linkitetyn listan käyttämistä.
 Vaikka pystymme sinänsä muokkaamaan listaa mistä tahansa kohdasta
 tehokkaasti, meidän tulee ensin \emph{päästä} kyseiseen kohtaan.
-Jos meillä on jostain syystä etukäteen tiedossa viittaus listan keskelle,
+Jos jostain syystä on etukäteen tiedossa viittaus listan keskelle,
 voimme muokata kyseistä kohtaa tehokkaasti,
-mutta muuten meidän tulee ensin kulkea haluttuun kohtaan,
+mutta muuten tulee ensin kulkea haluttuun kohtaan,
 missä kuluu aikaa $O(n)$.
 
 \section{Pino ja jono}
@@ -654,16 +652,15 @@ Selitys on siinä, että pino ja jono ovat hyödyllisiä
 Voimme usein ajatella algoritmissa tarvittavaa
 tietorakennetta pinona tai jonona ja toteuttaa sen sitten listana.
 
-Tarkastellaan esimerkkinä tehtävää, jossa annettuna on
+Tarkastellaan esimerkkinä ongelmaa, jossa annettuna on
 $n$ merkin pituinen \emph{sulkulauseke}, 
-joka muodostuu kaarisulkeista \texttt{()} sekä
-hakasulkeista \texttt{[]}.
+joka muodostuu kaarisulkeista \texttt{(} ja \texttt{)} sekä
+hakasulkeista \texttt{[} ja \texttt{]}.
 Haluamme selvittää, onko lauseke \emph{oikein muodostettu} eli
 onko jokaiselle aloittavalle sululle vastaava lopettava pari.
 Esimerkiksi lauseke \texttt{[()]()} on oikein muodostettu,
 kun taas lauseke \texttt{[()(])} ei ole.
-
-Voimme ratkaista tehtävän $O(n)$-ajassa pinon avulla
+Voimme ratkaista ongelman $O(n)$-ajassa pinon avulla
 käymällä läpi lausekkeen merkit vasemmalta oikealle.
 Kun vastaan tulee aloittava sulku \texttt{(} tai \texttt{[},
 lisäämme sen pinoon.
@@ -764,7 +761,8 @@ alusta tai lopusta.
 
 \index{iteraattori}
 
-Voimme käsitellä kaikkia äskeisiä listoja myös iteraattorilla,
+Voimme käsitellä listaa myös \emph{iteraattorilla}
+(\emph{iterator}),
 joka osoittaa tiettyyn listan kohtaan.
 Esimerkiksi seuraava koodi luo iteraattorin,
 joka osoittaa listan alkuun,
@@ -848,7 +846,7 @@ mutta tämä vie aikaa $O(n)$, koska kyseessä on linkitetty lista.
 
 \section{Miten valita lista?}
 
-Monissa algoritmeissa voimme käyttää toteutukseen joko
+Voimme käyttää usein algoritmin toteutukseen joko
 taulukkolistaa tai linkitettyä listaa ja saada aikaan
 aikavaativuuden kannalta yhtä tehokkaan algoritmin.
 Esimerkiksi jos algoritmi lisää listan loppuun alkioita,
