@@ -804,17 +804,12 @@ Metodin tulee palauttaa negatiivinen arvo, nolla tai positiivinen arvo
 sen mukaan, onko olio itse pienempi, yhtä suuri vai suurempi
 kuin parametrina annettu olio.
 Javan omissa luokissa tällainen metodi on olemassa valmiina.
-Esimerkiksi voimme tutkia merkkijonojen suuruusjärjestystä näin:
-
-\begin{code}
-System.out.println("apina".compareTo("banaani")); // -1
-System.out.println("banaani".compareTo("apina")); // 1
-System.out.println("apina".compareTo("apina")); // 0
-\end{code}
+Esimerkiksi \texttt{"apina".compareTo("banaani")} palauttaa
+negatiivisen arvon, koska apina on ennen banaania aakkosjärjestyksessä.
 
 Tämän ansiosta voimme järjestää suoraan taulukoita,
 joissa on esimerkiksi merkkijonoja.
-Jos haluamme, että Java pystyy järjestämään omia olioitamme,
+Jos haluamme, että Java pystyy järjestämään omien luokkien olioita,
 meidän täytyy toteuttaa itse luokkaan metodi \texttt{compareTo} ja
 merkitä, että luokka toteuttaa rajapinnan \texttt{Comparable}.
 
@@ -835,15 +830,21 @@ public class Piste implements Comparable<Piste> {
 
     public int compareTo(Piste p) {
         if (this.x != p.x) {
-            return this.x-p.x;
+            return this.x - p.x;
         } else {
-            return this.y-p.y;
+            return this.y - p.y;
         }
     }
 }
 \end{code}
 
-Tämän jälkeen voimme järjestää taulukollisen pisteitä näin:
+Tässä metodi \texttt{compareTo} palauttaa
+x-koordinaattien erotuksen, jos x-koordinaatit eivät ole samat,
+ja muuten y-koordinaattien erotuksen.
+Metodi olettaa, että koordinaattien erotus voidaan esittää
+\texttt{int}-tyyppisenä arvona.
+
+Voimme nyt järjestää taulukollisen pisteitä näin:
 
 \begin{code}
 Piste[] pisteet = {new Piste(1,3),
