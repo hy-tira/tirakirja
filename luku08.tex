@@ -18,8 +18,7 @@ joka perustuu peruuttavaan hakuun.
 
 \section{Silmukoista rekursioon}
 
-Aloitamme tehtävästä,
-jossa haluamme käydä läpi kaikki $n$ luvun yhdistelmät,
+Oletetaan, että haluamme käydä läpi kaikki $n$ luvun yhdistelmät,
 joissa jokainen luku on kokonaisluku väliltä $1 \dots m$.
 Tällaisia yhdistelmiä on yhteensä $m^n$,
 koska kohtia on $n$ ja joka kohdassa luvun voi valita $m$ tavalla.
@@ -27,7 +26,7 @@ Esimerkiksi jos $n=3$ ja $m=4$, yhdistelmät ovat
 $[1,1,1]$, $[1,1,2]$, $[1,1,3]$, $[1,1,4]$, $[1,2,1]$,
 $[1,2,2]$, $[1,2,3]$, $[1,2,4]$, jne.
 
-Luonteva tapa ratkaista tehtävä tietylle $n$:n arvolle on
+Jos lukujen määrä $n$ on etukäteen tiedossa, voimme
 luoda $n$ sisäkkäistä silmukkaa, joista jokainen käy $m$ lukua läpi.
 Esimerkiksi seuraava koodi käy läpi kaikki yhdistelmät
 tapauksessa $n=3$:
@@ -120,7 +119,7 @@ kaikilla muilla tasoilla yhteensä.
 
 \subsection{Osajoukkojen läpikäynti}
 
-Tarkastellaan sitten ongelmaa,
+Tarkastellaan sitten tilannetta,
 jossa haluamme käydä läpi kaikki $n$ alkion
 joukon \emph{osajoukot}.
 Osajoukkoja on yhteensä $2^n$,
@@ -128,7 +127,7 @@ koska jokainen alkio joko kuuluu tai ei kuulu osajoukkoon.
 Esimerkiksi joukon $\{2,3,5,9\}$ osajoukkoja ovat
 $\{2,5\}$ ja $\{3,5,9\}$.
 
-Osoittautuu, että voimme ratkaista tehtävän
+Osoittautuu, että voimme muodostaa osajoukot
 käymällä läpi kaikki $n$ luvun yhdistelmät,
 joissa jokainen luku on 0 tai 1.
 Ideana on, että jokainen yhdistelmän luku kertoo,
@@ -171,7 +170,7 @@ joissa jokainen luku on väliltä $1 \dots n$
 ja lisäksi mikään luku ei toistu.
 Saamme tämän aikaan lisäämällä hakuun uuden taulukon
 \texttt{mukana}, joka kertoo, onko tietty luku jo mukana.
-Joka vaiheessa haku voi valita yhdistelmään vain sellaisia lukuja,
+Joka vaiheessa haku valitsee yhdistelmään vain sellaisia lukuja,
 joita ei ole valittu siihen aiemmin.
 
 \begin{code}
@@ -340,9 +339,9 @@ kuin uusi kuningatar, tällaista sijoitusta ei voida tehdä
 ja funktio palauttaa \texttt{false}.
 Jos taas mikään aiempi kuningatar ei uhkaa uutta kuningatarta,
 funktio palauttaa \texttt{true}.
-Huomaa jälkimmäisessä ehdossa kätevä tapa tarkastaa,
-ovatko kuningattaret samalla vinorivillä, itseis\-arvon
-(funktio \texttt{abs}) avulla.
+Huomaa jälkimmäisessä ehdossa kätevä tapa tarkastaa
+itseisarvon (funktio \texttt{abs}) avulla,
+ovatko kuningattaret samalla vinorivillä.
 Kuningattaret ovat samalla vinorivillä tarkalleen silloin,
 kun niiden vaaka- ja pystysuuntaiset erot ovat samat.
 
@@ -370,7 +369,7 @@ Nyt meillä on valmis algoritmi, jonka avulla voimme
 käydä läpi kuningatarongelman ratkaisuja.
 Taulukko \ref{tab:kuning} näyttää ratkaisujen määrät
 tapauksissa $n=1 \dots 10$.
-Algoritmimme selvittää nämä tapaukset salamannopeasti,
+Algoritmi selvittää nämä tapaukset salamannopeasti,
 mutta suuremmilla $n$:n arvoilla algoritmi alkaa viedä paljon aikaa.
 Syynä tähän on, että kuningatarten sijoitustapojen
 määrä kasvaa \emph{eksponentiaalisesti}

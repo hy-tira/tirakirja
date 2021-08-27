@@ -7,14 +7,13 @@ jonka avulla voi monessa tilanteessa
 laskea ongelman ratkaisujen yhteismäärän tai
 löytää ratkaisun, joka on jollain tavalla optimaalinen.
 Ideana on muotoilla ongelma rekursiivisesti niin,
-että voimme laskea halutun asian
-saman ongelman pienempien osaongelmien avulla.
+että ongelman ratkaisu voidaan muodostaa pienemmistä osaongelmista.
 Tämän jälkeen saamme aikaan tehokkaan algoritmin,
 kun käsittelemme jokaisen osaongelman vain kerran.
 
 Tässä luvussa tutustumme ensin dynaamisen ohjelmoinnin perusteisiin
-käyttäen esimerkkinä tehtävää, jossa rakennamme torneja palikoista.
-Tämän jälkeen käymme läpi kokoelman muita tehtäviä, jotka esittelevät
+toteuttamalla tehokkaan algoritmin, joka laskee palikkayhdistelmien määrän.
+Tämän jälkeen käymme läpi kokoelman muita esimerkkejä, jotka esittelevät
 lisää dynaamisen ohjelmoinnin mahdollisuuksia.
 
 \section{Perustekniikat}
@@ -56,9 +55,9 @@ dynaamisella ohjelmoinnilla.
 \subsection{Rekursiivinen esitys}
 
 Jotta voimme käyttää dynaamista ohjelmointia,
-meidän täytyy pystyä esit\-tämään ongelma \emph{rekursiivisesti}
+ongelma täytyy pystyä esit\-tämään \emph{rekursiivisesti}
 niin, että saamme laskettua ongelman ratkaisun
-käyttäen osaongelmina pienempiä vastaavia ongelmia.
+käyt\-täen osaongelmina pienempiä vastaavia ongelmia.
 Tässä tehtävässä luonteva rekursiivinen funktio on
 $\texttt{tornit}(n)$: monellako tavalla voimme
 rakentaa tornin, jonka korkeus on $n$?
@@ -97,12 +96,12 @@ korkeuden 1, 2 tai 3 palikan.}
 Kuinka voisimme sitten laskea funktion arvon \emph{yleisessä} tapauksessa,
 kun tornin korkeus on $n$?
 Tässä voimme miettiä, kuinka tornin rakentaminen alkaa.
-Meillä on kolme mahdollisuutta: voimme laittaa ensin palikan,
+Mahdollisuuksia on kolme: voimme laittaa ensin palikan,
 jonka korkeus on 1, 2 tai 3.
-Jos aloitamme korkeuden 1 palikalla, meidän täytyy rakentaa
-sen päälle korkeuden $n-1$ torni.
+Jos aloitamme korkeuden 1 palikalla, sen päälle
+täytyy rakentaa korkeuden $n-1$ torni.
 Vastaavasti jos aloitamme korkeuden 2 tai 3 palikalla,
-meidän täytyy rakentaa sen päälle torni,
+sen päälle täytyy rakentaa torni,
 jonka korkeus on $n-2$ tai $n-3$.
 Kuva \ref{fig:dynrek} havainnollistaa tämän idean.
 Niinpä voimme laskea tornien määrän rekursiivisesti kaavalla
@@ -146,7 +145,7 @@ $\texttt{tornit}(n)$ arvot, kun $n=0,1,\dots,9$.
 Kuten taulukosta voi huomata, funktion arvo kasvaa nopeasti:
 se lähes kaksinkertaistuu joka askeleella.
 Kun $n$ on suuri,
-meillä onkin valtavasti mahdollisuuksia tornin rakentamiseen.
+onkin valtavasti mahdollisuuksia tornin rakentamiseen.
 
 \subsection{Tehokas toteutus}
 
@@ -175,8 +174,8 @@ ja tornien määrä lasketaan loppujen lopuksi summana
 luvuista 1 ja 2 pohjatapauksista.
 Niinpä kun tornien määrä on suuri,
 laskenta on tuomittu viemään kauan aikaa.
-Voimme kuitenkin selviytyä ongelmasta toteuttamalla
-laskennan hieman toisella tavalla.
+Voimme kuitenkin tehostaa laskentaa toteuttamalla
+sen hieman toisella tavalla.
 
 \index{taulukointi}
 
@@ -200,7 +199,7 @@ for i = 3 to n
 \end{code}
 
 Koodin suorituksen jälkeen taulukon arvo $\texttt{tornit}[n]$
-kertoo meille, monellako tavalla voimme rakentaa
+kertoo, monellako tavalla voimme rakentaa
 korkeuden $n$ tornin.
 
 Tämän toteutuksen etuna on, että se on huomattavasti
@@ -210,7 +209,7 @@ vain $O(n)$, eli voimme käsitellä tehokkaasti myös
 suuria $n$:n arvoja.
 Esimerkiksi voimme nyt laskea salamannopeasti, että
 \[
-\texttt{tornit}(50) = 10562230626642,
+\texttt{tornit}(50) = 10562230626642
 \]
 eli on yli 10562 miljardia tapaa rakentaa korkeuden 50 torni.
 
@@ -429,9 +428,9 @@ ruudukon yläreunaa ja vasenta reunaa varten.
 
 \index{repunpakkaus}
 
-Termi \emph{repunpakkaus} (\emph{knapsack}) viittaa ongelmiin, jossa meillä on joukko
-tavaroita, joilla on tietyt painot, 
-ja haluamme selvittää, millaisia yhdistelmiä niistä voi muodostaa.
+Termi \emph{repunpakkaus} (\emph{knapsack}) viittaa ongelmaan,
+jossa halutaan selvittää, millaisia yhdistelmiä voidaan muodostaa tavaroista,
+joilla on tietyt painot.
 Ongelmasta on monia muunnelmia, joiden yhdistävänä tekijänä on,
 että ne voi ratkaista tehokkaasti dynaamisella ohjelmoinnilla.
 
@@ -461,7 +460,7 @@ Oletamme, että funktio palauttaa \emph{taulukon}, jossa on $s+1$ alkiota:
 jokaiselle yhteispainolle $0,1,\dots,s$ tieto siitä,
 voimmeko muodostaa sen painoista $p_1,p_2,\dots,p_k$.
 Tapaus $\texttt{painot}(0)$ on helppo,
-koska kun meillä ei ole mitään tavaroita,
+koska kun ei ole mitään tavaroita,
 ainoa mahdollinen yhteispaino on $0$.
 Tämän jälkeen pystymme laskemaan tapauksen $\texttt{painot}(k)$
 ottamalla lähtökohdaksi tapauksen $\texttt{painot}(k-1)$
@@ -517,7 +516,7 @@ että käymme jokaisen painon kohdalla taulukon
 läpi \emph{lopusta alkuun}.
 Syynä tähän on, että tällä tavalla saamme
 laskettua oikealla tavalla, mitä uusia yhteispainoja
-voimme muodostaa, kun saamme käyttää uutta painoa kerran.
+voidaan muodostaa, kun saamme käyttää uutta painoa kerran.
 Laskennan jälkeen voimme tulostaa kaikki
 mahdolliset yhteispainot näin:
 
@@ -562,10 +561,11 @@ Dynaamisen ohjelmoinnin kannalta kiinnostava tapa on rekursiivinen kaava
 \[\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}.\]
 Voimme perustella kaavan tarkastelemalla
 $k$ alkion osajoukon muodostamista joukosta $\{1,2,\dots,n\}$.
-Jos otamme osajoukkoon mukaan alkion $n$, meidän tulee muodostaa
+Jos otamme osajoukkoon mukaan alkion $n$, tämän jälkeen tulee muodostaa
 vielä $k-1$ alkion osajoukko joukosta $\{1,2,\dots,n-1\}$.
-Jos taas emme ota osajoukkoon mukaan alkiota $n$, meidän tulee muodostaa
+Jos taas emme ota osajoukkoon mukaan alkiota $n$, tämän jälkeen tulee muodostaa
 $k$ alkion osajoukko joukosta $\{1,2,\dots,n-1\}$.
+
 Lisäksi pohjatapauksina
 \[ \binom{n}{0} = 1,\]
 koska voimme muodostaa tyhjän osajoukon yhdellä tavalla, ja

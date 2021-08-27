@@ -26,7 +26,7 @@ että sen operaatiot ovat tehokkaita.
 Binäärihakupuun taustalla on yleisempi tietorakenne \emph{binääripuu}
 (\emph{binary tree}).
 Ennen kuin tutustumme binäärihakupuuhun,
-meidän onkin hyvä selvittää ensin, mikä on binääripuu ja mitä
+onkin hyvä selvittää ensin, mikä on binääripuu ja mitä
 ominaisuuksia siihen liittyy.
 
 \index{juuri}
@@ -47,7 +47,7 @@ Binääripuun rakenne on rekursiivinen:
 jokainen solmu toimii juurena \emph{alipuulle} (\emph{subtree}),
 joka on myös binääripuu.
 Solmun $x$ alipuu sisältää solmun $x$ sekä kaikki
-solmut, joihin pääsemme laskeutumalla alaspäin solmusta $x$.
+solmut, joihin pääsee laskeutumalla alaspäin solmusta $x$.
 Voimme myös ajatella asiaa niin, että jokaisen binääripuun
 solmun vasen ja oikea lapsi on toinen (mahdollisesti tyhjä) binääripuu.
 
@@ -201,12 +201,12 @@ sisäjärjestyksessä, kun sille annetaan parametrina
 puun juuri:
 
 \begin{code}
-procedure tulosta(solmu)
+procedure lapikaynti(solmu)
     if solmu == null
         return
-    tulosta(solmu.vasen)
+    lapikaynti(solmu.vasen)
     print(solmu.arvo)
-    tulosta(solmu.oikea)
+    lapikaynti(solmu.oikea)
 \end{code}
 
 \section{Binäärihakupuun toiminta}
@@ -370,14 +370,14 @@ menettelemme käänteisesti edelliseen nähden.
 Kun haluamme poistaa joukosta alkion $x$, etsimme ensin
 alkiota $x$ vastaavan solmun tavalliseen tapaan.
 Jos solmulla ei ole lapsia tai vain yksi lapsi,
-meidän on helppoa poistaa solmu puusta ja säilyttää
+on helppoa poistaa solmu puusta ja säilyttää
 puun rakenne muuten ennallaan.
 Jos kuitenkin solmulla on kaksi lasta,
 tilanne on hankalampi.
 Tällöin etsimme alkion $y$,
 joka on pienin $x$:ää suurempi alkio,
 ja vaihdamme keskenään alkiot $x$ ja $y$ puussa.
-Tämän jälkeen meidän on helppoa poistaa solmu,
+Tämän jälkeen on helppoa poistaa solmu,
 jossa on nyt alkio $x$,
 koska sillä ei voi olla kahta lasta
 (jos solmulla olisi vasen lapsi,
@@ -429,7 +429,7 @@ Alkio on puun juuressa ja solmulla on kaksi lasta,
 joten meidän tulee etsiä ensin pienin alkiota 5 suurempi alkio,
 joka on 7.
 Vaihdamme sitten keskenään arvot 5 ja 7,
-minkä jälkeen meidän on helppoa poistaa alkio 5.
+minkä jälkeen on helppoa poistaa alkio 5.
 
 \subsection{Operaatioiden tehokkuus}
 
@@ -477,13 +477,13 @@ Vasemman puun korkeus on 2 ja oikean puun korkeus on 4.}
 
 Jotta binäärihakupuu toimisi tehokkaasti, haluamme,
 että puun korkeus ei kasva liian suureksi.
-Tarkemmin ottaen tavoitteemme on, että
+Tarkemmin ottaen tavoitteena on, että
 solmut ovat jakautuneet tasaisesti puun eri puolille
-ja puun korkeus on $O(\log n)$.
-Tällöin sanomme, että puu on \emph{tasapainoinen} (\emph{balanced}).
+ja puun korkeus on $O(\log n)$
+eli puu on \emph{tasapainoinen} (\emph{balanced}).
 Jos onnistumme tässä, kaikki puun operaatiot toimivat
 tehokkaasti ajassa $O(\log n)$.
-Saavutamme tavoitteemme
+Saavutamme tavoitteen
 lisäämällä puuhun ehtoja, jotka rajoittavat
 sen korkeutta sopivasti.
 
@@ -493,8 +493,8 @@ varhaisin tunnettu tasapainoinen binäärihakupuu.
 AVL-puu on yksinkertaisempi kuin monet myöhemmin
 kehitetyt rakenteet, minkä vuoksi se sopii hyvin esittelemään
 puiden tasapainotuksen ideoita.
-Javan ja muiden ohjelmointikielten standardikirjastoissa
-käyte\-tään kuitenkin muita rakenteita, kuten punamustaa puuta.
+Ohjelmointikielten standardikirjastoissa
+käytetään kuitenkin yleensä muita rakenteita kuten punamustaa puuta.
 
 \section{AVL-puu}
 
@@ -505,7 +505,7 @@ korkeus on aina $O(\log n)$, minkä ansiosta puun operaatiot
 toimivat tehokkaasti ajassa $O(\log n)$.
 AVL-puussa jokaiseen solmuun liittyy \emph{tasapainoehto},
 joka takaa, että puu on tasapainoinen.
-Kun päivitämme puuta, meidän täytyy pitää huolta siitä,
+Puuta päivittäessä täytyy pitää huolta siitä,
 että tasapainoehto säilyy voimassa kaikissa solmuissa.
 
 \subsection{Tasapainoehto}
@@ -648,9 +648,9 @@ mikä tarkoittaa samaa kuin $h = O(\log n)$.
 \index{kierto}
 
 Voimme toteuttaa AVL-puun operaatiot muuten samaan tapaan
-kuin yleisessä binäärihakupuussa, mutta meidän täytyy varmistaa
-alkion lisäämisen ja poistamisen jälkeen, että AVL-ehto
-on edelleen voimassa.
+kuin yleisessä binäärihakupuussa, mutta 
+alkion lisäämisen ja poistamisen jälkeen täy\-tyy varmistaa,
+että AVL-ehto on edelleen voimassa.
 Tämä onnistuu tekemällä sopivia \emph{kiertoja} (\emph{rotation}),
 jotka muuttavat puun rakennetta.
 Jotta voimme toteuttaa kierrot, pidämme jokaisessa
@@ -827,7 +827,7 @@ Tapauksia on kaksi: jos $y$ ja $z$ ovat samanpuoleisia lapsia,
 kierrämme solmua $y$ kerran ylöspäin (kuva \ref{fig:avlta1}),
 ja muuten kierrämme solmua $z$ kahdesti ylöspäin (kuva \ref{fig:avlta2}).
 Tämän korjauksen jälkeen AVL-ehto on jälleen
-voimassa kaikissa puun solmuissa, eli meidän riittää aina
+voimassa kaikissa puun solmuissa, eli riittää aina
 korjata ehto alimmassa solmussa, jossa se ei ole voimassa.
 
 Kuvassa \ref{fig:avlrik}(b) AVL-ehto ei ole voimassa solmussa $3$,
@@ -999,8 +999,8 @@ keskimäärin aikaa $O(1)$, kun taas binäärihakupuussa aikaa kuluu $O(\log n)$
 
 \section{Tehokkuusvertailu}
 
-Monissa ongelmissa meillä on kaksi mahdollista lähestymistapaa:
-voimme käyttää joko joukkorakenteita tai sitten taulukoita ja järjestämistä.
+Monissa ongelmissa on kaksi mahdollista lähestymistapaa:
+voimme käyttää joko joukkorakenteita tai taulukon järjestämistä.
 Vaikka molemmat tavat johtavat tehokkaaseen ratkaisuun,
 vakiokertoimissa voi olla merkittäviä eroja, jotka vaikuttavat
 käytännön tehokkuuteen.

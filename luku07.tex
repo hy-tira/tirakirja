@@ -32,7 +32,7 @@ mahdollisimman vasemmalle ylempien solmujen lapsiksi.
 \index{maksimikeko}
 \index{kekoehto}
 
-Kun luomme keon, meidän täytyy päättää,
+Keon luonnissa täytyy päättää,
 onko se \emph{minimikeko} vai \emph{maksimikeko}.
 Minimikeossa voimme etsiä ja poistaa pienimmän alkion,
 kun taas maksimikeossa voimme etsiä ja poistaa suurimman alkion.
@@ -134,7 +134,7 @@ Kun lisäämme uuden alkion kekoon, lisäämme sen ensin seuraavaan
 vapaana olevaan paikkaan puussa. Jos alimmalla tasolla on tilaa,
 lisäämme sen sinne mahdollisimman vasemmalle,
 ja muuten aloitamme uuden tason, jossa on toistaiseksi vain lisättävä solmu.
-Alkion lisäämisen jälkeen meidän täytyy varmistaa,
+Alkion lisäämisen jälkeen täytyy varmistaa,
 että kekoehto säilyy edelleen voimassa.
 Tämä tapahtuu siirtämällä alkiota ylöspäin keossa,
 kunnes kekoehto tulee voimaan.
@@ -521,9 +521,9 @@ eli koko keossa laskettamalla alkion 7 keon huipulta pohjalle.
 Nyt kekoehto on voimassa kaikkialla taulukossa,
 joten olemme onnistuneet muuttamaan taulukon keoksi.
 
-Miksi sitten tämä vie aikaa vain $O(n)$?
+Miksi tämä vie aikaa vain $O(n)$?
 Oletetaan, että keossa on $h$ tasoa ja kaikki
-tasot ovat täynnä solmuja, eli keossa on $n=2^h-1$ solmua.
+tasot ovat täynnä solmuja eli keossa on $n=2^h-1$ solmua.
 Laskemme jokaiselle tasolle, montako alkiota laskeutuu
 enintään jostakin tämän tason solmusta alaspäin.
 Ensinnäkin tasolta 1 tasolle 2 laskeutuu enintään 1 alkio --
@@ -677,15 +677,15 @@ Olemme siis saaneet aikaan kolmannen $O(n \log n)$-aikaisen
 järjestämis\-algoritmin lomitusjärjestämisen ja pikajärjestämisen rinnalle.
 Kekojärjestä\-misen etuna on, että sen tilavaativuus on vain $O(1)$,
 koska keon operaatiot käyttävät vain yksittäisiä muuttujia.
-Kekojärjestäminen ei ole kuitenkaan käytännössä yhtä tehokas algoritmi
+Kekojärjestäminen ei ole käytännössä yhtä tehokas algoritmi
 kuin lomitusjärjestäminen tai pikajärjestäminen,
-minkä vuoksi se ei ole saavuttanut samanlaista asemaa
+min\-kä vuoksi se ei ole saavuttanut samanlaista asemaa
 järjestämisalgoritmien joukossa.
 Siinä on kuitenkin yksi kiinnostava ominaisuus:
 jos haluamme selvittää vain taulukon $k$ pienintä tai suurinta
 alkiota, tämä onnistuu ajassa $O(n+k \log n)$,
-koska meidän riittää poistaa keosta $k$ kertaa
-pienin tai suurin alkio ajassa $O(\log n)$.
+koska keon luonti vie aikaa $O(n)$ ja sen jälkeen riittää poistaa keosta
+$k$ kertaa pienin tai suurin alkio ajassa $O(\log n)$.
 
 \section{Ohjelmointikielten toteutukset}
 
@@ -723,7 +723,7 @@ PriorityQueue<Integer> jono =
 Pythonin standardikirjaston moduulissa \texttt{heapq} on funktioita,
 joiden avulla listaa voi käsitellä binäärikekona.
 Toteutuksessa keko on minimikeko ja tavallisesta käytännöstä
-poiketen keon kohdat on 0-indeksoitu eli keon pienin alkio on aina
+poiketen keko on 0-indeksoitu eli keon pienin alkio on aina
 listan kohdassa 0.
 
 Seuraava koodi näyttää, miten voimme käsitellä kekoa:
@@ -731,14 +731,14 @@ Seuraava koodi näyttää, miten voimme käsitellä kekoa:
 \begin{code}
 from heapq import heappush, heappop
 
-jono = []
-heappush(jono,5)
-heappush(jono,3)
-heappush(jono,8)
-heappush(jono,7)
-print(jono[0]) # 3
-heappop(jono)
-print(jono[0]) # 5
+keko = []
+heappush(keko,5)
+heappush(keko,3)
+heappush(keko,8)
+heappush(keko,7)
+print(keko[0]) # 3
+heappop(keko)
+print(keko[0]) # 5
 \end{code}
 
 Lisäksi saatavilla on funktio \texttt{heapify},
@@ -748,11 +748,11 @@ lineaarisessa ajassa:
 \begin{code}
 from heapq import heapify, heappop
 
-jono = [5,3,8,7]
-heapify(jono)
-print(jono[0]) # 3
-heappop(jono)
-print(jono[0]) # 5
+keko = [5,3,8,7]
+heapify(keko)
+print(keko[0]) # 3
+heappop(keko)
+print(keko[0]) # 5
 \end{code}
 
 \section{Tehokkuusvertailu}
@@ -771,13 +771,13 @@ vain pienimmän tai suurimman alkion, voi siis olla hyvä
 ratkaisu käyttää kekoa binäärihakupuun sijasta.
 Mutta kuinka suuria erot ovat käytännössä?
 
-Tästä antaa kuvaa seuraava testi,
+Tästä antaa kuvaa testi,
 jossa vertailemme keskenään Javan tietorakenteita
 \texttt{PriorityQueue} ja \texttt{TreeSet}.
-Testissä meillä on taulukko,
+Testissä aineistona on taulukko,
 jossa on satunnaisessa järjestyksessä luvut $1,2,\dots,n$.
 Lisäämme ensin taulukon $n/2$ ensimmäistä lukua joukkoon.
-Tämän jälkeen käymme läpi loput $n/2$ lukua,
+Tämän jälkeen käymme läpi loput $n/2$ lukua
 ja jokaisen luvun kohdalla lisäämme sen joukkoon ja
 poistamme joukon pienimmän luvun.
 
