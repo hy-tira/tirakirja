@@ -35,9 +35,9 @@ seuraavat tehokkaat operaatiot:
 
 Oletamme, että alkiot ovat $1,2,\dots,n$,
 ja jokainen alkio kuuluu tarkalleen yhteen joukkoon.
-Esimerkiksi kun $n=8$, joukot voivat olla vaikkapa
+Esimerkiksi kun $n=8$, joukot voisivat olla
 $A=\{1,4\}$, $B=\{2,5,6\}$ ja $C=\{3,7,8\}$.
-Tällä hetkellä esimerkiksi alkiot 1 ja 2 ovat eri joukoissa.
+Tässä esimerkiksi alkiot 1 ja 2 ovat eri joukoissa.
 Kun yhdistämme sitten joukot $A$ ja $B$,
 niistä syntyy joukko $\{1,2,4,5,6\}$.
 Tästä lähtien alkiot 1 ja 2 ovatkin samassa joukossa.
@@ -51,7 +51,7 @@ Kutakin joukkoa vastaa puu,
 jonka juurena on joukon edustaja ja
 muut alkiot viittaavat edustajaan yhden tai useamman kaaren kautta.
 Kun haluamme tarkastaa, ovatko kaksi alkiota samassa joukossa,
-selvitämme niiden edustajat ja vertaamme niitä toisiinsa.
+selvitämme alkioiden edustajat ja vertaamme edustajia toisiinsa.
 
 Kuvassa \ref{fig:unifin} on esimerkkinä union-find-rakenne,
 joka vastaa joukkoja $A=\{1,4\}$, $B=\{2,5,6\}$ ja $C=\{3,7,8\}$.
@@ -59,8 +59,7 @@ Tässä tapauksessa joukkojen edustajat ovat 1, 5 ja 3.
 Esimerkiksi jos haluamme tarkastaa, ovatko alkiot 2 ja 6
 samassa joukossa, selvitämme ensin alkioiden edustajat
 kulkemalla polkuja $2 \rightarrow 5$ ja $6 \rightarrow 5$.
-Kummankin alkion edustaja on $5$, joten toteamme,
-että alkiot ovat samassa joukossa.
+Kummankin alkion edustaja on $5$, joten alkiot ovat samassa joukossa.
 
 \begin{figure}
 \center
@@ -105,10 +104,10 @@ function edustaja(x)
     return x
 \end{code}
 
-Tämän jälkeen voimme tarkastaa seuraavalla operaatiolla,
+Tämän jälkeen voimme tarkastaa seuraavalla funktiolla,
 ovatko alkiot $a$ ja $b$ samassa joukossa.
 Alkiot ovat samassa joukossa täsmälleen silloin, kun niillä
-on sama edustaja:
+on sama edustaja.
 
 \begin{code}
 function sama(a,b)
@@ -117,14 +116,14 @@ function sama(a,b)
 
 Haluamme toteuttaa vielä operaation, jolla voimme
 yhdistää kaksi joukkoa toisiinsa.
-Tämän operaation toteutus ratkaisee, kuinka tehokas rakenteemme on.
+Tämän operaation toteutus ratkaisee, kuinka tehokas tietorakenne on.
 Alkion edustajan etsiminen vie aikaa $O(k)$,
 missä $k$ on polun pituus,
-joten haluamme toteuttaa yhdistämiset niin,
+joten yhdistäiset tulisi toteuttaa niin,
 että puussa on vain lyhyitä polkuja.
 Saavutamme tämän tavoitteen yhdistämällä kaksi joukkoa
-aina asettamalla \emph{pienemmän} joukon
-edustajan osoittamaan \emph{suuremman} joukon edustajaan.
+aina niin, että \emph{pienemmän} joukon
+edustaja alkaa osoittaa \emph{suuremman} joukon edustajaan.
 Jos joukot ovat yhtä suuria, voimme toteuttaa yhdistämisen kummin päin vain.
 
 \begin{figure}
@@ -161,9 +160,11 @@ Nyt olemme valmiita toteuttamaan operaation,
 joka yhdistää toisiinsa joukot, joissa on alkiot $a$ ja $b$.
 Oletamme, että alkiot ovat eri joukoissa ennen yhdistämistä.
 Jotta voimme toteuttaa yhdistämisen tehokkaasti,
-meidän täytyy myös pitää kirjaa kunkin joukon koosta.
+täytyy myös pitää kirjaa kunkin joukon koosta.
 Seuraavassa toteutuksessa $\texttt{koko}[x]$ kertoo,
 montako alkiota alkion $x$ edustama joukko sisältää.
+Aluksi $\texttt{koko}[x]=1$ jokaiselle alkiolle $x$,
+koska jokainen alkio on omassa joukossa.
 
 \begin{code}
 procedure yhdista(a,b)
@@ -175,7 +176,7 @@ procedure yhdista(a,b)
     koko[a] += koko[b]
 \end{code}
 
-Kun toteutamme yhdistämiset tällä tavalla, jokainen
+Kun toteutamme yhdistämiset näin, jokainen
 puussa esiintyvä polku sisäl\-tää vain $O(\log n)$ alkiota.
 Tämä johtuu siitä, että aina kun kuljemme polkua
 askeleen ylöspäin alkiosta $a$ alkioon $b$,
@@ -279,15 +280,15 @@ operaatiota union-find-rakenteessa ajassa $O(\log n)$.
 \subsubsection{Ratkaisu 2: Binäärihaku}
 
 Toinen tapa ratkaista tehtävä on hyödyntää \emph{binäärihakua}.
-Jos meillä on arvaus, että kaikki kaupungit ovat yhteydessä
-$x$ lisäyksen jälkeen, voimme tarkistaa helposti,
+Jos on olemassa arvaus, että kaikki kaupungit ovat yhteydessä
+$x$ lisäyksen jälkeen, voimme tarkastaa helposti,
 pitääkö arvaus paikkansa:
 lisäämme ensin $x$ ensimmäistä tietä tyhjään verkkoon ja tarkastamme
 sitten, onko verkko yhtenäinen. Tämä vie aikaa $O(n+m)$
 käyttäen syvyyshakua.
 
 Jos verkko on yhtenäinen ensimmäistä kertaa vaiheessa $k$,
-selvästikin verkko ei ole yhtenäinen vaiheissa
+verkko ei ole yhtenäinen vaiheissa
 $1,2,\dots,k-1$ ja on yhtenäinen vaiheissa $k,k+1,\dots,m$,
 koska kaarten lisääminen ei voi poistaa verkon yhtenäisyyttä.
 Tämän ansiosta voimme etsiä arvon $k$ binäärihaun avulla.
@@ -573,7 +574,7 @@ Kun kaikki solmut on lisätty puuhun, pienin virittävä puu on valmis.
 \end{figure}
 
 Kuva \ref{fig:priesi} näyttää esimerkin Primin algoritmin toiminnasta.
-Voimme aloittaa puun rakentamisen mistä tahansa solmusta;
+Voimme aloittaa puun rakentamisen mistä tahansa solmusta, ja
 tässä esimerkissä aloitamme solmusta $1$.
 Solmuun $1$ on yhteydessä kaksi kaarta $(1,2)$ ja $(1,3)$,
 joista valitsemme kaaren $(1,2)$, koska se on kevyempi.
@@ -600,11 +601,11 @@ ne lisäävät joka askeleella kevyimmän mahdollisen kaaren puuhun.
 Miksi algoritmit tuottavat pienimmän virittävän puun joka tilanteessa?
 
 Voimme ajatella asiaa näin: 
-Jos meillä on kaksi solmua $a$ ja $b$, jotka ovat eri komponenteissa,
-meidän on yhdistettävä ne jotenkin samaan komponenttiin algoritmin aikana.
+Jos on kaksi solmua $a$ ja $b$, jotka ovat eri komponenteissa,
+ne on yhdistettävä jotenkin samaan komponenttiin algoritmin aikana.
 Jos kevyin saatavilla oleva kaari on solmujen $a$ ja $b$ välillä,
-meidän kannattaa valita se, koska muuten joutuisimme yhdistämään komponentit
-myöhemmin käyttäen raskaampaa kaarta.
+se kannattaa valita, koska ilman tätä kaarta komponentit tulisi
+yhdistää myöhemmin käyttäen raskaampaa kaarta.
 
 \begin{figure}
 \center
