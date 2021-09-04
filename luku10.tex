@@ -60,7 +60,7 @@ $1,2,\dots,n$.
 \index{naapuri}
 \index{aste}
 
-Sanomme, että kaksi solmua ovat \emph{vierekkäin} (\emph{adjacent}),
+Kaksi solmua ovat \emph{vierekkäin} (\emph{adjacent}),
 jos niiden välillä on kaari.
 Solmun \emph{naapureja} (\emph{neighbor}) ovat kaikki solmut,
 joihin se on yhteydessä kaarella,
@@ -123,9 +123,9 @@ joten solmun aste on 3.
 Verkossa oleva \emph{polku} (\emph{path}) on kaaria pitkin kulkeva reitti
 lähtösolmusta kohdesolmuun.
 Kuva \ref{fig:verpoe} näyttää kaksi
-mahdollista polkua solmusta $1$ solmuun $5$ esimerkkiverkossamme.
-Ensimmäinen polku on $1 \rightarrow 2 \rightarrow 5$
-ja toinen polku on $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
+mahdollista polkua solmusta $1$ solmuun $5$.
+Polut ovat $1 \rightarrow 2 \rightarrow 5$
+ja $1 \rightarrow 3 \rightarrow 4 \rightarrow 5$.
 
 \begin{figure}
 \center
@@ -163,7 +163,7 @@ siinä on ainakin yksi kaari
 eikä se kulje kahta kertaa saman solmun tai kaaren kautta.
 Kuvassa \ref{fig:versyk} on esimerkkinä sykli
 $2 \rightarrow 4 \rightarrow 5 \rightarrow 2$.
-Jos verkossa ei ole yhtään sykliä, sanomme, että verkko on \emph{syklitön}
+Jos verkossa ei ole yhtään sykliä, verkko on \emph{syklitön}
 (\emph{acyclic}).
 
 \subsubsection{Yhtenäisyys ja komponentit}
@@ -179,7 +179,7 @@ koska esimerkiksi solmujen $1$ ja $2$ välillä ei ole polkua.
 \index{komponentti}
 \index{yhtenäinen komponentti}
 
-Voimme esittää verkon aina kokoelmana yhtenäisiä \emph{komponentteja}
+Verkko voidaan esittää aina kokoelmana yhtenäisiä \emph{komponentteja}
 (\emph{component}).
 Kuvassa \ref{fig:veryht} yhtenäiset komponentit
 ovat $\{1,3\}$ ja $\{2,4,5\}$.
@@ -240,17 +240,32 @@ jossa on viisi solmua ja neljä kaarta.
 
 \index{suunnattu verkko}
 
-\emph{Suunnatussa} (\emph{directed}) verkossa
+Kun verkko on \emph{suunnattu} (\emph{directed}),
 jokaisella kaarella on tietty suunta,
-jonka mukaisesti meidän täytyy kulkea kaarta pitkin.
-Suunnat rajoittavat siis kulkemistamme verkossa.
+jonka mukaisesti kaarta pitkin tulee kulkea.
+Suunnat rajoittavat siis verkossa liikkumista.
 Kuvassa \ref{fig:versuu} on esimerkkinä
 suunnattu verkko, jossa
 voimme kulkea solmusta $1$ solmuun $5$
 polkua $1 \rightarrow 2 \rightarrow 5$,
 mutta emme voi kulkea mitenkään solmusta $5$ solmuun $1$.
 
-\begin{figure}
+\subsubsection{Painotettu verkko}
+
+\index{painotettu verkko}
+
+Kun verkko on \emph{painotettu} (\emph{weighted}),
+jokaiseen kaareen liittyy jokin paino,
+joka kuvaa tyypillisesti kaaren pituutta.
+Kun kuljemme polkua painotetussa verkossa,
+polun pituus on kaarten painojen summa.
+Kuvassa \ref{fig:verpae} on esimerkkinä painotettu verkko,
+jossa polun $1 \rightarrow 2 \rightarrow 5$
+pituus on $5+8=13$ ja polun
+$1 \rightarrow 3 \rightarrow 4 \rightarrow 5$
+pituus on $2+4+3=9$.
+
+\begin{figure}[h]
 \center
 \begin{center}
 \begin{tikzpicture}[scale=0.6]
@@ -274,22 +289,7 @@ mutta emme voi kulkea mitenkään solmusta $5$ solmuun $1$.
 \label{fig:versuu}
 \end{figure}
 
-\subsubsection{Painotettu verkko}
-
-\index{painotettu verkko}
-
-\emph{Painotetussa} (\emph{weighted}) verkossa
-jokaiseen kaareen liittyy jokin paino,
-joka kuvaa tyypillisesti kaaren pituutta.
-Kun kuljemme polkua painotetussa verkossa,
-polun pituus on kaarten painojen summa.
-Kuvassa \ref{fig:verpae} on esimerkkinä painotettu verkko,
-jossa polun $1 \rightarrow 2 \rightarrow 5$
-pituus on $5+8=13$ ja polun
-$1 \rightarrow 3 \rightarrow 4 \rightarrow 5$
-pituus on $2+4+3=9$.
-
-\begin{figure}
+\begin{figure}[h]
 \center
 \begin{center}
 \begin{tikzpicture}[scale=0.6,label distance=-1.5mm]
@@ -313,6 +313,46 @@ pituus on $2+4+3=9$.
 \label{fig:verpae}
 \end{figure}
 
+\subsubsection{Yksinkertainen verkko}
+
+\index{yksinkertainen verkko}
+
+Usein oletuksena on, että verkko on \emph{yksinkertainen} (\emph{simple}),
+jolloin siinä ei ole kahta samanlaista kaarta ja jokainen kaari yhdistää
+kaksi eri solmua. Kaikki tähän mennessä kirjassa esitetyt verkot ovat
+olleet yksinkertaisia.
+
+Kuvassa \ref{fig:vereiy} on esimerkkinä verkko, joka ei ole yksinkertainen.
+Tähän on kaksi syytä: solmujen $1$ ja $2$ välillä on kaksi kaarta
+ja lisäksi solmusta $5$ on kaari itseensä.
+
+\begin{figure}
+\center
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+\small
+\node[draw, circle] (1) at (1,3) {$1$};
+\node[draw, circle] (2) at (4,3) {$2$};
+\node[draw, circle] (3) at (1,1) {$3$};
+\node[draw, circle] (4) at (4,1) {$4$};
+\node[draw, circle] (5) at (6,2) {$5$};
+
+\path[draw,thick,-] (1) edge [bend right=30] (2);
+\path[draw,thick,-] (2) edge [bend right=30] (1);
+\path[draw,thick,-] (1) -- (3);
+\path[draw,thick,-] (3) -- (4);
+\path[draw,thick,-] (2) -- (4);
+\path[draw,thick,-] (4) -- (5);
+%\path[every node/.style={}] (5) edge[loop] (5);
+
+\path[-,every loop/.style={looseness=6}] (5)
+         edge [in=120,out=60,loop] ();
+
+\end{tikzpicture}
+\end{center}
+\caption{Verkko, joka ei ole yksinkertainen.}
+\label{fig:vereiy}
+\end{figure}
 
 \section{Verkot ohjelmoinnissa}
 
@@ -322,9 +362,7 @@ miten haluamme käsitellä verkkoa algoritmissa,
 koska jokaisessa esitystavassa on omat etunsa.
 Seuraavaksi käymme läpi kolme tavallista esitystapaa.
 
-\subsection{Vieruslistaesitys}
-
-\begin{figure}
+\begin{figure}[h]
 \center
 \begin{center}
 \begin{tikzpicture}[scale=0.6]
@@ -372,6 +410,8 @@ Seuraavaksi käymme läpi kolme tavallista esitystapaa.
 \label{fig:vervil}
 \end{figure}
 
+\subsection{Vieruslistaesitys}
+
 \index{vieruslista}
 
 Tavallisin tapa esittää verkko on luoda kullekin solmulle
@@ -402,9 +442,8 @@ for b in verkko[a]
     // käsittele solmu b
 \end{code}
 
-Jos verkko on suuntaamaton, eli voimme kulkea kaaria molempiin suuntiin,
-voimme tallentaa verkon vastaavalla tavalla,
-kunhan tallennamme kunkin kaaren molempiin suuntiin.
+Suuntaamaton verkko voidaan esittää vieruslistoina niin,
+että jokainen kaari tallennetaan molempiin suuntiin.
 Jos taas verkko on painotettu, voimme tallentaa jokaisesta
 kaaresta sekä kohdesolmun että painon.
 
@@ -415,8 +454,7 @@ kaaresta sekä kohdesolmun että painon.
 Toinen tapa tallentaa verkko on luoda \emph{kaarilista}
 (\emph{edge list}),
 joka sisältää kaikki verkon kaaret.
-Voisimme luoda esimerkkiverkkoa vastaavan kaarilistan
-tähän tapaan:
+Voisimme luoda esimerkkiverkon kaarilistan näin:
 
 \begin{code}
 kaaret.add((1,2))
@@ -434,7 +472,7 @@ Vastaavasti voisimme tallentaa myös kaaret kolmikkoina,
 joissa on lisäksi mukana kaaren paino.
 
 Kaarilista on hyvä esitystapa algoritmeissa,
-joissa haluamme pystyä käy\-mään helposti läpi
+joissa tulee pystyä käy\-mään helposti läpi
 kaikki verkon kaaret eikä ole tarvetta
 selvittää tietystä solmusta lähteviä kaaria.
 
@@ -502,9 +540,9 @@ verkko[3][4] = 1
 verkko[4][5] = 1
 \end{code}
 
-Jos verkko on painotettu, voimme vastaavasti merkitä
-kaarten painot vierusmatriisiin.
-Vierusmatriisin etuna on, että voimme tarkastaa helposti,
+Jos verkko on painotettu, kaarten painot voidaan vastaavasti
+merkitä vierusmatriisiin.
+Vierusmatriisin etuna on, että siitä voi tarkastaa helposti,
 onko tietty kaari verkossa.
 Esitystapa kuluttaa kuitenkin paljon muistia,
 eikä sitä voi käyttää, jos verkon solmujen määrä on suuri.
@@ -525,7 +563,7 @@ jonka avulla voimme löytää lyhimpiä polkuja verkossa.
 on verkkojen käsittelyn yleistyökalu,
 jonka avulla voimme selvittää monia asioita verkon rakenteesta.
 Kun alamme tutkia verkkoa syvyyshaulla,
-meidän tulee päättää ensin, mistä solmusta haku lähtee liikkeelle.
+tulee päättää ensin, mistä solmusta haku lähtee liikkeelle.
 Haku etenee vuorollaan kaikkiin solmuihin, jotka ovat saavutettavissa
 lähtösolmusta kulkemalla kaaria pitkin.
 
@@ -642,12 +680,12 @@ procedure haku(solmu)
 Haku käynnistyy, kun kutsumme proseduuria
 \texttt{haku} parametrina haun lähtö\-solmu.
 Jokaisessa kutsussa proseduuri tarkistaa ensin,
-olemmeko jo käy\-neet parametrina annetussa solmussa,
+onko se jo käy\-nyt parametrina annetussa solmussa,
 ja päättyy heti tässä tilanteessa.
-Muuten proseduuri merkitsee, että olemme nyt käyneet solmussa
-ja etenee rekursiivisesti kaikkiin sen naapureihin.
-Haku vie aikaa $O(n+m)$, koska käsitte\-lemme jokaisen
-solmun ja kaaren enintään kerran.
+Muuten proseduuri merkitsee, että solmussa on nyt käyty,
+ja etenee rekursiivisesti kaikkiin solmun naapureihin.
+Haku vie aikaa $O(n+m)$, koska jokainen solmu ja kaari
+käsitellään enintään kerran.
 
 Mihin voisimme sitten käyttää syvyyshakua?
 Seuraavassa on joitakin esimerkkejä syvyyshaun käyttökohteista:
@@ -683,6 +721,13 @@ että tulemme toista kautta johonkin solmuun,
 jossa olemme käyneet jo aiemmin.
 Niinpä löydämme syvyyshaun avulla jonkin verkossa olevan
 syklin, jos sellainen on olemassa.
+
+Toinen tapa tutkia syklin olemassaolo on laskea
+jokaisesta verkon komponentista solmujen ja kaarten määrä.
+Jos komponentissa on $x$ solmua ja siinä ei ole sykliä,
+siinä tulee olla tarkalleen $x-1$ kaarta
+eli komponentin tulee olla puu.
+Jos kaaria on enemmän, komponentissa on varmasti sykli.
 
 \subsection{Leveyshaku}
 
@@ -845,7 +890,7 @@ $A$ ruutuun $B$ reittiä, joka muodostuu 9 askeleesta.
 \node at (4.5,1.5) {$B$};
 \end{tikzpicture}
 \end{center}
-\caption{Lyhin reitti labyrintissa ruudusta $A$ ruutuun $B$.}
+\caption{Reitti labyrintissa ruudusta $A$ ruutuun $B$.}
 \label{fig:labre1}
 \end{figure}
 
@@ -883,12 +928,13 @@ Voimme käytännössä etsiä reitin syvyyshaulla tai leveyshaulla.
 
 \index{implisiittinen verkko}
 
-Huomaa, että meidän ei tarvitse erikseen muuttaa labyrinttia
-verkoksi, vaan voimme toteuttaa haut \emph{implisiittiseen} verkkoon.
-Tämä tarkoittaa, että teemme haun labyrinttiin sen omassa
-esitysmuodossa. Käytännössä labyrintti on kätevää tallentaa kaksiulotteisena
+Tässä tapauksessa labyrinttia ei tarvitse erikseen muuttaa verkoksi,
+vaan voimme toteuttaa haut \emph{implisiittiseen} verkkoon
+eli teemme haun labyrinttiin sen omassa esitysmuodossa.
+Käytännössä labyrintti on kätevää tallentaa kaksiulotteisena
 taulukkona, joka kertoo, mitkä ruudut ovat seinäruutuja.
-Tällöin voimme toteuttaa esimerkiksi syvyyshaun seuraavan tyylisesti:
+
+Esimerkiksi seuraava koodi toteuttaa syvyyshaun labyrintissa:
 
 \begin{code}
 procedure haku(y,x)
@@ -903,6 +949,6 @@ procedure haku(y,x)
     haku(y,x-1)
 \end{code}
 
-Huomaa, että syvyyshaku löytää \emph{jonkin} reitin ruudusta $A$ ruutuun $B$,
-mutta ei välttämättä lyhintä reittiä.
-Jos haluaisimme löytää lyhimmän reitin, meidän tulisi käyttää leveyshakua.
+Syvyyshaku löytää \emph{jonkin} reitin ruudusta $A$ ruutuun $B$,
+mutta ei välttä\-mättä lyhintä reittiä.
+Jos haluamme löytää lyhimmän reitin, meidän tulee käyttää vastaavasti leveyshakua.
