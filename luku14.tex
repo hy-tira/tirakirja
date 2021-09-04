@@ -113,7 +113,7 @@ alkuperäinen kaari, jonka painona on kaaren kapasiteetti,
 sekä sille kään\-teinen kaari, jonka painona on $0$.
 Käänteisten kaarten avulla pystymme tarvittaessa \emph{peruuttamaan}
 virtausta algoritmin aikana.
-Kuva \ref{fig:flouus} näyttää, kuinka esitämme esimerkkiverkkomme
+Kuva \ref{fig:flouus} näyttää, kuinka esitämme esimerkkiverkon
 algoritmissa\footnote{Kirjallisuudessa tällaisesta verkosta käytetään usein
 termiä \emph{jäännösverkko} (\emph{residual graph}), kuitenkin sillä erotuksella,
 että mukana ovat kulloinkin vain kaaret, joiden paino on positiivinen.
@@ -132,7 +132,7 @@ Etsimme tällä tavalla uusia polkuja, kunnes mitään
 täydennyspolkua ei voi enää muodostaa.
 
 Kuva \ref{fig:floesi} näyttää, kuinka Fordin ja Fulkersonin algoritmi muodostaa
-maksimivirtauksen esimerkkiverkossamme.
+maksimivirtauksen esimerkkiverkossa.
 Algoritmi muodostaa ensin polun $1 \rightarrow 2 \rightarrow 3 \rightarrow 5$,
 jossa pienin paino on $4$.
 Tämän seurauksena virtaus kasvaa $4$:llä,
@@ -251,13 +251,13 @@ joten kaarta pitkin kulkevan virtauksen määrä on $5-2=3$.
 
 Fordin ja Fulkersonin algoritmin toimintaidea on sinänsä järkevä,
 koska täy\-dennyspolut lähtösolmusta kohdesolmuun kasvattavat virtausta,
-mutta ei ole silti todellakaan päältä päin selvää,
+mutta ei ole silti päältä päin selvää,
 miksi algoritmi löytää varmasti \emph{suurimman} mahdollisen virtauksen.
 Jotta voimme ymmärtää paremmin algoritmin toimintaa,
 tarkastelemme seuraavaksi toista verkko-ongelmaa,
 joka antaa meille uuden näkökulman maksimivirtaukseen.
 
-Lähtökohtanamme on edelleen suunnattu verkko,
+Lähtökohtamme on edelleen suunnattu verkko,
 jossa on lähtösolmu ja kohdesolmu.
 Sanomme, että joukko kaaria muodostaa \emph{leikkauksen} (\emph{cut}),
 jos niiden poistaminen verkosta estää kulkemisen
@@ -359,9 +359,9 @@ joten Fordin ja Fulkersonin algoritmi toimii oikein.
 
 Voimme muodostaa täydennyspolkuja Fordin ja Fulkersonin algoritmin aikana miten tahansa,
 mutta polkujen valintatapa vaikuttaa algoritmin tehokkuuteen.
-Riippumatta polkujen valintatavasta on selvää,
-että jokainen polku kasvattaa virtausta ainakin \emph{yhdellä} yksiköllä.
-Niinpä tiedämme, että joudumme etsimään enintään $f$ täydennyspolkua,
+Riippumatta polkujen valintatavasta
+jokainen polku kasvattaa virtausta ainakin \emph{yhdellä} yksiköllä.
+Niinpä joudumme etsimään enintään $f$ täydennyspolkua,
 kun verkon maksimivirtauksen suuruus on $f$.
 Jos muodostamme polut syvyyshaulla,
 jokaisen polun muodostaminen vie aikaa $O(m)$,
@@ -410,8 +410,8 @@ Leveyshakua käyttäen muodostamme kuvan \ref{fig:polhuo} verkossa
 vain kaksi täydennyspolkua $1 \rightarrow 2 \rightarrow 4$ ja
 $1 \rightarrow 3 \rightarrow 4$, jotka antavat suoraan maksimivirtauksen.
 
-Osoittautuu, että kun käytämme Edmondsin ja Karpin algoritmia,
-meidän täytyy muodostaa aina vain $O(nm)$ täydennyspolkua,
+Osoittautuu, että Edmondsin ja Karpin algoritmin
+täytyy muodostaa aina vain $O(nm)$ täydennyspolkua,
 joten algoritmi vie aikaa $O(nm^2)$
 riippumatta virtauksen suuruudesta.
 Voimme perustella tämän aikavaativuuden kahden havainnon avulla:
@@ -420,16 +420,20 @@ Voimme perustella tämän aikavaativuuden kahden havainnon avulla:
 etäisyys lyhintä polkua pitkin lähtösolmusta solmuun $x$
 ei voi koskaan pienentyä täydennyspolun muodostamisen jälkeen.
 Voimme perustella tämän tekemällä vastaoletuksen,
-että täydennyspolku on juuri pienentänyt etäisyyttä solmuun $b$
-ja lyhin polku lähtösolmusta solmuun $b$ päättyy kaareen $a \rightarrow b$,
-missä etäisyys solmuun $a$ ei ole pienentynyt.
-Tarkastellaan nyt tilannetta ennen kyseisen täydennyspolun muodostamista.
-Ensinnäkään verkossa ei voinut tuolloin olla positiivista kaarta $a \rightarrow b$,
-koska muuten myös etäisyys solmuun $a$ olisi pienentynyt.
-Toisaalta verkossa ei myöskään voinut olla positiivista kaarta $b \rightarrow a$,
-koska tällöin täydennyspolku olisi kulkenut tätä kaarta pitkin
-ja $a$:n etäisyys olisi ollut suurempi kuin $b$:n etäisyys.
-Niinpä ei ole mahdollista, että solmun $b$ etäisyys olisi pienentynyt.
+että täydennyspolku on juuri pienentänyt etäisyyttä solmuun $x$.
+Tarkastellaan lyhintä polkua lähtösolmusta solmuun $x$
+ja ensimmäistä tällä polulla olevaa kaarta $a \rightarrow b$,
+jossa etäisyys solmuun $a$ ei ole pienentynyt mutta
+etäisyys solmuun $b$ on pienentynyt täydennyspolun seurauksena.
+Tämä tarkoittaa, että ennen täydennyspolun muodostamista
+verkossa ei ollut positiivista kaarta $a \rightarrow b$,
+vaan tämä kaari on syntynyt siitä, että täydennyspolku on
+kulkenut positiivista kaarta $b \rightarrow a$ ja virtaukset
+ovat muuttuneet.
+Tämä ei kuitenkaan ole mahdollista, koska tällöin
+$a$:n etäisyys olisi ollut suurempi kuin $b$:n etäisyys
+ennen täydennyspolun muodostamista eikä kaari $a \rightarrow b$
+voisi olla osana uutta lyhintä polkua.
 
 \emph{Havainto 2}: Jokaiseen täydennyspolkuun liittyy jokin kaari $a \rightarrow b$,
 jonka kapasiteetti käytetään kokonaan,
@@ -463,7 +467,7 @@ Tutustumme seuraavaksi joihinkin tällaisiin ongelmiin.
 
 \index{erilliset polut}
 
-Ensimmäinen tehtävämme on muodostaa mahdollisimman monta
+Tehtävämme on muodostaa mahdollisimman monta
 \emph{erillistä} polkua verkon lähtösolmusta kohdesolmuun.
 Erillisyys tarkoittaa, että jokainen verkon kaari saa esiintyä
 enintään yhdellä polulla.
@@ -537,7 +541,7 @@ olettaen, että jokaisen kaaren kapasiteetti on $1$.
 Tämä maksimivirtaus on yhtä suuri kuin suurin
 erillisten polkujen määrä.
 Kuva \ref{fig:erivir} näyttää maksimivirtauksen
-esimerkkiverkossamme.
+esimerkkiverkossa.
 
 Miksi maksimivirtauksen suuruus on sama kuin erillisten polkujen määrä?
 Ensinnäkin erilliset polut muodostavat yhdessä virtauksen,
@@ -726,7 +730,7 @@ verkon pienimmän polkupeitteen.
 \end{figure}
 
 Kuva \ref{fig:polvir} näyttää tuloksena olevan verkon
-esimerkissämme.
+esimerkissä.
 Ideana on, että maksimivirtaus etsii,
 mitkä kaaret kuuluvat polkuihin:
 jos kaari solmusta $a$ solmuun $b$ kuuluu virtaukseen,
