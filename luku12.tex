@@ -5,7 +5,7 @@
 Verkkoalgoritmien suunnittelussa aiheuttavat
 usein vaikeuksia verkossa olevat syklit,
 ja monen ongelman ratkaiseminen on vaikeaa nimenomaan
-sen takia, että meidän täytyy ottaa huomioon,
+sen takia, että täytyy ottaa huomioon,
 mitä tapahtuu sykleissä.
 Tässä luvussa katsomme, miten asiat muuttuvat,
 kun voimmekin olettaa, että käsitel\-tävänä on suunnattu verkko,
@@ -230,7 +230,7 @@ verkossa on sykli eikä topologista järjestystä ole olemassa.
 \end{figure}
 
 Kuva \ref{fig:topesi} näyttää, kuinka algoritmi muodostaa topologisen
-järjestyksen esimerkkiverkossamme.
+järjestyksen esimerkkiverkossa.
 Tässä tapauksessa suoritamme kaksi syvyyshakua,
 joista ensimmäinen alkaa solmusta 1 ja toinen alkaa solmusta 5.
 Algoritmin tuloksena on lista $[4,2,3,1,5]$,
@@ -239,7 +239,7 @@ Huomaa, että tämä on eri järjestys kuin kuvassa \ref{fig:topjar} --
 topologinen järjestys ei ole yksikäsitteinen ja voimme yleensä
 muodostaa järjestyksen monella tavalla.
 Kuva \ref{fig:topsyk} näyttää puolestaan tilanteen,
-jossa topologista järjestystä ei voi muodostaa verkossa
+jossa topologista järjestystä ei voida muodostaa verkossa
 olevan syklin takia.
 Tässä verkossa on sykli $2 \rightarrow 4 \rightarrow 3 \rightarrow 2$,
 jonka olemassaolon huomaamme siitä, että tulemme uudestaan
@@ -283,7 +283,7 @@ missä järjestyksessä kurssit tulisi suorittaa.
 
 Kuvassa \ref{fig:kuresi} on esimerkkinä joitakin
 tietojenkäsittely\-tieteen kandiohjelman kursseja.
-Tällaisen verkon topologinen järjestys antaa meille
+Tällaisen verkon topologinen järjestys antaa
 yhden tavan suorittaa kurssit esitietovaatimusten mukaisesti.
 Kuvassa \ref{fig:kurjar} näkyy esimerkkinä topologinen järjestys,
 joka vastaa suoritusjärjestystä
@@ -343,7 +343,7 @@ OHPE, OHJA, OHTE, TITO, JYM, TIRA, LAMA.
 On selvää, että kurssien ja esitietovaatimusten muodostaman
 verkon tulee olla syklitön, jotta kurssit voi suorittaa halutulla tavalla.
 Jos verkossa on sykli, topologista järjestystä ei ole olemassa
-eikä meillä ole mitään mahdollisuutta suorittaa kursseja
+eikä ole mitään mahdollisuutta suorittaa kursseja
 esitietovaatimusten mukaisesti.
 
 \section{Dynaaminen ohjelmointi}
@@ -354,7 +354,7 @@ Kun tiedämme, että suunnattu verkko on syklitön,
 voimme ratkaista helposti monia verkon polkuihin
 liittyviä ongelmia \emph{dynaamisen ohjelmoinnin} avulla.
 Tämä on mahdollista, koska topologinen järjestys antaa
-meille selkeän järjestyksen, jossa voimme käsitellä solmut.
+selkeän järjestyksen, jossa voimme käsitellä solmut.
 
 \subsection{Polkujen laskeminen}
 
@@ -476,8 +476,8 @@ Koska tiedämme, että verkko on syklitön,
 voimme laskea funktion arvoja
 tehokkaasti dynaamisella ohjelmoinnilla.
 Oleellista on, että emme voi joutua koskaan silmukkaan
-laskiessamme arvoja, ja
-käytännössä laskemme arvot jossakin solmujen
+laskiessamme arvoja.
+Käytännössä laskemme arvot jossakin solmujen
 topologisessa järjestyksessä.
 
 \subsection{Ongelmat verkkoina}
@@ -489,7 +489,7 @@ Ideana on, että muodostamme verkon, jossa jokainen solmu on
 yksi osaongelma ja kaaret ilmaisevat,
 miten osaongelmat liittyvät toisiinsa.
 
-Tarkastellaan esimerkkinä luvusta 9.1 tuttua tehtävää,
+Tarkastellaan esimerkkinä luvusta 9 tuttua tehtävää,
 jossa haluamme laskea, monellako tavalla voimme muodostaa
 korkeuden $n$ tornin, kun voimme käyttää palikoita,
 joiden korkeudet ovat $1$, $2$ ja $3$.
@@ -547,13 +547,13 @@ Mikä neuvoksi, jos kuitenkin haluaisimme tehdä näin?
 
 Joskus voimme selviytyä tilanteesta käsittelemällä
 verkon vahvasti yhtenäisiä komponentteja.
-Sanomme, että suunnattu verkko on \emph{vahvasti yhtenäinen}
+Suunnattu verkko on \emph{vahvasti yhtenäinen}
 (\emph{strongly connected}),
 jos mistä tahansa solmusta on polku mihin tahansa solmuun.
 Voimme esittää suunnatun verkon aina yhtenä tai
 useampana vahvasti yhtenäisenä komponenttina,
 joista muodostuu syklitön \emph{komponenttiverkko}.
-Tämä verkko esittää alkuperäisen verkon syvärakenteen.
+Tä\-mä verkko esittää alkuperäisen verkon syvärakenteen.
 
 \begin{figure}
 \begin{center}
@@ -725,7 +725,7 @@ vielä kuulu mihinkään komponenttiin.
 \end{figure}
 
 Tarkastellaan seuraavaksi, kuinka Kosarajun algoritmi
-toimii esimerkkiverkossamme.
+toimii esimerkkiverkossa.
 Kuva \ref{fig:koseka} näyttää algoritmin ensimmäisen vaiheen,
 joka muodostaa solmuista listan $[2,5,6,4,3,1]$.
 Kuva \ref{fig:kostok} näyttää algoritmin toisen vaiheen,
@@ -885,7 +885,7 @@ niin, että kuljemme mahdollisimman monen solmun kautta.
 Esimerkiksi kuva \ref{fig:luopel} näyttää verkkona luolaston, joka muodostuu
 seitsemästä luolasta ja kymmenestä käytävästä.
 Yksi optimaalinen reitti luolasta $1$ luolaan $7$ on
-$1 \rightarrow 4 \rightarrow 2 \rightarrow 1 \rightarrow 3 \rightarrow 6 \rightarrow 7$,
+\[1 \rightarrow 4 \rightarrow 2 \rightarrow 1 \rightarrow 3 \rightarrow 6 \rightarrow 7,\]
 jota seuraten saamme kerättyä kaikki aarteet paitsi luolassa 5 olevan aarteen.
 Ei ole olemassa reittiä, jota noudattamalla saisimme haltuumme kaikki luolaston aarteet.
 
@@ -912,12 +912,12 @@ Ei ole olemassa reittiä, jota noudattamalla saisimme haltuumme kaikki luolaston
 
 Voimme ratkaista ongelman tehokkaasti määrittämällä ensin verkon
 vahvasti yhtenäiset komponentit.
-Tämän jälkeen riittää löytää sellainen polku alkusolmun komponentista
-loppusolmun komponenttiin, että komponenttien kokojen summa
+Tämän jälkeen riittää löytää solmun $1$ komponentista
+solmun $n$ komponenttiin kulkeva polku, jossa komponenttien kokojen summa
 on suurin mahdollinen.
 Koska verkko on syklitön, tämä onnistuu dynaamisella ohjelmoinnilla.
 
 Kuva \ref{fig:luovah} näyttää vahvasti yhtenäiset komponentit
-esimerkkiverkossamme.
+esimerkkiverkossa.
 Tästä esityksestä näemme suoraan, että optimaalisia reittejä on olennaisesti kaksi:
 voimme kulkea joko luolan 3 tai luolan 5 kautta.
